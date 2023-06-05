@@ -1,0 +1,6 @@
+*.html
+*.ico
+*.json
+*.md
+*.scss
+**/assets/**/*.*

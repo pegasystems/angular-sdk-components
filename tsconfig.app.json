@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": [
+    "packages/angular-sdk-components/src/**/*.ts"
+  ],
+  "exclude": [
+    "packages/angular-sdk-components/src/test.ts",
+    "packages/angular-sdk-components/src/**/*.spec.ts"
+  ]
+}

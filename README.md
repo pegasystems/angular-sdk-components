@@ -2,7 +2,7 @@
 
 # Angular SDK Components
 
-The ** Angular SDK Components** repo is used to create the [**@pega/angular-sdk-components**](https://www.npmjs.com/package/@pega/angular-sdk-components)
+The **Angular SDK Components** repo is used to create the [**@pega/angular-sdk-components**](https://www.npmjs.com/package/@pega/angular-sdk-components)
 and [**@pega/angular-sdk-overrides**](https://www.npmjs.com/package/@pega/angular-sdk-overrides) npm packages
 used by the Pega [**Constellation Angular SDK**](https://community.pega.com/marketplace/component/angular-sdk).
 These packages provide the initial set of components used by the **Angular SDK** to render DX Components with
