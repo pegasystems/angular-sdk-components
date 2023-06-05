@@ -27,6 +27,7 @@
     "build-sdk": "npm run compile-ts",
     "compile-ts": "ngc -b tsconfig.build.json",
     "delete-tsbuildinfo": "rm -f packages/angular-sdk-components/*.*.tsbuildinfo",
+    "ci": "npm run clean && npm install",
     "clean": "npx shx --yes rm -rf ./node_modules && npm run clear-dist && npm run clear-lib",
     "clear-dist": "npx shx --yes rm -rf ./dist",
     "clear-lib": "npx shx --yes rm -rf ./packages/angular-sdk-components/lib",
