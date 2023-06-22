@@ -2,27 +2,14 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { DefaultFormComponent } from '../../template/default-form/default-form.component';
-import { NarrowWideFormComponent } from '../../template/narrow-wide-form/narrow-wide-form.component';
-import { WideNarrowFormComponent } from '../../template/wide-narrow-form/wide-narrow-form.component';
-import { OneColumnComponent } from '../../template/one-column/one-column.component';
-import { TwoColumnComponent } from '../../template/two-column/two-column.component';
-import { ThreeColumnComponent } from '../../template/three-column/three-column.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-case-create-stage',
   templateUrl: './case-create-stage.component.html',
   styleUrls: ['./case-create-stage.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    DefaultFormComponent,
-    NarrowWideFormComponent,
-    WideNarrowFormComponent,
-    TwoColumnComponent,
-    ThreeColumnComponent,
-    forwardRef(() => OneColumnComponent)
-  ]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseCreateStageComponent implements OnInit {
   @Input() pConn$: any;

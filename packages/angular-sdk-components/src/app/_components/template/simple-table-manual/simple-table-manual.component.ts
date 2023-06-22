@@ -1,39 +1,23 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { Utils } from '../../../_helpers/utils';
-import { getContext, buildFieldsForTable } from './helpers';
-import { DatapageService } from '../../../_services/datapage.service';
-import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
 import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { AutoCompleteComponent } from '../../field/auto-complete/auto-complete.component';
-import { DropdownComponent } from '../../field/dropdown/dropdown.component';
-import { RadioButtonsComponent } from '../../field/radio-buttons/radio-buttons.component';
-import { PhoneComponent } from '../../field/phone/phone.component';
-import { DecimalComponent } from '../../field/decimal/decimal.component';
-import { CurrencyComponent } from '../../field/currency/currency.component';
-import { UrlComponent } from '../../field/url/url.component';
-import { EmailComponent } from '../../field/email/email.component';
-import { PercentageComponent } from '../../field/percentage/percentage.component';
-import { TimeComponent } from '../../field/time/time.component';
-import { DateComponent } from '../../field/date/date.component';
-import { DateTimeComponent } from '../../field/date-time/date-time.component';
-import { IntegerComponent } from '../../field/integer/integer.component';
-import { CheckBoxComponent } from '../../field/check-box/check-box.component';
-import { TextContentComponent } from '../../field/text-content/text-content.component';
-import { TextAreaComponent } from '../../field/text-area/text-area.component';
-import { TextInputComponent } from '../../field/text-input/text-input.component';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
-import { MatInputModule } from '@angular/material/input';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { DatapageService } from '../../../_services/datapage.service';
+import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
+import { getContext, buildFieldsForTable } from './helpers';
+import { Utils } from '../../../_helpers/utils';
 
 export class Group {
   level = 0;
@@ -53,32 +37,16 @@ export class Group {
   imports: [
     CommonModule,
     MatTableModule,
-    TextInputComponent,
-    TextAreaComponent,
-    TextContentComponent,
-    CheckBoxComponent,
-    IntegerComponent,
-    DateTimeComponent,
-    DateComponent,
-    TimeComponent,
-    PercentageComponent,
-    EmailComponent,
-    UrlComponent,
-    CurrencyComponent,
-    DecimalComponent,
-    PhoneComponent,
-    RadioButtonsComponent,
-    DropdownComponent,
-    AutoCompleteComponent,
     MatButtonModule,
     MatSortModule,
     MatMenuModule,
-    ActionButtonsComponent,
     MatFormFieldModule,
     MatDatepickerModule,
     MatOptionModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    ActionButtonsComponent,
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class SimpleTableManualComponent implements OnInit {
@@ -86,7 +54,7 @@ export class SimpleTableManualComponent implements OnInit {
 
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
-  
+
   // Used with AngularPConnect
   angularPConnectData: any = {};
   PCore$: any;
@@ -156,7 +124,6 @@ export class SimpleTableManualComponent implements OnInit {
   response: any;
   compositeKeys: any;
 
-
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,
@@ -180,7 +147,6 @@ export class SimpleTableManualComponent implements OnInit {
     this.groupBySvgIcon$ = this.utils.getImageSrc('row', this.utils.getSDKStaticContentUrl());
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps$.grouping);
     this.menuSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
-
 
     this.arFilterMainButtons$.push({ actionID: 'submit', jsAction: 'submit', name: 'Submit' });
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
@@ -332,10 +298,10 @@ export class SimpleTableManualComponent implements OnInit {
     //  ties the 3 data structures together.
   }
 
-  getResultsText(){
+  getResultsText() {
     const recordsCount = this.readOnlyMode ? this.rowData?.data.length : this.referenceList?.length;
     return `${recordsCount} result${recordsCount > 1 ? 's' : ''}`;
-  }  
+  }
 
   sortCompare(a, b): number {
     let aValue = a[this.compareRef];
@@ -578,7 +544,11 @@ export class SimpleTableManualComponent implements OnInit {
   filterData(item: any) {
     let bKeep = true;
     for (let filterObj of this.filterByColumns) {
-      if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
+      if (
+        filterObj.containsFilterValue != '' ||
+        filterObj.containsFilter == 'null' ||
+        filterObj.containsFilter == 'notnull'
+      ) {
         let value: any;
         let filterValue: any;
 
@@ -586,7 +556,10 @@ export class SimpleTableManualComponent implements OnInit {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? this.utils.getSeconds(item[filterObj.ref]) : null;
+            value =
+              item[filterObj.ref] != null ?? item[filterObj.ref] != ''
+                ? this.utils.getSeconds(item[filterObj.ref])
+                : null;
             filterValue =
               filterObj.containsFilterValue != null && filterObj.containsFilterValue != ''
                 ? this.utils.getSeconds(filterObj.containsFilterValue)
@@ -665,7 +638,7 @@ export class SimpleTableManualComponent implements OnInit {
     return bKeep;
   }
 
-  filterSortGroupBy(){
+  filterSortGroupBy() {
     let theData = this.originalData.slice();
 
     // last filter config data is global

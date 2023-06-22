@@ -1,13 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { MultiReferenceReadonlyComponent } from '../multi-reference-readonly/multi-reference-readonly.component';
 import { SingleReferenceReadonlyComponent } from '../single-reference-readonly/single-reference-readonly.component';
-import { SemanticLinkComponent } from '../../field/semantic-link/semantic-link.component';
-import { SimpleTableSelectComponent } from '../simple-table-select/simple-table-select.component';
-import { AutoCompleteComponent } from '../../field/auto-complete/auto-complete.component';
-import { DropdownComponent } from '../../field/dropdown/dropdown.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
@@ -18,12 +15,9 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
   standalone: true,
   imports: [
     CommonModule,
-    DropdownComponent,
-    AutoCompleteComponent,
-    SimpleTableSelectComponent,
-    SemanticLinkComponent,
     SingleReferenceReadonlyComponent,
-    MultiReferenceReadonlyComponent
+    MultiReferenceReadonlyComponent,
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class DataReferenceComponent implements OnInit {

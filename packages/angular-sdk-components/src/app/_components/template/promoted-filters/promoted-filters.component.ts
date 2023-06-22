@@ -1,21 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ListViewComponent } from '../list-view/list-view.component';
-import { MatButtonModule } from '@angular/material/button';
-import { UrlComponent } from '../../field/url/url.component';
-import { TextAreaComponent } from '../../field/text-area/text-area.component';
-import { TimeComponent } from '../../field/time/time.component';
-import { DateComponent } from '../../field/date/date.component';
-import { DateTimeComponent } from '../../field/date-time/date-time.component';
-import { CheckBoxComponent } from '../../field/check-box/check-box.component';
-import { DecimalComponent } from '../../field/decimal/decimal.component';
-import { IntegerComponent } from '../../field/integer/integer.component';
-import { EmailComponent } from '../../field/email/email.component';
-import { PercentageComponent } from '../../field/percentage/percentage.component';
-import { CurrencyComponent } from '../../field/currency/currency.component';
-import { TextInputComponent } from '../../field/text-input/text-input.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   'TextInput',
@@ -39,23 +28,7 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   templateUrl: './promoted-filters.component.html',
   styleUrls: ['./promoted-filters.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    TextInputComponent,
-    CurrencyComponent,
-    PercentageComponent,
-    EmailComponent,
-    IntegerComponent,
-    DecimalComponent,
-    CheckBoxComponent,
-    DateTimeComponent,
-    DateComponent,
-    TimeComponent,
-    TextAreaComponent,
-    UrlComponent,
-    MatButtonModule,
-    ListViewComponent
-  ]
+  imports: [CommonModule, MatButtonModule, ListViewComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class PromotedFiltersComponent implements OnInit {
   @Input() viewName;
