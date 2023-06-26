@@ -35,6 +35,7 @@ import { WideNarrowPageComponent } from '../../template/wide-narrow-page/wide-na
 import { WideNarrowFormComponent } from '../../template/wide-narrow-form/wide-narrow-form.component';
 import { NarrowWideFormComponent } from '../../template/narrow-wide-form/narrow-wide-form.component';
 import { DefaultFormComponent } from '../../template/default-form/default-form.component';
+import { ConfirmationComponent } from '../../template/confirmation/confirmation.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -78,6 +79,7 @@ import { DefaultFormComponent } from '../../template/default-form/default-form.c
     StagesComponent,
     FeedContainerComponent,
     AppShellComponent,
+    ConfirmationComponent,
     forwardRef(() => RegionComponent)
   ]
 })
