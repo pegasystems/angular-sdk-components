@@ -4,21 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
-import { RegionComponent } from '../../region/region.component';
-import { PageComponent } from '../../../template/page/page.component';
 import { ViewComponent } from '../../view/view.component';
-import { ListPageComponent } from '../../../template/list-page/list-page.component';
-import { CaseViewComponent } from '../../../template/case-view/case-view.component';
-import { ThreeColumnPageComponent } from '../../../template/three-column-page/three-column-page.component';
-import { TwoColumnPageComponent } from '../../../template/two-column-page/two-column-page.component';
-import { OneColumnPageComponent } from '../../../template/one-column-page/one-column-page.component';
-import { ThreeColumnComponent } from '../../../template/three-column/three-column.component';
-import { TwoColumnComponent } from '../../../template/two-column/two-column.component';
-import { OneColumnComponent } from '../../../template/one-column/one-column.component';
-import { WideNarrowPageComponent } from '../../../template/wide-narrow-page/wide-narrow-page.component';
-import { WideNarrowFormComponent } from '../../../template/wide-narrow-form/wide-narrow-form.component';
-import { NarrowWideFormComponent } from '../../../template/narrow-wide-form/narrow-wide-form.component';
-import { DefaultFormComponent } from '../../../template/default-form/default-form.component';
+import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/app/_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -31,25 +18,7 @@ import { DefaultFormComponent } from '../../../template/default-form/default-for
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    DefaultFormComponent,
-    NarrowWideFormComponent,
-    WideNarrowFormComponent,
-    WideNarrowPageComponent,
-    OneColumnComponent,
-    TwoColumnComponent,
-    ThreeColumnComponent,
-    OneColumnPageComponent,
-    TwoColumnPageComponent,
-    ThreeColumnPageComponent,
-    CaseViewComponent,
-    ListPageComponent,
-    ViewComponent,
-    PageComponent,
-    RegionComponent,
-    forwardRef(() => ViewContainerComponent)
-  ]
+  imports: [CommonModule, forwardRef(() => ViewComponent), ComponentMapperComponent]
 })
 export class ViewContainerComponent implements OnInit {
   @Input() pConn$: any;
@@ -185,15 +154,10 @@ export class ViewContainerComponent implements OnInit {
   updateSelf() {
     //   *** DON'T call updateSelf in ngInit!!  ***
 
-    // Don't need to get new store use the one we have
-    const newState = this.angularPConnect.getState();
-
     if (this.arChildren$ == null) {
       // children may have a 'reference' so normalize the children array
       this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
     }
-
-    const bShowLoading: boolean = this.angularPConnect.getComponentProp(this, 'loadingInfo');
 
     // routingInfo was added as component prop in populateAdditionalProps
     let routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');

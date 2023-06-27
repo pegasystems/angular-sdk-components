@@ -16,6 +16,8 @@ import { SemanticLinkComponent } from './app/_components/field/semantic-link/sem
 import { TextAreaComponent } from './app/_components/field/text-area/text-area.component';
 import { TextContentComponent } from './app/_components/field/text-content/text-content.component';
 import { TextInputComponent } from './app/_components/field/text-input/text-input.component';
+import { ThreeColumnComponent } from './app/_components/template/three-column/three-column.component';
+import { ThreeColumnPageComponent } from './app/_components/template/three-column-page/three-column-page.component';
 import { TimeComponent } from './app/_components/field/time/time.component';
 import { UrlComponent } from './app/_components/field/url/url.component';
 import { UserReferenceComponent } from './app/_components/field/user-reference/user-reference.component';
@@ -157,6 +159,8 @@ const pegaSdkComponentMap = {
   TextArea: TextAreaComponent,
   TextContent: TextContentComponent,
   TextInput: TextInputComponent,
+  ThreeColumn: ThreeColumnComponent,
+  ThreeColumnPage: ThreeColumnPageComponent,
   Time: TimeComponent,
   Todo: TodoComponent,
   TwoColumn: TwoColumnComponent,
