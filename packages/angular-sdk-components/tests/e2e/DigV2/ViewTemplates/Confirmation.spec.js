@@ -1,8 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable no-undef */
 
-/** We're testing the visibility of tabs within the Case Summary area in the Case View here, more tests to be added in the future. */
-
 const { test, expect } = require('@playwright/test');
 const config = require('../../../config');
 const common = require('../../../common');
@@ -13,11 +11,11 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('E2E test', () => {
-  test('should login, create case and run different test cases for Case View', async ({ page }) => {
+  test('should login, create case and run different test cases for Confirmation', async ({ page }) => {
     await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
-    const announcementBanner = page.locator('h2:has-text("Announcements")');
+    const announcementBanner = await page.locator('h2:has-text("Announcements")');
     await expect(announcementBanner).toBeVisible();
 
     /** Testing worklist presence */
@@ -28,16 +26,16 @@ test.describe('E2E test', () => {
     let createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
-    /** Creating a Complex Fields case-type */
+    /** Creating a View Templates case-type */
     const complexFieldsCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("View Templates")');
     await complexFieldsCase.click();
-
-    const caseID = await page.locator('div[id="caseId"]').textContent();
 
     /** Selecting User Reference from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
     await page.locator('mat-option > span:has-text("Confirmation")').click();
+
+    const caseID = await page.locator('div[id="caseId"]').textContent();
  
     await page.locator('button:has-text("submit")').click();
 
@@ -68,11 +66,11 @@ test.describe('E2E test', () => {
      await expect(page.locator('span >> text="John"')).toBeVisible();
      await expect(page.locator('span >> text="Doe"')).toBeVisible();
      await expect(page.locator('span >> text="Cambridge"')).toBeVisible();
-     await expect(page.locator('span >> text="+12015550123"')).toBeVisible();
+     await expect(page.locator('a >> text="+12015550123"')).toBeVisible();
  
      await expect(page.locator('div >> text="Case View"')).toBeVisible();
  
-     await expect(page.locator(`span >> text=${caseID}`)).toBeVisible();
+     await expect(page.locator(`label >> text=${caseID}`)).toBeVisible();
  
      await page.locator('button:has-text("Done")').click();
  
@@ -80,14 +78,11 @@ test.describe('E2E test', () => {
      await expect(page.locator('span >> text="John"')).toBeHidden();
      await expect(page.locator('span >> text="Doe"')).toBeHidden();
      await expect(page.locator('span >> text="Cambridge"')).toBeHidden();
-     await expect(page.locator('span >> text="+12015550123"')).toBeHidden();
+     await expect(page.locator('a >> text="+12015550123"')).toBeHidden();
      
      await expect(page.locator('div >> text="Case View"')).toBeHidden();
  
-     await expect(page.locator(`span >> text=${caseID}`)).toBeHidden();
-
-    /** Submitting the case */
-    await page.locator('button:has-text("submit")').click();
+     await expect(page.locator(`label >> text=${caseID}`)).toBeHidden();
   }, 10000);
 });
 
