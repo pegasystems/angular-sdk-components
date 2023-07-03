@@ -4,9 +4,9 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
-import { AssignmentCardComponent } from '../assignment-card/assignment-card.component';
-import { MultiStepComponent } from '../multi-step/multi-step.component';
+import { ReferenceComponent } from '../Reference/reference.component';
+import { AssignmentCardComponent } from '../AssignmentCard/assignment-card.component';
+import { MultiStepComponent } from '../MultiStep/multi-step.component';
 
 @Component({
   selector: 'app-assignment',

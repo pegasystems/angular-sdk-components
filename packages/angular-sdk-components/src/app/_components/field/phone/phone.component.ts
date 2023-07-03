@@ -7,8 +7,8 @@ import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { TextComponent } from '../Text/text.component';
+import { FieldValueListComponent } from '../../designSystemExtension/FieldValueList/field-value-list.component';
 @Component({
   selector: 'app-phone',
   templateUrl: './phone.component.html',

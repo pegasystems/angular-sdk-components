@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { FieldValueListComponent } from '../../designSystemExtension/FieldValueList/field-value-list.component';
 
 @Component({
   selector: 'app-text',

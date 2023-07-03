@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ViewContainerComponent } from '../../../_components/infra/Containers/view-container/view-container.component';
+import { ViewContainerComponent } from '../../../_components/infra/Containers/ViewContainer/view-container.component';
 
 @Component({
   selector: 'app-mc-main-content',

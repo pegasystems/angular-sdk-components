@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { TextComponent } from '../Text/text.component';
+import { FieldValueListComponent } from '../../designSystemExtension/FieldValueList/field-value-list.component';
 
 @Component({
   selector: 'app-decimal',

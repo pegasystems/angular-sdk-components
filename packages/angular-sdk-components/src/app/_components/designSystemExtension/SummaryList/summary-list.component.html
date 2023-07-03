@@ -1,0 +1,8 @@
+<ng-container *ngFor="let item of arItems$">
+  <app-summary-item
+    [item$]="item"
+    [PCore$]="PCore$"
+    [menuIconOverride$]="menuIconOverride$"
+    [menuIconOverrideAction$]="menuIconOverrideAction$"
+  ></app-summary-item>
+</ng-container>

@@ -6,7 +6,7 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { AuthService } from '../../../_services/auth.service';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
-import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
+import { RootContainerComponent } from '../../../_components/infra/RootContainer/root-container.component';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from '../../../../../sdk-local-component-map';

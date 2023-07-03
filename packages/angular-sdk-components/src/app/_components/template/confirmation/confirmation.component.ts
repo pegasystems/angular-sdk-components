@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { TodoComponent } from '../../widget/todo/todo.component';
-import { getToDoAssignments } from '../../infra/Containers/flow-container/helpers';
-import { DetailsComponent } from '../details/details.component';
+import { TodoComponent } from '../../widget/ToDo/todo.component';
+import { getToDoAssignments } from '../../infra/Containers/FlowContainer/helpers';
+import { DetailsComponent } from '../Details/Details/details.component';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 

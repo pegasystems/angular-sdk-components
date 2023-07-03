@@ -2,8 +2,8 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { RegionComponent } from '../../infra/region/region.component';
-import { ViewComponent } from '../../infra/view/view.component';
+import { RegionComponent } from '../../infra/Region/region.component';
+import { ViewComponent } from '../../infra/View/view.component';
 
 @Component({
   selector: 'app-page',

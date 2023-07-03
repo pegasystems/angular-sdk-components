@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
-import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
+import { RootContainerComponent } from '../../../_components/infra/RootContainer/root-container.component';
 import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component';
 
 declare function loadMashup(targetDom, preLoadComponents);

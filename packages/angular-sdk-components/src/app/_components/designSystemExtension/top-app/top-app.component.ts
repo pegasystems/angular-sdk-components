@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RootContainerComponent } from '../../infra/root-container/root-container.component';
+import { RootContainerComponent } from '../../infra/RootContainer/root-container.component';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';

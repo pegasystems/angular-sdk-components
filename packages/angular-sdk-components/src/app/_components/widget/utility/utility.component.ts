@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
-import { MaterialUtilityComponent } from '../../designSystemExtension/material-utility/material-utility.component';
+import { MaterialUtilityComponent } from '../../designSystemExtension/MaterialUtility/material-utility.component';
 
 @Component({
   selector: 'app-utility',

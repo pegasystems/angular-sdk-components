@@ -5,7 +5,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
+import { MaterialSummaryListComponent } from '../../designSystemExtension/SummaryList/summary-list.component';
 
 @Component({
   selector: 'app-attachment',

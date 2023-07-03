@@ -1,7 +1,7 @@
 import { Component, ComponentRef, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SdkComponentMap } from '../helpers/sdk_component_map';
-import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
+import { ErrorBoundaryComponent } from '../../_components/infra/ErrorBoundary/error-boundary.component';
 
 @Component({
   selector: 'app-component-mapper',
