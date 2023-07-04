@@ -2,7 +2,7 @@
   <div *ngIf="!displayMultiRef">
     <div *ngFor="let kid of childrenToRender">
       <app-component-mapper
-        [type]="kid?.getPConnect().getComponentName()"
+        [name]="kid?.getPConnect().getComponentName()"
         [props]="{
           pConn$: kid.getPConnect(),
           formGroup$: formGroup$

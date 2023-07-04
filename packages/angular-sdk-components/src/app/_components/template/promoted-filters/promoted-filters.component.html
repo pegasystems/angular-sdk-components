@@ -3,7 +3,7 @@
   <div *ngIf="showFilters" class="psdk-grid-filter">
     <div *ngFor="let kid of processedFilters">
       <app-component-mapper
-        [type]="kid.getPConnect().getComponentName()"
+        [name]="kid.getPConnect().getComponentName()"
         [props]="{
           pConn$: kid.getPConnect(),
           formGroup$: formGroup$

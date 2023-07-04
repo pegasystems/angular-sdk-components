@@ -1,7 +1,7 @@
 <div *ngFor="let kid of arChildren$">
   <div *ngIf="kid.getPConnect().getConfigProps().template != ''">
     <app-component-mapper
-      [type]="kid.getPConnect().getConfigProps().template"
+      [name]="kid.getPConnect().getConfigProps().template"
       [props]="{
         pConn$: kid.getPConnect(),
         formGroup$: formGroup$

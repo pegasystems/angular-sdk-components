@@ -1,7 +1,7 @@
 <!-- When adding a component here, add the same component in 'default-form' template as well -->
 <div *ngFor="let kid of arChildren$">
   <app-component-mapper
-    [type]="kid.getPConnect().getComponentName()"
+    [name]="kid.getPConnect().getComponentName()"
     [props]="{
       pConn$: kid.getPConnect(),
       formGroup$: formGroup$

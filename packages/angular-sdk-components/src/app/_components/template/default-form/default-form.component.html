@@ -5,7 +5,7 @@
 <div [className]="divClass$">
   <div *ngFor="let kid of arChildren$" [ngClass]="{ 'grid-column': kid.getPConnect().getComponentName() === 'View' }">
     <app-component-mapper
-      [type]="kid.getPConnect().getComponentName()"
+      [name]="kid.getPConnect().getComponentName()"
       [props]="{
         pConn$: kid.getPConnect(),
         formGroup$: formGroup$

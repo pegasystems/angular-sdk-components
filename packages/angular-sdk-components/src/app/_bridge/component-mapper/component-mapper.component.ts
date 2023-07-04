@@ -16,7 +16,7 @@ export class ComponentMapperComponent implements OnInit {
 
   public componentRef: ComponentRef<any> | undefined;
 
-  @Input() type: string = '';
+  @Input() name: string = '';
   @Input() props: any;
   @Input() errorMsg: string = '';
 
@@ -26,17 +26,17 @@ export class ComponentMapperComponent implements OnInit {
     if (SdkComponentMap) {
       let component: any;
 
-      const theLocalComponent = SdkComponentMap.getLocalComponentMap()[this.type];
+      const theLocalComponent = SdkComponentMap.getLocalComponentMap()[this.name];
       if (theLocalComponent) {
-        console.log(`component_mapper found ${this.type}: Local`);
+        console.log(`component_mapper found ${this.name}: Local`);
         component = theLocalComponent;
       } else {
-        const thePegaProvidedComponent = SdkComponentMap.getPegaProvidedComponentMap()[this.type];
+        const thePegaProvidedComponent = SdkComponentMap.getPegaProvidedComponentMap()[this.name];
         if (thePegaProvidedComponent !== undefined) {
-          console.log(`component_mapper found ${this.type}: Pega-provided`);
+          console.log(`component_mapper found ${this.name}: Pega-provided`);
           component = thePegaProvidedComponent;
         } else {
-          console.error(`component_mapper doesn't have an entry for type ${this.type}`);
+          console.error(`component_mapper doesn't have an entry for type ${this.name}`);
           component = ErrorBoundaryComponent;
         }
       }
@@ -57,7 +57,7 @@ export class ComponentMapperComponent implements OnInit {
     } else {
       // We no longer handle the "old" switch statement that was here in the original packaging.
       //  All components seen here need to be in the SdkComponentMap
-      console.error(`SdkComponentMap not defined! Unable to process component: ${this.type}`);
+      console.error(`SdkComponentMap not defined! Unable to process component: ${this.name}`);
     }
   }
 }

@@ -3,7 +3,7 @@
     <h3 *ngIf="title$ !== ''">{{ title$ }}</h3>
     <div *ngIf="templateName$; else showChildren">
       <app-component-mapper
-        [type]="templateName$"
+        [name]="templateName$"
         [props]="{
           pConn$: createdViewPConn$,
           formGroup$: formGroup$,
@@ -15,7 +15,7 @@
     <ng-template #showChildren>
       <div *ngFor="let kid of arChildren$">
         <app-component-mapper
-          [type]="kid.getPConnect().getComponentName()"
+          [name]="kid.getPConnect().getComponentName()"
           [props]="{
             pConn$: kid.getPConnect(),
             displayOnlyFA$: displayOnlyFA$
