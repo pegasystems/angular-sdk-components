@@ -59,7 +59,7 @@ export class NavigationComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.scservice.getServerConfig().then(() => {
+    this.scservice.readSdkConfig().then(() => {
       this.initialize();
     });
   }
@@ -68,10 +68,7 @@ export class NavigationComponent implements OnInit {
     this.progressSpinnerSubscription.unsubscribe();
     this.resetPConnectSubscription.unsubscribe();
 
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-      'cancelAssignment'
-    );
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
 
@@ -193,10 +190,7 @@ export class NavigationComponent implements OnInit {
     //
     // so don't have multiple subscriptions, unsubscribe first
     //
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-      'cancelAssignment'
-    );
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
 

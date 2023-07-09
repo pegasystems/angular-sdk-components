@@ -11,7 +11,11 @@ export class ServerConfigService {
 
   constructor() {}
 
-  getServerConfig(): Promise<any> {
+  /**
+   * Asynchronous initialization of the config file contents.
+   * @returns Promise of config file fetch
+   */
+  readSdkConfig(): Promise<any> {
     if (Object.keys(this.sdkConfig).length === 0) {
       return fetch('./sdk-config.json')
         .then((response) => {
@@ -47,40 +51,46 @@ export class ServerConfigService {
     }
     console.log(`Using sdkContentServerUrl: ${this.sdkConfig['serverConfig'].sdkContentServerUrl}`);
 
-    if (!oServerConfig.infinityRestServerUrl.endsWith('/')) {
-      oServerConfig.infinityRestServerUrl = `${oServerConfig.infinityRestServerUrl}/`;
+    // Don't want a trailing slash for infinityRestServerUrl
+    if (oServerConfig.infinityRestServerUrl.endsWith('/')) {
+      oServerConfig.infinityRestServerUrl = oServerConfig.infinityRestServerUrl.slice(0, -1);
     }
 
     // Specify our own internal list of well known portals to exclude (if one not specified)
     if (!oServerConfig.excludePortals) {
-      oServerConfig.excludePortals = [
-        'pxExpress',
-        'Developer',
-        'pxPredictionStudio',
-        'pxAdminStudio',
-        'pyCaseWorker',
-        'pyCaseManager7'
-      ];
+      oServerConfig.excludePortals = ['pxExpress', 'Developer', 'pxPredictionStudio', 'pxAdminStudio', 'pyCaseWorker', 'pyCaseManager7'];
       console.warn(
         `No exludePortals entry found within serverConfig section of sdk-config.json.  Using the following default list: ["pxExpress", "Developer", "pxPredictionStudio", "pxAdminStudio", "pyCaseWorker", "pyCaseManager7"]`
       );
     }
   }
 
+  /**
+   *
+   * @returns the sdk-config JSON object
+   */
   async getSdkConfig(): Promise<any> {
     if (Object.keys(this.sdkConfig).length === 0) {
-      const config = await this.getServerConfig();
+      await this.readSdkConfig();
     }
     return this.sdkConfig;
   }
 
-  getSdkConfigAuth(): any {
+  /**
+   *
+   * @returns the authConfig block in the SDK Config object
+   */
+  async getSdkConfigAuth(): Promise<any> {
     if (Object.keys(this.sdkConfig).length === 0) {
-      const config = this.getSdkConfig();
+      await this.getSdkConfig();
     }
     return this.sdkConfig['authConfig'];
   }
 
+  /**
+   *
+   * @returns the serverConfig bloc from the sdk-config.json file
+   */
   getSdkConfigServer(): any {
     if (Object.keys(this.sdkConfig).length === 0) {
       const config = this.getSdkConfig();
@@ -88,24 +98,16 @@ export class ServerConfigService {
     return this.sdkConfig['serverConfig'];
   }
 
+  /**
+   * @param {String} key the key to be inserted/updated in serverConfig
+   * @param {String} value the value to be assigned to the given key
+   */
   setSdkConfigServer(key: string, value: string) {
     this.sdkConfig['serverConfig'][key] = value;
   }
 
   getBaseUrl(): string {
     return this.getSdkConfigServer().infinityRestServerUrl;
-  }
-
-  hasDefinedAppPortal(): boolean {
-    if (this.getAppPortal() !== '' && this.getAppPortal() !== undefined) {
-      return true;
-    }
-
-    return false;
-  }
-
-  getAppPortal(): string {
-    return this.getSdkConfigServer().appPortal;
   }
 
   /**
@@ -143,9 +145,7 @@ export class ServerConfigService {
           } else {
             if (response.status === 401) {
               // Might be either a real token expiration or revoke, but more likely that the "api" service package is misconfigured
-              throw new Error(
-                `Attempt to access ${dataPageName} failed.  The "api" service package is likely not configured to use "OAuth 2.0"`
-              );
+              throw new Error(`Attempt to access ${dataPageName} failed.  The "api" service package is likely not configured to use "OAuth 2.0"`);
             }
             throw new Error(`HTTP Error: ${response.status}`);
           }
