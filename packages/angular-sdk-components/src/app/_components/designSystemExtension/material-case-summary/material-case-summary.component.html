@@ -31,18 +31,16 @@
         {{ field.config.displayLabel }}
       </dt>
       <dd class="psdk-csf-secondary-field-data">
-        <app-operator
+        <component-mapper
           *ngIf="field.config.label.toLowerCase() == 'create operator'"
-          [name$]="field.config.createOperator.userName"
-          [date$]="field.config.updateDateTime"
-          [id$]="field.config.createOperator.userId"
-        ></app-operator>
-        <app-operator
+          name="Operator"
+          [props]="{ name$: field.config.createOperator.userName, date$: field.config.updateDateTime, id$: field.config.createOperator.userId }"
+        ></component-mapper>
+        <component-mapper
           *ngIf="field.config.label.toLowerCase() == 'update operator'"
-          [name$]="field.config.updateOperator.userName"
-          [date$]="field.config.updateDateTime"
-          [id$]="field.config.updateOperator.userId"
-        ></app-operator>
+          name="Operator"
+          [props]="{ name$: field.config.updateOperator.userName, date$: field.config.updateDateTime, id$: field.config.updateOperator.userId }"
+        ></component-mapper>
       </dd>
     </div>
   </dl>

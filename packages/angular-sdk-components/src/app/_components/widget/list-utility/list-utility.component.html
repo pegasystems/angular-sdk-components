@@ -23,7 +23,7 @@
     <mat-spinner *ngIf="bLoading$" class="progress-spinner" diameter="50"></mat-spinner>
     <div *ngIf="count$ == 0" class="message">{{ noItemsMessage$ }}</div>
     <div *ngIf="count$ > 0" class="psdk-utility-items">
-      <app-material-summary-list [arItems$]="arItems$"></app-material-summary-list>
+      <component-mapper name="SummaryList" [props]="{ arItems$: arItems$ }"></component-mapper>
     </div>
     <div class="psdk-utility-view-all">
       <button *ngIf="count$ > 3" mat-button color="primary" (click)="onViewAll$.onClick()">View all</button>

@@ -20,11 +20,10 @@
         <button mat-stroked-button color="primary" (click)="uploader.click()">Upload file(s)</button>
       </div>
 
-      <app-material-summary-list
-        [arItems$]="arFileList$"
-        [menuIconOverride$]="'trash'"
-        [menuIconOverrideAction$]="removeFileFromList$"
-      ></app-material-summary-list>
+      <component-mapper
+        name="SummaryList"
+        [props]="{ arItems$: arFileList$, menuIconOverride$: 'trash', menuIconOverrideAction$: removeFileFromList$ }"
+      ></component-mapper>
     </div>
 
     <app-action-buttons
@@ -61,11 +60,10 @@
           </div>
         </div>
 
-        <app-material-summary-list
-          [arItems$]="arLinksList$"
-          [menuIconOverride$]="'trash'"
-          [menuIconOverrideAction$]="removeLinksFromList$"
-        ></app-material-summary-list>
+        <component-mapper
+          name="SummaryList"
+          [props]="{ arItems$: arLinksList$, menuIconOverride$: 'trash', menuIconOverrideAction$: removeLinksFromList$ }"
+        ></component-mapper>
       </div>
     </div>
 
@@ -88,7 +86,7 @@
       </div>
     </div>
     <div class="psdk-view-all-body">
-      <app-material-summary-list [arItems$]="va_arItems$"></app-material-summary-list>
+      <component-mapper name="SummaryList" [props]="{ arItems$: va_arItems$ }"></component-mapper>
     </div>
   </div>
 </div>

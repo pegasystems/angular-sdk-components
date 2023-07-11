@@ -1,13 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ThreeColumnComponent } from '../three-column/three-column.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-three-column-page',
   templateUrl: './three-column-page.component.html',
   styleUrls: ['./three-column-page.component.scss'],
   standalone: true,
-  imports: [ThreeColumnComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ThreeColumnPageComponent implements OnInit {
   @Input() pConn$: any;

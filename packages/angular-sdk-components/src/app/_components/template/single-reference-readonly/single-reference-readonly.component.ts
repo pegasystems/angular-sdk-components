@@ -1,13 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { SemanticLinkComponent } from '../../field/semantic-link/semantic-link.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-single-reference-readonly',
   templateUrl: './single-reference-readonly.component.html',
   styleUrls: ['./single-reference-readonly.component.scss'],
   standalone: true,
-  imports: [SemanticLinkComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class SingleReferenceReadonlyComponent implements OnInit {
   @Input() pConn$: any;

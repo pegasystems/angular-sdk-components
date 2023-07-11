@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-app-announcement',
+  selector: 'app-announcement',
   templateUrl: './app-announcement.component.html',
   styleUrls: ['./app-announcement.component.scss'],
   standalone: true,

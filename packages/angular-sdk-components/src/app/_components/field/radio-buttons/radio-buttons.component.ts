@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
@@ -8,7 +8,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-radio-buttons',
@@ -16,7 +16,15 @@ import { FieldValueListComponent } from '../../template/field-value-list/field-v
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, TextComponent, FieldValueListComponent]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    TextComponent,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class RadioButtonsComponent implements OnInit {
   @Input() pConn$: any;
@@ -41,11 +49,7 @@ export class RadioButtonsComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service

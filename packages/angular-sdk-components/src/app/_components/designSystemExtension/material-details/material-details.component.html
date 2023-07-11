@@ -13,28 +13,12 @@
       <div class="psdk-details-fields-label">
         {{ field.config.label }}
       </div>
-      <div
-        [ngSwitch]="field.type.toLowerCase()"
-        class="psdk-csf-primary-field-value"
-      >
-        <span *ngSwitchCase="'textinput'" class="psdk-details-text-style-hf">{{
-          _getValue(field.config.value)
-        }}</span>
-        <span *ngSwitchCase="'status'" class="psdk-details-status-style-hf">{{
-          _getValue(field.config.value)
-        }}</span>
-        <a
-          *ngSwitchCase="'phone'"
-          as="a"
-          href="tel: {{ field.config.value }}"
-          >{{ _getValue(field.config.value) }}</a
-        >
-        <a *ngSwitchCase="'email'" href="mailto: {{ field.config.value }}">{{
-          _getValue(field.config.value)
-        }}</a>
-        <span *ngSwitchCase="'date'" class="psdk-details-text-style-hf">{{
-          _formatDate(field.config.value, field.type)
-        }}</span>
+      <div [ngSwitch]="field.type.toLowerCase()" class="psdk-csf-primary-field-value">
+        <span *ngSwitchCase="'textinput'" class="psdk-details-text-style-hf">{{ _getValue(field.config.value) }}</span>
+        <span *ngSwitchCase="'status'" class="psdk-details-status-style-hf">{{ _getValue(field.config.value) }}</span>
+        <a *ngSwitchCase="'phone'" as="a" href="tel: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
+        <a *ngSwitchCase="'email'" href="mailto: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
+        <span *ngSwitchCase="'date'" class="psdk-details-text-style-hf">{{ _formatDate(field.config.value, field.type) }}</span>
         <span *ngSwitchCase="'caseoperator'"></span>
         <span *ngSwitchDefault>{{ _getValue(field.config.value) }}</span>
       </div>
@@ -49,17 +33,8 @@
       'psdk-grid-filter-narrow-wide': this.layout === 'narrow-wide'
     }"
   >
-    <app-material-details-fields
-      *ngIf="arFields$"
-      [arFields$]="arFields$"
-    ></app-material-details-fields>
-    <app-material-details-fields
-      *ngIf="arFields2$"
-      [arFields$]="arFields2$"
-    ></app-material-details-fields>
-    <app-material-details-fields
-      *ngIf="arFields3$"
-      [arFields$]="arFields3$"
-    ></app-material-details-fields>
+    <component-mapper *ngIf="arFields$" name="DetailsFields" [props]="{ arFields$: arFields$ }"></component-mapper>
+    <component-mapper *ngIf="arFields2$" name="DetailsFields" [props]="{ arFields$: arFields2$ }"></component-mapper>
+    <component-mapper *ngIf="arFields3$" name="DetailsFields" [props]="{ arFields$: arFields3$ }"></component-mapper>
   </div>
 </div>

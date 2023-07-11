@@ -1,19 +1,22 @@
 <div *ngIf="showSimpleTableManual">
-  <app-simple-table [formGroup$]="formGroup$" [pConn$]="pConn$"></app-simple-table>
+  <component-mapper name="SimpleTable" [props]="{ formGroup$: formGroup$, pConn$: pConn$ }"></component-mapper>
 </div>
 <div *ngIf="!showSimpleTableManual">
   <div *ngIf="isSearchable; else listView">
-    <app-promoted-filters
-      [formGroup$]="formGroup$"
-      [pConn$]="pConn$"
-      [viewName]="viewName"
-      [filters]="filters"
-      [listViewProps]="listViewProps"
-      [pageClass]="pageClass"
-      [parameters]="parameters"
-    ></app-promoted-filters>
+    <component-mapper
+      name="PromotedFilters"
+      [props]="{
+        formGroup$: formGroup$,
+        pConn$: pConn$,
+        viewName: viewName,
+        filters: filters,
+        listViewProps: listViewProps,
+        pageClass: pageClass,
+        parameters: parameters
+      }"
+    ></component-mapper>
   </div>
   <ng-template #listView>
-    <app-list-view [pConn$]="pConn$"></app-list-view>
+    <component-mapper name="ListView" [props]="{ pConn$: pConn$ }"></component-mapper>
   </ng-template>
 </div>

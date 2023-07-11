@@ -1,14 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { TwoColumnComponent } from '../two-column/two-column.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-two-column-page',
   templateUrl: './two-column-page.component.html',
   styleUrls: ['./two-column-page.component.scss'],
   standalone: true,
-  imports: [TwoColumnComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnPageComponent implements OnInit {
   @Input() pConn$: any;

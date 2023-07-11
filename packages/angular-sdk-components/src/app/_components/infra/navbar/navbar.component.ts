@@ -114,10 +114,7 @@ export class NavbarComponent implements OnInit {
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
       for (let page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(
-          this.navPages$[page]['pxPageViewIcon'],
-          this.utils.getSDKStaticContentUrl()
-        );
+        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
       }
 
       this.actionsAPI = this.pConn$.getActionsApi();
@@ -156,20 +153,14 @@ export class NavbarComponent implements OnInit {
   }
 
   navPanelCreateCaseType(sCaseType: string, sFlowType: string) {
+    this.psService.sendMessage(true);
+    this.navPanelCreateButtonClick();
+
     const actionInfo = {
       containerName: 'primary',
       flowType: sFlowType ? sFlowType : 'pyStartCase'
     };
-
-    this.psService.sendMessage(true);
-
     this.createWork(sCaseType, actionInfo);
-
-    let timer = interval(100).subscribe(() => {
-      this.navPanelCreateButtonClick();
-
-      timer.unsubscribe();
-    });
   }
 
   navPanelLogoutClick() {

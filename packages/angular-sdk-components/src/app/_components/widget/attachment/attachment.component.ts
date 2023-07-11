@@ -1,18 +1,18 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-attachment',
   templateUrl: './attachment.component.html',
   styleUrls: ['./attachment.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, MaterialSummaryListComponent]
+  imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AttachmentComponent implements OnInit {
   @Input() pConn$: any;
@@ -104,9 +104,7 @@ export class AttachmentComponent implements OnInit {
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
-    [required, disabled] = [required, disabled].map(
-      (prop) => prop === true || (typeof prop === 'string' && prop === 'true')
-    );
+    [required, disabled] = [required, disabled].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));
 
     this.att_categoryName = '';
     if (value && value.pyCategoryName) {
@@ -204,9 +202,7 @@ export class AttachmentComponent implements OnInit {
       }
     } else {
       const attachmentsList = [];
-      const currentAttachmentList = this.getCurrentAttachmentsList(this.pConn$.getContextName()).filter(
-        (f) => f.label !== this.att_valueRef
-      );
+      const currentAttachmentList = this.getCurrentAttachmentsList(this.pConn$.getContextName()).filter((f) => f.label !== this.att_valueRef);
       if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0) {
         const deletedFile = {
           type: 'File',
@@ -217,25 +213,15 @@ export class AttachmentComponent implements OnInit {
           }
         };
         // updating the redux store to help form-handler in passing the data to delete the file from server
-        this.PCore$.getStateUtils().updateState(
-          this.pConn$.getContextName(),
-          'attachmentsList',
-          [...currentAttachmentList, deletedFile],
-          {
-            pageReference: 'context_data',
-            isArrayDeepMerge: false
-          }
-        );
+        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), 'attachmentsList', [...currentAttachmentList, deletedFile], {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        });
       } else {
-        this.PCore$.getStateUtils().updateState(
-          this.pConn$.getContextName(),
-          'attachmentsList',
-          [...currentAttachmentList, ...attachmentsList],
-          {
-            pageReference: 'context_data',
-            isArrayDeepMerge: false
-          }
-        );
+        this.PCore$.getStateUtils().updateState(this.pConn$.getContextName(), 'attachmentsList', [...currentAttachmentList, ...attachmentsList], {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        });
       }
       if (fileIndex > -1) {
         this.arFileList$.splice(fileIndex, 1);

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ListViewComponent } from '../list-view/list-view.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
@@ -28,7 +27,7 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   templateUrl: './promoted-filters.component.html',
   styleUrls: ['./promoted-filters.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, ListViewComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PromotedFiltersComponent implements OnInit {
   @Input() viewName;
@@ -87,9 +86,7 @@ export class PromotedFiltersComponent implements OnInit {
     });
 
     const filtersWithClassID = { ...this.filtersProperties, classID: this.pageClass };
-    this.transientItemID = this.pConn$
-      .getContainerManager()
-      .addTransientItem({ id: this.viewName, data: filtersWithClassID });
+    this.transientItemID = this.pConn$.getContainerManager().addTransientItem({ id: this.viewName, data: filtersWithClassID });
     this.processedFilters = [];
     this.filters.map((filter) => {
       const filterClone = { ...filter };

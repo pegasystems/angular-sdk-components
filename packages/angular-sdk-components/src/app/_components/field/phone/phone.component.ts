@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,13 +8,20 @@ import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
 import { TextComponent } from '../text/text.component';
-import { FieldValueListComponent } from '../../template/field-value-list/field-value-list.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 @Component({
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, TextComponent, FieldValueListComponent]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    NgxMatIntlTelInputComponent,
+    TextComponent,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class PhoneComponent implements OnInit {
   @Input() pConn$: any;
@@ -44,11 +51,7 @@ export class PhoneComponent implements OnInit {
     phone: new FormControl(undefined)
   });
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service

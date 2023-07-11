@@ -1,12 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ListViewComponent } from '../list-view/list-view.component';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-list-page',
   templateUrl: './list-page.component.html',
   styleUrls: ['./list-page.component.scss'],
   standalone: true,
-  imports: [ListViewComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ListPageComponent implements OnInit {
   @Input() pConn$: any;

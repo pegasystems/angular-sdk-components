@@ -1,16 +1,16 @@
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { DeferLoadComponent } from '../../infra/defer-load/defer-load.component';
 import { RegionComponent } from '../../infra/region/region.component';
 import { MaterialVerticalTabsComponent } from '../../designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
-import { CaseSummaryComponent } from '../case-summary/case-summary.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-case-view',
@@ -23,9 +23,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
-    CaseSummaryComponent,
     MaterialVerticalTabsComponent,
     DeferLoadComponent,
+    ComponentMapperComponent,
     forwardRef(() => RegionComponent)
   ]
 })
@@ -59,11 +59,7 @@ export class CaseViewComponent implements OnInit {
   currentCaseID: string = '';
   editAction: boolean;
 
-  constructor(
-    private cdRef: ChangeDetectorRef,
-    private angularPConnect: AngularPConnectService,
-    private utils: Utils
-  ) {}
+  constructor(private cdRef: ChangeDetectorRef, private angularPConnect: AngularPConnectService, private utils: Utils) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {

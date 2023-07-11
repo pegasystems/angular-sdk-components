@@ -2,14 +2,11 @@
   <div>{{ listViewProps.title }}</div>
   <div *ngIf="showFilters" class="psdk-grid-filter">
     <div *ngFor="let kid of processedFilters">
-      <app-component-mapper
+      <component-mapper
         [name]="kid.getPConnect().getComponentName()"
-        [props]="{
-          pConn$: kid.getPConnect(),
-          formGroup$: formGroup$
-        }"
+        [props]="{ pConn$: kid.getPConnect(), formGroup$: formGroup$ }"
         errorMsg="Promoted filters wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
-      ></app-component-mapper>
+      ></component-mapper>
     </div>
   </div>
 
@@ -17,19 +14,11 @@
     <button key="1" type="button" (click)="clearFilterData()" data-testid="clear" mat-raised-button color="secondary">
       {{ localizedVal('Clear', localeCategory) }}
     </button>
-    <button
-      style="float: 'right'"
-      key="2"
-      type="submit"
-      (click)="getFilterData()"
-      data-testid="search"
-      mat-raised-button
-      color="primary"
-    >
+    <button style="float: 'right'" key="2" type="submit" (click)="getFilterData()" data-testid="search" mat-raised-button color="primary">
       {{ localizedVal('Search', localeCategory) }}
     </button>
   </div>
   <div *ngIf="showTable">
-    <app-list-view [pConn$]="pConn$" [payload]="payload"></app-list-view>
+    <component-mapper name="ListView" [props]="{ pConn$: pConn$, payload: payload }"></component-mapper>
   </div>
 </div>

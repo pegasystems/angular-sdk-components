@@ -5,7 +5,7 @@ import { RootContainerComponent } from '../../infra/root-container/root-containe
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/sdk-local-component-map';
+import localSdkComponentMap from '../../../../../sdk-local-component-map';
 
 @Component({
   selector: 'app-top-app',

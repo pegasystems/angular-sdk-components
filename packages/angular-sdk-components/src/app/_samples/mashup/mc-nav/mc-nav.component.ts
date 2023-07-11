@@ -18,7 +18,7 @@ import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainScreenComponent } from '../main-screen/main-screen.component';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/sdk-local-component-map';
+import localSdkComponentMap from '../../../../../sdk-local-component-map';
 
 declare global {
   interface Window {

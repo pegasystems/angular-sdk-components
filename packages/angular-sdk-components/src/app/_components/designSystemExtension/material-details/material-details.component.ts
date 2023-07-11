@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
-import { MaterialDetailsFieldsComponent } from '../material-details-fields/material-details-fields.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-material-details',
   templateUrl: './material-details.component.html',
   styleUrls: ['./material-details.component.scss'],
   standalone: true,
-  imports: [CommonModule, MaterialDetailsFieldsComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialDetailsComponent implements OnInit {
   constructor(private utils: Utils) {}

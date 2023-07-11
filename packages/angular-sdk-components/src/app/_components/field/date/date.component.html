@@ -1,5 +1,5 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <app-field-value-list [label$]="label$" [value$]="value$" [displayMode$]="displayMode$"></app-field-value-list>
+  <component-mapper name="FieldValueList" [props]="{ label$: label$, value$: value$, displayMode$: displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">

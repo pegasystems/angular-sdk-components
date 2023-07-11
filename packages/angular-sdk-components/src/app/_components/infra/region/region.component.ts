@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ReferenceComponent } from '../reference/reference.component';
@@ -9,7 +9,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './region.component.html',
   styleUrls: ['./region.component.scss'],
   standalone: true,
-  imports: [CommonModule, ComponentMapperComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RegionComponent implements OnInit {
   @Input() pConn$: any;

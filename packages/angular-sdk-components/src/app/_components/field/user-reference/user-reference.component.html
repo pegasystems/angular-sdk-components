@@ -1,7 +1,7 @@
 <div class="psdk-user-reference">
   <div *ngIf="type === 'operator'">
     {{ label$ }}
-    <app-operator [name$]="userName$" [label$]="label$" [id$]="userID$"></app-operator>
+    <component-mapper name="Operator" [props]="{ name$: userName$, label$: label$, id$: userID$ }"></component-mapper>
   </div>
   <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
     <mat-form-field class="psdk-full-width">

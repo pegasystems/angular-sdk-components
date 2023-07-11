@@ -35,7 +35,7 @@
     <div class="psdk-case-view-divider"></div>
 
     <div class="psdk-case-view-summary">
-      <app-case-summary [pConn$]="caseSummaryPConn$"></app-case-summary>
+      <component-mapper name="CaseSummary" [props]="{ pConn$: caseSummaryPConn$ }"></component-mapper>
     </div>
 
     <app-material-vertical-tabs *ngIf="caseTabs$.length > 1" [tabConfig$]="caseTabs$" (TabClick)="onTabClick($event)"></app-material-vertical-tabs>

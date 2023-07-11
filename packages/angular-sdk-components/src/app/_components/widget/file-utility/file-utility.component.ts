@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -7,8 +7,8 @@ import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
-import { MaterialSummaryListComponent } from '../../designSystemExtension/material-summary-list/material-summary-list.component';
 import { ListUtilityComponent } from '../list-utility/list-utility.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-file-utility',
@@ -19,10 +19,10 @@ import { ListUtilityComponent } from '../list-utility/list-utility.component';
     CommonModule,
     ListUtilityComponent,
     MatButtonModule,
-    MaterialSummaryListComponent,
     ActionButtonsComponent,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class FileUtilityComponent implements OnInit {
@@ -201,9 +201,7 @@ export class FileUtilityComponent implements OnInit {
     attsFromResp = attsFromResp.map((respAtt) => {
       const updatedAtt = {
         ...respAtt,
-        meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${
-          respAtt.createdBy
-        }`
+        meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${respAtt.createdBy}`
       };
       if (updatedAtt.type === 'FILE') {
         updatedAtt.nameWithExt = updatedAtt.fileName;

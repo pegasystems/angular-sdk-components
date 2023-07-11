@@ -1,14 +1,10 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <app-field-value-list
-    [label$]="label$"
-    [value$]="value$"
-    [displayMode$]="displayMode$"
-  ></app-field-value-list>
+  <component-mapper name="FieldValueList" [props]="{ label$: label$, value$: value$, displayMode$: displayMode$ }"></component-mapper>
 </div>
 
 <ng-template #noDisplayMode>
   <div *ngIf="label$ !== undefined" class="psdk-grid-filter">
     <div class="psdk-grid-label">{{ label$ }}</div>
-    <div class="psdk-value">{{ value$ || "---" }}</div>
+    <div class="psdk-value">{{ value$ || '---' }}</div>
   </div>
 </ng-template>

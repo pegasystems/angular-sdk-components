@@ -28,6 +28,7 @@ import { ActionButtonsComponent } from './app/_components/infra/action-buttons/a
 import { AssignmentCardComponent } from './app/_components/infra/assignment-card/assignment-card.component';
 import { AssignmentComponent } from './app/_components/infra/assignment/assignment.component';
 import { DeferLoadComponent } from './app/_components/infra/defer-load/defer-load.component';
+import { ErrorBoundaryComponent } from './app/_components/infra/error-boundary/error-boundary.component';
 import { MultiStepComponent } from './app/_components/infra/multi-step/multi-step.component';
 import { NavbarComponent } from './app/_components/infra/navbar/navbar.component';
 import { ReferenceComponent } from './app/_components/infra/reference/reference.component';
@@ -39,13 +40,18 @@ import { ViewComponent } from './app/_components/infra/view/view.component';
 import { AppShellComponent } from './app/_components/template/app-shell/app-shell.component';
 import { CaseSummaryComponent } from './app/_components/template/case-summary/case-summary.component';
 import { CaseViewComponent } from './app/_components/template/case-view/case-view.component';
+import { ConfirmationComponent } from './app/_components/template/confirmation/confirmation.component';
 import { DataReferenceComponent } from './app/_components/template/data-reference/data-reference.component';
 import { DefaultFormComponent } from './app/_components/template/default-form/default-form.component';
+import { DetailsComponent } from './app/_components/template/details/details.component';
+import { DetailsNarrowWideComponent } from './app/_components/template/details-narrow-wide/details-narrow-wide.component';
 import { DetailsThreeColumnComponent } from './app/_components/template/details-three-column/details-three-column.component';
 import { DetailsTwoColumnComponent } from './app/_components/template/details-two-column/details-two-column.component';
+import { DetailsWideNarrowComponent } from './app/_components/template/details-wide-narrow/details-wide-narrow.component';
 import { DetailsSubTabsComponent } from './app/_components/template/details-sub-tabs/details-sub-tabs.component';
-import { DetailsComponent } from './app/_components/template/details/details.component';
+import { FieldGroupListComponent } from './app/_components/template/field-group-list/field-group-list.component';
 import { FieldGroupTemplateComponent } from './app/_components/template/field-group-template/field-group-template.component';
+import { FieldValueListComponent } from './app/_components/template/field-value-list/field-value-list.component';
 import { ListPageComponent } from './app/_components/template/list-page/list-page.component';
 import { ListViewComponent } from './app/_components/template/list-view/list-view.component';
 import { MultiReferenceReadonlyComponent } from './app/_components/template/multi-reference-readonly/multi-reference-readonly.component';
@@ -69,6 +75,7 @@ import { AttachmentComponent } from './app/_components/widget/attachment/attachm
 import { CaseHistoryComponent } from './app/_components/widget/case-history/case-history.component';
 import { FileUtilityComponent } from './app/_components/widget/file-utility/file-utility.component';
 import { TodoComponent } from './app/_components/widget/todo/todo.component';
+import { MaterialDetailsFieldsComponent } from './app/_components/designSystemExtension/material-details-fields/material-details-fields.component';
 import { MaterialSummaryItemComponent } from './app/_components/designSystemExtension/material-summary-item/material-summary-item.component';
 import { MaterialSummaryListComponent } from './app/_components/designSystemExtension/material-summary-list/material-summary-list.component';
 import { MaterialVerticalTabsComponent } from './app/_components/designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
@@ -102,7 +109,7 @@ const pegaSdkComponentMap = {
   CaseView: CaseViewComponent,
   //   'CaseViewActionsMenu': CaseViewActionsMenu,
   Checkbox: CheckBoxComponent,
-  //   'Confirmation': Confirmation,
+  Confirmation: ConfirmationComponent,
   Currency: CurrencyComponent,
   //   'DashboardFilter': DashboardFilter,
   DataReference: DataReferenceComponent,
@@ -112,13 +119,16 @@ const pegaSdkComponentMap = {
   DefaultForm: DefaultFormComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
+  DetailsFields: MaterialDetailsFieldsComponent,
   DetailsSubTabs: DetailsSubTabsComponent,
   DetailsThreeColumn: DetailsThreeColumnComponent,
   DetailsTwoColumn: DetailsTwoColumnComponent,
   Dropdown: DropdownComponent,
   Email: EmailComponent,
-  //   'ErrorBoundary': ErrorBoundary,
+  ErrorBoundary: ErrorBoundaryComponent,
+  FieldGroupList: FieldGroupListComponent,
   FieldGroupTemplate: FieldGroupTemplateComponent,
+  FieldValueList: FieldValueListComponent,
   FileUtility: FileUtilityComponent,
   FlowContainer: FlowContainerComponent,
   //   'Followers': Followers,
@@ -132,7 +142,7 @@ const pegaSdkComponentMap = {
   MultiReferenceReadOnly: MultiReferenceReadonlyComponent,
   MultiStep: MultiStepComponent,
   //   'NarrowWide': NarrowWideFormComponent,
-  //   'NarrowWideDetails': NarrowWideDetails,
+  NarrowWideDetails: DetailsNarrowWideComponent,
   NarrowWideForm: NarrowWideFormComponent,
   //   'NarrowWidePage': NarrowWidePage,
   NavBar: NavbarComponent,
@@ -156,10 +166,9 @@ const pegaSdkComponentMap = {
   SimpleTableSelect: SimpleTableSelectComponent,
   SingleReferenceReadOnly: SingleReferenceReadonlyComponent,
   Stages: StagesComponent,
-  //   'SubTabs': SubTabs,
+  SubTabs: SubTabsComponent,
   SummaryItem: MaterialSummaryItemComponent,
   SummaryList: MaterialSummaryListComponent,
-  SubTabs: SubTabsComponent,
   TextArea: TextAreaComponent,
   TextContent: TextContentComponent,
   TextInput: TextInputComponent,
@@ -176,7 +185,7 @@ const pegaSdkComponentMap = {
   View: ViewComponent,
   ViewContainer: ViewContainerComponent,
   //   'WideNarrow': WideNarrow,
-  //   'WideNarrowDetails': WideNarrowDetails,
+  WideNarrowDetails: DetailsWideNarrowComponent,
   WideNarrowForm: WideNarrowFormComponent,
   WideNarrowPage: WideNarrowPageComponent
   //   'WssNavBar': WssNavBar,

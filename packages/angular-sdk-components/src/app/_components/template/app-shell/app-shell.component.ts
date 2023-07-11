@@ -5,14 +5,14 @@ import { Subscription } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ViewContainerComponent } from '../../infra/Containers/view-container/view-container.component';
-import { NavbarComponent } from '../../infra/navbar/navbar.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-app-shell',
   templateUrl: './app-shell.component.html',
   styleUrls: ['./app-shell.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatSnackBarModule, NavbarComponent, forwardRef(() => ViewContainerComponent)]
+  imports: [CommonModule, MatSnackBarModule, ComponentMapperComponent, forwardRef(() => ViewContainerComponent)]
 })
 export class AppShellComponent implements OnInit {
   @Input() pConn$: any;

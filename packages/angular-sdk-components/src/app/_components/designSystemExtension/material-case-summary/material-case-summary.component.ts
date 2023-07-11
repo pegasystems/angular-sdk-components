@@ -1,14 +1,14 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
-import { OperatorComponent } from '../operator/operator.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-material-case-summary',
   templateUrl: './material-case-summary.component.html',
   styleUrls: ['./material-case-summary.component.scss'],
   standalone: true,
-  imports: [CommonModule, OperatorComponent]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialCaseSummaryComponent implements OnInit {
   @Input() status$: string;

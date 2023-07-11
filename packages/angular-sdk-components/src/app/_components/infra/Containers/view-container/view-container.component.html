@@ -2,7 +2,7 @@
   <div *ngIf="isViewContainer$; else isReference">
     <h3 *ngIf="title$ !== ''">{{ title$ }}</h3>
     <div *ngIf="templateName$; else showChildren">
-      <app-component-mapper
+      <component-mapper
         [name]="templateName$"
         [props]="{
           pConn$: createdViewPConn$,
@@ -10,18 +10,18 @@
           displayOnlyFA$: displayOnlyFA$
         }"
         errorMsg="View Container missing Template {{ templateName$ }}"
-      ></app-component-mapper>
+      ></component-mapper>
     </div>
     <ng-template #showChildren>
       <div *ngFor="let kid of arChildren$">
-        <app-component-mapper
+        <component-mapper
           [name]="kid.getPConnect().getComponentName()"
           [props]="{
             pConn$: kid.getPConnect(),
             displayOnlyFA$: displayOnlyFA$
           }"
           errorMsg="ViewContainer Missing (no template): {{ kid.getPConnect().getComponentName() }}"
-        ></app-component-mapper>
+        ></component-mapper>
       </div>
     </ng-template>
   </div>

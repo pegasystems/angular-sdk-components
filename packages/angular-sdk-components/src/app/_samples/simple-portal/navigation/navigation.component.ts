@@ -15,7 +15,7 @@ import { MainContentComponent } from '../main-content/main-content.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/sdk-local-component-map';
+import localSdkComponentMap from '../../../../../sdk-local-component-map';
 
 declare global {
   interface Window {

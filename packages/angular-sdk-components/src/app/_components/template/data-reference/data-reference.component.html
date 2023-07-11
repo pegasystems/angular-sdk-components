@@ -1,19 +1,16 @@
 <div *ngIf="childrenToRender && childrenToRender.length > 0">
   <div *ngIf="!displayMultiRef">
     <div *ngFor="let kid of childrenToRender">
-      <app-component-mapper
+      <component-mapper
         [name]="kid?.getPConnect().getComponentName()"
-        [props]="{
-          pConn$: kid.getPConnect(),
-          formGroup$: formGroup$
-        }"
-      ></app-component-mapper>
+        [props]="{ pConn$: kid.getPConnect(), formGroup$: formGroup$ }"
+      ></component-mapper>
     </div>
   </div>
   <div *ngIf="displaySingleRef">
-    <app-single-reference-readonly [pConn$]="firstChildPConnect()"></app-single-reference-readonly>
+    <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$: firstChildPConnect() }"></component-mapper>
   </div>
   <div *ngIf="displayMultiRef">
-    <app-multi-reference-readonly [pConn$]="firstChildPConnect()"></app-multi-reference-readonly>
+    <component-mapper name="MultiReferenceReadOnly" [props]="{ pConn$: firstChildPConnect() }"></component-mapper>
   </div>
 </div>
