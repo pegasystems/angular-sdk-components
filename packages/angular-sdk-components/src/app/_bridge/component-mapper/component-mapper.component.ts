@@ -30,7 +30,7 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const { previousValue, currentValue } = changes.props;
     if (previousValue && !isEqual(previousValue, currentValue)) {
-      this.loadComponent();
+      this.bindInputProps();
     }
   }
 

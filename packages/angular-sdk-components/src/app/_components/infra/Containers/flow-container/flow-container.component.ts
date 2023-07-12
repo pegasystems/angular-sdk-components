@@ -311,7 +311,7 @@ export class FlowContainerComponent implements OnInit {
 
     const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
-    const activeAction = caseActions.find((action) => action.ID === activeActionID);
+    const activeAction = caseActions?.find((action) => action.ID === activeActionID);
     if (activeAction) {
       activeActionLabel = activeAction.name;
     }
