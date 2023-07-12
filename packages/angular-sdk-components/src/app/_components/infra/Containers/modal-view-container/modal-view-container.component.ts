@@ -252,12 +252,14 @@ export class ModalViewContainerComponent implements OnInit {
       // should put here
     }
 
-    this.bShowModal$ = false;
+    this.ngZone.run(() => {
+      this.bShowModal$ = false;
 
-    // for when non modal
-    this.modalVisibleChange.emit(this.bShowModal$);
+      // for when non modal
+      this.modalVisibleChange.emit(this.bShowModal$);
 
-    this.oCaseInfo = {};
+      this.oCaseInfo = {};
+    });
   }
 
   getConfigObject(item, pConnect) {

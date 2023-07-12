@@ -197,7 +197,7 @@ export class CaseViewComponent implements OnInit {
 
   onTabClick(tab: any) {
     this.tabData$ = this.mainTabData[tab].getPConnect().getRawMetadata();
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
 
   _editClick() {

@@ -7,9 +7,9 @@ import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.s
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { AssignmentComponent } from '../../assignment/assignment.component';
-import { TodoComponent } from '../../../widget/todo/todo.component';
 import { getToDoAssignments, showBanner } from '../flow-container/helpers';
 import { ViewComponent } from '../../../infra/view/view.component';
+import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -23,7 +23,7 @@ import { ViewComponent } from '../../../infra/view/view.component';
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, TodoComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
+  imports: [CommonModule, ComponentMapperComponent, MatCardModule, ViewComponent, forwardRef(() => AssignmentComponent)]
 })
 export class FlowContainerComponent implements OnInit {
   @Input() pConn$: any;

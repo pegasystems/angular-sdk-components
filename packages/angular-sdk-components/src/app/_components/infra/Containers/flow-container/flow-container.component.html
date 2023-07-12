@@ -3,18 +3,25 @@
     <h2 *ngIf="!todo_showTodo$">{{ containerName$ }}</h2>
     <h5 *ngIf="instructionText$ !== ''">{{ instructionText$ }}</h5>
     <div *ngIf="todo_showTodo$">
-      <app-todo
-        [pConn$]="todo_pConn$"
-        [caseInfoID$]="todo_caseInfoID$"
-        [datasource$]="todo_datasource$"
-        [showTodoList$]="todo_showTodoList$"
-        [headerText$]="todo_headerText$"
-        [type$]="TODO"
-        [context$]="todo_context$"
-      ></app-todo>
+      <component-mapper
+        name="Todo"
+        [props]="{
+          pConn$: todo_pConn$,
+          caseInfoID$: todo_caseInfoID$,
+          datasource$: todo_datasource$,
+          showTodoList$: todo_showTodoList$,
+          headerText$: todo_headerText$,
+          type$: 'TODO',
+          context$: todo_context$
+        }"
+      ></component-mapper>
     </div>
     <div *ngIf="!todo_showTodo$">
       <app-assignment [pConn$]="pConn$" [formGroup$]="formGroup$" [arChildren$]="arChildren$" [itemKey$]="itemKey$"></app-assignment>
+      <!-- <component-mapper
+        name="Assignment"
+        [props]="{ pConn$: pConn$, formGroup$: formGroup$, arChildren$: arChildren$, itemKey$: itemKey$ }"
+      ></component-mapper> -->
     </div>
   </div>
   <div *ngIf="bHasCaseMessages$">
