@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -57,7 +57,12 @@ export class RootContainerComponent implements OnInit {
   spinnerTimer: any = null;
   viewContainerPConn$: any = null;
 
-  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
+  constructor(
+    private cdRef: ChangeDetectorRef,
+    private angularPConnect: AngularPConnectService,
+    private psService: ProgressSpinnerService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     let myContext = 'app';
@@ -164,22 +169,18 @@ export class RootContainerComponent implements OnInit {
             }
           });
 
-          setTimeout(() => {
-            // makes sure Angular tracks these changes
-            this.ngZone.run(() => {
-              // the new rootObject may be a 'reference'. So,
-              //  normalize it to get the referencedView if that's the case
-              const theNewPConn = ReferenceComponent.normalizePConn(rootObject.getPConnect());
-              // update ComponentName$ before we update pConn$ to make sure they're in sync
-              //  when rendering...
-              this.componentName$ = theNewPConn.getComponentName();
+          // the new rootObject may be a 'reference'. So,
+          //  normalize it to get the referencedView if that's the case
+          const theNewPConn = ReferenceComponent.normalizePConn(rootObject.getPConnect());
+          // update ComponentName$ before we update pConn$ to make sure they're in sync
+          //  when rendering...
+          this.componentName$ = theNewPConn.getComponentName();
 
-              this.pConn$ = theNewPConn;
-              // this.pConn$ = rootObject.getPConnect();
+          this.pConn$ = theNewPConn;
+          // this.pConn$ = rootObject.getPConnect();
+          this.cdRef.detectChanges();
 
-              console.log(`RootContainer updated pConn$ to be: ${this.componentName$}`);
-            });
-          });
+          console.log(`RootContainer updated pConn$ to be: ${this.componentName$}`);
         }
       }
     } else if (renderingMode === noPortalMode) {

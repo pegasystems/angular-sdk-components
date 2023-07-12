@@ -59,7 +59,7 @@ export class FlowContainerComponent implements OnInit {
   checkSvg$: string;
   TODO: any;
   bShowConfirm = false;
-  bShowBanner: boolean;
+  bShowBanner: boolean = false;
   confirm_pconn: any;
   //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
@@ -116,10 +116,7 @@ export class FlowContainerComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
-      'cancelAssignment'
-    );
+    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     this.PCore$.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
   }
@@ -469,12 +466,7 @@ export class FlowContainerComponent implements OnInit {
         });
 
         if (currentOrder.length > 0) {
-          if (
-            currentItems[key] &&
-            currentItems[key].view &&
-            type === 'single' &&
-            Object.keys(currentItems[key].view).length > 0
-          ) {
+          if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
             // when we get here, it it because the flow action data has changed
             // from the server, and need to add to pConnect and update children
 

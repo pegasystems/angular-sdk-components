@@ -140,6 +140,7 @@ export class CaseViewComponent implements OnInit {
   }
 
   fullUpdate() {
+    this.caseTabs$ = [];
     this.updateHeaderAndSummary();
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
@@ -196,7 +197,7 @@ export class CaseViewComponent implements OnInit {
 
   onTabClick(tab: any) {
     this.tabData$ = this.mainTabData[tab].getPConnect().getRawMetadata();
-    this.cdRef.detectChanges();
+    // this.cdRef.detectChanges();
   }
 
   _editClick() {

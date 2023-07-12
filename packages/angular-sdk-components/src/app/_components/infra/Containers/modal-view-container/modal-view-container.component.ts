@@ -193,10 +193,7 @@ export class ModalViewContainerComponent implements OnInit {
           //    The config has meta.config.type = "view"
           const newComp = configObject.getPConnect();
           const newCompName = newComp.getComponentName();
-          const caseInfo =
-            newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo
-              ? newComp.getDataObject().caseInfo
-              : null;
+          const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
           // The metadata for pyDetails changed such that the "template": "CaseView"
           //  is no longer a child of the created View but is in the created View's
           //  config. So, we DON'T want to replace this.pConn$ since the created
@@ -213,6 +210,7 @@ export class ModalViewContainerComponent implements OnInit {
 
           // right now need to check caseInfo for changes, to trigger redraw, not getting
           // changes from angularPconnect except for first draw
+
           if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
             this.psService.sendMessage(false);
 
@@ -254,14 +252,12 @@ export class ModalViewContainerComponent implements OnInit {
       // should put here
     }
 
-    this.ngZone.run(() => {
-      this.bShowModal$ = false;
+    this.bShowModal$ = false;
 
-      // for when non modal
-      this.modalVisibleChange.emit(this.bShowModal$);
+    // for when non modal
+    this.modalVisibleChange.emit(this.bShowModal$);
 
-      this.oCaseInfo = {};
-    });
+    this.oCaseInfo = {};
   }
 
   getConfigObject(item, pConnect) {

@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
-import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { AuthService } from '../../../_services/auth.service';
@@ -46,11 +45,10 @@ export class NavbarComponent implements OnInit {
   navIcon$: string;
 
   constructor(
+    private cdRef: ChangeDetectorRef,
     private angularPConnect: AngularPConnectService,
-    private chRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private aService: AuthService,
-    private ngZone: NgZone,
     private utils: Utils
   ) {}
 
@@ -104,34 +102,32 @@ export class NavbarComponent implements OnInit {
   }
 
   initComponent() {
-    this.ngZone.run(() => {
-      this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-      this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
+    this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+    this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
 
-      // Then, continue on with other initialization
+    // Then, continue on with other initialization
 
-      // making a copy, so can add info
-      this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
+    // making a copy, so can add info
+    this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
-      for (let page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
-      }
+    for (let page in this.navPages$) {
+      this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
+    }
 
-      this.actionsAPI = this.pConn$.getActionsApi();
-      this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
-      this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
-      this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-      this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
+    this.actionsAPI = this.pConn$.getActionsApi();
+    this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
+    this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
+    this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
 
-      let oData = this.pConn$.getDataObject();
+    let oData = this.pConn$.getDataObject();
 
-      this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-      this.portalOperator$ = this.PCore$.getEnvironmentInfo().getOperatorName();
-      this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$);
-      this.showAppName$ = this.configProps['showAppName'];
+    this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+    this.portalOperator$ = this.PCore$.getEnvironmentInfo().getOperatorName();
+    this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$);
+    this.showAppName$ = this.configProps['showAppName'];
 
-      this.portalApp$ = this.PCore$.getEnvironmentInfo().getApplicationLabel();
-    });
+    this.portalApp$ = this.PCore$.getEnvironmentInfo().getApplicationLabel();
   }
 
   navPanelButtonClick(oPageData: any) {
@@ -148,8 +144,7 @@ export class NavbarComponent implements OnInit {
       this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
       this.bShowCaseTypes$ = false;
     }
-
-    this.chRef.detectChanges();
+    this.cdRef.detectChanges();
   }
 
   navPanelCreateCaseType(sCaseType: string, sFlowType: string) {

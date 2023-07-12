@@ -34,6 +34,7 @@ test.describe('E2E test', () => {
     await queryCase.click();
 
     let modal = page.locator('div[id="dialog"]');
+    await modal.waitFor({ state: 'visible' });
 
     /** Value to be typed in the Name input */
     const name = 'John Doe';
@@ -55,6 +56,7 @@ test.describe('E2E test', () => {
     await queryCase.click();
 
     modal = page.locator('div[id="dialog"]');
+    await modal.waitFor({ state: 'visible' });
 
     await modal.locator('input').type(name);
     await modal.locator('button:has-text("submit")').click();
@@ -68,9 +70,7 @@ test.describe('E2E test', () => {
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
-    const complexFieldsCaseBtn = await page.locator(
-      'mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")'
-    );
+    const complexFieldsCaseBtn = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
     await complexFieldsCaseBtn.click();
 
     /** Selecting CaseReference from the Category dropdown */

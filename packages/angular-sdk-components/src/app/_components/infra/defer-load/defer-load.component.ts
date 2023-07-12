@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ViewComponent } from '../view/view.component';
 
@@ -30,7 +29,7 @@ export class DeferLoadComponent implements OnInit {
 
   angularPConnectData: any = {};
   constants: any;
-  currentLoadedAssignment = "";
+  currentLoadedAssignment = '';
   isContainerPreview: boolean;
   loadViewCaseID: any;
   resourceType: any;
@@ -39,7 +38,7 @@ export class DeferLoadComponent implements OnInit {
   CASE: any;
   PAGE: any;
   DATA: any;
-  constructor(private cdRef: ChangeDetectorRef, private psService: ProgressSpinnerService) { }
+  constructor() {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -111,26 +110,21 @@ export class DeferLoadComponent implements OnInit {
         }
       };
       const configObject = this.PCore$.createPConnect(config);
-      configObject.getPConnect().setInheritedProp('displayMode', 'LABELS_LEFT')
+      configObject.getPConnect().setInheritedProp('displayMode', 'LABELS_LEFT');
       this.loadedPConn$ = ReferenceComponent.normalizePConn(configObject.getPConnect());
       this.componentName$ = this.loadedPConn$.getComponentName();
       if (this.deferLoadId) {
         this.PCore$.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
       }
     }
-    // this.cdRef.detectChanges();
-  };
+  }
 
   loadActiveTab() {
     if (this.resourceType === this.DATA) {
       // Rendering defer loaded tabs in data context
       if (this.containerName) {
         const dataContext = this.PCore$.getStoreValue('.dataContext', 'dataInfo', this.containerName);
-        const dataContextParameters = this.PCore$.getStoreValue(
-          '.dataContextParameters',
-          'dataInfo',
-          this.containerName
-        );
+        const dataContextParameters = this.PCore$.getStoreValue('.dataContextParameters', 'dataInfo', this.containerName);
 
         this.pConn$
           .getActionsApi()
@@ -138,7 +132,7 @@ export class DeferLoadComponent implements OnInit {
             skipSemanticUrl: true,
             isDeferLoaded: true
           })
-          .then(data => {
+          .then((data) => {
             this.onResponse(data);
           });
       } else {
@@ -149,12 +143,14 @@ export class DeferLoadComponent implements OnInit {
       this.pConn$
         .getActionsApi()
         .loadView(encodeURI(this.loadViewCaseID), this.name, this.getViewOptions())
-        .then(data => {
+        .then((data) => {
           this.onResponse(data);
         });
     } else {
-      this.pConn$.getActionsApi().refreshCaseView(encodeURI(this.loadViewCaseID), this.name)
-        .then(data => {
+      this.pConn$
+        .getActionsApi()
+        .refreshCaseView(encodeURI(this.loadViewCaseID), this.name)
+        .then((data) => {
           this.onResponse(data.root);
         });
     }

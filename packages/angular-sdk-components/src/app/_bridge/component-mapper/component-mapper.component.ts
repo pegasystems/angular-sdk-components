@@ -30,7 +30,7 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const { previousValue, currentValue } = changes.props;
     if (previousValue && !isEqual(previousValue, currentValue)) {
-      this.loadComponent();
+      this.bindInputProps();
     }
   }
 
@@ -60,17 +60,21 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
         if (component === ErrorBoundaryComponent) {
           this.componentRef.instance.message = this.errorMsg;
         } else {
-          for (let propName in this.props) {
-            if (this.props[propName] !== undefined) {
-              this.componentRef.setInput(propName, this.props[propName]);
-            }
-          }
+          this.bindInputProps();
         }
       }
     } else {
       // We no longer handle the "old" switch statement that was here in the original packaging.
       //  All components seen here need to be in the SdkComponentMap
       console.error(`SdkComponentMap not defined! Unable to process component: ${this.name}`);
+    }
+  }
+
+  bindInputProps() {
+    for (let propName in this.props) {
+      if (this.props[propName] !== undefined) {
+        this.componentRef.setInput(propName, this.props[propName]);
+      }
     }
   }
 
