@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
-import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component';
 import { ServerConfigService } from '../../../_services/server-config.service';
 
@@ -13,7 +13,7 @@ declare function loadMashup(targetDom, preLoadComponents);
   templateUrl: './main-screen.component.html',
   styleUrls: ['./main-screen.component.scss'],
   standalone: true,
-  imports: [CommonModule, BundleSwatchComponent, RootContainerComponent, ResolutionScreenComponent]
+  imports: [CommonModule, BundleSwatchComponent, ComponentMapperComponent, ResolutionScreenComponent]
 })
 export class MainScreenComponent implements OnInit {
   @Input() pConn$: any;

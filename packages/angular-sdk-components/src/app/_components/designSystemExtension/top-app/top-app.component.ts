@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RootContainerComponent } from '../../infra/root-container/root-container.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
@@ -12,7 +12,7 @@ import localSdkComponentMap from '../../../../../sdk-local-component-map';
   templateUrl: './top-app.component.html',
   styleUrls: ['./top-app.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, RootContainerComponent]
+  imports: [CommonModule, MatProgressSpinnerModule, ComponentMapperComponent]
 })
 export class TopAppComponent implements OnInit {
   PCore$: any;

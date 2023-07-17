@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
 import { ViewContainerComponent } from '../../../_components/infra/Containers/view-container/view-container.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-main-content',
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.scss'],
   standalone: true,
-  imports: [CommonModule, ViewContainerComponent, RootContainerComponent]
+  imports: [CommonModule, ViewContainerComponent, ComponentMapperComponent]
 })
 export class MainContentComponent implements OnInit {
   @Input() PCore$: any;

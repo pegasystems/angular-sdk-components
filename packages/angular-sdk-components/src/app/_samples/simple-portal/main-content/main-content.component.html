@@ -4,5 +4,5 @@
 </div>
 
 <div *ngIf="sComponentName$ == 'RootContainer'">
-  <app-root-container [pConn$]="pConn$" [PCore$]="PCore$" [props$]="props$" [displayOnlyFA$]="false"></app-root-container>
+  <component-mapper name="RootContainer" [props]="{ pConn$: pConn$, PCore$: PCore$, props$: props$, displayOnlyFA: false }"></component-mapper>
 </div>

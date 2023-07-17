@@ -5,7 +5,7 @@ import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { CancelAlertComponent } from '../../../field/cancel-alert/cancel-alert.component';
-import { AssignmentComponent } from '../../assignment/assignment.component';
+import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/app/_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -18,7 +18,7 @@ import { AssignmentComponent } from '../../assignment/assignment.component';
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, AssignmentComponent, CancelAlertComponent]
+  imports: [CommonModule, CancelAlertComponent, ComponentMapperComponent]
 })
 export class ModalViewContainerComponent implements OnInit {
   @Input() pConn$: any;

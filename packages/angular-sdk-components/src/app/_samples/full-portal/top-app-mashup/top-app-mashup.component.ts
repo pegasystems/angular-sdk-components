@@ -6,7 +6,7 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { AuthService } from '../../../_services/auth.service';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
-import { RootContainerComponent } from '../../../_components/infra/root-container/root-container.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from '../../../../../sdk-local-component-map';
@@ -40,7 +40,7 @@ declare global {
   templateUrl: './top-app-mashup.component.html',
   styleUrls: ['./top-app-mashup.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, RootContainerComponent]
+  imports: [CommonModule, MatProgressSpinnerModule, ComponentMapperComponent]
 })
 export class TopAppMashupComponent implements OnInit {
   PCore$: any;
@@ -109,9 +109,9 @@ export class TopAppMashupComponent implements OnInit {
     /* Check if portal is specified as a query parameter */
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const portalValue = urlParams.get("portal");
-    if(portalValue){
-      sessionStorage.setItem("asdk_portalName", portalValue);
+    const portalValue = urlParams.get('portal');
+    if (portalValue) {
+      sessionStorage.setItem('asdk_portalName', portalValue);
     }
   }
 
@@ -131,14 +131,13 @@ export class TopAppMashupComponent implements OnInit {
 
     const { appPortal: thePortal, excludePortals } = this.scservice.getSdkConfigServer();
     const defaultPortal = window.PCore?.getEnvironmentInfo?.().getDefaultPortal?.();
-    const queryPortal = sessionStorage.getItem("asdk_portalName");
+    const queryPortal = sessionStorage.getItem('asdk_portalName');
 
     // Note: myLoadPortal and myLoadDefaultPortal are set when bootstrapWithAuthHeader is invoked
-    if(queryPortal){
+    if (queryPortal) {
       console.log(`Loading appPortal specified as a query parameter: ${queryPortal}`);
       window.myLoadPortal('app-root', queryPortal, []);
-    }
-    else if (thePortal) {
+    } else if (thePortal) {
       console.log(`Loading specified appPortal: ${thePortal}`);
       window.myLoadPortal('app-root', thePortal, []); // this is defined in bootstrap shell that's been loaded already
     } else if (window.myLoadDefaultPortal && defaultPortal && !excludePortals.includes(defaultPortal)) {
