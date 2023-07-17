@@ -19,7 +19,6 @@
     </ng-template>
   </div>
   <ng-template #isReference>
-    <app-view [pConn$]="viewPConn$" [displayOnlyFA$]="displayOnlyFA$"></app-view>
-    <!-- <component-mapper name="View" [props]="{ pConn$: viewPConn$, displayOnlyFA$ }"></component-mapper> -->
+    <component-mapper name="View" [props]="{ pConn$: viewPConn$, displayOnlyFA$ }"></component-mapper>
   </ng-template>
 </div>

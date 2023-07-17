@@ -1,6 +1,5 @@
 import { Component, ComponentRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import * as isEqual from 'fast-deep-equal';
 import { SdkComponentMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
@@ -16,6 +15,7 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   public dynamicComponent: ViewContainerRef | undefined;
 
   public componentRef: ComponentRef<any> | undefined;
+  public isInitialized: boolean = false;
 
   @Input() name: string = '';
   @Input() props: any;
@@ -25,11 +25,17 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.loadComponent();
+    this.isInitialized = true;
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    const { previousValue, currentValue } = changes.props;
-    if (previousValue && !isEqual(previousValue, currentValue)) {
+    const { name } = changes;
+    if (name) {
+      const { previousValue, currentValue } = name;
+      if (previousValue && previousValue !== currentValue) {
+        this.loadComponent();
+      }
+    } else if (this.isInitialized) {
       this.bindInputProps();
     }
   }

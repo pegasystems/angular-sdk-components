@@ -99,7 +99,25 @@ export class ModalViewContainerComponent implements OnInit {
     this.angularPConnect.shouldComponentUpdate(this);
   }
 
-  ngOnChanges(): void {}
+  ngOnChanges() {
+    this.checkAndUpdate();
+  }
+
+  // Callback passed when subscribing to store change
+  onStateChange() {
+    this.checkAndUpdate();
+  }
+
+  checkAndUpdate() {
+    // Should always check the bridge to see if the component should
+    // update itself (re-render)
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    // ONLY call updateSelf when the component should update
+    if (bUpdateSelf) {
+      this.updateSelf();
+    }
+  }
 
   ngOnDestroy(): void {
     if (this.angularPConnectData.unsubscribeFn) {
@@ -115,24 +133,9 @@ export class ModalViewContainerComponent implements OnInit {
     this.bSubscribed = false;
   }
 
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    let bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    } else if (this.bShowModal$) {
-      // right now onlu get one updated when initial diaplay.  So, once modal is up
-      // let fall through and do a check with "compareCaseInfoIsDifferent" until fixed
-      //this.updateSelf();
-    }
-  }
-
   // updateSelf
   updateSelf(): void {
+    console.log('Inside updateSelf');
     // routingInfo was added as component prop in populateAdditionalProps
     let routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
     this.routingInfoRef['current'] = routingInfo;
@@ -214,30 +217,28 @@ export class ModalViewContainerComponent implements OnInit {
           if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
             this.psService.sendMessage(false);
 
-            this.ngZone.run(() => {
-              this.createdViewPConn$ = newComp;
-              const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = 'template' in newConfigProps ? newConfigProps['template'] : '';
+            this.createdViewPConn$ = newComp;
+            const newConfigProps = newComp.getConfigProps();
+            this.templateName$ = 'template' in newConfigProps ? newConfigProps['template'] : '';
 
-              const { actionName, isMinimizable } = latestItem;
-              const caseInfo = newComp.getCaseInfo();
-              const caseName = caseInfo.getName();
-              const ID = caseInfo.getID();
+            const { actionName, isMinimizable } = latestItem;
+            const caseInfo = newComp.getCaseInfo();
+            const caseName = caseInfo.getName();
+            const ID = caseInfo.getID();
 
-              this.title$ = actionName || `New ${caseName} (${ID})`;
-              // // update children with new view's children
-              this.arChildren$ = newComp.getChildren();
-              this.bShowModal$ = true;
+            this.title$ = actionName || `New ${caseName} (${ID})`;
+            // // update children with new view's children
+            this.arChildren$ = newComp.getChildren();
+            this.bShowModal$ = true;
 
-              // for when non modal
-              this.modalVisibleChange.emit(this.bShowModal$);
+            // for when non modal
+            this.modalVisibleChange.emit(this.bShowModal$);
 
-              // save off itemKey to be used for finishAssignment, etc.
-              this.itemKey$ = key;
+            // save off itemKey to be used for finishAssignment, etc.
+            this.itemKey$ = key;
 
-              // cause a change for assignment
-              this.updateToken$ = new Date().getTime();
-            });
+            // cause a change for assignment
+            this.updateToken$ = new Date().getTime();
           }
         }
       } else {
