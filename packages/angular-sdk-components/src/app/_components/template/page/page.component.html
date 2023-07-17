@@ -4,7 +4,7 @@
 <div class="page-body">
   <div *ngFor="let kid of arChildren$">
     <div [ngSwitch]="kid.getPConnect().getComponentName()">
-      <app-view *ngSwitchCase="'View'" [pConn$]="kid.getPConnect()"></app-view>
+      <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
       <app-region *ngSwitchCase="'Region'" [pConn$]="kid.getPConnect()"></app-region>
       <div *ngSwitchDefault>Page Missing: {{ kid.getPConnect().getComponentName() }}</div>
     </div>

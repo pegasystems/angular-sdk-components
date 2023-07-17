@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import * as isEqual from 'fast-deep-equal';
@@ -18,7 +18,7 @@ import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/ap
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, CancelAlertComponent, ComponentMapperComponent]
+  imports: [CommonModule, CancelAlertComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit {
   @Input() pConn$: any;

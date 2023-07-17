@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
-import { ViewComponent } from '../view/view.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -14,7 +14,7 @@ import { ViewComponent } from '../view/view.component';
   templateUrl: './defer-load.component.html',
   styleUrls: ['./defer-load.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => ViewComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DeferLoadComponent implements OnInit {
   @Input() pConn$: any;

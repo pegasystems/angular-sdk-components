@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { RegionComponent } from '../../infra/region/region.component';
-import { ViewComponent } from '../../infra/view/view.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
   standalone: true,
-  imports: [CommonModule, RegionComponent, forwardRef(() => ViewComponent)]
+  imports: [CommonModule, RegionComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class PageComponent implements OnInit {
   @Input() pConn$: any;
