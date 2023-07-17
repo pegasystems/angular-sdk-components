@@ -11,7 +11,7 @@
   <div [hidden]="!showPega$">
     <div class="mc-info">
       <div class="mc-info-pega">
-        <component-mapper name="RootContainer" [props]="{ pConn$: pConn$, displayOnlyFA$: true }"></component-mapper>
+        <component-mapper name="RootContainer" [props]="{ pConn$, displayOnlyFA$: true }"></component-mapper>
         <div style="padding-left: 50px">* - required fields</div>
       </div>
       <div class="mc-info-banner">

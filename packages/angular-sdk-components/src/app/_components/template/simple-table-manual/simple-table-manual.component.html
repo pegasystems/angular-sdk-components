@@ -39,10 +39,7 @@
           <td mat-cell *matCellDef="let element">
             <component-mapper
               [name]="element[i].getPConnect().getComponentName()"
-              [props]="{
-                pConn$: element[i].getPConnect(),
-                formGroup$: formGroup$
-              }"
+              [props]="{ pConn$: element[i].getPConnect(), formGroup$ }"
               errorMsg="Table wants component not yet available: {{ element[i].getPConnect().getComponentName() }}"
             ></component-mapper>
           </td>

@@ -3,14 +3,7 @@
     <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
     <component-mapper
       name="Assignment"
-      [props]="{
-        pConn$: createdViewPConn$,
-        formGroup$: formGroup$,
-        arChildren$: arChildren$,
-        itemKey$: itemKey$,
-        isCreateStage$: true,
-        updateToken$: updateToken$
-      }"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$ }"
     ></component-mapper>
   </div>
 </div>
@@ -20,14 +13,7 @@
     <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
     <component-mapper
       name="Assignment"
-      [props]="{
-        pConn$: createdViewPConn$,
-        formGroup$: formGroup$,
-        arChildren$: arChildren$,
-        itemKey$: itemKey$,
-        isCreateStage$: true,
-        updateToken$: updateToken$
-      }"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$ }"
     ></component-mapper>
   </div>
 </div>

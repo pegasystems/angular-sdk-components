@@ -2,10 +2,7 @@
   <div *ngIf="kid.getPConnect().getConfigProps().template != ''">
     <component-mapper
       [name]="kid.getPConnect().getConfigProps().template"
-      [props]="{
-        pConn$: kid.getPConnect(),
-        formGroup$: formGroup$
-      }"
+      [props]="{ pConn$: kid.getPConnect(), formGroup$ }"
       errorMsg="CreateCaseStage Missing: {{ kid.getPConnect().getConfigProps().template }}"
     ></component-mapper>
   </div>

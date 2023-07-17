@@ -17,10 +17,7 @@
       ></component-mapper>
     </div>
     <div *ngIf="!todo_showTodo$">
-      <component-mapper
-        name="Assignment"
-        [props]="{ pConn$: pConn$, formGroup$: formGroup$, arChildren$: arChildren$, itemKey$: itemKey$ }"
-      ></component-mapper>
+      <component-mapper name="Assignment" [props]="{ pConn$, formGroup$, arChildren$, itemKey$ }"></component-mapper>
     </div>
   </div>
   <div *ngIf="bHasCaseMessages$">
@@ -32,6 +29,6 @@
     </mat-card>
   </div>
   <div *ngIf="bShowBanner && bShowConfirm">
-    <component-mapper name="View" [props]="{ formGroup$: formGroup$, pConn$: confirm_pconn }"></component-mapper>
+    <component-mapper name="View" [props]="{ formGroup$, pConn$: confirm_pconn }"></component-mapper>
   </div>
 </div>

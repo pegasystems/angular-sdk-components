@@ -18,7 +18,7 @@
   </div>
   <div *ngIf="bPCoreReady$">
     <div *ngIf="sComponentName$ == 'RootContainer'">
-      <component-mapper name="RootContainer" [props]="{ pConn$: pConn$, PCore$: PCore$, props$: props$ }"></component-mapper>
+      <component-mapper name="RootContainer" [props]="{ pConn$, PCore$, props$ }"></component-mapper>
     </div>
   </div>
 </ng-template>

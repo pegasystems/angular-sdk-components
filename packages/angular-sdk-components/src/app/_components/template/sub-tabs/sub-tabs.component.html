@@ -4,10 +4,7 @@
       <component-mapper
         *ngIf="tab.content?.getPConnect()"
         [name]="tab.content?.getPConnect().getComponentName()"
-        [props]="{
-          pConn$: tab.content?.getPConnect(),
-          formGroup$: formGroup$
-        }"
+        [props]="{ pConn$: tab.content?.getPConnect(), formGroup$ }"
         errorMsg="SubTabs wants component not yet available: {{ tab.content?.getPConnect().getComponentName() }}"
       ></component-mapper>
     </div>
