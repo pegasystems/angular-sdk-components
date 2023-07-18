@@ -1,18 +1,13 @@
 <div id="field-group">
-  <h3 *ngIf="showLabel$" className="label" style="font-weight: bold;">
+  <h3 *ngIf="showLabel$" className="label" style="font-weight: bold">
     {{ label$ }}
   </h3>
   <div *ngIf="readonlyMode; else editable">
     <div *ngIf="children && children.length > 0">
       <div *ngFor="let item of children; let i = index">
-        <app-field-group-list
-          heading="{{ item.name }}"
-          [formGroup$]="formGroup$"
-          [item]="item"
-        >
-      </app-field-group-list>
+        <component-mapper name="FieldGroupList" [props]="{ heading: item.name, formGroup$, item }"></component-mapper>
       </div>
-  </div>
+    </div>
   </div>
   <ng-template #editable>
     <div *ngIf="children && children.length > 0">

@@ -8,7 +8,6 @@ import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
 import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';
-import { ViewContainerComponent } from '../Containers/view-container/view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -27,7 +26,6 @@ const options = { context: 'app' };
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    ViewContainerComponent,
     HybridViewContainerComponent,
     ModalViewContainerComponent,
     PreviewViewContainerComponent,

@@ -7,7 +7,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { DeferLoadComponent } from '../../infra/defer-load/defer-load.component';
 import { RegionComponent } from '../../infra/region/region.component';
 import { MaterialVerticalTabsComponent } from '../../designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -24,7 +23,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
     MatButtonModule,
     MatMenuModule,
     MaterialVerticalTabsComponent,
-    DeferLoadComponent,
     ComponentMapperComponent,
     forwardRef(() => RegionComponent)
   ]
@@ -149,7 +147,7 @@ export class CaseViewComponent implements OnInit {
     let caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
     this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];
-    this.editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
+    this.editAction = this.arAvailableActions$.find((action) => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
     this.svgCase$ = this.utils.getImageSrc(this.configProps$['icon'], this.utils.getSDKStaticContentUrl());

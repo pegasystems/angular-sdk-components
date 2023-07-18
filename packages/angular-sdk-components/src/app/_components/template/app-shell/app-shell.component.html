@@ -3,7 +3,7 @@
   <div class="appshell-main">
     <div *ngFor="let kid of arChildren$">
       <div *ngIf="kid.getPConnect().getComponentName() == 'ViewContainer'">
-        <app-view-container [pConn$]="kid.getPConnect()"></app-view-container>
+        <component-mapper name="ViewContainer" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
       </div>
     </div>
   </div>

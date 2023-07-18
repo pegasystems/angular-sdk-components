@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ViewContainerComponent } from '../../../_components/infra/Containers/view-container/view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -8,7 +7,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './main-content.component.html',
   styleUrls: ['./main-content.component.scss'],
   standalone: true,
-  imports: [CommonModule, ViewContainerComponent, ComponentMapperComponent]
+  imports: [CommonModule, ComponentMapperComponent]
 })
 export class MainContentComponent implements OnInit {
   @Input() PCore$: any;

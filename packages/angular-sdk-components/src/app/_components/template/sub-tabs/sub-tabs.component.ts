@@ -4,78 +4,76 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getTransientTabs, getVisibleTabs, tabClick } from './tabUtils';
 import { CommonModule } from '@angular/common';
-import { ViewContainerComponent } from '../../infra/Containers/view-container/view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-sub-tabs',
-    templateUrl: './sub-tabs.component.html',
-    styleUrls: ['./sub-tabs.component.scss'],
-    standalone: true,
-    imports: [MatTabsModule, CommonModule, ViewContainerComponent, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-sub-tabs',
+  templateUrl: './sub-tabs.component.html',
+  styleUrls: ['./sub-tabs.component.scss'],
+  standalone: true,
+  imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SubTabsComponent implements OnInit {
-    @Input() pConn$: any;
-    @Input() formGroup$: FormGroup;
+  @Input() pConn$: any;
+  @Input() formGroup$: FormGroup;
 
-    configProps$: Object;
-    arChildren$: Array<any>;
-    angularPConnectData: any = {};
-    PCore$: any;
-    defaultTabIndex = 0;
-    currentTabId = this.defaultTabIndex.toString();
-    tabItems: Array<any>;
-    availableTabs: any;
-    constructor(private angularPConnect: AngularPConnectService) { }
+  configProps$: Object;
+  arChildren$: Array<any>;
+  angularPConnectData: any = {};
+  PCore$: any;
+  defaultTabIndex = 0;
+  currentTabId = this.defaultTabIndex.toString();
+  tabItems: Array<any>;
+  availableTabs: any;
+  constructor(private angularPConnect: AngularPConnectService) {}
 
-    ngOnInit(): void {
-        // First thing in initialization is registering and subscribing to the AngularPConnect service
-        this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-        if (!this.PCore$) {
-            this.PCore$ = window.PCore;
-        }
-        this.checkAndUpdate();
+  ngOnInit(): void {
+    // First thing in initialization is registering and subscribing to the AngularPConnect service
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+    if (!this.PCore$) {
+      this.PCore$ = window.PCore;
     }
+    this.checkAndUpdate();
+  }
 
-    ngOnDestroy() {
-        if (this.angularPConnectData.unsubscribeFn) {
-            this.angularPConnectData.unsubscribeFn();
-        }
+  ngOnDestroy() {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
     }
+  }
 
-    onStateChange() {
-        this.checkAndUpdate();
+  onStateChange() {
+    this.checkAndUpdate();
+  }
+
+  checkAndUpdate() {
+    // Should always check the bridge to see if the component should
+    // update itself (re-render)
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    // ONLY call updateSelf when the component should update
+    if (bUpdateSelf) {
+      this.updateSelf();
     }
+  }
 
-    checkAndUpdate() {
-        // Should always check the bridge to see if the component should
-        // update itself (re-render)
-        const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+  updateSelf() {
+    const children = this.pConn$?.getChildren();
+    const deferLoadedTabs = children[0];
+    this.availableTabs = getVisibleTabs(deferLoadedTabs, 'tabsSubs');
+    this.updateTabContent();
+  }
 
-        // ONLY call updateSelf when the component should update
-        if (bUpdateSelf) {
-            this.updateSelf();
-        }
-    }
+  updateTabContent() {
+    const tempTabItems = getTransientTabs(this.availableTabs, this.currentTabId, this.tabItems);
+    this.tabItems = tempTabItems;
+  }
 
-    updateSelf() {
-        const children = this.pConn$?.getChildren();
-        const deferLoadedTabs = children[0];
-        this.availableTabs = getVisibleTabs(deferLoadedTabs, "tabsSubs");
-        this.updateTabContent();
-    }
-
-    updateTabContent() {
-        const tempTabItems = getTransientTabs(this.availableTabs, this.currentTabId, this.tabItems);
-        this.tabItems = tempTabItems;
-    }
-
-    handleTabClick(event) {
-        const { index } = event;
-        this.currentTabId = index.toString();
-        tabClick(index, this.availableTabs, this.currentTabId, this.tabItems);
-        const tempTabItems = getTransientTabs(this.availableTabs, this.currentTabId, this.tabItems);
-        this.tabItems[index].content = tempTabItems[index].content;
-    };
-
+  handleTabClick(event) {
+    const { index } = event;
+    this.currentTabId = index.toString();
+    tabClick(index, this.availableTabs, this.currentTabId, this.tabItems);
+    const tempTabItems = getTransientTabs(this.availableTabs, this.currentTabId, this.tabItems);
+    this.tabItems[index].content = tempTabItems[index].content;
+  }
 }

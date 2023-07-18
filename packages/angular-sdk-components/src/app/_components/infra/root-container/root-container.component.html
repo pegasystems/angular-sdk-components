@@ -6,11 +6,11 @@
   <div [ngSwitch]="componentName$">
     <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ pConn$, displayOnlyFA$ }"></component-mapper>
     <!-- <app-reference *ngSwitchCase="'reference'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-reference> -->
-    <app-view-container
+    <component-mapper
       *ngSwitchCase="'ViewContainer'"
-      [pConn$]="displayOnlyFA$ ? viewContainerPConn$ : pConn$"
-      [displayOnlyFA$]="displayOnlyFA$"
-    ></app-view-container>
+      name="ViewContainer"
+      [props]="{ pConn$: displayOnlyFA$ ? viewContainerPConn$ : pConn$, displayOnlyFA$ }"
+    ></component-mapper>
     <app-hybrid-view-container *ngSwitchCase="'HybridViewContainer'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-hybrid-view-container>
     <app-modal-view-container
       *ngSwitchCase="'ModalViewContainer'"

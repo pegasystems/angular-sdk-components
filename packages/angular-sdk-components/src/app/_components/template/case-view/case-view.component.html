@@ -68,7 +68,7 @@
     </div>
 
     <div *ngIf="!displayOnlyFA$">
-      <app-defer-load [pConn$]="pConn$" [loadData$]="tabData$" [name]="tabData$?.config?.name"></app-defer-load>
+      <component-mapper name="DeferLoad" [props]="{pConn$, loadData$: tabData$, name: tabData$?.config?.name}"></component-mapper>
     </div>
   </div>
   <div *ngIf="!displayOnlyFA$">

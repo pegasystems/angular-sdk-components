@@ -28,15 +28,9 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
     this.isInitialized = true;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const { name } = changes;
-    if (name) {
-      const { previousValue, currentValue } = name;
-      if (previousValue && previousValue !== currentValue) {
-        this.loadComponent();
-      }
-    } else if (this.isInitialized) {
-      this.bindInputProps();
+  ngOnChanges() {
+    if (this.isInitialized) {
+      this.loadComponent();
     }
   }
 

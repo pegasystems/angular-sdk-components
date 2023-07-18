@@ -2,10 +2,10 @@
   <mat-tab *ngFor="let tab of tabItems; let i = index" [label]="tab.name">
     <div class="psdk-sub-tabs" *ngIf="currentTabId == i">
       <component-mapper
-        *ngIf="tab.content?.getPConnect()"
-        [name]="tab.content?.getPConnect().getComponentName()"
-        [props]="{ pConn$: tab.content?.getPConnect(), formGroup$ }"
-        errorMsg="SubTabs wants component not yet available: {{ tab.content?.getPConnect().getComponentName() }}"
+        *ngIf="tab.content?.getPConnect() as tabPConn"
+        [name]="tabPConn.getComponentName()"
+        [props]="{ pConn$: tabPConn, formGroup$ }"
+        errorMsg="SubTabs wants component not yet available: {{ tabPConn.getComponentName() }}"
       ></component-mapper>
     </div>
   </mat-tab>

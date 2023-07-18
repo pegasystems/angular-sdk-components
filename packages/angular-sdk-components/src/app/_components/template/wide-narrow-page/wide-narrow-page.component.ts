@@ -2,7 +2,6 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ViewContainerComponent } from '../../infra/Containers/view-container/view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -10,7 +9,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './wide-narrow-page.component.html',
   styleUrls: ['./wide-narrow-page.component.scss'],
   standalone: true,
-  imports: [CommonModule, ComponentMapperComponent, forwardRef(() => ViewContainerComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowPageComponent implements OnInit {
   @Input() pConn$: any;
