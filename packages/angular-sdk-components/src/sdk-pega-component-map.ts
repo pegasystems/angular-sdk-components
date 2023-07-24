@@ -14,6 +14,7 @@ import { PhoneComponent } from './app/_components/field/phone/phone.component';
 import { RadioButtonsComponent } from './app/_components/field/radio-buttons/radio-buttons.component';
 import { SemanticLinkComponent } from './app/_components/field/semantic-link/semantic-link.component';
 import { TextAreaComponent } from './app/_components/field/text-area/text-area.component';
+import { TextComponent } from './app/_components/field/text/text.component';
 import { TextContentComponent } from './app/_components/field/text-content/text-content.component';
 import { TextInputComponent } from './app/_components/field/text-input/text-input.component';
 import { ThreeColumnComponent } from './app/_components/template/three-column/three-column.component';
@@ -169,6 +170,7 @@ const pegaSdkComponentMap = {
   SubTabs: SubTabsComponent,
   SummaryItem: MaterialSummaryItemComponent,
   SummaryList: MaterialSummaryListComponent,
+  Text: TextComponent,
   TextArea: TextAreaComponent,
   TextContent: TextContentComponent,
   TextInput: TextInputComponent,
@@ -189,7 +191,7 @@ const pegaSdkComponentMap = {
   WideNarrowForm: WideNarrowFormComponent,
   WideNarrowPage: WideNarrowPageComponent
   //   'WssNavBar': WssNavBar,
-  //   'WssQuickcreate': WssQuickCreate
+  //   'WssQuickcreate': WssQuickCreate,
 };
 
 export default pegaSdkComponentMap;

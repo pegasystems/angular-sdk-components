@@ -26,5 +26,5 @@
   </div>
 </ng-template>
 <ng-template #noEdit>
-  <app-text [pConn$]="pConn$" [formatAs$]="'text'"></app-text>
+  <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
 </ng-template>

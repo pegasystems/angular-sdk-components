@@ -28,5 +28,5 @@
   </div>
 </ng-template>
 <ng-template #noEdit>
-  <app-text [pConn$]="pConn$" [formatAs$]="'date'"></app-text>
+  <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'date' }"></component-mapper>
 </ng-template>

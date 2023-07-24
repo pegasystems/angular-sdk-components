@@ -23,12 +23,12 @@
             <span>{{ opt.value }}</span>
           </mat-option>
         </mat-autocomplete>
-        <mat-hint>{{helperText}}</mat-hint>
+        <mat-hint>{{ helperText }}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
   </div>
 </ng-template>
 <ng-template #noEdit>
-  <app-text [pConn$]="pConn$" [formatAs$]="'text'"></app-text>
+  <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
 </ng-template>
