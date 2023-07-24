@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { TopAppComponent } from './_components/designSystemExtension/top-app/top-app.component';
 import { TopAppMashupComponent } from './_samples/full-portal/top-app-mashup/top-app-mashup.component';
 import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
@@ -18,7 +17,7 @@ const appName = window.location.pathname.split('/')[3];
 // TopAppComponent no longer used (was for when login into PegaInfinity and being directed from there to an Angular app,
 // similiar to Nebula/Constellaion)
 
-const routes: Routes = [
+export const routes: Routes = [
   { path: '', component: MCNavComponent },
   { path: endpoints.PORTAL, component: TopAppMashupComponent },
   { path: endpoints.PORTALHMTL, component: TopAppMashupComponent },
@@ -30,11 +29,5 @@ const routes: Routes = [
   { path: endpoints.EMBEDDEDHTML, component: MCNavComponent },
   { path: endpoints.MASHUP, component: MCNavComponent },
   { path: endpoints.MASHUPHTML, component: MCNavComponent },
-  { path: `prweb/app/${appName}`, component: TopAppComponent },
+  { path: `prweb/app/${appName}`, component: TopAppComponent }
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, {})],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {}

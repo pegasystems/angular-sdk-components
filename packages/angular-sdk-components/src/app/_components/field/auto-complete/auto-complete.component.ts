@@ -57,7 +57,12 @@ export class AutoCompleteComponent implements OnInit {
   parameters: {};
   hideLabel: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils, private dataPageService: DatapageService,) { }
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils,
+    private dataPageService: DatapageService
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -129,7 +134,7 @@ export class AutoCompleteComponent implements OnInit {
     const displayMode = this.configProps$['displayMode'];
     let datasource = this.configProps$['datasource'];
     let columns = this.configProps$['columns'];
-    this.hideLabel = this.configProps$['hideLabel']
+    this.hideLabel = this.configProps$['hideLabel'];
     const { deferDatasource, datasourceMetadata } = this.configProps$;
     this.helperText = this.configProps$['helperText'];
     this.parameters = this.configProps$?.parameters;
@@ -140,10 +145,9 @@ export class AutoCompleteComponent implements OnInit {
       this.listType = 'datapage';
       datasource = datasourceMetadata.datasource.name;
       this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
-      const displayProp =
-        datasourceMetadata.datasource.propertyForDisplayText.startsWith('@P')
-          ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
-          : datasourceMetadata.datasource.propertyForDisplayText;
+      const displayProp = datasourceMetadata.datasource.propertyForDisplayText.startsWith('@P')
+        ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
+        : datasourceMetadata.datasource.propertyForDisplayText;
       const valueProp = datasourceMetadata.datasource.propertyForValue.startsWith('@P')
         ? datasourceMetadata.datasource.propertyForValue.substring(3)
         : datasourceMetadata.datasource.propertyForValue;
@@ -208,7 +212,6 @@ export class AutoCompleteComponent implements OnInit {
           optionsData.push(obj);
         });
         this.options$ = optionsData;
-
       });
     }
 
@@ -232,7 +235,6 @@ export class AutoCompleteComponent implements OnInit {
 
     return flatParams;
   }
-
 
   getDisplayFieldsMetaData(columnList) {
     const displayColumns = columnList.filter((col) => col.display === 'true');
@@ -277,7 +279,7 @@ export class AutoCompleteComponent implements OnInit {
     this.angularPConnectData.actions.onChange(this, event);
   }
 
-  fieldOnClick(event: any) { }
+  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     let key = '';
@@ -292,7 +294,7 @@ export class AutoCompleteComponent implements OnInit {
     handleEvent(actionsApi, 'changeNblur', propName, value);
     if (this.configProps$?.onRecordChange) {
       event.target.value = value;
-      this.configProps$.onRecordChange(event)
+      this.configProps$.onRecordChange(event);
     }
   }
 
