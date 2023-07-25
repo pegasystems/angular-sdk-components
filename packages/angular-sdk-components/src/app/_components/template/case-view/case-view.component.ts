@@ -8,7 +8,6 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { RegionComponent } from '../../infra/region/region.component';
-import { MaterialVerticalTabsComponent } from '../../designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -17,15 +16,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatMenuModule,
-    MaterialVerticalTabsComponent,
-    ComponentMapperComponent,
-    forwardRef(() => RegionComponent)
-  ]
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, ComponentMapperComponent, forwardRef(() => RegionComponent)]
 })
 export class CaseViewComponent implements OnInit {
   @Input() pConn$: any;

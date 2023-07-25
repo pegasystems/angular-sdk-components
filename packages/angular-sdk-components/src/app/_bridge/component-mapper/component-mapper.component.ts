@@ -20,6 +20,9 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   @Input() name: string = '';
   @Input() props: any;
   @Input() errorMsg: string = '';
+  @Input() outputEvents: any;
+  // parent prop is compulsory when outputEvents is present
+  @Input() parent: any;
 
   constructor() {}
 
@@ -61,6 +64,7 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
           this.componentRef.instance.message = this.errorMsg;
         } else {
           this.bindInputProps();
+          this.bindOutputEvents();
         }
       }
     } else {
@@ -72,10 +76,23 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
 
   bindInputProps() {
     try {
-      for (let propName in this.props) {
+      for (const propName in this.props) {
         if (this.props[propName] !== undefined) {
           this.componentRef.setInput(propName, this.props[propName]);
         }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  bindOutputEvents() {
+    try {
+      for (const event in this.outputEvents) {
+        this.componentRef.instance[event].subscribe((value) => {
+          const callbackFn = this.outputEvents[event].bind(this.parent);
+          callbackFn(value);
+        });
       }
     } catch (e) {
       console.log(e);

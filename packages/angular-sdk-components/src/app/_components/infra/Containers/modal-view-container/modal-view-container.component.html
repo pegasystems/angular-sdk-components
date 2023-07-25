@@ -18,4 +18,9 @@
   </div>
 </div>
 
-<app-cancel-alert [bShowAlert$]="bShowCancelAlert$" (onAlertState$)="onAlertState($event)" [pConn$]="cancelPConn$"></app-cancel-alert>
+<component-mapper
+  name="CancelAlert"
+  [props]="{ bShowAlert$: bShowCancelAlert$, pConn$: cancelPConn$ }"
+  [parent]="this"
+  [outputEvents]="{ onAlertState$: onAlertState }"
+></component-mapper>

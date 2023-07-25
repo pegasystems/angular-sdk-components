@@ -29,7 +29,7 @@ export class AssignmentCardComponent implements OnInit {
   @Input() arChildren$: Array<any>;
   @Input() updateToken$: number;
 
-  @Output() ActionButtonClick: EventEmitter<any> = new EventEmitter();
+  @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
   constructor() {}
 
@@ -46,6 +46,6 @@ export class AssignmentCardComponent implements OnInit {
   }
 
   onActionButtonClick(oData: any) {
-    this.ActionButtonClick.emit(oData);
+    this.actionButtonClick.emit(oData);
   }
 }

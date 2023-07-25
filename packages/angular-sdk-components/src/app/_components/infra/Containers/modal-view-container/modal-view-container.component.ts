@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
-import { CancelAlertComponent } from '../../../field/cancel-alert/cancel-alert.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -18,7 +17,7 @@ import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/c
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
   standalone: true,
-  imports: [CommonModule, CancelAlertComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit {
   @Input() pConn$: any;

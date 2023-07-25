@@ -38,7 +38,13 @@
       <component-mapper name="CaseSummary" [props]="{ pConn$: caseSummaryPConn$ }"></component-mapper>
     </div>
 
-    <app-material-vertical-tabs *ngIf="caseTabs$.length > 1" [tabConfig$]="caseTabs$" (TabClick)="onTabClick($event)"></app-material-vertical-tabs>
+    <component-mapper
+      *ngIf="caseTabs$.length > 1"
+      name="VerticalTabs"
+      [props]="{ tabConfig$: caseTabs$ }"
+      [parent]="this"
+      [outputEvents]="{ tabClick: onTabClick }"
+    ></component-mapper>
   </div>
   <div class="psdk-case-view-main">
     <div *ngIf="!displayOnlyFA$">

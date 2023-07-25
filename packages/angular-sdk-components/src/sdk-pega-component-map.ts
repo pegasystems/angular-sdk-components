@@ -98,7 +98,7 @@ const pegaSdkComponentMap = {
   AppAnnouncement: AppAnnouncementComponent,
   AppShell: AppShellComponent,
   Assignment: AssignmentComponent,
-  AssignmentCard: forwardRef(() => AssignmentCardComponent),
+  AssignmentCard: AssignmentCardComponent,
   Attachment: AttachmentComponent,
   AutoComplete: AutoCompleteComponent,
   //   'Banner': Banner,

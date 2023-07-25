@@ -12,7 +12,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 })
 export class MaterialVerticalTabsComponent implements OnInit {
   @Input() tabConfig$: Array<any>;
-  @Output() TabClick: EventEmitter<any> = new EventEmitter();
+  @Output() tabClick: EventEmitter<any> = new EventEmitter();
 
   selectedTabId$: any;
 
@@ -37,6 +37,6 @@ export class MaterialVerticalTabsComponent implements OnInit {
   }
 
   onChange(tab: any) {
-    this.TabClick.emit(tab);
+    this.tabClick.emit(tab);
   }
 }

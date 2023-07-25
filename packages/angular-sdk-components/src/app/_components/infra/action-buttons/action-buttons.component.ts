@@ -14,13 +14,13 @@ export class ActionButtonsComponent implements OnInit {
   @Input() arMainButtons$: Array<any>;
   @Input() arSecondaryButtons$: Array<any>;
 
-  @Output() ActionButtonClick: EventEmitter<any> = new EventEmitter();
+  @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
   constructor() {}
 
   ngOnInit(): void {}
 
   buttonClick(sAction, sButtonType) {
-    this.ActionButtonClick.emit({ action: sAction, buttonType: sButtonType });
+    this.actionButtonClick.emit({ action: sAction, buttonType: sButtonType });
   }
 }

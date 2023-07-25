@@ -22,30 +22,24 @@
                 <label *ngIf="subStep.visited_status != 'current'" class="psdk-sub-step-not-current">{{ subStep.name }}</label>
               </div>
               <div *ngIf="subStep.visited_status == 'current'">
-                <app-assignment-card
-                  [pConn$]="pConn$"
-                  [formGroup$]="formGroup$"
-                  [arChildren$]="arChildren$"
-                  [arMainButtons$]="arMainButtons$"
-                  [arSecondaryButtons$]="arSecondaryButtons$"
-                  (ActionButtonClick)="onActionButtonClick($event)"
-                >
-                </app-assignment-card>
+                <component-mapper
+                  name="AssignmentCard"
+                  [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
+                  [parent]="this"
+                  [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+                ></component-mapper>
               </div>
             </li>
           </ul>
         </ng-container>
 
         <ng-container *ngIf="!mainStep?.steps && mainStep.visited_status == 'current'">
-          <app-assignment-card
-            [pConn$]="pConn$"
-            [formGroup$]="formGroup$"
-            [arChildren$]="arChildren$"
-            [arMainButtons$]="arMainButtons$"
-            [arSecondaryButtons$]="arSecondaryButtons$"
-            (ActionButtonClick)="onActionButtonClick($event)"
-          >
-          </app-assignment-card>
+          <component-mapper
+            name="AssignmentCard"
+            [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
+            [parent]="this"
+            [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+          ></component-mapper>
         </ng-container>
       </div>
     </div>
@@ -80,30 +74,24 @@
               <label *ngIf="subStep.visited_status != 'current'" class="psdk-sub-step-not-current">{{ subStep.name }}</label>
             </div>
             <div *ngIf="subStep.visited_status == 'current'">
-              <app-assignment-card
-                [pConn$]="pConn$"
-                [formGroup$]="formGroup$"
-                [arChildren$]="arChildren$"
-                [arMainButtons$]="arMainButtons$"
-                [arSecondaryButtons$]="arSecondaryButtons$"
-                (ActionButtonClick)="onActionButtonClick($event)"
-              >
-              </app-assignment-card>
+              <component-mapper
+                name="AssignmentCard"
+                [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
+                [parent]="this"
+                [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+              ></component-mapper>
             </div>
           </li>
         </ul>
       </ng-container>
 
       <ng-container *ngIf="!mainStep?.steps && mainStep.visited_status == 'current'">
-        <app-assignment-card
-          [pConn$]="pConn$"
-          [formGroup$]="formGroup$"
-          [arChildren$]="arChildren$"
-          [arMainButtons$]="arMainButtons$"
-          [arSecondaryButtons$]="arSecondaryButtons$"
-          (ActionButtonClick)="onActionButtonClick($event)"
-        >
-        </app-assignment-card>
+        <component-mapper
+          name="AssignmentCard"
+          [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
+          [parent]="this"
+          [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+        ></component-mapper>
       </ng-container>
     </div>
   </div>
