@@ -4,6 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
+      
       <div class="mat-form-field-infix" *ngIf="showLabel$">
         <span>
           <label class="mat-form-field-label psdk-label-readonly">{{ label$ }}</label>
@@ -31,7 +32,8 @@
           >{{ caption$ }}</mat-checkbox
         >
       </div>
-      <mat-hint>{{helperText}}</mat-hint>
+      <mat-hint *ngIf="helperText">{{helperText}}</mat-hint>
+      <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
     </div>
   </div>
 </ng-template>

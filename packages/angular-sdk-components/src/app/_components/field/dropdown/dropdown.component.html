@@ -4,7 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
-      <mat-form-field class="psdk-full-width">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-select
           [value]="value$"
           [required]="bRequired$"
@@ -17,7 +17,6 @@
           </mat-option>
         </mat-select>
         <mat-label>{{ label$ }}</mat-label>
-        <mat-hint>{{ helperText }}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

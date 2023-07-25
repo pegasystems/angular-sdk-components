@@ -4,7 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
-      <mat-form-field class="psdk-full-width">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
         <!-- <span matPrefix>% &nbsp;</span> -->
         <input
@@ -20,7 +20,6 @@
           (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
-        <mat-hint>{{helperText}}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

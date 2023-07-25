@@ -5,7 +5,7 @@
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div [formGroup]="formGroup$">
       <div *ngIf="bVisible$">
-        <mat-form-field class="psdk-full-width">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
           <textarea
             matInput
             rows="5"
@@ -18,7 +18,7 @@
             [maxLength]="nMaxLength$"
             (change)="fieldOnChange($event)"
           ></textarea>
-          <mat-hint>{{helperText}}</mat-hint>
+          <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
         </mat-form-field>
       </div>
     </div>

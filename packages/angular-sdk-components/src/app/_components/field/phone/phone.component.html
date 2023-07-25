@@ -5,7 +5,7 @@
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div #f="ngForm" [formGroup]="formGroup$">
       <div class="psdk-full-width">
-        <mat-form-field class="psdk-full-width">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
           <ngx-mat-intl-tel-input
             [attr.data-test-id]="testId"
             [formControlName]="controlName$"
@@ -16,7 +16,6 @@
             (blur)="fieldOnBlur($event)"
           >
           </ngx-mat-intl-tel-input>
-          <mat-hint>{{helperText}}</mat-hint>
           <mat-error *ngIf="fieldControl.invalid && afterBlur">{{ getErrorMessage() }}</mat-error>
         </mat-form-field>
       </div>
