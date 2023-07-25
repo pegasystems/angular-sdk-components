@@ -36,6 +36,7 @@ export class PhoneComponent implements OnInit {
   testId: string;
   separateDialCode = false;
   afterBlur: boolean;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -104,6 +105,7 @@ export class PhoneComponent implements OnInit {
     if (this.configProps$['value'] != undefined) {
       this.value$ = this.configProps$['value'];
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

@@ -20,6 +20,7 @@
           (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
+        <mat-hint>{{helperText}}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

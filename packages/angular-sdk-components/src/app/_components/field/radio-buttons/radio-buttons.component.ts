@@ -37,6 +37,7 @@ export class RadioButtonsComponent implements OnInit {
   options$: Array<any>;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -102,6 +103,7 @@ export class RadioButtonsComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

@@ -34,6 +34,7 @@ export class IntegerComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl<number | null>(null, null);
 
@@ -101,6 +102,7 @@ export class IntegerComponent implements OnInit {
       }
       this.value$ = nValue;
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

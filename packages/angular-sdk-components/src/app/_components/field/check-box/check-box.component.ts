@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -11,7 +12,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit {
   @Input() pConn$: any;
@@ -36,6 +37,7 @@ export class CheckBoxComponent implements OnInit {
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -102,6 +104,7 @@ export class CheckBoxComponent implements OnInit {
     this.displayMode$ = this.configProps$['displayMode'];
 
     this.caption$ = this.configProps$['caption'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

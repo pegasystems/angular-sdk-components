@@ -43,6 +43,7 @@ export class DateComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -119,6 +120,7 @@ export class DateComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

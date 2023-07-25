@@ -33,6 +33,7 @@ export class UrlComponent implements OnInit {
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -97,6 +98,7 @@ export class UrlComponent implements OnInit {
 
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

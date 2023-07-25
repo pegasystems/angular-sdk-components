@@ -35,6 +35,7 @@ export class TextAreaComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -100,6 +101,7 @@ export class TextAreaComponent implements OnInit {
     this.testId = this.configProps$['testId'];
     this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

@@ -35,6 +35,7 @@ export class TextInputComponent implements OnInit {
   testId: string = '';
   bHasForm$: boolean = true;
   componentReference: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -109,6 +110,7 @@ export class TextInputComponent implements OnInit {
     if (this.configProps$['visibility'] != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

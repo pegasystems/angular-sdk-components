@@ -47,6 +47,7 @@ export class UserReferenceComponent implements OnInit {
   showAsFormattedText$: boolean;
   displayAs$: string;
   testId: string;
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -113,11 +114,12 @@ export class UserReferenceComponent implements OnInit {
     let props = this.pConn$.getConfigProps();
     this.testId = props['testId'];
 
-    const { label, displayAs, value, showAsFormattedText } = props;
+    const { label, displayAs, value, showAsFormattedText, helperText } = props;
 
     this.label$ = label;
     this.showAsFormattedText$ = showAsFormattedText;
     this.displayAs$ = displayAs;
+    this.helperText = helperText;
 
     let { readOnly, required, disabled } = props;
     [this.bReadonly$, this.bRequired$, disabled] = [readOnly, required, disabled].map(

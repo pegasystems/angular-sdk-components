@@ -22,6 +22,7 @@
         />
         <mat-datepicker-toggle matSuffix [for]="pegadate"></mat-datepicker-toggle>
         <mat-datepicker #pegadate [startAt]="value$"></mat-datepicker>
+        <mat-hint>{{helperText}}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

@@ -34,6 +34,7 @@ export class DateTimeComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   testId: string = '';
+  helperText: string;
 
   fieldControl = new FormControl('', null);
 
@@ -97,6 +98,7 @@ export class DateTimeComponent implements OnInit {
       const value = this.configProps$['value'];
       this.value$ = value ? value.replace('Z', '') : value;
     }
+    this.helperText = this.configProps$['helperText'];
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
