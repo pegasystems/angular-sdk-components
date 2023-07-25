@@ -4,7 +4,6 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -12,7 +11,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, TextComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit {
   @Input() pConn$: any;

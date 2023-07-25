@@ -5,7 +5,7 @@ import * as isEqual from 'fast-deep-equal';
 import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { CancelAlertComponent } from '../../../field/cancel-alert/cancel-alert.component';
-import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/app/_bridge/component-mapper/component-mapper.component';
+import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with

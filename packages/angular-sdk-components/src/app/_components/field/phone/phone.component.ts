@@ -7,21 +7,13 @@ import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
 import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
-import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 @Component({
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    NgxMatIntlTelInputComponent,
-    TextComponent,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent implements OnInit {
   @Input() pConn$: any;

@@ -8,7 +8,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -23,7 +22,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    TextComponent,
     forwardRef(() => ComponentMapperComponent)
   ]
 })

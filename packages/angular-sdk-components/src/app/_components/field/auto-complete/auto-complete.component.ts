@@ -8,7 +8,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -25,7 +24,6 @@ import { handleEvent } from '../../../_helpers/event-util';
     MatInputModule,
     MatAutocompleteModule,
     MatOptionModule,
-    TextComponent,
     forwardRef(() => ComponentMapperComponent)
   ]
 })

@@ -5,7 +5,7 @@ import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { ViewComponent } from '../../view/view.component';
-import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/app/_bridge/component-mapper/component-mapper.component';
+import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -46,11 +46,7 @@ export class ViewContainerComponent implements OnInit {
   state: any;
   dispatchObject: any;
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private psService: ProgressSpinnerService,
-    private ngZone: NgZone
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
 
   ngOnInit() {
     if (this.PCore$ == null) {

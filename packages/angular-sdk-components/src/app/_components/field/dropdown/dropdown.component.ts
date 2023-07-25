@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { TextComponent } from '../text/text.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 
@@ -16,15 +15,7 @@ import { handleEvent } from '../../../_helpers/event-util';
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    TextComponent,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DropdownComponent implements OnInit {
   @Input() pConn$: any;
@@ -113,7 +104,7 @@ export class DropdownComponent implements OnInit {
     this.displayMode$ = this.configProps$['displayMode'];
     this.label$ = this.configProps$['label'];
     this.helperText = this.configProps$['helperText'];
-    this.hideLabel = this.configProps$['hideLabel']
+    this.hideLabel = this.configProps$['hideLabel'];
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$['required'] != null) {
@@ -176,7 +167,7 @@ export class DropdownComponent implements OnInit {
     const propName = this.pConn$?.getStateProps().value;
     handleEvent(actionsApi, 'changeNblur', propName, event.value);
     if (this.configProps$?.onRecordChange) {
-      this.configProps$.onRecordChange(event)
+      this.configProps$.onRecordChange(event);
     }
   }
 
