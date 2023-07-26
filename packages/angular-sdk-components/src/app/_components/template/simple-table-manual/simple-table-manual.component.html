@@ -119,10 +119,11 @@
       </mat-form-field>
     </div>
 
-    <app-action-buttons
-      [arMainButtons$]="arFilterMainButtons$"
-      [arSecondaryButtons$]="arFilterSecondaryButtons$"
-      (actionButtonClick)="_onFilterActionButtonClick($event)"
-    ></app-action-buttons>
+    <component-mapper
+      name="ActionButtons"
+      [props]="{ arMainButtons$: arFilterMainButtons$, arSecondaryButtons$: arFilterSecondaryButtons$ }"
+      [parent]="this"
+      [outputEvents]="{ actionButtonClick: _onFilterActionButtonClick }"
+    ></component-mapper>
   </div>
 </div>

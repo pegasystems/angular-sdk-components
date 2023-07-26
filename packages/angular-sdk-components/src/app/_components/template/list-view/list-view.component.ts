@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatOptionModule } from '@angular/material/core';
@@ -17,7 +17,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
-import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
@@ -54,7 +54,7 @@ export class Group {
     MatSelectModule,
     MatOptionModule,
     MatDatepickerModule,
-    ActionButtonsComponent
+    forwardRef(() => ComponentMapperComponent)
   ]
 })
 export class ListViewComponent implements OnInit {
@@ -642,11 +642,7 @@ export class ListViewComponent implements OnInit {
   filterData(item: any) {
     let bKeep = true;
     for (let filterObj of this.filterByColumns) {
-      if (
-        filterObj.containsFilterValue != '' ||
-        filterObj.containsFilter == 'null' ||
-        filterObj.containsFilter == 'notnull'
-      ) {
+      if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
         let value: any;
         let filterValue: any;
 
@@ -654,10 +650,7 @@ export class ListViewComponent implements OnInit {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            value =
-              item[filterObj.ref] != null ?? item[filterObj.ref] != ''
-                ? this.utils.getSeconds(item[filterObj.ref])
-                : null;
+            value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? this.utils.getSeconds(item[filterObj.ref]) : null;
             filterValue =
               filterObj.containsFilterValue != null && filterObj.containsFilterValue != ''
                 ? this.utils.getSeconds(filterObj.containsFilterValue)

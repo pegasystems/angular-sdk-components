@@ -13,9 +13,10 @@
   <br />
   <div class="psdk-case-view-divider"></div>
 
-  <app-action-buttons
-    [arMainButtons$]="arMainButtons$"
-    [arSecondaryButtons$]="arSecondaryButtons$"
-    (actionButtonClick)="onActionButtonClick($event)"
-  ></app-action-buttons>
+  <component-mapper
+    name="ActionButtons"
+    [props]="{ arMainButtons$, arSecondaryButtons$ }"
+    [parent]="this"
+    [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+  ></component-mapper>
 </div>

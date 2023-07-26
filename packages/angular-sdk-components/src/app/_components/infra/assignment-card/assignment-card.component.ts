@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@ang
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ReferenceComponent } from '../reference/reference.component';
-import { ActionButtonsComponent } from '../action-buttons/action-buttons.component';
 import { RegionComponent } from '../region/region.component';
 import { CaseCreateStageComponent } from '../../designSystemExtension/case-create-stage/case-create-stage.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -12,14 +11,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './assignment-card.component.html',
   styleUrls: ['./assignment-card.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CaseCreateStageComponent,
-    RegionComponent,
-    ActionButtonsComponent,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+  imports: [CommonModule, ReactiveFormsModule, CaseCreateStageComponent, RegionComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentCardComponent implements OnInit {
   @Input() pConn$: any;

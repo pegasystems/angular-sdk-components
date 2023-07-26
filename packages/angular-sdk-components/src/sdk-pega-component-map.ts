@@ -76,6 +76,7 @@ import { AttachmentComponent } from './app/_components/widget/attachment/attachm
 import { CaseHistoryComponent } from './app/_components/widget/case-history/case-history.component';
 import { FileUtilityComponent } from './app/_components/widget/file-utility/file-utility.component';
 import { TodoComponent } from './app/_components/widget/todo/todo.component';
+import { MaterialCaseSummaryComponent } from './app/_components/designSystemExtension/material-case-summary/material-case-summary.component';
 import { MaterialDetailsFieldsComponent } from './app/_components/designSystemExtension/material-details-fields/material-details-fields.component';
 import { MaterialSummaryItemComponent } from './app/_components/designSystemExtension/material-summary-item/material-summary-item.component';
 import { MaterialSummaryListComponent } from './app/_components/designSystemExtension/material-summary-list/material-summary-list.component';
@@ -106,7 +107,7 @@ const pegaSdkComponentMap = {
   CancelAlert: CancelAlertComponent,
   CaseHistory: CaseHistoryComponent,
   CaseSummary: CaseSummaryComponent,
-  //   'CaseSummaryFields': CaseSummaryFields,
+  CaseSummaryFields: MaterialCaseSummaryComponent,
   CaseView: CaseViewComponent,
   //   'CaseViewActionsMenu': CaseViewActionsMenu,
   Checkbox: CheckBoxComponent,

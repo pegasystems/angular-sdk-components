@@ -6,7 +6,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import download from 'downloadjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
 import { ListUtilityComponent } from '../list-utility/list-utility.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -15,15 +14,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    ListUtilityComponent,
-    MatButtonModule,
-    ActionButtonsComponent,
-    MatFormFieldModule,
-    MatInputModule,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+  imports: [CommonModule, ListUtilityComponent, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit {
   @Input() pConn$: any;

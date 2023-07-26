@@ -1,15 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
-import { MaterialCaseSummaryComponent } from '../../designSystemExtension/material-case-summary/material-case-summary.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-case-summary',
   templateUrl: './case-summary.component.html',
   styleUrls: ['./case-summary.component.scss'],
   standalone: true,
-  imports: [MaterialCaseSummaryComponent]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseSummaryComponent implements OnInit {
   @Input() pConn$: any;

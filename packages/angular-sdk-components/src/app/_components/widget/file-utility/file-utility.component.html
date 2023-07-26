@@ -26,11 +26,12 @@
       ></component-mapper>
     </div>
 
-    <app-action-buttons
-      [arMainButtons$]="arFileMainButtons$"
-      [arSecondaryButtons$]="arFileSecondaryButtons$"
-      (actionButtonClick)="onFileActionButtonClick($event)"
-    ></app-action-buttons>
+    <component-mapper
+      name="ActionButtons"
+      [props]="{ arMainButtons$: arFileMainButtons$, arSecondaryButtons$: arFileSecondaryButtons$ }"
+      [parent]="this"
+      [outputEvents]="{ actionButtonClick: onFileActionButtonClick }"
+    ></component-mapper>
   </div>
 </div>
 
@@ -67,11 +68,12 @@
       </div>
     </div>
 
-    <app-action-buttons
-      [arMainButtons$]="arLinkMainButtons$"
-      [arSecondaryButtons$]="arLinkSecondaryButtons$"
-      (actionButtonClick)="onLinkActionButtonClick($event)"
-    ></app-action-buttons>
+    <component-mapper
+      name="ActionButtons"
+      [props]="{ arMainButtons$: arLinkMainButtons$, arSecondaryButtons$: arLinkSecondaryButtons$ }"
+      [parent]="this"
+      [outputEvents]="{ actionButtonClick: onLinkActionButtonClick }"
+    ></component-mapper>
   </div>
 </div>
 

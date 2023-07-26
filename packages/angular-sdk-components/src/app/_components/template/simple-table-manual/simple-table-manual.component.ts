@@ -11,7 +11,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ActionButtonsComponent } from '../../infra/action-buttons/action-buttons.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
@@ -45,7 +44,6 @@ export class Group {
     MatOptionModule,
     MatSelectModule,
     MatInputModule,
-    ActionButtonsComponent,
     forwardRef(() => ComponentMapperComponent)
   ]
 })
@@ -546,11 +544,7 @@ export class SimpleTableManualComponent implements OnInit {
   filterData(item: any) {
     let bKeep = true;
     for (let filterObj of this.filterByColumns) {
-      if (
-        filterObj.containsFilterValue != '' ||
-        filterObj.containsFilter == 'null' ||
-        filterObj.containsFilter == 'notnull'
-      ) {
+      if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
         let value: any;
         let filterValue: any;
 
@@ -558,10 +552,7 @@ export class SimpleTableManualComponent implements OnInit {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            value =
-              item[filterObj.ref] != null ?? item[filterObj.ref] != ''
-                ? this.utils.getSeconds(item[filterObj.ref])
-                : null;
+            value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? this.utils.getSeconds(item[filterObj.ref]) : null;
             filterValue =
               filterObj.containsFilterValue != null && filterObj.containsFilterValue != ''
                 ? this.utils.getSeconds(filterObj.containsFilterValue)
@@ -907,9 +898,7 @@ export class SimpleTableManualComponent implements OnInit {
 
   addRecord() {
     if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$
-        .getListActions()
-        .insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
+      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }
@@ -933,9 +922,7 @@ export class SimpleTableManualComponent implements OnInit {
         const isDatapage = referenceListData.startsWith('D_');
         const pageReferenceValue = isDatapage
           ? `${referenceListData}[${index}]`
-          : `${this.pConn$.getPageReference()}${referenceListData.substring(
-              referenceListData.lastIndexOf('.')
-            )}[${index}]`;
+          : `${this.pConn$.getPageReference()}${referenceListData.substring(referenceListData.lastIndexOf('.'))}[${index}]`;
         const config = {
           meta: item,
           options: {
