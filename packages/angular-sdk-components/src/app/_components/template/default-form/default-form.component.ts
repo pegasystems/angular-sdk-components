@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { TemplateUtils } from '../../../_helpers/template-utils';
 
 @Component({
   selector: 'app-default-form',
@@ -21,6 +22,7 @@ export class DefaultFormComponent implements OnInit {
   template: any;
   showLabel: any;
   label: any;
+  instructions: string;
 
   NO_HEADER_TEMPLATES = [
     'SubTabs',
@@ -33,7 +35,7 @@ export class DefaultFormComponent implements OnInit {
     'Confirmation'
   ];
   
-  constructor() {}
+  constructor(private templateUtils: TemplateUtils) {}
 
   ngOnInit(): void {
     let configProps = this.pConn$.getConfigProps();
@@ -42,6 +44,8 @@ export class DefaultFormComponent implements OnInit {
     this.showLabel = propToUse?.showLabel;
     this.label = propToUse?.label;
     let kids = this.pConn$.getChildren();
+    this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
+    console.log("instructions" + this.instructions);
 
     let numCols = configProps.NumCols ? configProps.NumCols : '1';
     switch (numCols) {
