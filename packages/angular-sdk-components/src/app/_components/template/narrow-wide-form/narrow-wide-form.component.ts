@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { RegionComponent } from '../../infra/region/region.component';
@@ -20,6 +20,18 @@ export class NarrowWideFormComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
+    this.updateSelf();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { pConn$ } = changes;
+
+    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.arChildren$ = this.pConn$.getChildren();
   }

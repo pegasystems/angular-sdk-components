@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
 import { MaterialUtilityComponent } from '../../designSystemExtension/material-utility/material-utility.component';
 
@@ -9,7 +9,7 @@ import { MaterialUtilityComponent } from '../../designSystemExtension/material-u
   standalone: true,
   imports: [MaterialUtilityComponent]
 })
-export class UtilityComponent implements OnInit {
+export class UtilityComponent implements OnInit, OnChanges {
   @Input() pConn$: any;
 
   PCore$: any;
@@ -27,6 +27,18 @@ export class UtilityComponent implements OnInit {
       this.PCore$ = window.PCore;
     }
 
+    this.updateSelf();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { pConn$ } = changes;
+
+    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
     this.headerIcon$ = this.configProps$['headerIcon'];

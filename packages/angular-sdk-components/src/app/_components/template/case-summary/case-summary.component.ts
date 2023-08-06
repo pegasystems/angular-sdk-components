@@ -63,7 +63,6 @@ export class CaseSummaryComponent implements OnInit {
 
     // ONLY call updateSelf when the component should update
     if (bUpdateSelf) {
-      this.initComponent();
       this.updateSelf();
     }
   }

@@ -1,44 +1,11 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { getAllFields } from '../../template/utils';
 import { ReferenceComponent } from '../reference/reference.component';
-import { AppShellComponent } from '../../template/app-shell/app-shell.component';
-import { FeedContainerComponent } from '../../widget/feed-container/feed-container.component';
-import { StagesComponent } from '../stages/stages.component';
-import { PageComponent } from '../../template/page/page.component';
-import { ViewContainerComponent } from '../Containers/view-container/view-container.component';
-import { RegionComponent } from '../region/region.component';
-import { FlowContainerComponent } from '../Containers/flow-container/flow-container.component';
-import { DataReferenceComponent } from '../../template/data-reference/data-reference.component';
-import { ListPageComponent } from '../../template/list-page/list-page.component';
-import { CaseViewComponent } from '../../template/case-view/case-view.component';
-import { OneColumnTabComponent } from '../../template/one-column-tab/one-column-tab.component';
-import { SimpleTableComponent } from '../../template/simple-table/simple-table.component';
-import { ListViewComponent } from '../../template/list-view/list-view.component';
-import { DetailsThreeColumnComponent } from '../../template/details-three-column/details-three-column.component';
-import { DetailsTwoColumnComponent } from '../../template/details-two-column/details-two-column.component';
-import { DetailsOneColumnComponent } from '../../template/details-one-column/details-one-column.component';
-import { DetailsNarrowWideComponent } from '../../template/details-narrow-wide/details-narrow-wide.component';
-import { DetailsWideNarrowComponent } from '../../template/details-wide-narrow/details-wide-narrow.component';
-import { DetailsSubTabsComponent } from '../../template/details-sub-tabs/details-sub-tabs.component';
-import { DetailsComponent } from '../../template/details/details.component';
-import { CaseSummaryComponent } from '../../template/case-summary/case-summary.component';
-import { ThreeColumnPageComponent } from '../../template/three-column-page/three-column-page.component';
-import { ThreeColumnComponent } from '../../template/three-column/three-column.component';
-import { TwoColumnPageComponent } from '../../template/two-column-page/two-column-page.component';
-import { TwoColumnComponent } from '../../template/two-column/two-column.component';
-import { TwoColumnTabComponent } from '../../template/two-column-tab/two-column-tab.component';
-import { OneColumnPageComponent } from '../../template/one-column-page/one-column-page.component';
-import { OneColumnComponent } from '../../template/one-column/one-column.component';
-import { WideNarrowPageComponent } from '../../template/wide-narrow-page/wide-narrow-page.component';
-import { WideNarrowFormComponent } from '../../template/wide-narrow-form/wide-narrow-form.component';
-import { NarrowWideFormComponent } from '../../template/narrow-wide-form/narrow-wide-form.component';
-import { DefaultFormComponent } from '../../template/default-form/default-form.component';
-import { ConfirmationComponent } from '../../template/confirmation/confirmation.component';
-import { SubTabsComponent } from '../../template/sub-tabs/sub-tabs.component';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -51,43 +18,7 @@ import { SubTabsComponent } from '../../template/sub-tabs/sub-tabs.component';
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    DefaultFormComponent,
-    NarrowWideFormComponent,
-    WideNarrowFormComponent,
-    WideNarrowPageComponent,
-    OneColumnComponent,
-    OneColumnPageComponent,
-    TwoColumnComponent,
-    TwoColumnPageComponent,
-    TwoColumnTabComponent,
-    ThreeColumnComponent,
-    ThreeColumnPageComponent,
-    CaseSummaryComponent,
-    DetailsComponent,
-    DetailsOneColumnComponent,
-    DetailsTwoColumnComponent,
-    DetailsThreeColumnComponent,
-    DetailsNarrowWideComponent,
-    DetailsWideNarrowComponent,
-    DetailsSubTabsComponent,
-    ListViewComponent,
-    SimpleTableComponent,
-    OneColumnTabComponent,
-    CaseViewComponent,
-    ListPageComponent,
-    DataReferenceComponent,
-    FlowContainerComponent,
-    ViewContainerComponent,
-    PageComponent,
-    StagesComponent,
-    FeedContainerComponent,
-    AppShellComponent,
-    ConfirmationComponent,
-    SubTabsComponent,
-    forwardRef(() => RegionComponent)
-  ]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit {
   @Input() pConn$: any;
@@ -111,14 +42,6 @@ export class ViewComponent implements OnInit {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    // Then, continue on with other initialization
-
-    // const bUpdateSelf = this.angularPConnect.shouldComponentUpdate( this );
-
-    // // ONLY call updateSelf when the component should update
-    // if (bUpdateSelf) {
-    //   this.updateSelf();
-    // }
     this.checkAndUpdate();
   }
 
@@ -138,8 +61,12 @@ export class ViewComponent implements OnInit {
     }
   }
 
-  ngOnChanges(data: any) {
-    this.checkAndUpdate();
+  ngOnChanges(changes: SimpleChanges) {
+    const { pConn$ } = changes;
+
+    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
+      this.checkAndUpdate();
+    }
   }
 
   updateSelf() {

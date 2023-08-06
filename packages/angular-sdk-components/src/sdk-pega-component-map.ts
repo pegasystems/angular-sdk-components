@@ -46,6 +46,7 @@ import { DataReferenceComponent } from './app/_components/template/data-referenc
 import { DefaultFormComponent } from './app/_components/template/default-form/default-form.component';
 import { DetailsComponent } from './app/_components/template/details/details.component';
 import { DetailsNarrowWideComponent } from './app/_components/template/details-narrow-wide/details-narrow-wide.component';
+import { DetailsOneColumnComponent } from './app/_components/template/details-one-column/details-one-column.component';
 import { DetailsThreeColumnComponent } from './app/_components/template/details-three-column/details-three-column.component';
 import { DetailsTwoColumnComponent } from './app/_components/template/details-two-column/details-two-column.component';
 import { DetailsWideNarrowComponent } from './app/_components/template/details-wide-narrow/details-wide-narrow.component';
@@ -122,6 +123,7 @@ const pegaSdkComponentMap = {
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
   DetailsFields: MaterialDetailsFieldsComponent,
+  DetailsOneColumn: DetailsOneColumnComponent,
   DetailsSubTabs: DetailsSubTabsComponent,
   DetailsThreeColumn: DetailsThreeColumnComponent,
   DetailsTwoColumn: DetailsTwoColumnComponent,
@@ -160,7 +162,7 @@ const pegaSdkComponentMap = {
   //   'QuickCreate': QuickCreate,
   reference: ReferenceComponent,
   RadioButtons: RadioButtonsComponent,
-  Region: forwardRef(() => RegionComponent),
+  Region: RegionComponent,
   RootContainer: RootContainerComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,

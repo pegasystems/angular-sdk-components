@@ -6,7 +6,7 @@ import { ErrorMessagesService } from '../_messages/error-messages.service';
 import { Utils } from '../_helpers/utils';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AngularPConnectService {
   /**
@@ -123,7 +123,7 @@ export class AngularPConnectService {
 
     return {
       ...compProps,
-      ...addProps,
+      ...addProps
     };
   }
 
@@ -192,7 +192,7 @@ export class AngularPConnectService {
       compID: '',
       unsubscribeFn: null,
       validateMessage: '',
-      actions: null,
+      actions: null
     };
 
     if (inComp === null || inCallback === null) {

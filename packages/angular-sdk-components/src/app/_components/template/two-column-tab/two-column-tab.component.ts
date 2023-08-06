@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { RegionComponent } from '../../infra/region/region.component';
 import { ViewComponent } from '../../infra/view/view.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-two-column-tab',
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RegionComponent, forwardRef(() => ViewComponent)]
 })
-export class TwoColumnTabComponent implements OnInit {
+export class TwoColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: any;
   @Input() formGroup$: FormGroup;
 
@@ -21,6 +21,18 @@ export class TwoColumnTabComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
+    this.updateSelf();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { pConn$ } = changes;
+
+    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.arChildren$ = this.pConn$.getChildren();
   }
