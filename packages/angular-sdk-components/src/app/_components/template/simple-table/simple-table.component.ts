@@ -4,14 +4,13 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { FieldGroupTemplateComponent } from '../field-group-template/field-group-template.component';
 
 @Component({
   selector: 'app-simple-table',
   templateUrl: './simple-table.component.html',
   styleUrls: ['./simple-table.component.scss'],
   standalone: true,
-  imports: [CommonModule, FieldGroupTemplateComponent, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableComponent implements OnInit {
   @Input() pConn$: any;

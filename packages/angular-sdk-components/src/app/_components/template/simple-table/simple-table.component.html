@@ -1,10 +1,6 @@
 <ng-container *ngIf="bVisible$">
   <div *ngIf="fieldGroupProps; else table">
-    <!-- <component-mapper
-      name="FieldGroupTemplate"
-      [props]="{ configProps$: fieldGroupProps, pConn$, formGroup$ }"
-    ></component-mapper> -->
-    <app-field-group-template [configProps$]="fieldGroupProps" [pConn$]="pConn$" [formGroup$]="formGroup$"></app-field-group-template>
+    <component-mapper name="FieldGroupTemplate" [props]="{ configProps$: fieldGroupProps, pConn$, formGroup$ }"></component-mapper>
   </div>
   <ng-template #table>
     <component-mapper name="SimpleTableManual" [props]="{ pConn$, formGroup$ }"></component-mapper>
