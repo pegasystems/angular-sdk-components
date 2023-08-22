@@ -1,7 +1,6 @@
 <div style="text-align: left" class="psdk-flow-container-top">
   <div *ngIf="!bShowConfirm">
     <h2 *ngIf="!todo_showTodo$">{{ containerName$ }}</h2>
-    <h5 *ngIf="instructionText$ !== ''">{{ instructionText$ }}</h5>
     <div *ngIf="todo_showTodo$">
       <component-mapper
         name="Todo"

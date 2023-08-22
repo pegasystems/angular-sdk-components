@@ -38,7 +38,6 @@ export class FlowContainerComponent implements OnInit {
   arChildren$: Array<any>;
   itemKey$: string = '';
   containerName$: string;
-  instructionText$: string;
   buildName$: string;
 
   //todo
@@ -246,7 +245,6 @@ export class FlowContainerComponent implements OnInit {
     //this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
       this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name;
-      this.instructionText$ = oWorkData.caseInfo.assignments[0].instructions;
     }
 
     // turn off spinner
@@ -512,7 +510,6 @@ export class FlowContainerComponent implements OnInit {
               let oWorkData = oWorkItem.getDataObject();
 
               this.containerName$ = this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name;
-              this.instructionText$ = oWorkData.caseInfo.assignments?.[0].instructions;
             });
           }
         }
