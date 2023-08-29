@@ -219,36 +219,23 @@ mat-horizontal-stepper {
 .psdk-horizontal-step-label {
   color: rgba(0, 0, 0, 0.54);
   display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   min-width: 50px;
   vertical-align: middle;
   font-size: 14px;
   font-weight: 500;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  white-space: initial;
 }
 
 .psdk-horizontal-step-label-selected {
   color: rgba(0, 0, 0, 0.87);
   display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   min-width: 50px;
   vertical-align: middle;
   font-size: 14px;
   font-weight: 500;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  white-space: initial;
 }
 
-.psdk-horizontal-step-text-label {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  display: block;
-}
 
 .psdk-horizontal-step-line {
   border-top-color: rgba(0, 0, 0, 0.12);
@@ -259,3 +246,4 @@ mat-horizontal-stepper {
   margin: 0 -16px;
   min-width: 32px;
 }
+
