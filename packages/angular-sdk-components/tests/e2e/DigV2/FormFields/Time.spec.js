@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('E2E test', () => {
   let attributes;
 
-  test('should login, create case and run the Decimal tests', async ({ page }) => {
+  test('should login, create case and run the Time tests', async ({ page }) => {
     await common.Login(
       config.config.apps.digv2.user.username,
       config.config.apps.digv2.user.password,
@@ -41,10 +41,10 @@ test.describe('E2E test', () => {
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
     await formFieldCase.click();
 
-    /** Selecting Decimal from the Category dropdown */
+    /** Selecting TimeOnly from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
-    await page.getByRole('option', { name: 'Decimal' }).click();
+    await page.getByRole('option', { name: 'TimeOnly' }).click();
 
     /** Selecting Required from the Sub Category dropdown */
     let selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
@@ -56,22 +56,21 @@ test.describe('E2E test', () => {
     await expect(page.locator('mat-error')).toBeVisible();
 
     /** Required tests */
-    const requiredDecimal = page.locator(
-      'input[data-test-id="9de2a78c2dd0d4dfff4a9bf33349197d"]'
+    const requiredTime = page.locator(
+      'input[id="mat-input-2"]'
     );
-    requiredDecimal.click();
-    await requiredDecimal.clear();
-    await requiredDecimal.type("12345");
-    requiredDecimal.blur()
-    await expect(page.locator('mat-error')).toBeHidden();
-
-    attributes = await common.getAttributes(requiredDecimal);
+    const date = new Date();
+    const time = `${date.getHours()}${date.getMinutes()}AM`;
+    requiredTime.type(time);
+    attributes = await common.getAttributes(requiredTime);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notRequiredDecimal= page.locator(
-      'input[data-test-id="ec06f580c56642afef52547b6755695e"]'
+    await expect(page.locator('mat-error')).toBeHidden();
+
+    const notRequiredTime = page.locator(
+      'input[id="mat-input-1"]'
     );
-    attributes = await common.getAttributes(notRequiredDecimal);
+    attributes = await common.getAttributes(notRequiredTime);
     await expect(attributes.includes('required')).toBeFalsy();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -80,26 +79,26 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledDecimal = page.locator(
-      'input[data-test-id="a8216a966548578ad7e015a05ae518f5"]'
+    const alwaysDisabledTime = page.locator(
+      'input[id="mat-input-3"]'
     );
-    attributes = await common.getAttributes(alwaysDisabledDecimal);
+    attributes = await common.getAttributes(alwaysDisabledTime);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDecimal = page.locator(
-      'input[data-test-id="fdd7f2ac36278186ac15c11d4c30ece1"]'
+    const conditionallyDisabledTime = page.locator(
+      'input[id="mat-input-4"]'
     );
-    attributes = await common.getAttributes(conditionallyDisabledDecimal);
+    attributes = await common.getAttributes(conditionallyDisabledTime);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
     } else {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledDecimal = page.locator(
-      'input[data-test-id="e91313ec779184e1b172bdc7870f3d4c"]'
+    const neverDisabledTime = page.locator(
+      'input[id="mat-input-5"]'
     );
-    attributes = await common.getAttributes(neverDisabledDecimal);
+    attributes = await common.getAttributes(neverDisabledTime);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Selecting Update from the Sub Category dropdown */
@@ -108,18 +107,18 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Update' }).click();
 
     /** Update tests */
-    // const readonlyDecimal = page.locator(
-    //   'input[data-test-id="acdcc5f01c940f07cf14373612721a0c"]'
+    // const readonlyTime = page.locator(
+    //   'input[data-test-id="084f8187169ed36f03937ecfd6e67087"]'
     // );
-    // attributes = await common.getAttributes(readonlyDecimal);
+    // attributes = await common.getAttributes(readonlyTime);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableDecimal = page.locator(
-      'input[data-test-id="3e8f5b4dd3786ae5d79fd2dfa2e53cac"]'
+    const editableTime = page.locator(
+      'input[id="mat-input-6"]'
     );
-    editableDecimal.type("12345");
+    editableTime.type(time);
 
-    attributes = await common.getAttributes(editableDecimal);
+    attributes = await common.getAttributes(editableTime);
     await expect(attributes.includes('readonly')).toBeFalsy();
 
     /** Selecting Visibility from the Sub Category dropdown */
@@ -129,22 +128,22 @@ test.describe('E2E test', () => {
 
     /** Visibility tests */
     await expect(
-      page.locator('input[data-test-id="847e3fd45a1aca1c3242d2735124eb9a"]')
+      page.locator('input[id="mat-input-7"]')
     ).toBeVisible();
 
-    const neverVisibleDecimal = await page.locator(
-      'input[data-test-id="c73cc441b5988a07bfb30ce168c98800"]'
+    const neverVisibleTime = await page.locator(
+      'input[data-test-id="971d3da425a39fac98652a85633db661"]'
     );
-    await expect(neverVisibleDecimal).not.toBeVisible();
+    await expect(neverVisibleTime).not.toBeVisible();
 
-    const conditionallyVisibleDecimal = await page.locator(
-      'input[data-test-id="6e93264d15f63cf06e79a402e48c283b"]'
+    const conditionallyVisibleTime = await page.locator(
+      'input[id="mat-input-8"]'
     );
 
     if (isVisible) {
-      await expect(conditionallyVisibleDecimal).toBeVisible();
+      await expect(conditionallyVisibleTime).toBeVisible();
     } else {
-      await expect(conditionallyVisibleDecimal).not.toBeVisible();
+      await expect(conditionallyVisibleTime).not.toBeVisible();
     }
   }, 10000);
 });

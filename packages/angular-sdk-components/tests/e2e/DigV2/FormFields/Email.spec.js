@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('E2E test', () => {
   let attributes;
 
-  test('should login, create case and run the Decimal tests', async ({ page }) => {
+  test('should login, create case and run the Email tests', async ({ page }) => {
     await common.Login(
       config.config.apps.digv2.user.username,
       config.config.apps.digv2.user.password,
@@ -39,12 +39,12 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click();
+    await formFieldCase.click()
 
-    /** Selecting Decimal from the Category dropdown */
+    /** Selecting Email from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
-    await page.getByRole('option', { name: 'Decimal' }).click();
+    await page.getByRole('option', { name: 'Email' }).click();
 
     /** Selecting Required from the Sub Category dropdown */
     let selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
@@ -56,22 +56,20 @@ test.describe('E2E test', () => {
     await expect(page.locator('mat-error')).toBeVisible();
 
     /** Required tests */
-    const requiredDecimal = page.locator(
-      'input[data-test-id="9de2a78c2dd0d4dfff4a9bf33349197d"]'
+    const requiredEmail = page.locator(
+      'input[data-test-id="96fa7548c363cdd5adb29c2c2749e436"]'
     );
-    requiredDecimal.click();
-    await requiredDecimal.clear();
-    await requiredDecimal.type("12345");
-    requiredDecimal.blur()
+
+    requiredEmail.type("John@doe.com");
     await expect(page.locator('mat-error')).toBeHidden();
 
-    attributes = await common.getAttributes(requiredDecimal);
+    attributes = await common.getAttributes(requiredEmail);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notRequiredDecimal= page.locator(
-      'input[data-test-id="ec06f580c56642afef52547b6755695e"]'
+    const notRequiredEmail = page.locator(
+      'input[data-test-id="ead104471c2e64511e7593a80b823e42"]'
     );
-    attributes = await common.getAttributes(notRequiredDecimal);
+    attributes = await common.getAttributes(notRequiredEmail);
     await expect(attributes.includes('required')).toBeFalsy();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -80,26 +78,26 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledDecimal = page.locator(
-      'input[data-test-id="a8216a966548578ad7e015a05ae518f5"]'
+    const alwaysDisabledEmail = page.locator(
+      'input[data-test-id="b949bbfd05d3e96a0102055e448dd7ab"]'
     );
-    attributes = await common.getAttributes(alwaysDisabledDecimal);
+    attributes = await common.getAttributes(alwaysDisabledEmail);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDecimal = page.locator(
-      'input[data-test-id="fdd7f2ac36278186ac15c11d4c30ece1"]'
+    const conditionallyDisabledEmail = page.locator(
+      'input[data-test-id="23104b6fc0da1045beb3f037698201aa"]'
     );
-    attributes = await common.getAttributes(conditionallyDisabledDecimal);
+    attributes = await common.getAttributes(conditionallyDisabledEmail);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
     } else {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledDecimal = page.locator(
-      'input[data-test-id="e91313ec779184e1b172bdc7870f3d4c"]'
+    const neverDisabledEmail = page.locator(
+      'input[data-test-id="15d6a12d383c87b8695f8f11523af8c6"]'
     );
-    attributes = await common.getAttributes(neverDisabledDecimal);
+    attributes = await common.getAttributes(neverDisabledEmail);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Selecting Update from the Sub Category dropdown */
@@ -108,18 +106,23 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Update' }).click();
 
     /** Update tests */
-    // const readonlyDecimal = page.locator(
-    //   'input[data-test-id="acdcc5f01c940f07cf14373612721a0c"]'
+    // const readonlyEmail = page.locator(
+    //   'input[data-test-id="88ee5a6a4cc37dab09907ea81c546a19"]'
     // );
-    // attributes = await common.getAttributes(readonlyDecimal);
+    // attributes = await common.getAttributes(readonlyEmail);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableDecimal = page.locator(
-      'input[data-test-id="3e8f5b4dd3786ae5d79fd2dfa2e53cac"]'
+    const editableEmail = page.locator(
+      'input[data-test-id="c75f8a926bb5e08fd8342f7fe45dc344"]'
     );
-    editableDecimal.type("12345");
+    await editableEmail.type("Johndoe.com");
+    await editableEmail.blur();
+    await expect(page.locator('mat-error:has-text("Invalid Email")')).toBeVisible();
+    editableEmail.fill("John@doe.com");
+    await editableEmail.blur();
+    await expect(page.locator('mat-error:has-text("Invalid Email")')).toBeHidden();
 
-    attributes = await common.getAttributes(editableDecimal);
+    attributes = await common.getAttributes(editableEmail);
     await expect(attributes.includes('readonly')).toBeFalsy();
 
     /** Selecting Visibility from the Sub Category dropdown */
@@ -129,22 +132,22 @@ test.describe('E2E test', () => {
 
     /** Visibility tests */
     await expect(
-      page.locator('input[data-test-id="847e3fd45a1aca1c3242d2735124eb9a"]')
+      page.locator('input[data-test-id="c30b8043cb501907a3e7b186fb37a85b"]')
     ).toBeVisible();
 
-    const neverVisibleDecimal = await page.locator(
-      'input[data-test-id="c73cc441b5988a07bfb30ce168c98800"]'
+    const neverVisibleEmail = await page.locator(
+      'input[data-test-id="5aa7a927ac4876abf1fcff6187ce5d76"]'
     );
-    await expect(neverVisibleDecimal).not.toBeVisible();
+    await expect(neverVisibleEmail).not.toBeVisible();
 
-    const conditionallyVisibleDecimal = await page.locator(
-      'input[data-test-id="6e93264d15f63cf06e79a402e48c283b"]'
+    const conditionallyVisibleEmail = await page.locator(
+      'input[data-test-id="7f544a3551e7d7e51222dec315e7add5"]'
     );
 
     if (isVisible) {
-      await expect(conditionallyVisibleDecimal).toBeVisible();
+      await expect(conditionallyVisibleEmail).toBeVisible();
     } else {
-      await expect(conditionallyVisibleDecimal).not.toBeVisible();
+      await expect(conditionallyVisibleEmail).not.toBeVisible();
     }
   }, 10000);
 });

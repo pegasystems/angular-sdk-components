@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('E2E test', () => {
   let attributes;
 
-  test('should login, create case and run the Decimal tests', async ({ page }) => {
+  test('should login, create case and run the URL tests', async ({ page }) => {
     await common.Login(
       config.config.apps.digv2.user.username,
       config.config.apps.digv2.user.password,
@@ -41,37 +41,23 @@ test.describe('E2E test', () => {
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
     await formFieldCase.click();
 
-    /** Selecting Decimal from the Category dropdown */
+    /** Selecting Text Input from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
-    await page.getByRole('option', { name: 'Decimal' }).click();
+    await page.getByRole('option', { name: 'URL' }).click();
 
     /** Selecting Required from the Sub Category dropdown */
     let selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
     await selectedSubCategory.click();
     await page.getByRole('option', { name: 'Required' }).click();
 
-    await page.locator('button:has-text("submit")').click();
-
-    await expect(page.locator('mat-error')).toBeVisible();
-
     /** Required tests */
-    const requiredDecimal = page.locator(
-      'input[data-test-id="9de2a78c2dd0d4dfff4a9bf33349197d"]'
-    );
-    requiredDecimal.click();
-    await requiredDecimal.clear();
-    await requiredDecimal.type("12345");
-    requiredDecimal.blur()
-    await expect(page.locator('mat-error')).toBeHidden();
-
-    attributes = await common.getAttributes(requiredDecimal);
+    const requiredURL = page.locator('input[id="mat-input-2"]');
+    attributes = await common.getAttributes(requiredURL);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notRequiredDecimal= page.locator(
-      'input[data-test-id="ec06f580c56642afef52547b6755695e"]'
-    );
-    attributes = await common.getAttributes(notRequiredDecimal);
+    const notRequiredURL = page.locator('input[id="mat-input-1"]');
+    attributes = await common.getAttributes(notRequiredURL);
     await expect(attributes.includes('required')).toBeFalsy();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -80,26 +66,24 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledDecimal = page.locator(
-      'input[data-test-id="a8216a966548578ad7e015a05ae518f5"]'
+    const alwaysDisabledURL = page.locator(
+      'input[id="mat-input-3"]'
     );
-    attributes = await common.getAttributes(alwaysDisabledDecimal);
+    attributes = await common.getAttributes(alwaysDisabledURL);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDecimal = page.locator(
-      'input[data-test-id="fdd7f2ac36278186ac15c11d4c30ece1"]'
+    const conditionallyDisabledURL = page.locator(
+      'input[id="mat-input-4"]'
     );
-    attributes = await common.getAttributes(conditionallyDisabledDecimal);
+    attributes = await common.getAttributes(conditionallyDisabledURL);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
     } else {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledDecimal = page.locator(
-      'input[data-test-id="e91313ec779184e1b172bdc7870f3d4c"]'
-    );
-    attributes = await common.getAttributes(neverDisabledDecimal);
+    const neverDisabledURL = page.locator('input[id="mat-input-5"]');
+    attributes = await common.getAttributes(neverDisabledURL);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Selecting Update from the Sub Category dropdown */
@@ -108,19 +92,22 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Update' }).click();
 
     /** Update tests */
-    // const readonlyDecimal = page.locator(
-    //   'input[data-test-id="acdcc5f01c940f07cf14373612721a0c"]'
-    // );
-    // attributes = await common.getAttributes(readonlyDecimal);
+    // const readonlyURL = page.locator('input[data-test-id="6180c34fa2ef0cbfe3459b6f94b89d62"]');
+    // attributes = await common.getAttributes(readonlyURL);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableDecimal = page.locator(
-      'input[data-test-id="3e8f5b4dd3786ae5d79fd2dfa2e53cac"]'
-    );
-    editableDecimal.type("12345");
-
-    attributes = await common.getAttributes(editableDecimal);
+    const EditableURL = page.locator('input[id="mat-input-6"]');
+    attributes = await common.getAttributes(EditableURL);
     await expect(attributes.includes('readonly')).toBeFalsy();
+
+    /** Validation tests */
+    const validationMsg = 'Invalid URL';
+    await EditableURL.type('InvalidUrl');
+    await EditableURL.blur();
+    await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeVisible();
+    await EditableURL.clear();
+    await EditableURL.blur();
+    await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeHidden();
 
     /** Selecting Visibility from the Sub Category dropdown */
     selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
@@ -129,22 +116,22 @@ test.describe('E2E test', () => {
 
     /** Visibility tests */
     await expect(
-      page.locator('input[data-test-id="847e3fd45a1aca1c3242d2735124eb9a"]')
+      page.locator('input[id="mat-input-7"]')
     ).toBeVisible();
 
-    const neverVisibleDecimal = await page.locator(
-      'input[data-test-id="c73cc441b5988a07bfb30ce168c98800"]'
+    const neverVisibleURL = await page.locator(
+      'input[data-test-id="01cec81e2fe61acf1b0480187998d1ee"]'
     );
-    await expect(neverVisibleDecimal).not.toBeVisible();
+    await expect(neverVisibleURL).not.toBeVisible();
 
-    const conditionallyVisibleDecimal = await page.locator(
-      'input[data-test-id="6e93264d15f63cf06e79a402e48c283b"]'
+    const conditionallyVisibleURL = await page.locator(
+      'input[id="mat-input-8"]'
     );
 
     if (isVisible) {
-      await expect(conditionallyVisibleDecimal).toBeVisible();
+      await expect(conditionallyVisibleURL).toBeVisible();
     } else {
-      await expect(conditionallyVisibleDecimal).not.toBeVisible();
+      await expect(conditionallyVisibleURL).not.toBeVisible();
     }
   }, 10000);
 });

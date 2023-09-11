@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('E2E test', () => {
   let attributes;
 
-  test('should login, create case and run the Decimal tests', async ({ page }) => {
+  test('should login, create case and run the Integer tests', async ({ page }) => {
     await common.Login(
       config.config.apps.digv2.user.username,
       config.config.apps.digv2.user.password,
@@ -39,12 +39,12 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click();
+    await formFieldCase.click()
 
-    /** Selecting Decimal from the Category dropdown */
+    /** Selecting Integer from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
-    await page.getByRole('option', { name: 'Decimal' }).click();
+    await page.getByRole('option', { name: 'Integer' }).click();
 
     /** Selecting Required from the Sub Category dropdown */
     let selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
@@ -56,22 +56,19 @@ test.describe('E2E test', () => {
     await expect(page.locator('mat-error')).toBeVisible();
 
     /** Required tests */
-    const requiredDecimal = page.locator(
-      'input[data-test-id="9de2a78c2dd0d4dfff4a9bf33349197d"]'
+    const requiredInteger = page.locator(
+      'input[data-test-id="0658481a174254dded4a0c1ffe6b8380"]'
     );
-    requiredDecimal.click();
-    await requiredDecimal.clear();
-    await requiredDecimal.type("12345");
-    requiredDecimal.blur()
+    requiredInteger.type("10000");
     await expect(page.locator('mat-error')).toBeHidden();
 
-    attributes = await common.getAttributes(requiredDecimal);
+    attributes = await common.getAttributes(requiredInteger);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notRequiredDecimal= page.locator(
-      'input[data-test-id="ec06f580c56642afef52547b6755695e"]'
+    const notrequiredInteger = page.locator(
+      'input[data-test-id="898ba585340f471eecde6b5e798e4df9"]'
     );
-    attributes = await common.getAttributes(notRequiredDecimal);
+    attributes = await common.getAttributes(notrequiredInteger);
     await expect(attributes.includes('required')).toBeFalsy();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -80,26 +77,26 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledDecimal = page.locator(
-      'input[data-test-id="a8216a966548578ad7e015a05ae518f5"]'
+    const alwaysDisabledInteger = page.locator(
+      'input[data-test-id="54a4d3f4aa52da1985ec70df7cae41bf"]'
     );
-    attributes = await common.getAttributes(alwaysDisabledDecimal);
+    attributes = await common.getAttributes(alwaysDisabledInteger);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDecimal = page.locator(
-      'input[data-test-id="fdd7f2ac36278186ac15c11d4c30ece1"]'
+    const conditionallyDisabledInteger = page.locator(
+      'input[data-test-id="880afccc457382196a2164f04aeeb19d"]'
     );
-    attributes = await common.getAttributes(conditionallyDisabledDecimal);
+    attributes = await common.getAttributes(conditionallyDisabledInteger);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
     } else {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledDecimal = page.locator(
-      'input[data-test-id="e91313ec779184e1b172bdc7870f3d4c"]'
+    const neverDisabledInteger = page.locator(
+      'input[data-test-id="42369a000d05b1bb387c743252b94085"]'
     );
-    attributes = await common.getAttributes(neverDisabledDecimal);
+    attributes = await common.getAttributes(neverDisabledInteger);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Selecting Update from the Sub Category dropdown */
@@ -108,18 +105,18 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Update' }).click();
 
     /** Update tests */
-    // const readonlyDecimal = page.locator(
-    //   'input[data-test-id="acdcc5f01c940f07cf14373612721a0c"]'
+    // const readonlyInteger = page.locator(
+    //   'input[data-test-id="c6f04035ab4212992a31968bf190875b"]'
     // );
-    // attributes = await common.getAttributes(readonlyDecimal);
+    // attributes = await common.getAttributes(readonlyInteger);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableDecimal = page.locator(
-      'input[data-test-id="3e8f5b4dd3786ae5d79fd2dfa2e53cac"]'
+    const editableInteger = page.locator(
+      'input[data-test-id="c2aac6ae0d08ac599edf0ea4f27c5437"]'
     );
-    editableDecimal.type("12345");
+    editableInteger.type("10000");
 
-    attributes = await common.getAttributes(editableDecimal);
+    attributes = await common.getAttributes(editableInteger);
     await expect(attributes.includes('readonly')).toBeFalsy();
 
     /** Selecting Visibility from the Sub Category dropdown */
@@ -129,22 +126,22 @@ test.describe('E2E test', () => {
 
     /** Visibility tests */
     await expect(
-      page.locator('input[data-test-id="847e3fd45a1aca1c3242d2735124eb9a"]')
+      page.locator('input[data-test-id="4c6e4bb7d9b71d6b45cd6ae61b9ca334"]')
     ).toBeVisible();
 
-    const neverVisibleDecimal = await page.locator(
-      'input[data-test-id="c73cc441b5988a07bfb30ce168c98800"]'
+    const neverVisibleInteger = await page.locator(
+      'input[data-test-id="98c754d4acf25bb98ea8a2c46b28275c"]'
     );
-    await expect(neverVisibleDecimal).not.toBeVisible();
+    await expect(neverVisibleInteger).not.toBeVisible();
 
-    const conditionallyVisibleDecimal = await page.locator(
-      'input[data-test-id="6e93264d15f63cf06e79a402e48c283b"]'
+    const conditionallyVisibleInteger = await page.locator(
+      'input[data-test-id="655ddd9a5d76e464311c32d2b53bf963"]'
     );
 
     if (isVisible) {
-      await expect(conditionallyVisibleDecimal).toBeVisible();
+      await expect(conditionallyVisibleInteger).toBeVisible();
     } else {
-      await expect(conditionallyVisibleDecimal).not.toBeVisible();
+      await expect(conditionallyVisibleInteger).not.toBeVisible();
     }
   }, 10000);
 });

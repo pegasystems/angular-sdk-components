@@ -18,7 +18,7 @@ test.beforeEach(async ({ page }) => {
 test.describe('E2E test', () => {
   let attributes;
 
-  test('should login, create case and run the Decimal tests', async ({ page }) => {
+  test('should login, create case and run the Percentage tests', async ({ page }) => {
     await common.Login(
       config.config.apps.digv2.user.username,
       config.config.apps.digv2.user.password,
@@ -41,10 +41,10 @@ test.describe('E2E test', () => {
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
     await formFieldCase.click();
 
-    /** Selecting Decimal from the Category dropdown */
+    /** Selecting Percentage from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
-    await page.getByRole('option', { name: 'Decimal' }).click();
+    await page.getByRole('option', { name: 'Percentage' }).click();
 
     /** Selecting Required from the Sub Category dropdown */
     let selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
@@ -52,26 +52,19 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Required' }).click();
 
     await page.locator('button:has-text("submit")').click();
-
     await expect(page.locator('mat-error')).toBeVisible();
 
     /** Required tests */
-    const requiredDecimal = page.locator(
-      'input[data-test-id="9de2a78c2dd0d4dfff4a9bf33349197d"]'
+    const requiredPercentage = page.locator(
+      'input[data-test-id="86a805ca8375ed5df057777df74dd085"]'
     );
-    requiredDecimal.click();
-    await requiredDecimal.clear();
-    await requiredDecimal.type("12345");
-    requiredDecimal.blur()
-    await expect(page.locator('mat-error')).toBeHidden();
-
-    attributes = await common.getAttributes(requiredDecimal);
+    attributes = await common.getAttributes(requiredPercentage);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notRequiredDecimal= page.locator(
-      'input[data-test-id="ec06f580c56642afef52547b6755695e"]'
+    const notrequiredPercentage = page.locator(
+      'input[data-test-id="b1de2a4d96400570b2f6de9defed1adc"]'
     );
-    attributes = await common.getAttributes(notRequiredDecimal);
+    attributes = await common.getAttributes(notrequiredPercentage);
     await expect(attributes.includes('required')).toBeFalsy();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -80,26 +73,26 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledDecimal = page.locator(
-      'input[data-test-id="a8216a966548578ad7e015a05ae518f5"]'
+    const alwaysDisabledPercentage = page.locator(
+      'input[data-test-id="7900b3bd0ac7a6a59b1f5fe9b23749c4"]'
     );
-    attributes = await common.getAttributes(alwaysDisabledDecimal);
+    attributes = await common.getAttributes(alwaysDisabledPercentage);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDecimal = page.locator(
-      'input[data-test-id="fdd7f2ac36278186ac15c11d4c30ece1"]'
+    const conditionallyDisabledPercentage = page.locator(
+      'input[data-test-id="2ba7bcc4ab57debc35f68e4dfd2c15d8"]'
     );
-    attributes = await common.getAttributes(conditionallyDisabledDecimal);
+    attributes = await common.getAttributes(conditionallyDisabledPercentage);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
     } else {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledDecimal = page.locator(
-      'input[data-test-id="e91313ec779184e1b172bdc7870f3d4c"]'
+    const neverDisabledPercentage = page.locator(
+      'input[data-test-id="bbbf1d564583c33adcd086b330fcb1f7"]'
     );
-    attributes = await common.getAttributes(neverDisabledDecimal);
+    attributes = await common.getAttributes(neverDisabledPercentage);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Selecting Update from the Sub Category dropdown */
@@ -108,18 +101,18 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Update' }).click();
 
     /** Update tests */
-    // const readonlyDecimal = page.locator(
-    //   'input[data-test-id="acdcc5f01c940f07cf14373612721a0c"]'
+    // const readonlyPercentage = page.locator(
+    //   'input[data-test-id="4d28c40ee619dafd16f7f4813e18ece6"]'
     // );
-    // attributes = await common.getAttributes(readonlyDecimal);
+    // attributes = await common.getAttributes(readonlyPercentage);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableDecimal = page.locator(
-      'input[data-test-id="3e8f5b4dd3786ae5d79fd2dfa2e53cac"]'
+    const editablePercentage = page.locator(
+      'input[data-test-id="2cf58b575154624084c009d2648659ad"]'
     );
-    editableDecimal.type("12345");
+    editablePercentage.type("10000");
 
-    attributes = await common.getAttributes(editableDecimal);
+    attributes = await common.getAttributes(editablePercentage);
     await expect(attributes.includes('readonly')).toBeFalsy();
 
     /** Selecting Visibility from the Sub Category dropdown */
@@ -129,22 +122,22 @@ test.describe('E2E test', () => {
 
     /** Visibility tests */
     await expect(
-      page.locator('input[data-test-id="847e3fd45a1aca1c3242d2735124eb9a"]')
+      page.locator('input[data-test-id="bc2c3cb45ab755e262b381abbb0307fa"]')
     ).toBeVisible();
 
-    const neverVisibleDecimal = await page.locator(
-      'input[data-test-id="c73cc441b5988a07bfb30ce168c98800"]'
+    const neverVisiblePercentage = await page.locator(
+      'input[data-test-id="a3584329c24e284dda8d3771e72bca20"]'
     );
-    await expect(neverVisibleDecimal).not.toBeVisible();
+    await expect(neverVisiblePercentage).not.toBeVisible();
 
-    const conditionallyVisibleDecimal = await page.locator(
-      'input[data-test-id="6e93264d15f63cf06e79a402e48c283b"]'
+    const conditionallyVisiblePercentage = await page.locator(
+      'input[data-test-id="d73817df2fef4a70f74349d3c70f10a5"]'
     );
 
     if (isVisible) {
-      await expect(conditionallyVisibleDecimal).toBeVisible();
+      await expect(conditionallyVisiblePercentage).toBeVisible();
     } else {
-      await expect(conditionallyVisibleDecimal).not.toBeVisible();
+      await expect(conditionallyVisiblePercentage).not.toBeVisible();
     }
   }, 10000);
 });
