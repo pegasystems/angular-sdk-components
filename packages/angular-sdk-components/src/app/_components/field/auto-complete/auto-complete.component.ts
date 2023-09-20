@@ -11,6 +11,8 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
+import {Observable} from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
 
 @Component({
   selector: 'app-auto-complete',
@@ -54,6 +56,7 @@ export class AutoCompleteComponent implements OnInit {
   fieldControl = new FormControl('', null);
   parameters: {};
   hideLabel: any;
+  filteredOptions: Observable<Array<string>>;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -62,7 +65,7 @@ export class AutoCompleteComponent implements OnInit {
     private dataPageService: DatapageService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
@@ -74,7 +77,7 @@ export class AutoCompleteComponent implements OnInit {
 
     // call updateSelf when initializing
     //this.updateSelf();
-    this.checkAndUpdate();
+    await this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
       // add control to formGroup
@@ -85,6 +88,12 @@ export class AutoCompleteComponent implements OnInit {
       this.bReadonly$ = true;
       this.bHasForm$ = false;
     }
+
+    this.filteredOptions = this.fieldControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || '')),
+    );
+
   }
 
   ngOnDestroy(): void {
@@ -97,24 +106,29 @@ export class AutoCompleteComponent implements OnInit {
     }
   }
 
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    this.checkAndUpdate();
+  private _filter(value: string): Array<string> {
+    const filterValue = value.toLowerCase();
+    return this.options$?.filter(option => option.value.toLowerCase().includes(filterValue));
   }
 
-  checkAndUpdate() {
+  // Callback passed when subscribing to store change
+  async onStateChange() {
+    await this.checkAndUpdate();
+  }
+
+  async checkAndUpdate() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
     // ONLY call updateSelf when the component should update
     if (bUpdateSelf) {
-      this.updateSelf();
+      await this.updateSelf();
     }
   }
 
   // updateSelf
-  updateSelf(): void {
+  async updateSelf(): Promise<void> {
     // starting very simple...
 
     // moved this from ngOnInit() and call this from there instead...
@@ -133,7 +147,8 @@ export class AutoCompleteComponent implements OnInit {
     let datasource = this.configProps$['datasource'];
     let columns = this.configProps$['columns'];
     this.hideLabel = this.configProps$['hideLabel'];
-    const { deferDatasource, datasourceMetadata } = this.configProps$;
+    //const { deferDatasource, datasourceMetadata } = this.configProps$;
+    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps();
     this.helperText = this.configProps$['helperText'];
     this.parameters = this.configProps$?.parameters;
     const context = this.pConn$.getContextName();
@@ -199,18 +214,8 @@ export class AutoCompleteComponent implements OnInit {
     }
 
     if (!displayMode && this.listType !== 'associated') {
-      this.dataPageService.getDataPageData(datasource, this.parameters, context).then((results: any) => {
-        const optionsData: Array<any> = [];
-        const displayColumn = this.getDisplayFieldsMetaData(this.columns);
-        results?.forEach((element) => {
-          const obj = {
-            key: element[displayColumn.key] || element.pyGUID,
-            value: element[displayColumn.primary]?.toString()
-          };
-          optionsData.push(obj);
-        });
-        this.options$ = optionsData;
-      });
+      const results = await this.dataPageService.getDataPageData(datasource, this.parameters, context);
+      this.fillOptions(results);
     }
 
     // trigger display of error message with field control
@@ -222,6 +227,19 @@ export class AutoCompleteComponent implements OnInit {
         timer.unsubscribe();
       });
     }
+  }
+
+  fillOptions(results: any){
+    const optionsData: Array<any> = [];
+    const displayColumn = this.getDisplayFieldsMetaData(this.columns);
+    results?.forEach((element) => {
+      const obj = {
+        key: element[displayColumn.key] || element.pyGUID,
+        value: element[displayColumn.primary]?.toString()
+      };
+      optionsData.push(obj);
+    });
+    this.options$ = optionsData;
   }
 
   flattenParameters(params = {}) {
