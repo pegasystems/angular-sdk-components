@@ -1,0 +1,8 @@
+{
+  "name": "NarrowWideForm",
+  "label": "Narrow-wide",
+  "description": "NarrowWide Template",
+  "type": "Template",
+  "subtype": "FORM",
+  "properties": []
+}

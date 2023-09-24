@@ -1,0 +1,8 @@
+{
+  "name": "TextInput",
+  "label": "Text input",
+  "description": "Text (single line)",
+  "type": "Field",
+  "subtype": "Text",
+  "properties": []
+}

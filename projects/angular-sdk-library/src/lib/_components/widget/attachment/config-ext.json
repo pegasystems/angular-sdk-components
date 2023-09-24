@@ -1,0 +1,7 @@
+{
+  "name": "Attachment",
+  "description": "Attachment",
+  "type": "Field",
+  "subtype": "DATA_CAPTURE",
+  "properties": []
+}

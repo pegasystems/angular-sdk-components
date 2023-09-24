@@ -1,0 +1,8 @@
+{
+  "name": "OneColumn",
+  "label": "One column",
+  "description": "OneColumn Template",
+  "type": "Template",
+  "subtype": "FORM",
+  "properties": []
+}

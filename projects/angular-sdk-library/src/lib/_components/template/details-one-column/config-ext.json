@@ -1,0 +1,9 @@
+{
+  "name": "Details",
+  "label": "Details (One column)",
+  "description": "Details (One column)",
+  "type": "Template",
+  "subtype": "DETAILS",
+  "icon": "OneColumnDetails.svg",
+  "properties": []
+}

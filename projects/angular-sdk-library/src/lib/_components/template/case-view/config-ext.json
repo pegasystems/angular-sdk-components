@@ -1,0 +1,8 @@
+{
+  "name": "CaseView",
+  "label": "Object page",
+  "description": "Standard case page",
+  "type": "Template",
+  "subtype": "CASEVIEW",
+  "properties": []
+}

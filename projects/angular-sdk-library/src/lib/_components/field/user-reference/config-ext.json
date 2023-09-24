@@ -1,0 +1,7 @@
+{
+  "name": "UserReference",
+  "description": "User reference",
+  "type": "Field",
+  "subtype": "DATA_CAPTURE",
+  "properties": []
+}

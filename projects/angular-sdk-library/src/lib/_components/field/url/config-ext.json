@@ -1,0 +1,8 @@
+{
+  "name": "URL",
+  "label": "URL",
+  "description": "URL",
+  "type": "Field",
+  "subtype": "Text-URL",
+  "properties": []
+}
