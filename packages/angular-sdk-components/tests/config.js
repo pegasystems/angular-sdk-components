@@ -15,6 +15,10 @@ const config = {
       tech: {
         username: 'tech@mediaco',
         password: 'pega'
+      },
+      admin: {
+        username: 'admin@mediaco',
+        password: 'pega'
       }
     },
     digv2: {

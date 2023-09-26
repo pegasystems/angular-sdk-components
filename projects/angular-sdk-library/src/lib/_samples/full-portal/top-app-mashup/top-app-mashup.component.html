@@ -1,7 +1,6 @@
 <div *ngIf="portalSelectionScreen; else loadPortal" class="portal-load-error">
-  <div>
-    Default portal ( <span class="portal-name">{{ defaultPortalName }}</span> ) for current operator is not compatible
-    with SDK. <br /><br />
+  <div data-test-id="defaultPortalErrorMessage">
+    Default portal ( <span class="portal-name">{{ defaultPortalName }}</span> ) for current operator is not compatible with SDK. <br /><br />
     Please select one of the portals available to the operator's access group:
   </div>
   <div class="portals-list">
