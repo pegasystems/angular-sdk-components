@@ -3,23 +3,24 @@
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
-    <div [formGroup]="formGroup$" *ngIf="bVisible$">
+    <div [formGroup]="formGroup$" *ngIf="bVisible$" class="psdk-currency-field">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
-        <input
-          matInput
-          [placeholder]=""
-          type="number"
-          step="0.01"
-          min="0.01"
-          [value]="value$"
-          [required]="bRequired$"
-          [formControlName]="controlName$"
-          [attr.data-test-id]="testId"
-          (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
-          (blur)="fieldOnBlur($event)"
-        />
+        <div class="psdk-currency-input">
+          <span>{{ symbol }}</span>
+          <input style="margin-left: 5px;"
+            type="float"
+            matInput
+            [placeholder]=""
+            [value]="value$ | number:'1.2-2'"
+            [required]="bRequired$"
+            [formControlName]="controlName$"
+            [attr.data-test-id]="testId"
+            (change)="fieldOnChange($event)"
+            (click)="fieldOnClick($event)"
+            (blur)="fieldOnBlur($event)"
+          />
+      </div>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

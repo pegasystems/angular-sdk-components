@@ -130,6 +130,8 @@ export class AppShellComponent implements OnInit {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
         }
 
+        this.bOkDisplayError = true;
+
         if (this.bOkDisplayError) {
           let config = { panelClass: ['snackbar-newline'] };
           this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
