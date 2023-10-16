@@ -41,6 +41,11 @@ export class DropdownComponent implements OnInit {
   hideLabel: any;
 
   fieldControl = new FormControl('', null);
+  fieldMetadata: Array<any>;
+  localeContext: string = '';
+  localeClass: string = '';
+  localeName: string = '';
+  localePath: string = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -63,6 +68,11 @@ export class DropdownComponent implements OnInit {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       this.fieldControl.setValue(this.value$);
+      // this.fieldControl.setValue(this.pConn$.getLocalizedValue(
+      //   this.value$,
+      //   this.localePath,
+      //   this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
+      // ));
       this.bHasForm$ = true;
     } else {
       this.bReadonly$ = true;
@@ -140,11 +150,27 @@ export class DropdownComponent implements OnInit {
     this.componentReference = this.pConn$.getStateProps().value;
 
     const optionsList = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
-    optionsList?.unshift({ key: 'Select', value: 'Select...' });
+    optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
     this.options$ = optionsList;
     if (this.value$ === '' && !this.bReadonly$) {
       this.value$ = 'Select';
     }
+
+    const propName = this.pConn$.getStateProps().value;
+    const className = this.pConn$.getCaseInfo().getClassName();
+    const refName = propName?.slice(propName.lastIndexOf('.') + 1);
+
+    this.fieldMetadata = this.configProps$['fieldMetadata'];
+    const metaData = Array.isArray(this.fieldMetadata)
+    ? this.fieldMetadata.filter(field => field?.classID === className)[0]
+    : this.fieldMetadata;
+
+    let displayName = metaData?.datasource?.propertyForDisplayText;
+    displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);
+    this.localeContext = metaData?.datasource?.tableType === 'DataPage' ? 'datapage' : 'associated';
+    this.localeClass = this.localeContext === 'datapage' ? '@baseclass' : className;
+    this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
+    this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       let timer = interval(100).subscribe(() => {

@@ -41,6 +41,11 @@ export class RadioButtonsComponent implements OnInit {
   helperText: string;
 
   fieldControl = new FormControl('', null);
+  fieldMetadata: Array<any>;
+  localeContext: string = '';
+  localeClass: string = '';
+  localeName: string = '';
+  localePath: string = '';
 
   constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
@@ -144,6 +149,22 @@ export class RadioButtonsComponent implements OnInit {
 
     this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
 
+    const propName = this.pConn$.getStateProps().value;
+    const className = this.pConn$.getCaseInfo().getClassName();
+    const refName = propName?.slice(propName.lastIndexOf('.') + 1);
+
+    this.fieldMetadata = this.configProps$['fieldMetadata'];
+    const metaData = Array.isArray(this.fieldMetadata)
+    ? this.fieldMetadata.filter(field => field?.classID === className)[0]
+    : this.fieldMetadata;
+
+    let displayName = metaData?.datasource?.propertyForDisplayText;
+    displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);
+    this.localeContext = metaData?.datasource?.tableType === 'DataPage' ? 'datapage' : 'associated';
+    this.localeClass = this.localeContext === 'datapage' ? '@baseclass' : className;
+    this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
+    this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
+    
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       let timer = interval(100).subscribe(() => {

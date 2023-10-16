@@ -56,6 +56,8 @@ export class RootContainerComponent implements OnInit {
   progressSpinnerSubscription: Subscription;
   spinnerTimer: any = null;
   viewContainerPConn$: any = null;
+  localizedVal: any;
+  localeCategory = 'Messages';
 
   constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
 
@@ -111,6 +113,7 @@ export class RootContainerComponent implements OnInit {
     this.progressSpinnerSubscription = this.psService.getMessage().subscribe((message) => {
       this.showHideProgress(message.show);
     });
+    this.localizedVal = this.PCore$.getLocaleUtils.getLocaleValue;
   }
 
   ngOnDestroy() {

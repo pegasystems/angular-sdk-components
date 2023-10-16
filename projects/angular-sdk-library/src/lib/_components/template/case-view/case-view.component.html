@@ -16,12 +16,12 @@
     </mat-toolbar>
 
     <div class="psdk-case-view-buttons">
-      <button mat-raised-button color="secondary" (click)="_editClick()">Edit</button>
-      <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu">Actions...</button>
+      <button *ngIf="editAction" mat-raised-button color="secondary" (click)="_editClick()">{{localizedVal('Edit', localeCategory)}}</button>
+      <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu">{{localizedVal('Actions...', localeCategory)}}</button>
       <mat-menu #actionMenu="matMenu" overlapTrigger="false">
         <ng-container *ngFor="let action of arAvailableActions$">
           <button mat-menu-item (click)="_menuActionClick(action)">
-            {{ action.name }}
+            {{localizedVal(action.name, '', localeKey)}}
           </button>
         </ng-container>
         <ng-container *ngFor="let process of arAvailabeProcesses$">

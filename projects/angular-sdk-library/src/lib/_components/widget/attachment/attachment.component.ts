@@ -158,14 +158,14 @@ export class AttachmentComponent implements OnInit {
           let oMenu: any = {};
 
           oMenu.icon = 'download';
-          oMenu.text = 'Download';
+          oMenu.text = this.pConn$.getLocalizedValue('Download', '', '');
           oMenu.onClick = () => {
             this._downloadFileFromList(this.value$.pxResults[0]);
           };
           arMenuList.push(oMenu);
           oMenu = {};
           oMenu.icon = 'trash';
-          oMenu.text = 'Delete';
+          oMenu.text = this.pConn$.getLocalizedValue('Delete', '', '');
           oMenu.onClick = () => {
             this._removeFileFromList(this.arFileList$[0]);
           };
@@ -292,14 +292,14 @@ export class AttachmentComponent implements OnInit {
   errorHandler(isFetchCanceled){
       return (error) => {
         if (!isFetchCanceled(error)) {
-          let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong');
+          let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong', '', '');
           if (error.response && error.response.data && error.response.data.errorDetails) {
-            uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue);
+            uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue, '', '');
           }
           this.bShowSelector$ = false;
           this.myFiles[0].meta = uploadFailMsg;
           this.myFiles[0].error = true;
-          this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file');
+          this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
           this.arFileList$ = this.myFiles.map((att) => {
             return this.getNewListUtilityItemProps({
               att,
@@ -379,7 +379,7 @@ export class AttachmentComponent implements OnInit {
           });
           this.ngZone.run(() => {
             this.bShowSelector$ = false;
-            this.myFiles[0].meta = 'File uploaded successfully';
+            this.myFiles[0].meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
             this.arFileList$ = this.myFiles.map((att) => {
               return this.getNewListUtilityItemProps({
                 att,
@@ -427,7 +427,7 @@ export class AttachmentComponent implements OnInit {
       actions = [
         {
           id: `Cancel-${att.ID}`,
-          text: 'Cancel',
+          text: this.pConn$.getLocalizedValue('Cancel', '', ''),
           icon: 'times',
           onClick: cancelFile
         }
@@ -440,7 +440,7 @@ export class AttachmentComponent implements OnInit {
           'download',
           {
             id: `download-${ID}`,
-            text: isFile ? 'Download' : 'Open',
+            text: isFile ? this.pConn$.getLocalizedValue('Download', '', '') : this.pConn$.getLocalizedValue('Open', '', ''),
             icon: isFile ? 'download' : 'open',
             onClick: downloadFile
           }
@@ -449,7 +449,7 @@ export class AttachmentComponent implements OnInit {
           'delete',
           {
             id: `Delete-${ID}`,
-            text: 'Delete',
+            text: this.pConn$.getLocalizedValue('Delete', '', ''),
             icon: 'trash',
             onClick: deleteFile
           }
@@ -466,7 +466,7 @@ export class AttachmentComponent implements OnInit {
       actions = [
         {
           id: `Remove-${att.ID}`,
-          text: 'Remove',
+          text: this.pConn$.getLocalizedValue('Remove', '', ''),
           icon: 'trash',
           onClick: removeFile
         }
@@ -501,10 +501,11 @@ export class AttachmentComponent implements OnInit {
 
   setNewFiles(arFiles, current = []) {
     let index = 0;
+    const maxAttachmentSize = 5;
     for (let file of arFiles) {
-      if (!this.validateMaxSize(file, 5)) {
+      if (!this.validateMaxSize(file, maxAttachmentSize)) {
         file.error = true;
-        file.meta = 'File is too big. Max allowed size is 5MB.';
+        file.meta = this.pConn$.getLocalizedValue('File is too big. Max allowed size is 5MB.', '', '');
       }
       file.mimeType = file.type;
       file.icon = this.utils.getIconFromFileType(file.type);

@@ -19,7 +19,7 @@
       (modalVisibleChange)="modalVisibleChanged($event)"
     ></app-modal-view-container>
     <div *ngSwitchCase="''"></div>
-    <div *ngSwitchDefault>RootContainer Missing: {{ componentName$ }}.</div>
+    <div *ngSwitchDefault>{{localizedVal('RootContainer Missing: '+ componentName$,localeCategory)}}. </div>
   </div>
 </div>
 

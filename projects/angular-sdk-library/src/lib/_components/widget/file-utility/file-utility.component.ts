@@ -364,7 +364,7 @@ export class FileUtilityComponent implements OnInit {
       actions = [
         {
           id: `Cancel-${att.ID}`,
-          text: 'Cancel',
+          text: this.pConn$.getLocalizedValue('Cancel', '', ''),
           icon: 'times',
           onClick: cancelFile
         }
@@ -377,7 +377,7 @@ export class FileUtilityComponent implements OnInit {
           'download',
           {
             id: `download-${ID}`,
-            text: isFile ? 'Download' : 'Open',
+            text: isFile ? this.pConn$.getLocalizedValue('Download', '', '') : this.pConn$.getLocalizedValue('Open', '', ''),
             icon: isFile ? 'download' : 'open',
             onClick: downloadFile
           }
@@ -386,7 +386,7 @@ export class FileUtilityComponent implements OnInit {
           'delete',
           {
             id: `Delete-${ID}`,
-            text: 'Delete',
+            text: this.pConn$.getLocalizedValue('Delete', '', ''),
             icon: 'trash',
             onClick: deleteFile
           }
@@ -403,7 +403,7 @@ export class FileUtilityComponent implements OnInit {
       actions = [
         {
           id: `Remove-${att.ID}`,
-          text: 'Remove',
+          text: this.pConn$.getLocalizedValue('Remove', '', ''),
           icon: 'trash',
           onClick: removeFile
         }
@@ -567,11 +567,11 @@ export class FileUtilityComponent implements OnInit {
   }
 
   createModalButtons() {
-    this.arFileMainButtons$.push({ actionID: 'attach', jsAction: 'attachFiles', name: 'Attach files' });
-    this.arFileSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
+    this.arFileMainButtons$.push({ actionID: 'attach', jsAction: 'attachFiles', name: this.pConn$.getLocalizedValue('Attach files', '', '') });
+    this.arFileSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: this.pConn$.getLocalizedValue('Cancel', '', '') });
 
-    this.arLinkMainButtons$.push({ actionID: 'attach', jsAction: 'attachLinks', name: 'Attach links' });
-    this.arLinkSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
+    this.arLinkMainButtons$.push({ actionID: 'attach', jsAction: 'attachLinks', name: this.pConn$.getLocalizedValue('Attach links', '', '') });
+    this.arLinkSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: this.pConn$.getLocalizedValue('Cancel', '', '') });
   }
 
   uploadMyFiles($event) {

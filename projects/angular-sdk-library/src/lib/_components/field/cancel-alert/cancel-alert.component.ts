@@ -26,6 +26,9 @@ export class CancelAlertComponent implements OnInit {
   body2$: string;
   itemKey: string;
   snackBarRef: any;
+  localizedVal: any;
+  localeCategory = 'ModalContainer';
+
 
   constructor(private erService: ErrorMessagesService, private psService: ProgressSpinnerService) {}
 
@@ -43,11 +46,12 @@ export class CancelAlertComponent implements OnInit {
       const caseInfo = this.pConn$.getCaseInfo();
       const caseName = caseInfo.getName();
       const ID = caseInfo.getID();
+      this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
 
       this.itemKey = contextName;
       this.heading$ = 'Delete ' + caseName + ' (' + ID + ')';
-      this.body1$ = 'Are you sure you want to delete ' + caseName + ' (' + ID + ')?';
-      this.body2$ = 'Alternatively, you can continue working or save your work for later.';
+      this.body1$ = this.localizedVal('Are you sure you want to delete ', this.localeCategory) + caseName + ' (' + ID + ')?';
+      this.body2$ = this.localizedVal('Alternatively, you can continue working or save your work for later.', this.localeCategory);
 
       //this.onAlertState$.emit(true);
     }
@@ -78,6 +82,7 @@ export class CancelAlertComponent implements OnInit {
     };
 
     const actionsAPI = this.pConn$.getActionsApi();
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
 
     switch (sAction) {
       case 'save':
@@ -93,7 +98,7 @@ export class CancelAlertComponent implements OnInit {
           })
           .catch(() => {
             this.psService.sendMessage(false);
-            this.sendMessage('Save failed');
+            this.sendMessage(this.localizedVal('Save failed', this.localeCategory));
           });
         break;
       case 'continue':
@@ -113,7 +118,7 @@ export class CancelAlertComponent implements OnInit {
           })
           .catch(() => {
             this.psService.sendMessage(false);
-            this.sendMessage('Delete failed.');
+            this.sendMessage(this.localizedVal('Delete failed.', this.localeCategory));
           });
         break;
     }

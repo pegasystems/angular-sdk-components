@@ -7,11 +7,11 @@
     </div>
     <mat-grid-list cols="2" rowHeight="6.25rem">
       <mat-grid-tile>
-        <button mat-raised-button color="secondary" (click)="buttonClick('save')">Save for later</button>
+        <button mat-raised-button color="secondary" (click)="buttonClick('save')">{{localizedVal('Save for later', localeCategory)}}</button>
       </mat-grid-tile>
       <mat-grid-tile>
-        <button mat-raised-button color="secondary" (click)="buttonClick('continue')">Continue working</button>
-        <button mat-raised-button color="primary" (click)="buttonClick('delete')">Delete</button>
+        <button mat-raised-button color="secondary" (click)="buttonClick('continue')">{{localizedVal('Continue Working', localeCategory)}}</button>
+        <button mat-raised-button color="primary" (click)="buttonClick('delete')">{{localizedVal('Delete', localeCategory)}}</button>
       </mat-grid-tile>
     </mat-grid-list>
   </div>
