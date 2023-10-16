@@ -48,6 +48,9 @@ export class CaseViewComponent implements OnInit {
   currentCaseID: string = '';
   editAction: boolean;
   bHasNewAttachments: boolean = false;
+  localizedVal: any;
+  localeCategory = 'CaseView';
+  localeKey: string;
 
   constructor(private cdRef: ChangeDetectorRef, private angularPConnect: AngularPConnectService, private utils: Utils) {}
 
@@ -61,6 +64,7 @@ export class CaseViewComponent implements OnInit {
 
     // this.updateSelf();
     this.checkAndUpdate();
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
   }
 
   ngOnDestroy(): void {
@@ -134,7 +138,7 @@ export class CaseViewComponent implements OnInit {
     let timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = this.configProps$['header'];
+      this.heading$ = this.PCore$.getLocaleUtils().getLocaleValue(this.configProps$['header'],'',this.localeKey);
       this.id$ = this.configProps$['subheader'];
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
@@ -142,9 +146,13 @@ export class CaseViewComponent implements OnInit {
 
   fullUpdate() {
     this.caseTabs$ = [];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    // let caseTypeID = this.configProps$['ruleClass'];
+    // let caseTypeName = this.configProps$['header'];
+    // this.localeKey = `${caseTypeID}!CASE!${caseTypeName}`.toUpperCase();
+    this.localeKey =`${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
     this.updateHeaderAndSummary();
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.arChildren$ = this.pConn$.getChildren();
 
     let caseInfo = this.pConn$.getDataObject().caseInfo;

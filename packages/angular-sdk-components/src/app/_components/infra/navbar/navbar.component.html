@@ -32,7 +32,7 @@
       <mat-list-item *ngFor="let page of navPages$">
         <div class="flex-box" (click)="navPanelButtonClick(page)">
           <img class="psdk-nav-svg-icon" src="{{ page.iconName }}" />
-          <span class="psdk-nav-button-span">{{ page.pyLabel }}</span>
+          <span class="psdk-nav-button-span">{{ localizedVal(page.pyLabel, localeCategory) }}</span>
         </div>
       </mat-list-item>
     </mat-list>
@@ -48,7 +48,7 @@
       </mat-list-item>
       <mat-menu #menu="matMenu">
         <button mat-menu-item>Profile</button>
-        <button mat-menu-item (click)="navPanelLogoutClick()">Logoff</button>
+        <button mat-menu-item (click)="navPanelLogoutClick()">{{localizedVal('Logoff', localeCategory)}}</button>
       </mat-menu>
     </mat-list>
   </div>

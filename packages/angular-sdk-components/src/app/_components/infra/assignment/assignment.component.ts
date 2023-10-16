@@ -1,6 +1,7 @@
 /* eslint-disable no-case-declarations */
 import { Component, OnInit, Input, SimpleChange, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
@@ -15,7 +16,7 @@ declare const PCore: any;
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.scss'],
   standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentComponent implements OnInit {
   @Input() pConn$: any;
@@ -61,12 +62,16 @@ export class AssignmentComponent implements OnInit {
   //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   bReInit: boolean = false;
+  localizedVal;
+  localeCategory = 'Assignment';
+  localeReference;
 
   constructor(
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
     private erService: ErrorMessagesService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -82,6 +87,8 @@ export class AssignmentComponent implements OnInit {
     this.angularPConnect.shouldComponentUpdate(this);
 
     this.bInitialized = true;
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localeReference = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
   }
 
   ngOnDestroy() {
@@ -244,6 +251,11 @@ export class AssignmentComponent implements OnInit {
           this.ngZone.run(() => {
             // what comes back now in configObject is the children of the flowContainer
             this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
+            this.arNavigationSteps$.forEach(step => {
+              if(step.name){
+                step.name = this.PCore$.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
+              }
+            });
             this.arCurrentStepIndicies$ = new Array();
             this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
           });
@@ -325,6 +337,7 @@ export class AssignmentComponent implements OnInit {
               })
               .catch(() => {
                 this.psService.sendMessage(false);
+                this.snackBar.open(`${this.localizedVal('Navigation failed!', this.localeCategory)}`, 'Ok');
               });
           }
           break;
@@ -342,6 +355,7 @@ export class AssignmentComponent implements OnInit {
             })
             .catch(() => {
               this.psService.sendMessage(false);
+              this.snackBar.open(`${this.localizedVal('Save failed', this.localeCategory)}`, 'Ok');
             });
 
           break;
@@ -366,6 +380,7 @@ export class AssignmentComponent implements OnInit {
               })
               .catch(() => {
                 this.psService.sendMessage(false);
+                this.snackBar.open(`${this.localizedVal('Cancel failed!', this.localeCategory)}`, 'Ok');
               });
           } else {
             this.psService.sendMessage(true);
@@ -382,6 +397,7 @@ export class AssignmentComponent implements OnInit {
               })
               .catch(() => {
                 this.psService.sendMessage(false);
+                this.snackBar.open(`${this.localizedVal('Cancel failed!', this.localeCategory)}`, 'Ok');
               });
           }
           break;
@@ -404,10 +420,11 @@ export class AssignmentComponent implements OnInit {
               })
               .catch(() => {
                 this.psService.sendMessage(false);
+                this.snackBar.open(`${this.localizedVal('Submit failed!', this.localeCategory)}`, 'Ok');
               });
           } else {
             //let snackBarRef = this.snackBar.open("Please fix errors on form.",  "Ok");
-            this.erService.sendMessage('show', 'Please fix errors on form.');
+            this.erService.sendMessage('show', this.localizedVal('Please fix errors on form.', this.localeCategory));
           }
           break;
         default:

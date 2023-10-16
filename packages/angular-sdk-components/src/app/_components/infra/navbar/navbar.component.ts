@@ -43,6 +43,8 @@ export class NavbarComponent implements OnInit {
 
   configProps: any;
   navIcon$: string;
+  localizedVal: any;
+  localeCategory = 'AppShell';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -69,6 +71,7 @@ export class NavbarComponent implements OnInit {
     this.loadImage(this.navIcon$);
 
     this.initComponent();
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
   }
 
   // ngOnDestroy

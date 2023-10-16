@@ -36,6 +36,10 @@ export class TodoComponent implements OnInit {
   assignmentsSource$: any;
   CONSTS: any;
   bLogging = true;
+  localizedVal = window.PCore.getLocaleUtils().getLocaleValue;
+  localeCategory = 'Todo';
+  showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
+  showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
 
   constructor(private psService: ProgressSpinnerService, private ngZone: NgZone, private utils: Utils) {}
 

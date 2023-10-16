@@ -6,14 +6,22 @@
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-select
-          [value]="value$"
+          [value]="pConn$.getLocalizedValue(
+            value$,
+            localePath,
+            pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName))"
           [required]="bRequired$"
           [attr.data-test-id]="testId"
           (selectionChange)="fieldOnChange($event)"
           [formControlName]="controlName$"
         >
           <mat-option *ngFor="let opt of options$" [value]="opt.key">
-            {{ opt.value }}
+            {{pConn$.getLocalizedValue(
+              opt.value,
+              localePath,
+              pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName)
+            )}}
+            <!-- {{ opt.value }} -->
           </mat-option>
         </mat-select>
         <mat-label>{{ label$ }}</mat-label>

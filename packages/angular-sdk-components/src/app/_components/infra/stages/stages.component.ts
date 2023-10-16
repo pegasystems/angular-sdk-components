@@ -22,6 +22,7 @@ export class StagesComponent implements OnInit {
   arStageResults$: Array<any>;
   lastStage$: any;
   checkSvgIcon$: string;
+  key: string;
 
   constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
 
@@ -35,6 +36,7 @@ export class StagesComponent implements OnInit {
 
     const imagePath = this.utils.getIconPath(this.utils.getSDKStaticContentUrl());
     this.checkSvgIcon$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
+    this.key = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
   }
 
   ngOnDestroy(): void {

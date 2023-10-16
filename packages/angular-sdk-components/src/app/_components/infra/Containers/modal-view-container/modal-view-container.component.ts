@@ -58,6 +58,8 @@ export class ModalViewContainerComponent implements OnInit {
   cancelPConn$: any;
   bShowCancelAlert$: boolean = false;
   bAlertState: boolean;
+  localizedVal: any;
+  localeCategory = 'Data Object';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -99,6 +101,7 @@ export class ModalViewContainerComponent implements OnInit {
     const { CONTAINER_TYPE, PUB_SUB_EVENTS } = this.PCore$.getConstants();
 
     this.angularPConnect.shouldComponentUpdate(this);
+    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
   }
 
   ngOnChanges() {
@@ -230,7 +233,7 @@ export class ModalViewContainerComponent implements OnInit {
             const caseName = caseInfo.getName();
             const ID = caseInfo.getID();
 
-            this.title$ = actionName || `New ${caseName} (${ID})`;
+            this.title$ = actionName || `${this.localizedVal('New', this.localeCategory)} ${caseName} (${ID})`;
             // // update children with new view's children
             this.arChildren$ = newComp.getChildren();
             this.bShowModal$ = true;
