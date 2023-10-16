@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-import { TopAppComponent } from './_components/designSystemExtension/top-app/top-app.component';
-import { TopAppMashupComponent } from './_samples/full-portal/top-app-mashup/top-app-mashup.component';
-import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
-import { MCNavComponent } from './_samples/mashup/mc-nav/mc-nav.component';
-import { endpoints } from './_services/endpoints';
+import { TopAppMashupComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/full-portal/top-app-mashup/top-app-mashup.component';
+import { NavigationComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/simple-portal/navigation/navigation.component';
+import { MCNavComponent } from '../../../../projects/angular-sdk-library/src/lib/_samples/mashup/mc-nav/mc-nav.component';
+import { endpoints } from '../../../../projects/angular-sdk-library/src/lib/_services/endpoints';
 
 // Adding path to remove "Cannot match routes" error at launch
 //  Tried this at one point... Need to add /app in path now...
@@ -20,7 +19,7 @@ const appName = window.location.pathname.split('/')[3];
 export const routes: Routes = [
   { path: '', component: MCNavComponent },
   { path: endpoints.PORTAL, component: TopAppMashupComponent },
-  { path: endpoints.PORTALHMTL, component: TopAppMashupComponent },
+  { path: endpoints.PORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTAL, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.SIMPLEPORTAL, component: NavigationComponent },
@@ -28,6 +27,5 @@ export const routes: Routes = [
   { path: endpoints.EMBEDDED, component: MCNavComponent },
   { path: endpoints.EMBEDDEDHTML, component: MCNavComponent },
   { path: endpoints.MASHUP, component: MCNavComponent },
-  { path: endpoints.MASHUPHTML, component: MCNavComponent },
-  { path: `prweb/app/${appName}`, component: TopAppComponent }
+  { path: endpoints.MASHUPHTML, component: MCNavComponent }
 ];

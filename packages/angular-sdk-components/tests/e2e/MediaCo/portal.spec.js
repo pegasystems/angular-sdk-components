@@ -114,14 +114,20 @@ test.describe('E2E test', () => {
 
     await Promise.all([
       page.waitForResponse(
-        `${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''}/api/application/v2/attachments/upload`
+        `${endpoints.serverConfig.infinityRestServerUrl}${
+          endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''
+        }/api/application/v2/attachments/upload`
       )
     ]);
 
     await page.locator('button:has-text("submit")').click();
 
     await Promise.all([
-      page.waitForResponse(`${endpoints.serverConfig.infinityRestServerUrl}${endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ""}/api/application/v2/cases/${currentCaseID}/attachments${PCoreVersion.includes('8.23') ? '?includeThumbnail=false' : ''}`),
+      page.waitForResponse(
+        `${endpoints.serverConfig.infinityRestServerUrl}${
+          endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''
+        }/api/application/v2/cases/${currentCaseID}/attachments${PCoreVersion.includes('8.23') ? '?includeThumbnail=false' : ''}`
+      )
     ]);
 
     const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
@@ -173,6 +179,20 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("submit")').click();
 
     await page.locator('text=RESOLVED-COMPLETED').click();
+  }, 10000);
+
+  test('should show available portals for admin login', async ({ page }) => {
+    await common.Login(config.config.apps.mediaCo.admin.username, config.config.apps.mediaCo.admin.password, page);
+
+    const defaultPortalErrorMessage = page.locator('div[data-test-id="defaultPortalErrorMessage"]');
+    await expect(defaultPortalErrorMessage).toBeVisible();
+
+    const mediaCoBtn = page.locator('div[class="portal-list-item"]:has-text("MediaCo")');
+    await expect(mediaCoBtn).toBeVisible();
+    await mediaCoBtn.click();
+
+    const announcementBanner = page.locator('h2:has-text("Announcements")');
+    await expect(announcementBanner).toBeVisible();
   }, 10000);
 });
 

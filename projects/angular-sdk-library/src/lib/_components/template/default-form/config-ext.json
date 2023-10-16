@@ -1,0 +1,8 @@
+{
+  "name": "DefaultForm",
+  "label": "Default form",
+  "description": "DefaultForm Template",
+  "type": "Template",
+  "subtype": "FORM",
+  "properties": []
+}

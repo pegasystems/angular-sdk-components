@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -19,11 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Boolean tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -39,7 +32,7 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click()
+    await formFieldCase.click();
 
     /** Selecting Boolean from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
@@ -52,9 +45,7 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Required' }).click();
 
     // Checking required boolean field
-    const requiredBooleanLabel = page.locator(
-      'mat-checkbox[data-test-id="325f4eb20dc7c90a4fb697cd6c6bf0ea"]'
-    );
+    const requiredBooleanLabel = page.locator('mat-checkbox[data-test-id="325f4eb20dc7c90a4fb697cd6c6bf0ea"]');
     await requiredBooleanLabel.click(); // check required field
     await requiredBooleanLabel.click(); // uncheck required field
     // await expect(page.locator('p.Mui-error.Mui-required')).toBeVisible();
@@ -62,9 +53,7 @@ test.describe('E2E test', () => {
     // await expect(page.locator('p.Mui-error.Mui-required')).toBeHidden();
 
     // Checking not required boolean field
-    const notRequiredBooleanLabel = page.locator(
-      'mat-checkbox[data-test-id="da0d9f2c08a5bebe777c814af80a2351"]'
-    );
+    const notRequiredBooleanLabel = page.locator('mat-checkbox[data-test-id="da0d9f2c08a5bebe777c814af80a2351"]');
     notRequiredBooleanLabel.click(); // check required field
     notRequiredBooleanLabel.click(); // uncheck required field
     await expect(page.locator('p.Mui-error.Mui-required')).toBeHidden();
@@ -75,15 +64,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // Disable tests
-    const alwaysDisabledBoolean = page.locator(
-      'mat-checkbox[data-test-id="2f75cd75149315abb9d17aedfe1e129f"] input'
-    );
+    const alwaysDisabledBoolean = page.locator('mat-checkbox[data-test-id="2f75cd75149315abb9d17aedfe1e129f"] input');
     attributes = await common.getAttributes(alwaysDisabledBoolean);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledBoolean = page.locator(
-      'mat-checkbox[data-test-id="a1e631c61eef59321ecda65e5b1e74df"] input'
-    );
+    const conditionallyDisabledBoolean = page.locator('mat-checkbox[data-test-id="a1e631c61eef59321ecda65e5b1e74df"] input');
     attributes = await common.getAttributes(conditionallyDisabledBoolean);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -91,9 +76,7 @@ test.describe('E2E test', () => {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledBoolean = page.locator(
-      'mat-checkbox[data-test-id="c02c55807a1cda4f36c9736c17230e27"] input'
-    );
+    const neverDisabledBoolean = page.locator('mat-checkbox[data-test-id="c02c55807a1cda4f36c9736c17230e27"] input');
     attributes = await common.getAttributes(neverDisabledBoolean);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -111,9 +94,7 @@ test.describe('E2E test', () => {
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
     // editable boolean field
-    const editableBoolean = page.locator(
-      'mat-checkbox[data-test-id="d8d1f4bcad30bda634454182e0d1e67c"] input'
-    );
+    const editableBoolean = page.locator('mat-checkbox[data-test-id="d8d1f4bcad30bda634454182e0d1e67c"] input');
     editableBoolean.click();
     attributes = await common.getAttributes(editableBoolean);
     await expect(attributes.includes('readonly')).toBeFalsy();
@@ -124,19 +105,13 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    const alwaysVisibleBoolean = page.locator(
-      'mat-checkbox[data-test-id="9a31d647526143ebb08c22a58836510d"] input'
-    );
+    const alwaysVisibleBoolean = page.locator('mat-checkbox[data-test-id="9a31d647526143ebb08c22a58836510d"] input');
     await expect(alwaysVisibleBoolean).toBeVisible();
 
-    const neverVisibleBoolean = await page.locator(
-      'mat-checkbox[data-test-id="521a807a0967b9fbbcc4a1232f1f8b46"] input'
-    );
+    const neverVisibleBoolean = await page.locator('mat-checkbox[data-test-id="521a807a0967b9fbbcc4a1232f1f8b46"] input');
     await expect(neverVisibleBoolean).not.toBeVisible();
 
-    const conditionallyVisibleBoolean = await page.locator(
-      'mat-checkbox[data-test-id="dfbced3de44b50c470a58131004c31fe"] input'
-    );
+    const conditionallyVisibleBoolean = await page.locator('mat-checkbox[data-test-id="dfbced3de44b50c470a58131004c31fe"] input');
 
     if (isVisible) {
       await expect(conditionallyVisibleBoolean).toBeVisible();

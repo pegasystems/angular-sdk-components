@@ -1,0 +1,8 @@
+{
+  "name": "Dropdown",
+  "label": "Dropdown",
+  "description": "Picklist",
+  "type": "Field",
+  "subtype": "Picklist",
+  "properties": []
+}

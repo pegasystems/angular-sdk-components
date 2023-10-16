@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -19,11 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Currency tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -39,7 +32,7 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click()
+    await formFieldCase.click();
 
     /** Selecting Currency from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
@@ -52,15 +45,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Required' }).click();
 
     /** Required tests */
-    const notRequiredCurrency = page.locator(
-      'input[data-test-id="cab671a0ad307780a2de423a3d19924e"]'
-    );
+    const notRequiredCurrency = page.locator('input[data-test-id="cab671a0ad307780a2de423a3d19924e"]');
     attributes = await common.getAttributes(notRequiredCurrency);
     await expect(attributes.includes('required')).toBeFalsy();
 
-    const requiredCurrency = page.locator(
-      'input[data-test-id="77af0bd660f2e0276e23a7db7d48235a"]'
-    );
+    const requiredCurrency = page.locator('input[data-test-id="77af0bd660f2e0276e23a7db7d48235a"]');
     attributes = await common.getAttributes(requiredCurrency);
     await expect(attributes.includes('required')).toBeTruthy();
 
@@ -70,15 +59,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledCurrency = page.locator(
-      'input[data-test-id="0d14f3717305e0238966749e6a853dad"]'
-    );
+    const alwaysDisabledCurrency = page.locator('input[data-test-id="0d14f3717305e0238966749e6a853dad"]');
     attributes = await common.getAttributes(alwaysDisabledCurrency);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledCurrency = page.locator(
-      'input[data-test-id="d5e33df8e1d99971f69b7c0015a5ea58"]'
-    );
+    const conditionallyDisabledCurrency = page.locator('input[data-test-id="d5e33df8e1d99971f69b7c0015a5ea58"]');
     attributes = await common.getAttributes(conditionallyDisabledCurrency);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -86,9 +71,7 @@ test.describe('E2E test', () => {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledCurrency = page.locator(
-      'input[data-test-id="40fba95f48961ac8ead17beca7535294"]'
-    );
+    const neverDisabledCurrency = page.locator('input[data-test-id="40fba95f48961ac8ead17beca7535294"]');
     attributes = await common.getAttributes(neverDisabledCurrency);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -104,11 +87,9 @@ test.describe('E2E test', () => {
     // attributes = await common.getAttributes(readonlyCurrency);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableCurrency = page.locator(
-      'input[data-test-id="837e53069fc48e63debdee7fa61fbc1a"]'
-    );
+    const editableCurrency = page.locator('input[data-test-id="837e53069fc48e63debdee7fa61fbc1a"]');
 
-    editableCurrency.type("120");
+    editableCurrency.type('120');
 
     attributes = await common.getAttributes(editableCurrency);
     await expect(attributes.includes('readonly')).toBeFalsy();
@@ -119,18 +100,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('input[data-test-id="756f918704ee7dcd859928f068d02633"]')
-    ).toBeVisible();
+    await expect(page.locator('input[data-test-id="756f918704ee7dcd859928f068d02633"]')).toBeVisible();
 
-    const neverVisibleCurrency = await page.locator(
-      'input[data-test-id="5aa7a927ac4876abf1fcff6187ce5d76"]'
-    );
+    const neverVisibleCurrency = await page.locator('input[data-test-id="5aa7a927ac4876abf1fcff6187ce5d76"]');
     await expect(neverVisibleCurrency).not.toBeVisible();
 
-    const conditionallyVisibleCurrency = await page.locator(
-      'input[data-test-id="730a18d88ac68c9cc5f89bf5f6a5caea"]'
-    );
+    const conditionallyVisibleCurrency = await page.locator('input[data-test-id="730a18d88ac68c9cc5f89bf5f6a5caea"]');
 
     if (isVisible) {
       await expect(conditionallyVisibleCurrency).toBeVisible();

@@ -1,0 +1,8 @@
+{
+  "name": "ThreeColumnTab",
+  "label": "Three column",
+  "description": "Three column",
+  "type": "Template",
+  "subtype": "TAB",
+  "properties": []
+}

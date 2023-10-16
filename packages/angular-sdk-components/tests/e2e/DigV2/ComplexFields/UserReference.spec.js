@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 const config = require('../../../config');
 const common = require('../../../common');
@@ -31,9 +28,7 @@ test.describe('E2E test', () => {
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
-    const complexFieldsCaseBtn = await page.locator(
-      'mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")'
-    );
+    const complexFieldsCaseBtn = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
     await complexFieldsCaseBtn.click();
 
     /** Selecting User Reference from the Category dropdown */

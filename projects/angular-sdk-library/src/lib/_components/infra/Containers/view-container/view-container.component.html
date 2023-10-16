@@ -1,0 +1,31 @@
+<div class="psdk-view-container-top" id="{{ buildName$ }}">
+  <div *ngIf="isViewContainer$; else isReference">
+    <h3 *ngIf="title$ !== ''">{{ title$ }}</h3>
+    <div *ngIf="templateName$; else showChildren">
+      <component-mapper
+        [name]="templateName$"
+        [props]="{
+          pConn$: createdViewPConn$,
+          formGroup$: formGroup$,
+          displayOnlyFA$: displayOnlyFA$
+        }"
+        errorMsg="View Container missing Template {{ templateName$ }}"
+      ></component-mapper>
+    </div>
+    <ng-template #showChildren>
+      <div *ngFor="let kid of arChildren$">
+        <component-mapper
+          [name]="kid.getPConnect().getComponentName()"
+          [props]="{
+            pConn$: kid.getPConnect(),
+            displayOnlyFA$: displayOnlyFA$
+          }"
+          errorMsg="ViewContainer Missing (no template): {{ kid.getPConnect().getComponentName() }}"
+        ></component-mapper>
+      </div>
+    </ng-template>
+  </div>
+  <ng-template #isReference>
+    <component-mapper name="View" [props]="{ pConn$: viewPConn$, displayOnlyFA$ }"></component-mapper>
+  </ng-template>
+</div>

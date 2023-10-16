@@ -1,0 +1,8 @@
+{
+  "name": "ThreeColumnPage",
+  "label": "Three column",
+  "description": "ThreeColumn Page Template",
+  "type": "Template",
+  "subtype": "PAGE",
+  "properties": []
+}

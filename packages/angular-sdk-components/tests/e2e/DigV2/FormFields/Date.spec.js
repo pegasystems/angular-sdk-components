@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -19,11 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Date tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -39,7 +32,7 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click()
+    await formFieldCase.click();
 
     /** Selecting Date from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
@@ -83,9 +76,7 @@ test.describe('E2E test', () => {
     attributes = await common.getAttributes(alwaysDisabledDate);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDate = page.locator(
-      'input[data-test-id="1064f84bc0ba8525d5f141869fb73a3d"]'
-    );
+    const conditionallyDisabledDate = page.locator('input[data-test-id="1064f84bc0ba8525d5f141869fb73a3d"]');
     //const conditionallyDisabledDateInput = conditionallyDisabledDate.locator('input');
     attributes = await common.getAttributes(conditionallyDisabledDate);
     if (isDisabled) {
@@ -122,18 +113,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('input[data-test-id="8d1ca7132d5ebd69ccc69b850cf0e114"]')
-    ).toBeVisible();
+    await expect(page.locator('input[data-test-id="8d1ca7132d5ebd69ccc69b850cf0e114"]')).toBeVisible();
 
-    const neverVisibleDate = await page.locator(
-      'input[data-test-id="2d575befd938b2cf573f6cdee8d2c194"]'
-    );
+    const neverVisibleDate = await page.locator('input[data-test-id="2d575befd938b2cf573f6cdee8d2c194"]');
     await expect(neverVisibleDate).not.toBeVisible();
 
-    const conditionallyVisibleDate = await page.locator(
-      'input[data-test-id="2a50b142f72fe68effc573bb904c8364"]'
-    );
+    const conditionallyVisibleDate = await page.locator('input[data-test-id="2a50b142f72fe68effc573bb904c8364"]');
     //const conditionallyVisibleDateInput = conditionallyVisibleDate.locator('input');
     if (isVisible) {
       await expect(conditionallyVisibleDate).toBeVisible();

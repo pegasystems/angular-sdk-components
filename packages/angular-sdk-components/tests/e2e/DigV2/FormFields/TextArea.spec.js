@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -19,11 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the TextArea tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -39,7 +32,7 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click()
+    await formFieldCase.click();
 
     /** Selecting TextArea from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
@@ -52,16 +45,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Required' }).click();
 
     /** Required tests */
-    const requiredTextArea = page.locator(
-      'textarea[data-test-id="b82763ad8469c6be8d3303a773fc3337"]'
-    );
-    requiredTextArea.type("This is a textarea");
+    const requiredTextArea = page.locator('textarea[data-test-id="b82763ad8469c6be8d3303a773fc3337"]');
+    requiredTextArea.type('This is a textarea');
     attributes = await common.getAttributes(requiredTextArea);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notrequiredTextArea = page.locator(
-      'textarea[data-test-id="c8e8140c523f01908b73d415ff81e5e9"]'
-    );
+    const notrequiredTextArea = page.locator('textarea[data-test-id="c8e8140c523f01908b73d415ff81e5e9"]');
     attributes = await common.getAttributes(notrequiredTextArea);
     await expect(attributes.includes('required')).toBeFalsy();
 
@@ -71,15 +60,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledTextArea = page.locator(
-      'textarea[data-test-id="0a9da72f88e89b62d5477181f60e326d"]'
-    );
+    const alwaysDisabledTextArea = page.locator('textarea[data-test-id="0a9da72f88e89b62d5477181f60e326d"]');
     attributes = await common.getAttributes(alwaysDisabledTextArea);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledTextArea = page.locator(
-      'textarea[data-test-id="ab462bc2f67456422bd65ef803e5f1f7"]'
-    );
+    const conditionallyDisabledTextArea = page.locator('textarea[data-test-id="ab462bc2f67456422bd65ef803e5f1f7"]');
     attributes = await common.getAttributes(conditionallyDisabledTextArea);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -87,9 +72,7 @@ test.describe('E2E test', () => {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledTextArea = page.locator(
-      'textarea[data-test-id="3c91efe71a84d1331627d97d2871b6cc"]'
-    );
+    const neverDisabledTextArea = page.locator('textarea[data-test-id="3c91efe71a84d1331627d97d2871b6cc"]');
     attributes = await common.getAttributes(neverDisabledTextArea);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -105,10 +88,8 @@ test.describe('E2E test', () => {
     // attributes = await common.getAttributes(readonlyTextArea);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editableTextArea = page.locator(
-      'textarea[data-test-id="66e97bb54e9e0ad5860ed79bb7b8e8d4"]'
-    );
-    editableTextArea.type("This is a TextArea");
+    const editableTextArea = page.locator('textarea[data-test-id="66e97bb54e9e0ad5860ed79bb7b8e8d4"]');
+    editableTextArea.type('This is a TextArea');
 
     attributes = await common.getAttributes(editableTextArea);
     await expect(attributes.includes('readonly')).toBeFalsy();
@@ -119,18 +100,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('textarea[data-test-id="b1173be73e47e82896554ec60a590d6d"]')
-    ).toBeVisible();
+    await expect(page.locator('textarea[data-test-id="b1173be73e47e82896554ec60a590d6d"]')).toBeVisible();
 
-    const neverVisibleTextArea = await page.locator(
-      'textarea[data-test-id="6de0e0e23e9aab0f4fef3d9d4f52c4d8"]'
-    );
+    const neverVisibleTextArea = await page.locator('textarea[data-test-id="6de0e0e23e9aab0f4fef3d9d4f52c4d8"]');
     await expect(neverVisibleTextArea).not.toBeVisible();
 
-    const conditionallyVisibleTextArea = await page.locator(
-      'textarea[data-test-id="4a41d6f28d7a25290f93127d3b5b0c64"]'
-    );
+    const conditionallyVisibleTextArea = await page.locator('textarea[data-test-id="4a41d6f28d7a25290f93127d3b5b0c64"]');
 
     if (isVisible) {
       await expect(conditionallyVisibleTextArea).toBeVisible();

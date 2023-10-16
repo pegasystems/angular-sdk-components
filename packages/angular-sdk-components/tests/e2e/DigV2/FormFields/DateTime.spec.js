@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -19,11 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the DateTime tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -39,7 +32,7 @@ test.describe('E2E test', () => {
 
     /** Creating a Form Field case-type */
     const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click()
+    await formFieldCase.click();
 
     /** Selecting Date from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
@@ -58,7 +51,10 @@ test.describe('E2E test', () => {
     /** Required tests */
     const requiredDateTime = page.locator('input[data-test-id="8c40204d0a4eee26d94339eee34ac0dd"]');
     const date = new Date();
-    const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${(date.getDate()).toString().padStart(2, '0')}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} AM`;
+    const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
+      .getDate()
+      .toString()
+      .padStart(2, '0')}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} AM`;
     await requiredDateTime.click();
     await requiredDateTime.type(formattedDate);
 
@@ -81,9 +77,7 @@ test.describe('E2E test', () => {
     attributes = await common.getAttributes(alwaysDisabledDateTime);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledDateTime = page.locator(
-      'input[data-test-id="98882344d484a1122bdb831ace88b0d3"]'
-    );
+    const conditionallyDisabledDateTime = page.locator('input[data-test-id="98882344d484a1122bdb831ace88b0d3"]');
     attributes = await common.getAttributes(conditionallyDisabledDateTime);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -113,18 +107,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('input[data-test-id="f7bace3922d6b19942bcb05f4bbe34ff"]')
-    ).toBeVisible();
+    await expect(page.locator('input[data-test-id="f7bace3922d6b19942bcb05f4bbe34ff"]')).toBeVisible();
 
-    const neverVisibleDateTime = await page.locator(
-      'input[data-test-id="33d5b006df6170d453d52c438271f0eb"]'
-    );
+    const neverVisibleDateTime = await page.locator('input[data-test-id="33d5b006df6170d453d52c438271f0eb"]');
     await expect(neverVisibleDateTime).not.toBeVisible();
 
-    const conditionallyVisibleDateTime = await page.locator(
-      'input[data-test-id="d7168c76ee76f4242fee3afbd4c9f745"]'
-    );
+    const conditionallyVisibleDateTime = await page.locator('input[data-test-id="d7168c76ee76f4242fee3afbd4c9f745"]');
     if (isVisible) {
       await expect(conditionallyVisibleDateTime).toBeVisible();
     } else {

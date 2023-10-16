@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 
 const config = require('../../../config');
@@ -19,11 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Phone tests', async ({ page }) => {
-    await common.Login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -65,10 +58,8 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("submit")').click();
     await expect(page.locator('mat-error')).toBeVisible();
 
-    const requiredPhone = page.locator(
-      'ngx-mat-intl-tel-input[data-test-id="af983eaa1b85b015a7654702abd0b249"] >> input'
-    );
-    requiredPhone.type("6175551212");
+    const requiredPhone = page.locator('ngx-mat-intl-tel-input[data-test-id="af983eaa1b85b015a7654702abd0b249"] >> input');
+    requiredPhone.type('6175551212');
     await expect(page.locator('mat-error')).toBeHidden();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -77,15 +68,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledPhone = page.locator(
-      'ngx-mat-intl-tel-input[data-test-id="d415da67e9764d6e7cdf3d993cb54f51"] >> input'
-    );
+    const alwaysDisabledPhone = page.locator('ngx-mat-intl-tel-input[data-test-id="d415da67e9764d6e7cdf3d993cb54f51"] >> input');
     attributes = await common.getAttributes(alwaysDisabledPhone);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledPhone = page.locator(
-      'ngx-mat-intl-tel-input[data-test-id="b6cee3728235ed1f6cef7b11ac850ea9"] >> input'
-    );
+    const conditionallyDisabledPhone = page.locator('ngx-mat-intl-tel-input[data-test-id="b6cee3728235ed1f6cef7b11ac850ea9"] >> input');
     attributes = await common.getAttributes(conditionallyDisabledPhone);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -93,9 +80,7 @@ test.describe('E2E test', () => {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledPhone = page.locator(
-      'ngx-mat-intl-tel-input[data-test-id="b23e38f877c8a40f18507b39893a8d61"] >> input'
-    );
+    const neverDisabledPhone = page.locator('ngx-mat-intl-tel-input[data-test-id="b23e38f877c8a40f18507b39893a8d61"] >> input');
     attributes = await common.getAttributes(neverDisabledPhone);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -111,9 +96,7 @@ test.describe('E2E test', () => {
     // attributes = await common.getAttributes(readonlyPhone);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const editablePhone = page.locator(
-      'ngx-mat-intl-tel-input[data-test-id="591e127300787ad31c414b7159469b9e"]'
-    );
+    const editablePhone = page.locator('ngx-mat-intl-tel-input[data-test-id="591e127300787ad31c414b7159469b9e"]');
     const countrySelector = editablePhone.locator('button');
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();
@@ -122,8 +105,7 @@ test.describe('E2E test', () => {
     await editablePhoneInput.type('6175551212');
 
     /** Validation tests */
-    const validationMsg =
-    'Invalid Phone';
+    const validationMsg = 'Invalid Phone';
     await editablePhoneInput.clear();
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();
@@ -153,18 +135,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(
-      page.locator('ngx-mat-intl-tel-input[data-test-id="6637b718c18a1fd292d28b6abaa68d50"] >> input')
-    ).toBeVisible();
+    await expect(page.locator('ngx-mat-intl-tel-input[data-test-id="6637b718c18a1fd292d28b6abaa68d50"] >> input')).toBeVisible();
 
-    const neverVisiblePhone = await page.locator(
-      'div[data-test-id="f425267235530e772d7daa0a0881c822"] >> input'
-    );
+    const neverVisiblePhone = await page.locator('div[data-test-id="f425267235530e772d7daa0a0881c822"] >> input');
     await expect(neverVisiblePhone).not.toBeVisible();
 
-    const conditionallyVisiblePhone = await page.locator(
-      'ngx-mat-intl-tel-input[data-test-id="ad9995a1b5001e6d153d363465371528"] >> input'
-    );
+    const conditionallyVisiblePhone = await page.locator('ngx-mat-intl-tel-input[data-test-id="ad9995a1b5001e6d153d363465371528"] >> input');
 
     if (isVisible) {
       await expect(conditionallyVisiblePhone).toBeVisible();
