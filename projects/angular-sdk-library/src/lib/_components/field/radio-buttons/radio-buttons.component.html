@@ -1,5 +1,5 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$: this.localizedValue, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div [formGroup]="formGroup$" *ngIf="bVisible$">
@@ -10,10 +10,7 @@
       <!-- <mat-label>{{label$}}</mat-label> -->
       <input matInput [placeholder]="" style="display: none" />
       <mat-radio-group
-        [value]="pConn$.getLocalizedValue(
-          value$,
-          localePath,
-          pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName))"
+        [value]="value$"
         [required]="bRequired$"
         [formControlName]="controlName$"
         [attr.data-test-id]="testId"

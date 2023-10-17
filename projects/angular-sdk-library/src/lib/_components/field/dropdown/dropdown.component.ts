@@ -46,6 +46,7 @@ export class DropdownComponent implements OnInit {
   localeClass: string = '';
   localeName: string = '';
   localePath: string = '';
+  localizedValue: string = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -171,6 +172,9 @@ export class DropdownComponent implements OnInit {
     this.localeClass = this.localeContext === 'datapage' ? '@baseclass' : className;
     this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
     this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
+
+    this.localizedValue = this.pConn$.getLocalizedValue(this.value$,this.localePath,
+                                          this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName));
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       let timer = interval(100).subscribe(() => {
