@@ -3,8 +3,12 @@
     <div *ngIf="stage.visited_status == 'completed'" class="psdk-stages-inner-past">
       <img class="psdk-stages-icon" src="{{ checkSvgIcon$ }}" />{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, null, key) }}
     </div>
-    <div *ngIf="stage.visited_status == 'active'" class="psdk-stages-inner-present">{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, null, key) }}</div>
-    <div *ngIf="stage.visited_status == 'future'" class="psdk-stages-inner-future">{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, null, key) }}</div>
+    <div *ngIf="stage.visited_status == 'active'" class="psdk-stages-inner-present">
+      {{ PCore$.getLocaleUtils().getLocaleValue(stage.name, null, key) }}
+    </div>
+    <div *ngIf="stage.visited_status == 'future'" class="psdk-stages-inner-future">
+      {{ PCore$.getLocaleUtils().getLocaleValue(stage.name, null, key) }}
+    </div>
   </div>
 </div>
 

@@ -253,8 +253,8 @@ export class AssignmentComponent implements OnInit {
           this.ngZone.run(() => {
             // what comes back now in configObject is the children of the flowContainer
             this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
-            this.arNavigationSteps$.forEach(step => {
-              if(step.name){
+            this.arNavigationSteps$.forEach((step) => {
+              if (step.name) {
                 step.name = this.PCore$.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
               }
             });
@@ -369,8 +369,7 @@ export class AssignmentComponent implements OnInit {
           const isAssignmentInCreateStage = this.pConn$.getCaseInfo().isAssignmentInCreateStage();
           const isLocalAction =
             this.pConn$.getCaseInfo().isLocalAction() ||
-            (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION &&
-              this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
+            (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION && this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
           // check if create stage (modal)
           if (isAssignmentInCreateStage && this.isInModal$ && !isLocalAction) {
             const cancelPromise = this.cancelCreateStageAssignment(this.itemKey$);

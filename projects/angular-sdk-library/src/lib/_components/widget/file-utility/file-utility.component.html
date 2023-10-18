@@ -80,7 +80,9 @@
 <div *ngIf="bShowViewAllModal$" class="psdk-dialog-background">
   <div class="psdk-modal-file-top">
     <div class="psdk-view-all-header">
-      <div><h3>{{ pConn$.getLocalizedValue('Attachments', '', '') }}</h3></div>
+      <div>
+        <h3>{{ pConn$.getLocalizedValue('Attachments', '', '') }}</h3>
+      </div>
       <div>
         <button mat-icon-button (click)="_closeViewAll()">
           <img class="psdk-utility-card-actions-svg-icon" src="{{ closeSvgIcon$ }}" />

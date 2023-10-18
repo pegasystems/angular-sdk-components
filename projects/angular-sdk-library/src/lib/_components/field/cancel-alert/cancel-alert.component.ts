@@ -29,7 +29,6 @@ export class CancelAlertComponent implements OnInit {
   localizedVal: any;
   localeCategory = 'ModalContainer';
 
-
   constructor(private erService: ErrorMessagesService, private psService: ProgressSpinnerService) {}
 
   ngOnInit(): void {

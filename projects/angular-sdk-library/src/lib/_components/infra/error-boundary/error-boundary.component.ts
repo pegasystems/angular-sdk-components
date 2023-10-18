@@ -11,6 +11,6 @@ import { CommonModule } from '@angular/common';
 export class ErrorBoundaryComponent {
   @Input('message') message: string;
 
-  localizedVal= window.PCore.getLocaleUtils().getLocaleValue;
+  localizedVal = window.PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'Messages';
 }

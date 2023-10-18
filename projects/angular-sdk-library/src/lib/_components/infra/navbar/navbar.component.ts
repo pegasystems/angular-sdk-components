@@ -119,10 +119,7 @@ export class NavbarComponent implements OnInit {
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
       for (let page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(
-          this.navPages$[page]['pxPageViewIcon'],
-          this.utils.getSDKStaticContentUrl()
-        );
+        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
       }
 
       this.actionsAPI = this.pConn$.getActionsApi();

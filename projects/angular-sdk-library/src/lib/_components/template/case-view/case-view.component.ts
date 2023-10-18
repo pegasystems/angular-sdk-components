@@ -52,11 +52,7 @@ export class CaseViewComponent implements OnInit {
   localeCategory = 'CaseView';
   localeKey: string;
 
-  constructor(
-    private cdRef: ChangeDetectorRef,
-    private angularPConnect: AngularPConnectService,
-    private utils: Utils
-  ) {}
+  constructor(private cdRef: ChangeDetectorRef, private angularPConnect: AngularPConnectService, private utils: Utils) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -119,14 +115,11 @@ export class CaseViewComponent implements OnInit {
   updateHeaderAndSummary() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     let hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
-    
-    if(hasNewAttachments !== this.bHasNewAttachments){
+
+    if (hasNewAttachments !== this.bHasNewAttachments) {
       this.bHasNewAttachments = hasNewAttachments;
-      if(this.bHasNewAttachments){
-        this.PCore$.getPubSubUtils().publish(
-          this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
-          true
-        );
+      if (this.bHasNewAttachments) {
+        this.PCore$.getPubSubUtils().publish(this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
       }
     }
 
@@ -142,7 +135,7 @@ export class CaseViewComponent implements OnInit {
     let timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = this.PCore$.getLocaleUtils().getLocaleValue(this.configProps$['header'],'',this.localeKey);
+      this.heading$ = this.PCore$.getLocaleUtils().getLocaleValue(this.configProps$['header'], '', this.localeKey);
       this.id$ = this.configProps$['subheader'];
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
@@ -154,7 +147,7 @@ export class CaseViewComponent implements OnInit {
     // let caseTypeID = this.configProps$['ruleClass'];
     // let caseTypeName = this.configProps$['header'];
     // this.localeKey = `${caseTypeID}!CASE!${caseTypeName}`.toUpperCase();
-    this.localeKey =`${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
+    this.localeKey = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
     this.updateHeaderAndSummary();
 
     this.arChildren$ = this.pConn$.getChildren();

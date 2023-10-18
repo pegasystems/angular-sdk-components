@@ -1,5 +1,9 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$: this.localizedValue, displayMode$ }"></component-mapper>
+  <component-mapper
+    *ngIf="bVisible$ !== false"
+    name="FieldValueList"
+    [props]="{ label$, value$: this.localizedValue, displayMode$ }"
+  ></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div [formGroup]="formGroup$" *ngIf="bVisible$">
@@ -24,12 +28,7 @@
           [value]="opt.key"
           class="psdk-radio-button"
         >
-        {{pConn$.getLocalizedValue(
-          opt.value,
-          localePath,
-          pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName)
-        )}}  
-        <!-- {{ opt.value }} -->
+          {{ pConn$.getLocalizedValue(opt.value, localePath, pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName)) }}
         </mat-radio-button>
       </mat-radio-group>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

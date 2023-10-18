@@ -37,7 +37,7 @@ export class DropdownComponent implements OnInit {
   options$: Array<any>;
   componentReference: string = '';
   testId: string = '';
-  helperText: string;	
+  helperText: string;
   hideLabel: any;
 
   fieldControl = new FormControl('', null);
@@ -48,11 +48,7 @@ export class DropdownComponent implements OnInit {
   localePath: string = '';
   localizedValue: string = '';
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
+  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -69,11 +65,6 @@ export class DropdownComponent implements OnInit {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       this.fieldControl.setValue(this.value$);
-      // this.fieldControl.setValue(this.pConn$.getLocalizedValue(
-      //   this.value$,
-      //   this.localePath,
-      //   this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
-      // ));
       this.bHasForm$ = true;
     } else {
       this.bReadonly$ = true;
@@ -162,9 +153,7 @@ export class DropdownComponent implements OnInit {
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 
     this.fieldMetadata = this.configProps$['fieldMetadata'];
-    const metaData = Array.isArray(this.fieldMetadata)
-    ? this.fieldMetadata.filter(field => field?.classID === className)[0]
-    : this.fieldMetadata;
+    const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter((field) => field?.classID === className)[0] : this.fieldMetadata;
 
     let displayName = metaData?.datasource?.propertyForDisplayText;
     displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);
@@ -173,8 +162,11 @@ export class DropdownComponent implements OnInit {
     this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
     this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
 
-    this.localizedValue = this.pConn$.getLocalizedValue(this.value$,this.localePath,
-                                          this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName));
+    this.localizedValue = this.pConn$.getLocalizedValue(
+      this.value$,
+      this.localePath,
+      this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
+    );
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       let timer = interval(100).subscribe(() => {
@@ -229,4 +221,3 @@ export class DropdownComponent implements OnInit {
     return errMessage;
   }
 }
-

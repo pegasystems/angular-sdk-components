@@ -38,11 +38,7 @@ export class CaseHistoryComponent implements OnInit {
 
     this.waitingForData = true;
 
-    const caseHistoryData = this.PCore$.getDataApiUtils().getData(
-      dataViewName,
-      `{"dataViewParameters":[{"CaseInstanceKey":"${caseID}"}]}`,
-      context
-    );
+    const caseHistoryData = this.PCore$.getDataApiUtils().getData(dataViewName, `{"dataViewParameters":[{"CaseInstanceKey":"${caseID}"}]}`, context);
 
     caseHistoryData.then((historyJSON: Object) => {
       this.fields$ = [

@@ -107,7 +107,7 @@ export class FileUtilityComponent implements OnInit {
     this.PCore$.getPubSubUtils().subscribe(
       this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
       this.updateSelf.bind(this),
-      "caseAttachmentsUpdateFromCaseview"
+      'caseAttachmentsUpdateFromCaseview'
     );
   }
 
@@ -118,7 +118,7 @@ export class FileUtilityComponent implements OnInit {
 
     this.PCore$.getPubSubUtils().unsubscribe(
       this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
-      "caseAttachmentsUpdateFromCaseview"
+      'caseAttachmentsUpdateFromCaseview'
     );
   }
 
@@ -205,9 +205,7 @@ export class FileUtilityComponent implements OnInit {
     attsFromResp = attsFromResp.map((respAtt) => {
       const updatedAtt = {
         ...respAtt,
-        meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${
-          respAtt.createdBy
-        }`
+        meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${respAtt.createdBy}`
       };
       if (updatedAtt.type === 'FILE') {
         updatedAtt.nameWithExt = updatedAtt.fileName;
@@ -720,4 +718,3 @@ export class FileUtilityComponent implements OnInit {
     return false;
   }
 }
-

@@ -57,12 +57,12 @@ export class OperatorComponent implements OnInit {
         this.fields$ = [
           {
             id: 'pyPosition',
-            name: localizedVal("Position", localeCategory),
+            name: localizedVal('Position', localeCategory),
             value: res.data.pyOperatorInfo.pyPosition != '' ? res.data.pyOperatorInfo.pyPosition : fillerString
           },
           {
             id: 'pyOrganization',
-            name: localizedVal("Organization", localeCategory),
+            name: localizedVal('Organization', localeCategory),
             value: res.data.pyOperatorInfo.pyOrganization != '' ? res.data.pyOperatorInfo.pyOrganization : fillerString
           },
           {
@@ -84,31 +84,33 @@ export class OperatorComponent implements OnInit {
 
         this.bShowPopover$ = true;
         this.cdRef.detectChanges();
-      }else {
-        console.log(`Operator: PCore.getUserApi().getOperatorDetails(${this.id$}); returned empty res.data.pyOperatorInfo.pyUserName - adding default`);
+      } else {
+        console.log(
+          `Operator: PCore.getUserApi().getOperatorDetails(${this.id$}); returned empty res.data.pyOperatorInfo.pyUserName - adding default`
+        );
         this.fields$ = [
           {
-            id: "pyPosition",
-            name: localizedVal("Position", localeCategory),
+            id: 'pyPosition',
+            name: localizedVal('Position', localeCategory),
             value: fillerString
           },
           {
-            id: "pyOrganization",
-            name: localizedVal("Organization", localeCategory),
+            id: 'pyOrganization',
+            name: localizedVal('Organization', localeCategory),
             value: fillerString
           },
           {
-            id: "ReportToUserName",
+            id: 'ReportToUserName',
             name: localizedVal('Reports to', localeCategory),
             value: fillerString
           },
           {
-            id: "pyTelephone",
+            id: 'pyTelephone',
             name: localizedVal('Telephone', localeCategory),
             value: fillerString
           },
           {
-            id: "pyEmailAddress",
+            id: 'pyEmailAddress',
             name: localizedVal('Email address', localeCategory),
             value: fillerString
           }

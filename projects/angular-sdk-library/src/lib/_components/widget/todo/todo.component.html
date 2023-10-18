@@ -33,11 +33,11 @@
 
   <div *ngIf="assignmentCount$ > 3">
     <div *ngIf="bShowMore$; else showLess" class="psdk-todo-show-more">
-      <button mat-stroked-button (click)="_showMore()">{{ showMoreLocalizedValue ===  'show_more' ? 'Show more': showMoreLocalizedValue }}</button>
+      <button mat-stroked-button (click)="_showMore()">{{ showMoreLocalizedValue === 'show_more' ? 'Show more' : showMoreLocalizedValue }}</button>
     </div>
     <ng-template #showLess>
       <div class="psdk-todo-show-more">
-        <button mat-stroked-button (click)="_showLess()">{{ showlessLocalizedValue ===  'show_less' ? 'Show less': showlessLocalizedValue }}</button>
+        <button mat-stroked-button (click)="_showLess()">{{ showlessLocalizedValue === 'show_less' ? 'Show less' : showlessLocalizedValue }}</button>
       </div>
     </ng-template>
   </div>
