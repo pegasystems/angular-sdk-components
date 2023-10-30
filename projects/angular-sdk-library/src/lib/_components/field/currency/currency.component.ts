@@ -7,6 +7,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
 
 @Component({
   selector: 'app-currency',
@@ -35,8 +36,13 @@ export class CurrencyComponent implements OnInit {
   componentReference: string = '';
   testId: string;
   helperText: string;
+  currencyISOCode: string = "USD";
+  currencyOptions: Object = {};
 
-  fieldControl = new FormControl<number | null>(null, null);
+  fieldControl = new FormControl(null, {updateOn: 'blur'});
+  symbol: string;
+  thousandsSep: string;
+  decimalSep: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -130,6 +136,15 @@ export class CurrencyComponent implements OnInit {
     if (this.configProps$['readOnly'] != null) {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
+
+    if(this.configProps$['currencyISOCode'] != null){
+      this.currencyISOCode = this.configProps$['currencyISOCode'];
+    }
+
+    const theSymbols = getCurrencyCharacters(this.currencyISOCode);
+    this.symbol = theSymbols.theCurrencySymbol;
+    this.thousandsSep = theSymbols.theDigitGroupSeparator;
+    this.decimalSep = theSymbols.theDecimalIndicator;
 
     this.componentReference = this.pConn$.getStateProps().value;
 

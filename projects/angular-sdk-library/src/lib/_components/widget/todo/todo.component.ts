@@ -2,6 +2,7 @@ import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
@@ -43,7 +44,7 @@ export class TodoComponent implements OnInit {
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
 
-  constructor(private psService: ProgressSpinnerService, private ngZone: NgZone, private utils: Utils) {}
+  constructor(private psService: ProgressSpinnerService, private erService: ErrorMessagesService, private ngZone: NgZone, private utils: Utils) {}
 
   ngOnInit() {
     if (!this.PCore$) {
@@ -236,16 +237,20 @@ export class TodoComponent implements OnInit {
       options['target'] = sTarget;
     }
 
+    this.psService.sendMessage(true);
+
     this.pConn$
       .getActionsApi()
       .openAssignment(id, classname, options)
       .then(() => {
+        this.psService.sendMessage(false);
         if (this.bLogging) {
           console.log(`openAssignment completed`);
         }
       })
       .catch(() => {
-        alert(`Submit failed!`);
+      this.psService.sendMessage(false);
+      this.erService.sendMessage('show', "Failed to open");
       });
   }
 }

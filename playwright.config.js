@@ -1,3 +1,4 @@
+// eslint-disable-next-line strict
 const { devices } = require('@playwright/test');
 
 /**
