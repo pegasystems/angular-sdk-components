@@ -10,7 +10,7 @@ const caseHistoryTabVisible = true;
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('http://localhost:3500/portal', { waitUntil: 'networkidle' });
+  await page.goto(config.config.baseUrl, { waitUntil: 'networkidle' });
 });
 
 test.describe('E2E test', () => {

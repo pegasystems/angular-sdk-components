@@ -39,7 +39,7 @@ $natural-ease: cubic-bezier(0.4, 0.6, 0.1, 1) !default;
 }
 
 .psdk-appshell-nav {
-  z-index: 3;
+  z-index: 199;
   position: fixed;
   display: flex;
   flex-direction: column;

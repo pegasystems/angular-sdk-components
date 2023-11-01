@@ -6,7 +6,7 @@ const endpoints = require('../../../../../sdk-config.json');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('http://localhost:3500/portal', { waitUntil: 'networkidle' });
+  await page.goto(config.config.baseUrl, { waitUntil: 'networkidle' });
 });
 let caseID;
 test.describe('E2E test', () => {
@@ -146,7 +146,7 @@ test.describe('E2E test', () => {
     const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
     await expect(worklist).toBeVisible();
 
-    const caseButton = page.locator(`span:has-text('${caseID}')`);
+    const caseButton = page.locator(`button:has-text('${caseID}')`);
     await caseButton.click();
 
     const mgrDiscountInput = page.locator('input[data-test-id="D69ECA63310344EDB0D0F9881CF9B662"]');
@@ -167,7 +167,7 @@ test.describe('E2E test', () => {
     const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
     await expect(worklist).toBeVisible();
 
-    const caseButton = page.locator(`span:has-text('${caseID}')`);
+    const caseButton = page.locator(`button:has-text('${caseID}')`);
     await caseButton.click();
 
     const tvConnected = page.locator('mat-checkbox[data-test-id="EEF2AA5E42FD9F0FB0A44EA0B2D52921"]');

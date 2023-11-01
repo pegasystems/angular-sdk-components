@@ -1,11 +1,11 @@
 <div class="psdk-list-header">
   <div>
     <mat-form-field class="psdk-search" *ngIf="bShowSearch$">
-      <mat-label><img class="psdk-icon-search" src="{{ searchIcon$ }}" /> Search</mat-label>
+      <mat-label><img class="psdk-icon-search" src="{{ searchIcon$ }}" /> <span class="psdk-search-label">Search</span> </mat-label>
       <input matInput (keyup)="applySearch($event)" placeholder="" />
     </mat-form-field>
 
-    <div *ngIf="bInForm$" class="psdk-outer-div-in-form">
+    <div *ngIf="!bInForm$" class="psdk-outer-div-in-form">
       <div class="psdk-inner-div-in-form" *ngIf="bColumnReorder$">
         <div>
           <table mat-table [dataSource]="repeatList$" matSort cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
@@ -40,12 +40,12 @@
                   *ngIf="_showButton(dCol.config.name, dCol); else regular"
                   mat-button
                   color="primary"
-                  (click)="_listViewClick(dCol.config.name, element[dCol.config.name], i)"
+                  (click)="_listViewClick(dCol.config, element)"
                 >
                   {{ element[dCol.config.name] }}
                 </button>
                 <ng-template #regular>
-                  {{ element[dCol.config.name] }}
+                  {{ element[dCol.config.name] || "---" }}
                 </ng-template>
               </td>
             </ng-container>
@@ -104,7 +104,7 @@
                   *ngIf="_showButton(dCol.config.name, dCol); else regular"
                   mat-button
                   color="primary"
-                  (click)="_listViewClick(dCol.config.name, element[dCol.config.name], i)"
+                  (click)="_listViewClick(dCol.config, element)"
                 >
                   {{ element[dCol.config.name] }}
                 </button>
@@ -135,7 +135,7 @@
         </div>
       </div>
     </div>
-    <div *ngIf="!bInForm$">
+    <div *ngIf="bInForm$">
       <div>
         <div>
           <table *ngIf="repeatListData?.length > 0" mat-table [dataSource]="repeatList$" matSort>
@@ -159,7 +159,7 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns$"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns$" (click)="rowClick(row)"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns$"></tr>
           </table>
           <div *ngIf="repeatListData?.length === 0">
             <table *ngIf="repeatListData?.length === 0" mat-table [dataSource]="repeatList$">

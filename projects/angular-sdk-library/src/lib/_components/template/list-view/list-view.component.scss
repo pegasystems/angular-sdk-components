@@ -63,17 +63,19 @@ td.mat-mdc-footer-cell {
 
 .psdk-search {
   padding-left: 0.625rem;
+  padding-right: 0.625rem;
 }
 
 .psdk-icon-search {
   vertical-align: sub;
-  padding: 0rem 0.125rem;
+  padding: 0.125rem 0.125rem;
   min-width: unset;
   width: 1.1rem;
 }
 
 .psdk-outer-div-in-form {
-  display: inline-grid;
+  padding: 1rem;
+  overflow: hidden;
 }
 
 .psdk-inner-div-in-form {
@@ -145,7 +147,7 @@ td.mat-mdc-footer-cell {
 }
 
 tr.mat-mdc-row {
-  cursor: pointer;
+  // cursor: pointer;
 }
 
 .psdk-no-records {
@@ -155,4 +157,13 @@ tr.mat-mdc-row {
   align-items: center;
   border: 1px solid lightgray;
   border-top: none;
+}
+
+.psdk-table-field-link{
+  color: $app-primary-color;
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  align-items: center;
 }

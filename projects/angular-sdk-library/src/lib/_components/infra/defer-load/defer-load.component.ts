@@ -32,7 +32,7 @@ export class DeferLoadComponent implements OnInit {
 
   angularPConnectData: any = {};
   constants: any;
-  currentLoadedAssignment = "";
+  currentLoadedAssignment = '';
   isContainerPreview: boolean;
   loadViewCaseID: any;
   resourceType: any;
@@ -53,12 +53,6 @@ export class DeferLoadComponent implements OnInit {
       this.PCore$ = window.PCore;
     }
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-
-    const { CASE, PAGE, DATA } = this.constants.RESOURCE_TYPES;
-    this.CASE = CASE;
-    this.PAGE = PAGE;
-    this.DATA = DATA;
-    
     this.loadActiveTab();
   }
 
@@ -79,7 +73,6 @@ export class DeferLoadComponent implements OnInit {
   }
 
   ngOnChanges() {
-
     this.loadViewCaseID = this.pConn$.getValue(this.constants.PZINSKEY) || this.pConn$.getValue(this.constants.CASE_INFO.CASE_INFO_ID);
     let containerItemData;
     const targetName = this.pConn$.getTarget();
@@ -87,6 +80,11 @@ export class DeferLoadComponent implements OnInit {
       this.containerName = this.PCore$.getContainerUtils().getActiveContainerItemName(targetName);
       containerItemData = this.PCore$.getContainerUtils().getContainerItemData(targetName, this.containerName);
     }
+    const { CASE, PAGE, DATA } = this.constants.RESOURCE_TYPES;
+    this.CASE = CASE;
+    this.PAGE = PAGE;
+    this.DATA = DATA;
+
     const { resourceType = this.CASE } = containerItemData || { resourceType: this.loadViewCaseID ? this.CASE : this.PAGE };
     this.resourceType = resourceType;
     this.isContainerPreview = /preview_[0-9]*/g.test(this.pConn$.getContextName());
@@ -126,7 +124,7 @@ export class DeferLoadComponent implements OnInit {
         }
       };
       const configObject = this.PCore$.createPConnect(config);
-      configObject.getPConnect().setInheritedProp('displayMode', 'LABELS_LEFT')
+      configObject.getPConnect().setInheritedProp('displayMode', 'LABELS_LEFT');
       this.loadedPConn$ = ReferenceComponent.normalizePConn(configObject.getPConnect());
       this.componentName$ = this.loadedPConn$.getComponentName();
       if (this.deferLoadId) {
@@ -134,18 +132,14 @@ export class DeferLoadComponent implements OnInit {
       }
     }
     // this.cdRef.detectChanges();
-  };
+  }
 
   loadActiveTab() {
     if (this.resourceType === this.DATA) {
       // Rendering defer loaded tabs in data context
       if (this.containerName) {
         const dataContext = this.PCore$.getStoreValue('.dataContext', 'dataInfo', this.containerName);
-        const dataContextParameters = this.PCore$.getStoreValue(
-          '.dataContextParameters',
-          'dataInfo',
-          this.containerName
-        );
+        const dataContextParameters = this.PCore$.getStoreValue('.dataContextParameters', 'dataInfo', this.containerName);
 
         this.pConn$
           .getActionsApi()
@@ -153,7 +147,7 @@ export class DeferLoadComponent implements OnInit {
             skipSemanticUrl: true,
             isDeferLoaded: true
           })
-          .then(data => {
+          .then((data) => {
             this.onResponse(data);
           });
       } else {
@@ -164,12 +158,14 @@ export class DeferLoadComponent implements OnInit {
       this.pConn$
         .getActionsApi()
         .loadView(encodeURI(this.loadViewCaseID), this.name, this.getViewOptions())
-        .then(data => {
+        .then((data) => {
           this.onResponse(data);
         });
     } else {
-      this.pConn$.getActionsApi().refreshCaseView(encodeURI(this.loadViewCaseID), this.name)
-        .then(data => {
+      this.pConn$
+        .getActionsApi()
+        .refreshCaseView(encodeURI(this.loadViewCaseID), this.name)
+        .then((data) => {
           this.onResponse(data.root);
         });
     }

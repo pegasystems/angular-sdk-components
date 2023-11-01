@@ -64,7 +64,7 @@ export class ListViewComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   @Input() pConn$: any;
-  @Input() bInForm$: boolean = false;
+  @Input() bInForm$: boolean = true;
   @Input() payload;
 
   PCore$: any;
@@ -72,7 +72,7 @@ export class ListViewComponent implements OnInit {
   repeatList$: MatTableDataSource<any>;
   fields$: Array<any>;
 
-  displayedColumns$ = Array<string>();
+  displayedColumns$ = Array<any>();
   groupByColumns$: Array<string> = [];
 
   configProps: any;
@@ -127,6 +127,7 @@ export class ListViewComponent implements OnInit {
   rowID: any;
   response: any;
   compositeKeys: any;
+  showDynamicFields: any;
 
   constructor(private psService: ProgressSpinnerService, private utils: Utils) {}
 
@@ -144,6 +145,7 @@ export class ListViewComponent implements OnInit {
     this.bShowSearch$ = this.utils.getBooleanValue(this.configProps.globalSearch);
     this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps.reorderFields);
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps.grouping);
+    this.showDynamicFields = this.configProps?.showDynamicFields;
 
     this.menuSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
     this.arrowDownSvgIcon$ = this.utils.getImageSrc('arrow-down', this.utils.getSDKStaticContentUrl());
@@ -162,45 +164,62 @@ export class ListViewComponent implements OnInit {
     this.getListData();
   }
 
+  getFieldsMetadata(refList) {
+    return this.PCore$.getAnalyticsUtils().getDataViewMetadata(refList, this.showDynamicFields);
+  }
+
   getListData() {
     const componentConfig = this.pConn$.getComponentConfig();
     if (this.configProps) {
       const refList = this.configProps?.referenceList;
-
+      const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
-      const workListData = this.PCore$.getDataApiUtils().getData(refList, this.payload);
+      const workListDataPromise = this.PCore$.getDataApiUtils().getData(refList, this.payload);
 
       this.bShowFilterPopover$ = false;
 
-      workListData.then((workListJSON: Object) => {
-        // don't update these fields until we return from promise
-        this.fields$ = this.configProps.presets[0].children[0].children;
-        // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
-        let columnFields = componentConfig.presets[0].children[0].children;
+      this.psService.sendMessage(true);
 
-        const tableDataResults = workListJSON['data'].data;
+      Promise.all([fieldsMetaDataPromise, workListDataPromise])
+        .then((results: any) => {
+          const fieldsMetaData = results[0];
+          const workListData = results[1];
 
-        this.displayedColumns$ = this.getDisplayColums(columnFields);
-        this.fields$ = this.updateFields(this.fields$, this.displayedColumns$);
-        this.response = tableDataResults;
-        this.updatedRefList = this.updateData(tableDataResults, this.fields$);
-        if (this.selectionMode === SELECTION_MODE.SINGLE && this.updatedRefList?.length > 0) {
-          this.displayedColumns$?.unshift('select');
-          this.singleSelectionMode = true;
-        } else if (this.selectionMode === SELECTION_MODE.MULTI && this.updatedRefList?.length > 0) {
-          this.displayedColumns$?.unshift('select');
-          this.multiSelectionMode = true;
-        }
+          this.fields$ = this.configProps.presets[0].children[0].children;
+          // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
+          let columnFields = componentConfig.presets[0].children[0].children;
 
-        this.repeatList$ = new MatTableDataSource(this.updatedRefList);
-        this.repeatList$.filterPredicate = this.customFilterPredicate.bind(this);
+          const tableDataResults = workListData['data'].data;
 
-        // keeping an original copy to get back after possible sorts, filters and groupBy
-        this.repeatListData = this.repeatList$.data.slice();
+          const columns = this.getDisplayColumns(columnFields, fieldsMetaData.data.fields, this.fields$);
+          this.fields$ = this.updateFields(this.fields$, fieldsMetaData.data.fields, columns);
+          this.displayedColumns$ = columns.map((col) => {
+            return col.id;
+          });
+          this.response = tableDataResults;
+          this.updatedRefList = this.updateData(tableDataResults, this.fields$);
+          if (this.selectionMode === SELECTION_MODE.SINGLE && this.updatedRefList?.length > 0) {
+            this.displayedColumns$?.unshift('select');
+            this.singleSelectionMode = true;
+          } else if (this.selectionMode === SELECTION_MODE.MULTI && this.updatedRefList?.length > 0) {
+            this.displayedColumns$?.unshift('select');
+            this.multiSelectionMode = true;
+          }
 
-        this.repeatList$.paginator = this.paginator;
-        this.repeatList$.sort = this.sort;
-      });
+          this.repeatList$ = new MatTableDataSource(this.updatedRefList);
+          this.repeatList$.filterPredicate = this.customFilterPredicate.bind(this);
+
+          // keeping an original copy to get back after possible sorts, filters and groupBy
+          this.repeatListData = this.repeatList$.data.slice();
+
+          this.repeatList$.paginator = this.paginator;
+          this.repeatList$.sort = this.sort;
+          this.psService.sendMessage(false);
+        })
+        .catch(() => {
+          console.error("Couldn't fetch either the fieldsMetaData or workListData");
+          this.psService.sendMessage(false);
+        });
     }
   }
 
@@ -228,10 +247,10 @@ export class ListViewComponent implements OnInit {
     moveItemInArray(this.displayedColumns$, event.previousIndex, event.currentIndex);
   }
 
-  updateFields(arFields, arColumns): Array<any> {
+  updateFields(arFields, arColumns, fields): Array<any> {
     let arReturn = arFields;
     for (let i in arReturn) {
-      arReturn[i].config.name = arColumns[i];
+      arReturn[i].config = { ...arReturn[i].config, ...fields[i], name: fields[i].id };
     }
 
     return arReturn;
@@ -291,14 +310,14 @@ export class ListViewComponent implements OnInit {
     this.pConn$?.getListActions()?.setSelectedRows([reqObj]);
   }
 
-  rowClick(row) {
-    switch (this.configProps.rowClickAction) {
-      case 'openAssignment':
-        this.psService.sendMessage(true);
-        this.openAssignment(row);
-        break;
-    }
-  }
+  // rowClick(row) {
+  //   switch (this.configProps.rowClickAction) {
+  //     case 'openAssignment':
+  //       this.psService.sendMessage(true);
+  //       this.openAssignment(row);
+  //       break;
+  //   }
+  // }
 
   _getIconStyle(level): string {
     let sReturn = '';
@@ -340,14 +359,32 @@ export class ListViewComponent implements OnInit {
     return bReturn;
   }
 
-  _listViewClick(name, value, index) {
-    switch (name) {
-      case 'pxTaskLabel':
-        this.openAssignment(this.repeatList$.data[index]);
-        break;
-      case 'pxRefObjectInsName':
-        this.openWork(this.repeatList$.data[index]);
-        break;
+  _listViewClick(column, row) {
+    const name = column.id;
+    if (column.displayAsLink) {
+      const { pxObjClass } = row;
+      let { pzInsKey } = row;
+      if (column.isAssociation) {
+        const associationCategory = name.split(':')[0];
+        pzInsKey = row[`${associationCategory}:pzInsKey`];
+      }
+      if (column.isAssignmentLink) {
+        this.pConn$.getActionsApi().openAssignment(pzInsKey, pxObjClass, {
+          containerName: 'primary',
+          channelName: ''
+        });
+      } else {
+        this.pConn$.getActionsApi().openWorkByHandle(pzInsKey, pxObjClass);
+      }
+    } else {
+      switch (name) {
+        case 'pxTaskLabel':
+          this.openAssignment(row);
+          break;
+        case 'pxRefObjectInsName':
+          this.openWork(row);
+          break;
+      }
     }
   }
 
@@ -957,9 +994,9 @@ export class ListViewComponent implements OnInit {
   }
 
   openWork(row) {
-    const { pxRefObjectClass, pxRefObjectKey } = row;
-
-    if (pxRefObjectClass != '' && pxRefObjectKey != '') {
+    const pxRefObjectClass = row.pxRefObjectClass || row.pxObjClass;
+    const { pxRefObjectKey } = row;
+    if (pxRefObjectClass !== '' && pxRefObjectKey !== '') {
       this.pConn$.getActionsApi().openWorkByHandle(pxRefObjectKey, pxRefObjectClass);
     }
   }
@@ -999,14 +1036,33 @@ export class ListViewComponent implements OnInit {
     }));
   }
 
-  getDisplayColums(fields = []) {
-    let arReturn = fields.map((field, colIndex) => {
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  getDisplayColumns(colFields = [], fields, presetFields) {
+    const AssignDashObjects = ['Assign-Worklist', 'Assign-WorkBasket'];
+    const arReturn = colFields.map((field: any, index) => {
       let theField = field.config.value.substring(field.config.value.indexOf(' ') + 1);
-      if (theField.indexOf('.') == 0) {
+      if (theField.indexOf('.') === 0) {
         theField = theField.substring(1);
       }
-
-      return theField;
+      const colIndex = fields.findIndex(ele => ele.fieldID === theField);
+      const displayAsLink = field.config.displayAsLink;
+      const headerRow: any = {};
+      headerRow.id = theField;
+      headerRow.type = field.type;
+      headerRow.displayAsLink = displayAsLink;
+      headerRow.numeric = field.type === 'Decimal' || field.type === 'Integer' || field.type === 'Percentage' || field.type === 'Currency' || false;
+      headerRow.disablePadding = false;
+      headerRow.label = presetFields[index].config.label;
+      if(colIndex >= 0){
+        headerRow.classID = fields[colIndex].classID;
+      }
+      if (displayAsLink) {
+        headerRow.isAssignmentLink = AssignDashObjects.includes(headerRow.classID);
+        if (field.config.value?.startsWith('@CA')) {
+          headerRow.isAssociation = true;
+        }
+      }
+      return headerRow;
     });
     return arReturn;
   }

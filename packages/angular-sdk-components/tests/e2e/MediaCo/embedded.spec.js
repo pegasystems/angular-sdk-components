@@ -1,9 +1,10 @@
 const { test } = require('@playwright/test');
 const common = require('../../common');
+const config = require('../../config');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('http://localhost:3500/embedded', { waitUntil: 'networkidle' });
+  await page.goto(config.config.baseEmbedUrl, { waitUntil: 'networkidle' });
 });
 
 test.describe('E2E test', () => {

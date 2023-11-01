@@ -31,6 +31,12 @@
 
 .psdk-todo-id {
   color: $app-primary-color;
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+  align-items: center;
+
 }
 
 .psdk-avatar {
@@ -75,7 +81,6 @@
 
 .psdk-todo-assignment-task {
   color: $app-neutral-color;
-  cursor: pointer;
 }
 
 .psdk-todo-assignment-action {
