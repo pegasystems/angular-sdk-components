@@ -53,6 +53,38 @@ test.describe('E2E test', () => {
     /** Submitting the case */
     await page.locator('button:has-text("submit")').click();
   }, 10000);
+
+  test('should login, create case and run test cases for Cancel action on the Assignment', async ({ page }) => {
+    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+
+    /** Testing announcement banner presence */
+    const announcementBanner = page.locator('h2:has-text("Announcements")');
+    await expect(announcementBanner).toBeVisible();
+
+    /** Testing worklist presence */
+    const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
+    await expect(worklist).toBeVisible();
+
+    /** Click on the Create Case button */
+    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    await createCase.click();
+
+    /** Creating a Complex Fields case-type */
+    const complexFieldsCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
+    await complexFieldsCase.click();
+
+    /** Wait until newly created case loads */
+    await expect(page.locator('div[id="assignment"]')).toBeVisible();
+
+    await page.locator('button >> span:has-text("Cancel")').click();
+
+    await page.locator('button[id="go-btn"]').click();
+
+    await expect(page.locator('div[id="assignment"]')).toBeVisible();
+
+    /** Submitting the case */
+    await page.locator('button:has-text("submit")').click();
+  }, 10000);
 });
 
 test.afterEach(async ({ page }) => {

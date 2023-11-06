@@ -128,6 +128,7 @@ export class ListViewComponent implements OnInit {
   response: any;
   compositeKeys: any;
   showDynamicFields: any;
+  title: string;
 
   constructor(private psService: ProgressSpinnerService, private utils: Utils) {}
 
@@ -146,6 +147,7 @@ export class ListViewComponent implements OnInit {
     this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps.reorderFields);
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps.grouping);
     this.showDynamicFields = this.configProps?.showDynamicFields;
+    this.title = this.configProps.title;
 
     this.menuSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
     this.arrowDownSvgIcon$ = this.utils.getImageSrc('arrow-down', this.utils.getSDKStaticContentUrl());
