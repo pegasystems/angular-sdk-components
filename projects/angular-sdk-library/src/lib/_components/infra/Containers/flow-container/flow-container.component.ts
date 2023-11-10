@@ -64,6 +64,7 @@ export class FlowContainerComponent implements OnInit {
   localizedVal: any;
   localeCategory = 'Messages';
   localeReference: any;
+  banners: Array<any>;
   //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   constructor(
@@ -164,8 +165,17 @@ export class FlowContainerComponent implements OnInit {
         } else {
           this.updateSelf();
         }
+      } else {
+        this.showPageMessages(completeProps);
       }
     }
+  }
+
+  showPageMessages(completeProps: Object) {
+    this.ngZone.run(() => {
+      const pageMessages = completeProps['pageMessages'];
+      this.banners = [{ messages: pageMessages?.map((msg) => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
+    });
   }
 
   getTodoVisibilty() {
@@ -221,6 +231,7 @@ export class FlowContainerComponent implements OnInit {
 
   initComponent(bLoadChildren: boolean) {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.showPageMessages(this.configProps$);
 
     // when true, update arChildren from pConn, otherwise, arChilren will be updated in updateSelf()
     if (bLoadChildren) {

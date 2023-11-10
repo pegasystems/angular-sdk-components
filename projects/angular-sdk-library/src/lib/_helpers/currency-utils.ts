@@ -5,7 +5,7 @@ import { default as CurrencyMapAlias } from './formatters/currency-map';
 declare const PCore;
 
 export const getCurrencyOptions = (inISOCode: string) => {
-  const operatorLocale = PCore.getEnvironmentInfo().getUseLocale() || 'en-US';
+  const operatorLocale = PCore.getEnvironmentInfo().getUseLocale() || PCore.getEnvironmentInfo().getLocale() || 'en-US';
 
   let currMapToUse = CurrencyMapAlias.US;
   let localeToUse = operatorLocale;
