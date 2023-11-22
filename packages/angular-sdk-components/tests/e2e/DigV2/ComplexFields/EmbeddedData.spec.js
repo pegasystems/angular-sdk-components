@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('E2E test', () => {
   test('should login, create case and run different test cases for Embedded Data', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -60,28 +60,28 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the first Row */
-    await page.locator('input[data-test-id="202003240938510823869"]').type('Main St');
-    await page.locator('input[data-test-id="202003240938510831291"]').type('Cambridge');
-    await page.locator('input[data-test-id="202003240938510831411"]').type('MA');
-    await page.locator('input[data-test-id="202003240938510832734"]').type('02142');
+    await page.locator('input[data-test-id="202003240938510823869"]').fill('Main St');
+    await page.locator('input[data-test-id="202003240938510831291"]').fill('Cambridge');
+    await page.locator('input[data-test-id="202003240938510831411"]').fill('MA');
+    await page.locator('input[data-test-id="202003240938510832734"]').fill('02142');
     let phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
     let countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
-    await phone.locator('input[type="tel"]').type('(201) 555-0123');
+    await phone.locator('input[type="tel"]').fill('(201) 555-0123');
 
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the second Row */
-    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').type('Global St');
-    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').type('California');
-    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').type('AK');
-    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').type('03142');
+    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').fill('Global St');
+    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('California');
+    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').fill('AK');
+    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').fill('03142');
     phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
-    await phone.locator('input[type="tel"]').type('(201) 444-0213');
+    await phone.locator('input[type="tel"]').fill('(201) 444-0213');
 
     await page.locator('button:has-text("Next")').click();
 
@@ -123,30 +123,30 @@ test.describe('E2E test', () => {
     await page.locator('mat-option > span:has-text("Editable")').click();
 
     /** Entering values in the first Row */
-    await page.locator('input[data-test-id="202003240938510823869"]').type('Main St');
-    await page.locator('input[data-test-id="202003240938510831291"]').type('Cambridge');
-    await page.locator('input[data-test-id="202003240938510831411"]').type('MA');
-    await page.locator('input[data-test-id="202003240938510832734"]').type('02142');
+    await page.locator('input[data-test-id="202003240938510823869"]').fill('Main St');
+    await page.locator('input[data-test-id="202003240938510831291"]').fill('Cambridge');
+    await page.locator('input[data-test-id="202003240938510831411"]').fill('MA');
+    await page.locator('input[data-test-id="202003240938510832734"]').fill('02142');
 
     phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
-    await phone.locator('input[type="tel"]').type('(201) 555-0123');
+    await phone.locator('input[type="tel"]').fill('(201) 555-0123');
 
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the second Row */
-    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').type('Global St');
-    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').type('California');
-    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').type('AK');
-    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').type('03142');
+    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').fill('Global St');
+    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('California');
+    await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').fill('AK');
+    await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').fill('03142');
 
     phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
-    await phone.locator('input[type="tel"]').type('(201) 444-0213');
+    await phone.locator('input[type="tel"]').fill('(201) 444-0213');
 
     await page.locator('button:has-text("Next")').click();
 

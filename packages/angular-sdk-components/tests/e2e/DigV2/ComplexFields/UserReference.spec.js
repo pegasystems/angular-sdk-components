@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('E2E test', () => {
   test('should login, create case and run different test cases for User Reference', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -40,7 +40,7 @@ test.describe('E2E test', () => {
 
     /** selecting user from autocomplete field  */
     const searchBoxInput = page.locator('input[data-test-id="75c6db46c48c2d7bb102c91d13ed766e"]');
-    await searchBoxInput.type('user');
+    await searchBoxInput.fill('user');
     const firstSearchboxOption = page.locator('div[role="listbox"]>mat-option:first-child');
     await firstSearchboxOption.click();
     const selectedUser = firstSearchboxOption.innerHTML;

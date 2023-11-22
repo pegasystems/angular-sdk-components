@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Integer tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -50,7 +50,7 @@ test.describe('E2E test', () => {
 
     /** Required tests */
     const requiredInteger = page.locator('input[data-test-id="0658481a174254dded4a0c1ffe6b8380"]');
-    requiredInteger.type('10000');
+    requiredInteger.fill('10000');
     await expect(page.locator('mat-error')).toBeHidden();
 
     attributes = await common.getAttributes(requiredInteger);
@@ -95,7 +95,7 @@ test.describe('E2E test', () => {
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
     const editableInteger = page.locator('input[data-test-id="c2aac6ae0d08ac599edf0ea4f27c5437"]');
-    editableInteger.type('10000');
+    editableInteger.fill('10000');
 
     attributes = await common.getAttributes(editableInteger);
     await expect(attributes.includes('readonly')).toBeFalsy();

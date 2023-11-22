@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Currency tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -89,7 +89,7 @@ test.describe('E2E test', () => {
 
     const editableCurrency = page.locator('input[data-test-id="837e53069fc48e63debdee7fa61fbc1a"]');
 
-    editableCurrency.type('120');
+    editableCurrency.fill('120');
 
     attributes = await common.getAttributes(editableCurrency);
     await expect(attributes.includes('readonly')).toBeFalsy();

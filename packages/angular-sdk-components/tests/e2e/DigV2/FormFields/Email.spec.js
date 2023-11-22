@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Email tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -51,7 +51,7 @@ test.describe('E2E test', () => {
     /** Required tests */
     const requiredEmail = page.locator('input[data-test-id="96fa7548c363cdd5adb29c2c2749e436"]');
 
-    requiredEmail.type('John@doe.com');
+    requiredEmail.fill('John@doe.com');
     await expect(page.locator('mat-error')).toBeHidden();
 
     attributes = await common.getAttributes(requiredEmail);
@@ -96,7 +96,7 @@ test.describe('E2E test', () => {
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
     const editableEmail = page.locator('input[data-test-id="c75f8a926bb5e08fd8342f7fe45dc344"]');
-    await editableEmail.type('Johndoe.com');
+    await editableEmail.fill('Johndoe.com');
     await editableEmail.blur();
     await expect(page.locator('mat-error:has-text("Invalid Email")')).toBeVisible();
     editableEmail.fill('John@doe.com');

@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('E2E test', () => {
   test('should login, create case and run different test cases for Confirmation', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = await page.locator('h2:has-text("Announcements")');
@@ -39,21 +39,21 @@ test.describe('E2E test', () => {
     /** Entering some data that will be verified on the Confirmation screen */
     const firstNameInput = page.locator('input[data-test-id="BC910F8BDF70F29374F496F05BE0330C"]');
     await firstNameInput.click();
-    await firstNameInput.type('John');
+    await firstNameInput.fill('John');
 
     const lastNameInput = page.locator('input[data-test-id="77587239BF4C54EA493C7033E1DBF636"]');
     await lastNameInput.click();
-    await lastNameInput.type('Doe');
+    await lastNameInput.fill('Doe');
 
     const cityInput = page.locator('input[data-test-id="57D056ED0984166336B7879C2AF3657F"]');
     await cityInput.click();
-    await cityInput.type('Cambridge');
+    await cityInput.fill('Cambridge');
 
     const phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1F8261D17452A959E013666C5DF45E07"]');
     const countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
-    await phone.locator('input[type="tel"]').type('(201) 555-0123');
+    await phone.locator('input[type="tel"]').fill('(201) 555-0123');
 
     await page.locator('button:has-text("submit")').click();
 

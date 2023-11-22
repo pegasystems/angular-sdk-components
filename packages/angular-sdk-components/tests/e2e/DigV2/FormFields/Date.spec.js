@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Date tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -53,7 +53,7 @@ test.describe('E2E test', () => {
     //const requiredDateInput = requiredDate.locator('input');
     await requiredDate.click();
     const futureDate = common.getFutureDate();
-    await requiredDate.type(futureDate);
+    await requiredDate.fill(futureDate);
 
     await expect(page.locator('mat-error')).toBeHidden();
 
@@ -103,7 +103,7 @@ test.describe('E2E test', () => {
     const editableDate = page.locator('input[data-test-id="80f5dcc587f457378158bb305ec858a8"]');
     //const editableDateInput = editableDate.locator('input');
     await editableDate.click();
-    await editableDate.type(futureDate);
+    await editableDate.fill(futureDate);
     attributes = await common.getAttributes(editableDate);
     await expect(attributes.includes('readonly')).toBeFalsy();
 

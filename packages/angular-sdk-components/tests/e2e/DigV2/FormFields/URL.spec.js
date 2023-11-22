@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the URL tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -91,7 +91,7 @@ test.describe('E2E test', () => {
 
     /** Validation tests */
     const validationMsg = 'Invalid URL';
-    await EditableURL.type('InvalidUrl');
+    await EditableURL.fill('InvalidUrl');
     await EditableURL.blur();
     await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeVisible();
     await EditableURL.clear();

@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Time tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -52,8 +52,8 @@ test.describe('E2E test', () => {
     const requiredTime = page.locator('input[id="mat-input-2"]');
     const date = new Date();
     // Converting hours from 24 to 12 format, including the special case of "12"
-    const time = `${(date.getHours() % 12) || 12}${date.getMinutes()}AM`;
-    requiredTime.type(time);
+    const time = `${((date.getHours() % 12) || 12).toString().padStart(2, '0')}${date.getMinutes().toString().padStart(2, '0')}AM`;
+    requiredTime.pressSequentially(time);
     attributes = await common.getAttributes(requiredTime);
     await expect(attributes.includes('required')).toBeTruthy();
 
@@ -98,7 +98,7 @@ test.describe('E2E test', () => {
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
     const editableTime = page.locator('input[id="mat-input-6"]');
-    editableTime.type(time);
+    editableTime.pressSequentially(time);
 
     attributes = await common.getAttributes(editableTime);
     await expect(attributes.includes('readonly')).toBeFalsy();

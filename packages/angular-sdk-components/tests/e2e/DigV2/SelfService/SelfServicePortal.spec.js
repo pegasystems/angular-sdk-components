@@ -14,7 +14,7 @@ test.describe('E2E test', () => {
   test('should login and able to render self-service portal', async ({
     page
   }) => {
-    await common.Login(
+    await common.login(
       config.config.apps.digv2.user.username,
       config.config.apps.digv2.user.password,
       page

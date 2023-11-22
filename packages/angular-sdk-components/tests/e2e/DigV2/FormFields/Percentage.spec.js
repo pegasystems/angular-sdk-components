@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Percentage tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -91,7 +91,7 @@ test.describe('E2E test', () => {
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
     const editablePercentage = page.locator('input[data-test-id="2cf58b575154624084c009d2648659ad"]');
-    editablePercentage.type('10000');
+    editablePercentage.fill('10000');
 
     attributes = await common.getAttributes(editablePercentage);
     await expect(attributes.includes('readonly')).toBeFalsy();

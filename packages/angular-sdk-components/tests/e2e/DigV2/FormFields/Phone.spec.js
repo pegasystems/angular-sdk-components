@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
   let attributes;
 
   test('should login, create case and run the Phone tests', async ({ page }) => {
-    await common.Login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing announcement banner presence */
     const announcementBanner = page.locator('h2:has-text("Announcements")');
@@ -59,7 +59,7 @@ test.describe('E2E test', () => {
     await expect(page.locator('mat-error')).toBeVisible();
 
     const requiredPhone = page.locator('ngx-mat-intl-tel-input[data-test-id="af983eaa1b85b015a7654702abd0b249"] >> input');
-    requiredPhone.type('6175551212');
+    requiredPhone.fill('6175551212');
     await expect(page.locator('mat-error')).toBeHidden();
 
     /** Selecting Disable from the Sub Category dropdown */
@@ -102,7 +102,7 @@ test.describe('E2E test', () => {
     await page.locator('text=United States >> nth=0').click();
     const editablePhoneInput = editablePhone.locator('input');
     await editablePhoneInput.click();
-    await editablePhoneInput.type('6175551212');
+    await editablePhoneInput.fill('6175551212');
 
     /** Validation tests */
     const validationMsg = 'Invalid Phone';
@@ -111,7 +111,7 @@ test.describe('E2E test', () => {
     await page.locator('text=United States >> nth=0').click();
     await editablePhoneInput.click();
     /** Entering an invalid Phone number */
-    await editablePhoneInput.type('61');
+    await editablePhoneInput.fill('61');
     await editablePhoneInput.blur();
     /** Expecting an error for Invalid phone number */
     await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeVisible();
@@ -120,7 +120,7 @@ test.describe('E2E test', () => {
     await editablePhoneInput.clear();
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();
-    await editablePhoneInput.type('6175551212');
+    await editablePhoneInput.fill('6175551212');
 
     await editablePhoneInput.blur();
     /** Expecting the invalid Phone number error be no longer present */
