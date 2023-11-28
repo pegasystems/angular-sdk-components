@@ -171,11 +171,11 @@ const pegaSdkComponentMap = {
   PromotedFilters: PromotedFiltersComponent,
   Pulse: PulseComponent,
   QuickCreate: QuickCreateComponent,
-  WssQuickCreate: WssQuickCreateComponent,
   reference: ReferenceComponent,
   RadioButtons: RadioButtonsComponent,
   Region: RegionComponent,
   RootContainer: RootContainerComponent,
+  ScalarList: ScalarListComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,
@@ -206,7 +206,7 @@ const pegaSdkComponentMap = {
   WideNarrowForm: WideNarrowFormComponent,
   WideNarrowPage: WideNarrowPageComponent,
   WssNavBar: WssNavBarComponent,
-  ScalarList: ScalarListComponent
+  WssQuickCreate: WssQuickCreateComponent
 };
 
 export default pegaSdkComponentMap;
