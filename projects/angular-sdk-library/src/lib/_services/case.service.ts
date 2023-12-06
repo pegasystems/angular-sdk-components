@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { endpoints } from './endpoints';
-import { ServerConfigService } from './server-config.service';
 import { Utils } from '../_helpers/utils';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CaseService {
-  constructor(private http: HttpClient, private scService: ServerConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private utils: Utils
+  ) {};
 
   caseTypeUrl: string;
   //caseTypeUrl = endpoints.BASEURL + endpoints.CASETYPES;
@@ -18,7 +20,7 @@ export class CaseService {
     var caseParams = new HttpParams();
     var caseHeaders = new HttpHeaders();
 
-    this.caseTypeUrl = this.scService.getBaseUrl() + endpoints.API + endpoints.CASETYPES;
+    this.caseTypeUrl = this.utils.getBaseUrl() + endpoints.API + endpoints.CASETYPES;
 
     caseHeaders = caseHeaders.append('Authorization', Utils.sdkGetAuthHeader());
 

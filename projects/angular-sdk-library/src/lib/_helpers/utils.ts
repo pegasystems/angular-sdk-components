@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { ServerConfigService } from '../_services/server-config.service';
+import { getSdkConfig } from '@pega/auth/lib/sdk-auth-manager';
 
 dayjs.extend(customParseFormat);
 dayjs.extend(localizedFormat);
@@ -17,10 +17,28 @@ export class Utils {
 
   viewContainerCount: number = 0;
 
-  constructor(private scService: ServerConfigService) {}
+  sdkConfig: any;
+
+  constructor() {
+    getSdkConfig().then( sdkConfig => {
+      this.sdkConfig = sdkConfig;
+    });
+  }
+
+  getServerConfig() {
+    return this.sdkConfig.serverConfig;
+  }
+
+  getAuthConfig() {
+    return this.sdkConfig.authConfig;
+  }
+
+  getBaseUrl() {
+    return this.getServerConfig().infinityRestServerUrl;
+  }
 
   getSDKStaticContentUrl() {
-    const sdkConfigServer = this.scService.getSdkConfigServer();
+    const sdkConfigServer = this.getServerConfig();
 
     // NOTE: Needs a trailing slash! So add one if not provided
     if (!sdkConfigServer.sdkContentServerUrl.endsWith('/')) {

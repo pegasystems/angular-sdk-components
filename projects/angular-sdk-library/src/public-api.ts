@@ -119,8 +119,6 @@ export * from './lib/_components/designSystemExtension/material-vertical-tabs/ma
 export * from './lib/_components/designSystemExtension/operator/operator.component';
 export * from './lib/_components/designSystemExtension/pulse/pulse.component';
 
-export * from './lib/_services/server-config.service';
-export * from './lib/_services/auth.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';

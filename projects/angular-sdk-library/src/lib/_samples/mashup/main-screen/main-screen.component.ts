@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
 import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component';
-import { ServerConfigService } from '../../../_services/server-config.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { Utils } from '../../../_helpers/utils';
 
 declare function loadMashup(targetDom, preLoadComponents);
 
@@ -29,7 +29,10 @@ export class MainScreenComponent implements OnInit {
   showPega$: boolean = false;
   showResolution$: boolean = false;
 
-  constructor(private psservice: ProgressSpinnerService, private serverConfigService: ServerConfigService) {}
+  constructor(
+    private psservice: ProgressSpinnerService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -111,28 +114,26 @@ export class MainScreenComponent implements OnInit {
     this.showTriplePlayOptions$ = false;
     this.showPega$ = true;
 
-    this.serverConfigService.getSdkConfig().then((sdkConfig) => {
-      let mashupCaseType = sdkConfig.serverConfig.appMashupCaseType;
-      if (!mashupCaseType) {
-        const caseTypes = this.PCore$.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;
-        mashupCaseType = caseTypes[0].pyWorkTypeImplementationClassName;
-      }
+    let mashupCaseType = this.utils.getServerConfig().appMashupCaseType;
+    if (!mashupCaseType) {
+      const caseTypes = this.PCore$.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;
+      mashupCaseType = caseTypes[0].pyWorkTypeImplementationClassName;
+    }
 
-      const options = {
-        pageName: 'pyEmbedAssignment',
-        startingFields:
-          mashupCaseType === 'DIXL-MediaCo-Work-NewService'
-            ? {
-                Package: sLevel
-              }
-            : {}
-      };
-      this.PCore$.getMashupApi()
-        .createCase(mashupCaseType, this.PCore$.getConstants().APP.APP, options)
-        .then(() => {
-          console.log('createCase rendering is complete');
-        });
-    });
+    const options = {
+      pageName: 'pyEmbedAssignment',
+      startingFields:
+        mashupCaseType === 'DIXL-MediaCo-Work-NewService'
+          ? {
+              Package: sLevel
+            }
+          : {}
+    };
+    this.PCore$.getMashupApi()
+      .createCase(mashupCaseType, this.PCore$.getConstants().APP.APP, options)
+      .then(() => {
+        console.log('createCase rendering is complete');
+      });
   }
 
   onShopNow(sLevel: string) {

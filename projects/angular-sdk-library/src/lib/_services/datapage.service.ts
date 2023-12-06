@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { endpoints } from './endpoints';
-import { ServerConfigService } from './server-config.service';
 import { Utils } from '../_helpers/utils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DatapageService {
-  constructor(private http: HttpClient, private scService: ServerConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private utils: Utils
+  ) {};
 
-  //dataPageUrl = endpoints.BASEURL + endpoints.DATA;
-  //dataPageUrl = this.scService.getBaseUrl() + endpoints.API + endpoints.DATA;
   dataPageUrl: string;
 
   getDataPage(id, dpParams) {
-    this.dataPageUrl = this.scService.getBaseUrl() + endpoints.API + endpoints.DATA;
+    this.dataPageUrl = this.utils.getBaseUrl() + endpoints.API + endpoints.DATA;
 
     let dataHeaders = new HttpHeaders();
 

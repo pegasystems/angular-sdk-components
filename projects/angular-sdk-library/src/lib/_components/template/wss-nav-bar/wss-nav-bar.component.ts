@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { AuthService } from '../../../_services/auth.service';
+import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { Utils } from '../../../_helpers/utils';
 import { CommonModule } from '@angular/common';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -52,7 +52,6 @@ export class WssNavBarComponent {
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
-    private aService: AuthService,
     private ngZone: NgZone,
     private utils: Utils
   ) {}
@@ -166,7 +165,7 @@ export class WssNavBarComponent {
   }
 
   navPanelLogoutClick() {
-    this.aService.logout().then(() => {
+    logout().then(() => {
       // Reload the page to kick off the login
       window.location.reload();
     });

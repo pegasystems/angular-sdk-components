@@ -6,13 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, interval } from 'rxjs';
+import { loginIfNecessary, logout, sdkSetAuthHeader } from '@pega/auth/lib/sdk-auth-manager';
 
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResetPConnectService } from '../../../_messages/reset-pconnect.service';
 import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
-import { AuthService } from '../../../_services/auth.service';
 import { endpoints } from '../../../_services/endpoints';
-import { ServerConfigService } from '../../../_services/server-config.service';
 import { Utils } from '../../../_helpers/utils';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainScreenComponent } from '../main-screen/main-screen.component';
@@ -51,19 +50,16 @@ export class MCNavComponent implements OnInit {
   bootstrapShell: any;
 
   constructor(
-    private aService: AuthService,
     private cdRef: ChangeDetectorRef,
     private psservice: ProgressSpinnerService,
     private rpcservice: ResetPConnectService,
     private uwservice: UpdateWorklistService,
     private titleService: Title,
-    private scservice: ServerConfigService
+    private utils: Utils
   ) {}
 
   ngOnInit() {
-    this.scservice.readSdkConfig().then(() => {
-      this.initialize();
-    });
+    this.initialize();
   }
 
   ngOnDestroy() {
@@ -115,12 +111,12 @@ export class MCNavComponent implements OnInit {
       this.bLoggedIn$ = false;
     });
 
-    const sdkConfigAuth = await this.scservice.getSdkConfigAuth();
+    const sdkConfigAuth = this.utils.getAuthConfig();
 
     if (!sdkConfigAuth.mashupClientId && sdkConfigAuth.customAuthType === 'Basic') {
       // Service package to use custom auth with Basic
       const sB64 = window.btoa(`${sdkConfigAuth.mashupUserIdentifier}:${window.atob(sdkConfigAuth.mashupPassword)}`);
-      this.aService.setAuthHeader(`Basic ${sB64}`);
+      sdkSetAuthHeader(`Basic ${sB64}`);
     }
 
     if (!sdkConfigAuth.mashupClientId && sdkConfigAuth.customAuthType === 'BasicTO') {
@@ -131,12 +127,12 @@ export class MCNavComponent implements OnInit {
       sISOTime = sISOTime.replace(regex, '');
       // Service package to use custom auth with Basic
       const sB64 = window.btoa(`${sdkConfigAuth.mashupUserIdentifier}:${window.atob(sdkConfigAuth.mashupPassword)}:${sISOTime}`);
-      this.aService.setAuthHeader(`Basic ${sB64}`);
+      sdkSetAuthHeader(`Basic ${sB64}`);
     }
 
     // Login if needed, without doing an initial main window redirect
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
-    this.aService.loginIfNecessary(sAppName, true);
+    loginIfNecessary({appName:sAppName, mainRedirect:false});
   }
 
   startMashup() {
@@ -210,7 +206,7 @@ export class MCNavComponent implements OnInit {
   }
 
   logOff() {
-    this.aService.logout().then(() => {
+    logout().then(() => {
       // Reload the page to kick off the login
       window.location.reload();
     });

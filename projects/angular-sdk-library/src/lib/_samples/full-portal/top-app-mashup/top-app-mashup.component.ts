@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ServerConfigService } from '../../../_services/server-config.service';
-import { AuthService } from '../../../_services/auth.service';
+import { loginIfNecessary, logout, getAvailablePortals } from '@pega/auth/lib/sdk-auth-manager';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from '../../../../sdk-local-component-map';
+import { Utils } from '../../../_helpers/utils';
 
 declare global {
   interface Window {
@@ -68,17 +68,16 @@ export class TopAppMashupComponent implements OnInit {
   availablePortals: Array<string>;
   defaultPortalName: string;
 
+  sdkConfig: any;
+
   constructor(
-    private aService: AuthService,
     private psservice: ProgressSpinnerService,
     private ngZone: NgZone,
-    private scservice: ServerConfigService
+    private utils: Utils
   ) {}
 
   ngOnInit() {
-    this.scservice.readSdkConfig().then(() => {
       this.initialize();
-    });
   }
 
   ngOnDestroy() {
@@ -106,7 +105,7 @@ export class TopAppMashupComponent implements OnInit {
 
     /* Login if needed */
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
-    this.aService.loginIfNecessary(sAppName, false);
+    loginIfNecessary({appName:sAppName, mainRedirect:true});
 
     /* Check if portal is specified as a query parameter */
     const queryString = window.location.search;
@@ -131,7 +130,7 @@ export class TopAppMashupComponent implements OnInit {
       });
     });
 
-    const { appPortal: thePortal, excludePortals } = this.scservice.getSdkConfigServer();
+    const { appPortal: thePortal, excludePortals } = this.utils.getServerConfig();
     const defaultPortal = window.PCore?.getEnvironmentInfo?.().getDefaultPortal?.();
     const queryPortal = sessionStorage.getItem('asdk_portalName');
 
@@ -150,7 +149,7 @@ export class TopAppMashupComponent implements OnInit {
       this.portalSelectionScreen = true;
       this.defaultPortalName = defaultPortal;
       // Getting current user's access group's available portals list other than excluded portals (relies on Traditional DX APIs)
-      this.scservice.getAvailablePortals().then((portals: Array<string>) => {
+      getAvailablePortals().then((portals: Array<string>) => {
         this.availablePortals = portals;
       });
     }
@@ -230,7 +229,7 @@ export class TopAppMashupComponent implements OnInit {
   }
 
   logOff() {
-    this.aService.logout().then(() => {
+    logout().then(() => {
       // Reload the page to kick off the login
       window.location.reload();
     });

@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { AuthService } from '../../../_services/auth.service';
+import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
@@ -53,7 +53,6 @@ export class NavbarComponent implements OnInit {
     private angularPConnect: AngularPConnectService,
     private chRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
-    private aService: AuthService,
     private ngZone: NgZone,
     private utils: Utils
   ) {}
@@ -169,7 +168,7 @@ export class NavbarComponent implements OnInit {
   }
 
   navPanelLogoutClick() {
-    this.aService.logout().then(() => {
+    logout().then(() => {
       // Reload the page to kick off the login
       window.location.reload();
     });
