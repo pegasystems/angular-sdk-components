@@ -15,12 +15,7 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
   templateUrl: './data-reference.component.html',
   styleUrls: ['./data-reference.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    SingleReferenceReadonlyComponent,
-    MultiReferenceReadonlyComponent,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+  imports: [CommonModule, SingleReferenceReadonlyComponent, MultiReferenceReadonlyComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class DataReferenceComponent implements OnInit {
   @Input() pConn$: any;
@@ -48,6 +43,7 @@ export class DataReferenceComponent implements OnInit {
   children;
   displaySingleRef: boolean;
   displayMultiRef: boolean;
+  refList: any;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -60,6 +56,35 @@ export class DataReferenceComponent implements OnInit {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.children = this.pConn$.getChildren();
     this.updateSelf();
+    if (this.firstChildMeta?.type === 'Dropdown' && this.rawViewMetadata['config']?.parameters) {
+      const { value, key, text } = this.firstChildMeta.config.datasource.fields;
+      this.PCore$.getDataApiUtils()
+        .getData(this.refList, {
+          dataViewParameters: this.parameters
+        })
+        .then((res) => {
+          if (res.data.data !== null) {
+            const ddDataSource = res.data.data
+              .map((listItem) => ({
+                key: listItem[key.split(' .', 2)[1]],
+                text: listItem[text.split(' .', 2)[1]],
+                value: listItem[value.split(' .', 2)[1]]
+              }))
+              .filter((item) => item.key);
+            // Filtering out undefined entries that will break preview
+            this.dropDownDataSource = ddDataSource;
+            this.updateSelf();
+          } else {
+            const ddDataSource: any = [];
+            this.dropDownDataSource = ddDataSource;
+          }
+        })
+        .catch((err) => {
+          return Promise.resolve({
+            data: { data: [] }
+          });
+        });
+    }
   }
 
   ngOnDestroy(): void {
@@ -100,9 +125,8 @@ export class DataReferenceComponent implements OnInit {
     this.rawViewMetadata = this.pConn$.getRawMetadata();
     this.viewName = this.rawViewMetadata.name;
     this.firstChildMeta = this.rawViewMetadata.children[0];
-    const refList = this.rawViewMetadata.config.referenceList;
-    this.canBeChangedInReviewMode =
-      allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
+    this.refList = this.rawViewMetadata.config.referenceList;
+    this.canBeChangedInReviewMode = allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
     // this.childrenToRender = this.children;
     this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL'].includes(displayMode);
 
@@ -116,9 +140,9 @@ export class DataReferenceComponent implements OnInit {
       if (this.firstChildMeta?.type === 'Dropdown') {
         this.firstChildMeta.config.datasource.source = this.rawViewMetadata.config?.parameters
           ? this.dropDownDataSource
-          : '@DATASOURCE '.concat(refList).concat('.pxResults');
+          : '@DATASOURCE '.concat(this.refList).concat('.pxResults');
       } else if (this.firstChildMeta?.type === 'AutoComplete') {
-        this.firstChildMeta.config.datasource = refList;
+        this.firstChildMeta.config.datasource = this.refList;
 
         /* Insert the parameters to the component only if present */
         if (this.rawViewMetadata.config?.parameters) {
@@ -149,9 +173,7 @@ export class DataReferenceComponent implements OnInit {
     const caseKey = this.pConn$.getCaseInfo().getKey();
     const refreshOptions = { autoDetectRefresh: true };
     if (this.canBeChangedInReviewMode && this.pConn$.getValue('__currentPageTabViewName')) {
-      this.pConn$
-        .getActionsApi()
-        .refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), null, refreshOptions);
+      this.pConn$.getActionsApi().refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), null, refreshOptions);
       this.PCore$.getDeferLoadManager().refreshActiveComponents(this.pConn$.getContextName());
     } else {
       const pgRef = this.pConn$.getPageReference().replace('caseInfo.content', '');
@@ -187,17 +209,9 @@ export class DataReferenceComponent implements OnInit {
           });
 
           this.PCore$.getDataApiUtils()
-            .updateCaseEditFieldsData(
-              caseKey,
-              { [caseKey]: commitData },
-              caseResponse.headers.etag,
-              this.pConn$.getContextName()
-            )
+            .updateCaseEditFieldsData(caseKey, { [caseKey]: commitData }, caseResponse.headers.etag, this.pConn$.getContextName())
             .then((response) => {
-              this.PCore$.getContainerUtils().updateChildContainersEtag(
-                this.pConn$.getContextName(),
-                response.headers.etag
-              );
+              this.PCore$.getContainerUtils().updateChildContainersEtag(this.pConn$.getContextName(), response.headers.etag);
             });
         });
     }
@@ -239,9 +253,7 @@ export class DataReferenceComponent implements OnInit {
           localeReference: this.rawViewMetadata.config.localeReference,
           ...(this.selectionMode === SELECTION_MODE.SINGLE ? { referenceType: this.referenceType } : ''),
           dataRelationshipContext:
-            this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name
-              ? this.rawViewMetadata.config.name
-              : null,
+            this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name ? this.rawViewMetadata.config.name : null,
           hideLabel: this.hideLabel,
           onRecordChange: this.handleSelection.bind(this)
         }

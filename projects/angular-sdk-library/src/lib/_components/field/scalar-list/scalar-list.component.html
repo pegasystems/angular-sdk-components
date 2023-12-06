@@ -1,0 +1,9 @@
+<div *ngIf="isDisplayModeEnabled">
+    <div *ngFor="let value of items">
+        <component-mapper [name]="value?.getPConnect().getComponentName()" [props]="{ pConn$: value.getPConnect(), formGroup$ }"></component-mapper>
+        <!-- <span key="i">{{ value }}</span> -->
+    </div>
+</div>
+<div *ngIf="!isDisplayModeEnabled">
+    <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+</div>

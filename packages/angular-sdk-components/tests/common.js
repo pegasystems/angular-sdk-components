@@ -32,5 +32,6 @@ const getFutureDate = () => {
 module.exports = {
   login,
   getAttributes,
-  getFutureDate
+  getFutureDate,
+  getFormattedDate
 };
