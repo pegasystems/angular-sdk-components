@@ -8,11 +8,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, interval } from 'rxjs';
 import { loginIfNecessary, logout, sdkSetAuthHeader } from '@pega/auth/lib/sdk-auth-manager';
 
+import { Utils } from '../../../_helpers/utils';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResetPConnectService } from '../../../_messages/reset-pconnect.service';
 import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
 import { endpoints } from '../../../_services/endpoints';
-import { Utils } from '../../../_helpers/utils';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainScreenComponent } from '../main-screen/main-screen.component';
 
@@ -50,16 +50,18 @@ export class MCNavComponent implements OnInit {
   bootstrapShell: any;
 
   constructor(
+    private utils: Utils,
     private cdRef: ChangeDetectorRef,
     private psservice: ProgressSpinnerService,
     private rpcservice: ResetPConnectService,
     private uwservice: UpdateWorklistService,
-    private titleService: Title,
-    private utils: Utils
+    private titleService: Title
   ) {}
 
   ngOnInit() {
-    this.initialize();
+    this.utils.checkConfig().then( () => {
+      this.initialize();
+    });
   }
 
   ngOnDestroy() {
@@ -112,7 +114,6 @@ export class MCNavComponent implements OnInit {
     });
 
     const sdkConfigAuth = this.utils.getAuthConfig();
-
     if (!sdkConfigAuth.mashupClientId && sdkConfigAuth.customAuthType === 'Basic') {
       // Service package to use custom auth with Basic
       const sB64 = window.btoa(`${sdkConfigAuth.mashupUserIdentifier}:${window.atob(sdkConfigAuth.mashupPassword)}`);

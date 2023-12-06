@@ -49,29 +49,31 @@ export class WssNavBarComponent {
   navIcon$: string;
 
   constructor(
+    private utils: Utils,
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
-    private ngZone: NgZone,
-    private utils: Utils
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-
-    this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-
-    // this is a dummy "get", because right now images are in http and the main screen is https
-    // so the images don't load automatically.  This call, makes an initial hit that allows the
-    // rest of the images to show up
-    this.loadImage(this.navIcon$);
-
-    this.initComponent();
+    this.utils.checkConfig().then(() => {
+      if (!this.PCore$) {
+        this.PCore$ = window.PCore;
+      }
+  
+      // First thing in initialization is registering and subscribing to the AngularPConnect service
+      this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+  
+      this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+  
+      // this is a dummy "get", because right now images are in http and the main screen is https
+      // so the images don't load automatically.  This call, makes an initial hit that allows the
+      // rest of the images to show up
+      this.loadImage(this.navIcon$);
+  
+      this.initComponent();  
+    });
   }
 
   // ngOnDestroy

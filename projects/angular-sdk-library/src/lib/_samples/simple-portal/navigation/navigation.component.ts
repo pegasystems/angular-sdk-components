@@ -12,6 +12,7 @@ import { loginIfNecessary, logout } from '@pega/auth/lib/sdk-auth-manager';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainContentComponent } from '../main-content/main-content.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
+import { Utils } from '../../../_helpers/utils'
 
 import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from '../../../../sdk-local-component-map';
@@ -51,12 +52,15 @@ export class NavigationComponent implements OnInit {
   resetPConnectSubscription: Subscription;
 
   constructor(
+    private utils: Utils,
     private uwservice: UpdateWorklistService,
     private ngZone: NgZone
   ) {}
 
   ngOnInit() {
-    this.initialize();
+    this.utils.checkConfig().then( () => {
+      this.initialize();
+    });
   }
 
   ngOnDestroy() {

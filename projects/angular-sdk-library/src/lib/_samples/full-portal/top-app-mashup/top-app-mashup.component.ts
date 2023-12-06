@@ -68,8 +68,6 @@ export class TopAppMashupComponent implements OnInit {
   availablePortals: Array<string>;
   defaultPortalName: string;
 
-  sdkConfig: any;
-
   constructor(
     private psservice: ProgressSpinnerService,
     private ngZone: NgZone,
@@ -77,7 +75,9 @@ export class TopAppMashupComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.utils.checkConfig().then( () => {
       this.initialize();
+    });
   }
 
   ngOnDestroy() {

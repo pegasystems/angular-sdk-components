@@ -20,9 +20,18 @@ export class Utils {
   sdkConfig: any;
 
   constructor() {
-    getSdkConfig().then( sdkConfig => {
-      this.sdkConfig = sdkConfig;
-    });
+    this.initialize();
+  }
+
+  async initialize() {
+    await this.checkConfig();
+  }
+
+  async checkConfig() {
+    if( !this.sdkConfig ) {
+      this.sdkConfig = await getSdkConfig();
+    }
+    Promise.resolve(this.sdkConfig);
   }
 
   getServerConfig() {

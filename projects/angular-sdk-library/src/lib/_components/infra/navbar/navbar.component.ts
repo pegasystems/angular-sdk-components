@@ -58,22 +58,26 @@ export class NavbarComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-
-    this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-
-    // this is a dummy "get", because right now images are in http and the main screen is https
-    // so the images don't load automatically.  This call, makes an initial hit that allows the
-    // rest of the images to show up
-    this.loadImage(this.navIcon$);
-
-    this.initComponent();
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    // Need to make sure sdk-config is loaded (relying on utils class was insufficient)
+    this.utils.checkConfig().then( () => {
+      if (!this.PCore$) {
+        this.PCore$ = window.PCore;
+      }
+  
+      // First thing in initialization is registering and subscribing to the AngularPConnect service
+      this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+  
+      this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+  
+      // this is a dummy "get", because right now images are in http and the main screen is https
+      // so the images don't load automatically.  This call, makes an initial hit that allows the
+      // rest of the images to show up
+      this.loadImage(this.navIcon$);
+  
+      this.initComponent();
+      this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+  
+    });
   }
 
   // ngOnDestroy
