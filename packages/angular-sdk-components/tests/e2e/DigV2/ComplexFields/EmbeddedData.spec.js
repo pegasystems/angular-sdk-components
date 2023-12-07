@@ -100,7 +100,7 @@ test.describe('E2E test', () => {
 
     await page.locator('button:has-text("Next")').click();
 
-    /** Testing the deleted row values which should n't be present */
+    /** Testing the deleted row values which shouldn't be present */
     await expect(table.locator('td:has-text("Main St")')).toBeHidden();
     await expect(table.locator('td:has-text("Cambridge")')).toBeHidden();
     await expect(table.locator('td:has-text("MA")')).toBeHidden();
