@@ -17,7 +17,7 @@ export class Utils {
 
   viewContainerCount: number = 0;
 
-  sdkConfig: any;
+  #sdkConfig: any;
 
   constructor() {
     this.initialize();
@@ -28,18 +28,18 @@ export class Utils {
   }
 
   async checkConfig() {
-    if( !this.sdkConfig ) {
-      this.sdkConfig = await getSdkConfig();
+    if( !this.#sdkConfig ) {
+      this.#sdkConfig = await getSdkConfig();
     }
-    Promise.resolve(this.sdkConfig);
+    Promise.resolve(this.#sdkConfig);
   }
 
   getServerConfig() {
-    return this.sdkConfig.serverConfig;
+    return this.#sdkConfig.serverConfig;
   }
 
   getAuthConfig() {
-    return this.sdkConfig.authConfig;
+    return this.#sdkConfig.authConfig;
   }
 
   getBaseUrl() {
