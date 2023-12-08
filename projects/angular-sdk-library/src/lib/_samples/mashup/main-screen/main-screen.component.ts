@@ -29,7 +29,7 @@ export class MainScreenComponent implements OnInit {
   showPega$: boolean = false;
   showResolution$: boolean = false;
 
-  constructor(private psservice: ProgressSpinnerService, private serverConfigService: ServerConfigService) {}
+  constructor(private psservice: ProgressSpinnerService, private scservice: ServerConfigService) {}
 
   ngOnInit(): void {
     if (!this.PCore$) {
@@ -111,7 +111,7 @@ export class MainScreenComponent implements OnInit {
     this.showTriplePlayOptions$ = false;
     this.showPega$ = true;
 
-    this.serverConfigService.getSdkConfig().then((sdkConfig) => {
+    this.scservice.getSdkConfig().then((sdkConfig) => {
       let mashupCaseType = sdkConfig.serverConfig.appMashupCaseType;
       if (!mashupCaseType) {
         const caseTypes = this.PCore$.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;
