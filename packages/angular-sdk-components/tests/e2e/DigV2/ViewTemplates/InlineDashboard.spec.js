@@ -68,7 +68,7 @@ test.describe('E2E test', () => {
     const caseIdFilter = filters.locator('div:has-text("Case ID")');
     const caseIdInput = caseIdFilter.locator('input');
     await caseIdInput.click();
-    await caseIdInput.type(caseID);
+    await caseIdInput.fill(caseID);
 
     await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
 
@@ -83,14 +83,12 @@ test.describe('E2E test', () => {
     const dateFilter = filters.locator('div:has-text("Create date/time")');
     let dateFilterInput = dateFilter.locator('input[formcontrolname="start"]');
     await dateFilterInput.click();
-    await dateFilterInput.type(`${day}`);
+    await dateFilterInput.pressSequentially(`${day}`);
     dateFilterInput = dateFilter.locator('input[formcontrolname="end"]');
     await dateFilterInput.click();
-    await dateFilterInput.type(`${nextDay}`);
+    await dateFilterInput.pressSequentially(`${nextDay}`);
 
-    await complexFieldsList.click();
-
-    await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
+    await Promise.all([page.waitForResponse(complexFieldsListApiUrl),complexFieldsList.click()]);
 
     await expect(page.locator(`td:has-text("${new Date().getDate()}") >> nth=1`)).toBeVisible();
 
