@@ -10,7 +10,7 @@ import { Subscription, interval } from 'rxjs';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResetPConnectService } from '../../../_messages/reset-pconnect.service';
 import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
-import { loginIfNecessary, logout, sdkSetAuthHeader } from '@pega/auth/lib/sdk-auth-manager';
+import { loginIfNecessary, logout, sdkSetAuthHeader } from '../../../_helpers/authMgr';
 import { endpoints } from '../../../_services/endpoints';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { Utils } from '../../../_helpers/utils';

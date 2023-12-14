@@ -120,11 +120,11 @@ export * from './lib/_components/designSystemExtension/operator/operator.compone
 export * from './lib/_components/designSystemExtension/pulse/pulse.component';
 
 export * from './lib/_services/server-config.service';
-export * from './lib/_services/auth.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';
 
+export * from './lib/_helpers/authMgr';
 export * from './lib/_helpers/case-utils';
 export * from './lib/_helpers/event-util';
 export * from './lib/_helpers/field-group-utils';

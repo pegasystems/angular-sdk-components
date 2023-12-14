@@ -8,7 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 
 import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
-import { loginIfNecessary, logout } from '@pega/auth/lib/sdk-auth-manager';
+import { loginIfNecessary, logout } from '../../../_helpers/authMgr';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
 import { MainContentComponent } from '../main-content/main-content.component';

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
-import { logout } from '@pega/auth/lib/sdk-auth-manager';
+import { logout } from '../../../_helpers/authMgr';
 import { interval } from 'rxjs';
 import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';

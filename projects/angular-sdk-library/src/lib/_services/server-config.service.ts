@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getSdkConfig, SdkConfigAccess } from '@pega/auth/lib/sdk-auth-manager';
+import { getSdkConfig, SdkConfigAccess } from '../_helpers/authMgr';
 import { Utils } from '../_helpers/utils';
 import { endpoints } from './endpoints';
 
