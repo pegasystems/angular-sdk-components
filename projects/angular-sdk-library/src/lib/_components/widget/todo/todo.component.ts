@@ -1,11 +1,19 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
+interface ToDoProps {
+  // If any, enter additional props that only exist on this component
+  datasource?: any;
+  headerText?: string;
+  myWorkList?: any;
+  label?: string;
+  readOnly?: boolean;
+}
 
 @Component({
   selector: 'app-todo',
@@ -19,8 +27,7 @@ export class TodoComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() caseInfoID$: string;
   @Input() datasource$: any;
-  @Input() headerText$: string;
-  @Input() itemKey$: string;
+  @Input() headerText$?: string;
   @Input() showTodoList$: boolean = true;
   @Input() target$: string;
   @Input() type$: string = 'worklist';
@@ -28,16 +35,16 @@ export class TodoComponent implements OnInit {
   @Input() myWorkList$: any;
   @Input() isConfirm;
 
-  configProps$: Object;
+  configProps$: ToDoProps;
   currentUser$: string;
   currentUserInitials$: string = '--';
   assignmentCount$: number;
   bShowMore$: boolean = true;
   arAssignments$: Array<any>;
   assignmentsSource$: any;
-  CONSTS: any;
+  CONSTS: typeof publicConstants;
   bLogging = true;
-  localizedVal = window.PCore.getLocaleUtils().getLocaleValue;
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'Todo';
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
@@ -122,14 +129,14 @@ export class TodoComponent implements OnInit {
   }
 
   updateToDo() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ToDoProps;
 
     if (this.headerText$ == undefined) {
-      this.headerText$ = this.configProps$['headerText'];
+      this.headerText$ = this.configProps$.headerText;
     }
 
-    this.datasource$ = this.configProps$['datasource'] ? this.configProps$['datasource'] : this.datasource$;
-    this.myWorkList$ = this.configProps$['myWorkList'] ? this.configProps$['myWorkList'] : this.myWorkList$;
+    this.datasource$ = this.configProps$.datasource ? this.configProps$.datasource : this.datasource$;
+    this.myWorkList$ = this.configProps$.myWorkList ? this.configProps$.myWorkList : this.myWorkList$;
 
     this.assignmentsSource$ = this.datasource$?.source || this.myWorkList$?.source;
 

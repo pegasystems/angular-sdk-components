@@ -1,4 +1,4 @@
-<div *ngIf="configProps$['visibility'] !== false" class="ng-view-top">
+<div *ngIf="configProps$.visibility !== false" class="ng-view-top">
   <div *ngIf="showLabel$ && label$ && templateName$ !== 'SimpleTable' && templateName$ !== 'DefaultForm'" class="template-title-container">
     <span>{{ label$ }}</span>
   </div>
@@ -7,7 +7,7 @@
     <div>
       <component-mapper
         [name]="templateName$"
-        [props]="{formGroup$, pConn$, displayOnlyFA$}"
+        [props]="{ formGroup$, pConn$, displayOnlyFA$ }"
         errorMsg="View template not recognized: [{{ templateName$ }}]"
       ></component-mapper>
     </div>

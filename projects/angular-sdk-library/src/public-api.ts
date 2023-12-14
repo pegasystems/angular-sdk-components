@@ -156,4 +156,6 @@ export * from './lib/_samples/simple-portal/main-content/main-content.component'
 export * from './lib/_samples/simple-portal/navigation/navigation.component';
 export * from './lib/_samples/simple-portal/side-bar/side-bar.component';
 
+export * from './lib/_types/PConnProps';
+
 export * from './sdk-local-component-map';

@@ -9,6 +9,13 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface CaseViewProps {
+  // If any, enter additional props that only exist on this component
+  icon: string;
+  subheader: string;
+  header: string;
+}
+
 @Component({
   selector: 'app-case-view',
   templateUrl: './case-view.component.html',
@@ -22,7 +29,10 @@ export class CaseViewComponent implements OnInit {
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
 
-  configProps$: Object;
+  // Used with AngularPConnect
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: CaseViewProps;
+
   arChildren$: Array<any>;
 
   heading$: string = '';
@@ -34,9 +44,6 @@ export class CaseViewComponent implements OnInit {
 
   mainTabs: any;
   mainTabData: any;
-
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
 
   arAvailableActions$: Array<any> = [];
   arAvailabeProcesses$: Array<any> = [];
@@ -110,7 +117,7 @@ export class CaseViewComponent implements OnInit {
   }
 
   updateHeaderAndSummary() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
     // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
 
@@ -134,8 +141,8 @@ export class CaseViewComponent implements OnInit {
     const timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$['header'], '', this.localeKey);
-      this.id$ = this.configProps$['subheader'];
+      this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$.header, '', this.localeKey);
+      this.id$ = this.configProps$.subheader;
       // @ts-ignore - second parameter pageReference for getValue method should be optional
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
@@ -143,9 +150,9 @@ export class CaseViewComponent implements OnInit {
 
   fullUpdate() {
     this.caseTabs$ = [];
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    // let caseTypeID = this.configProps$['ruleClass'];
-    // let caseTypeName = this.configProps$['header'];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
+    // let caseTypeID = this.configProps$.ruleClass;
+    // let caseTypeName = this.configProps$.header;
     // this.localeKey = `${caseTypeID}!CASE!${caseTypeName}`.toUpperCase();
     this.localeKey = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
     this.updateHeaderAndSummary();
@@ -159,7 +166,7 @@ export class CaseViewComponent implements OnInit {
     this.editAction = this.arAvailableActions$.find((action) => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
-    this.svgCase$ = this.utils.getImageSrc(this.configProps$['icon'], this.utils.getSDKStaticContentUrl());
+    this.svgCase$ = this.utils.getImageSrc(this.configProps$.icon, this.utils.getSDKStaticContentUrl());
 
     // this.utils.consoleKidDump(this.pConn$);
 

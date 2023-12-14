@@ -4,6 +4,11 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
+interface StagesProps {
+  // If any, enter additional props that only exist on this component
+  stages: Array<any>;
+}
+
 @Component({
   selector: 'app-stages',
   templateUrl: './stages.component.html',
@@ -17,7 +22,7 @@ export class StagesComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
   PCore$: typeof PCore = PCore;
-  configProps$: Object;
+  configProps$: StagesProps;
 
   arStageResults$: Array<any>;
   lastStage$: any;
@@ -61,14 +66,14 @@ export class StagesComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as StagesProps;
 
     const timer = interval(50).subscribe(() => {
       timer.unsubscribe();
 
       const arStages = this.angularPConnect.getComponentProp(this, 'stages');
 
-      // this.stageResults$ = this.configProps$["stages"];
+      // this.stageResults$ = this.configProps$.stages;
       if (arStages != null) {
         this.arStageResults$ = arStages;
         this.lastStage$ = this.arStageResults$[this.arStageResults$.length - 1];

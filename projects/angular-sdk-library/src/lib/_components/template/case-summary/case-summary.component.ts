@@ -4,6 +4,14 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface CaseSummaryProps {
+  // If any, enter additional props that only exist on this component
+  status?: string;
+  showStatus?: boolean;
+  template?: string;
+  readOnly?: boolean;
+}
+
 @Component({
   selector: 'app-case-summary',
   templateUrl: './case-summary.component.html',
@@ -16,12 +24,12 @@ export class CaseSummaryComponent implements OnInit {
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
+  configProps$: CaseSummaryProps;
 
-  configProps$: Object;
   arChildren$: Array<any>;
 
-  status$: string;
-  bShowStatus$: boolean;
+  status$?: string;
+  bShowStatus$?: boolean;
   primaryFields$: Array<any> = [];
   secondaryFields$: Array<any> = [];
 
@@ -46,13 +54,13 @@ export class CaseSummaryComponent implements OnInit {
 
     // Then, continue on with other initialization
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseSummaryProps;
     this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     this.generatePrimaryAndSecondaryFields();
 
-    this.status$ = this.configProps$['status'];
-    this.bShowStatus$ = this.configProps$['showStatus'];
+    this.status$ = this.configProps$.status;
+    this.bShowStatus$ = this.configProps$.showStatus;
   }
 
   // Callback passed when subscribing to store change

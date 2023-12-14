@@ -17,7 +17,7 @@
           [formControlName]="controlName$"
         >
           <mat-option *ngFor="let opt of options$" [value]="opt.key">
-            {{ pConn$.getLocalizedValue(opt.value, localePath, pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName)) }}
+            {{ getLocalizedOptionValue(opt) }}
           </mat-option>
         </mat-select>
         <mat-label>{{ label$ }}</mat-label>

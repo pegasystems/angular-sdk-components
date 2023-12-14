@@ -13,6 +13,11 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
+import { PConnFieldProps } from '../../../_types/PConnProps';
+
+interface DateProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Date here
+}
 
 class MyFormat {
   theDateFormat: any = getDateFormatInfo();
@@ -56,14 +61,15 @@ export class DateComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: Object;
+  configProps$: DateProps;
+
   label$: string = '';
   value$: any;
   bRequired$: boolean = false;
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -136,11 +142,11 @@ export class DateComponent implements OnInit {
   updateSelf(): void {
     // starting very simple...
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DateProps;
 
-    if (this.configProps$['value'] != undefined) {
+    if (this.configProps$.value != undefined) {
       let sDateValue: any = '';
-      sDateValue = this.configProps$['value'];
+      sDateValue = this.configProps$.value;
 
       if (sDateValue != '') {
         if (typeof sDateValue == 'object') {
@@ -153,26 +159,26 @@ export class DateComponent implements OnInit {
         this.value$ = new Date(sDateValue);
       }
     }
-    this.testId = this.configProps$['testId'];
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.helperText = this.configProps$['helperText'];
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.helperText = this.configProps$.helperText;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -181,8 +187,8 @@ export class DateComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;

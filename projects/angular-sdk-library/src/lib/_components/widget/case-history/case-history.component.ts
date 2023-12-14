@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
 
+interface CaseHistoryProps {
+  label?: string;
+}
+
 @Component({
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
@@ -13,7 +17,7 @@ import { Utils } from '../../../_helpers/utils';
 export class CaseHistoryComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
-  configProps$: any;
+  configProps$: CaseHistoryProps;
 
   repeatList$: MatTableDataSource<any>;
   fields$: Array<any>;

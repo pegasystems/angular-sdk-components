@@ -2,8 +2,6 @@
 // Remove this and use "real" PCore type once .d.ts is fixed (currently shows 5 errors)
 import { v4 as uuidv4 } from 'uuid';
 
-declare const PCore: any;
-
 export const createFilter = (value, fieldId, comparator = 'EQ') => {
   return {
     condition: {
@@ -45,8 +43,9 @@ export const createFilterComponent = (getPConnect, filterMeta, index) => {
   if (name.indexOf('.') !== -1) {
     cleanedName = name.substring(name.indexOf('.') + 1);
   }
-  let propInfo = PCore.getMetadataUtils().getPropertyMetadata(cleanedName, filterMeta.config.ruleClass);
+  let propInfo: any = PCore.getMetadataUtils().getPropertyMetadata(cleanedName, filterMeta.config.ruleClass);
   if (!propInfo) {
+    // @ts-ignore - PCore.getMetadataUtils().getPropertyMetadata - An argument for 'currentClassID' was not provided.
     propInfo = PCore.getMetadataUtils().getPropertyMetadata(cleanedName);
   }
   const { type: propertyType } = propInfo || { type: 'Text' };

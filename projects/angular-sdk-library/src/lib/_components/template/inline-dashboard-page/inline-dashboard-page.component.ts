@@ -4,6 +4,13 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { buildFilterComponents } from '../../../_helpers/filter-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface InlineDashboardPageProps {
+  // If any, enter additional props that only exist on this component
+  title: string;
+  icon?: string;
+  filterPosition?: string;
+}
+
 @Component({
   selector: 'app-inline-dashboard-page',
   templateUrl: './inline-dashboard-page.component.html',
@@ -14,7 +21,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class InlineDashboardPageComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
 
-  configProps$: Object;
+  configProps$: InlineDashboardPageProps;
   filterComponents: any;
   inlineProps: any;
   children: any = [];
@@ -37,7 +44,7 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as InlineDashboardPageProps;
     const arChildren$ = this.pConn$.getChildren() as Array<any>;
     const allFilters = (this.pConn$.getRawMetadata() as any).children[1];
     const filterComponents = buildFilterComponents(this.pConn$, allFilters);

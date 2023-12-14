@@ -12,6 +12,17 @@ import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/c
  * is totally at your own risk.
  */
 
+interface ViewContainerProps {
+  // If any, enter additional props that only exist on this component
+  mode?: string;
+  name?: string;
+  limit?: number;
+  template?: string;
+  title?: string;
+  routingInfo: object;
+  readOnly?: boolean;
+}
+
 @Component({
   selector: 'app-view-container',
   templateUrl: './view-container.component.html',
@@ -26,9 +37,9 @@ export class ViewContainerComponent implements OnInit {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
+  configProps$: ViewContainerProps;
 
   arChildren$: Array<any>;
-  configProps$: Object;
   templateName$: string;
   buildName$: string;
   context$: string;
@@ -67,11 +78,11 @@ export class ViewContainerComponent implements OnInit {
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
 
     this.buildName$ = this.buildName();
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.templateName$ = 'template' in this.configProps$ ? (this.configProps$['template'] as string) : '';
-    this.title$ = 'title' in this.configProps$ ? (this.configProps$['title'] as string) : '';
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewContainerProps;
+    this.templateName$ = this.configProps$.template || '';
+    this.title$ = this.configProps$.title || '';
     const { CONTAINER_TYPE, APP } = PCore.getConstants();
-    const { name, mode, limit }: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const { name, mode, limit } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewContainerProps;
 
     this.pConn$.isBoundToState();
 

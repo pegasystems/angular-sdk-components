@@ -31,7 +31,6 @@ export class DashboardFilterComponent implements OnInit {
   @Input() inlineProps;
   @Input() children;
 
-  configProps$: Object;
   arChildren$: Array<any>;
   private filterChangeSubject = new Subject<string>();
 

@@ -4,6 +4,12 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface PageProps {
+  // If any, enter additional props that only exist on this component
+  title: string;
+  operator?: string;
+}
+
 @Component({
   selector: 'app-page',
   templateUrl: './page.component.html',
@@ -18,7 +24,7 @@ export class PageComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  configProps$: Object;
+  configProps$: PageProps;
   arChildren$: Array<any>;
   title$: string;
 
@@ -27,11 +33,11 @@ export class PageComponent implements OnInit {
   ngOnInit() {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as PageProps;
     this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
-    this.title$ = this.configProps$['title'];
-    const operator = this.configProps$['operator'];
+    this.title$ = this.configProps$.title;
+    const operator = this.configProps$.operator;
 
     if (operator && operator != '') {
       this.title$ += `, ${operator}`;

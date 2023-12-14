@@ -12,6 +12,19 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../_types/PConnProps';
+
+interface AutoCompleteProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on AutoComplete here
+  deferDatasource?: boolean;
+  datasourceMetadata?: any;
+  onRecordChange?: any;
+  additionalProps?: object;
+  listType: string;
+  parameters?: any;
+  datasource: any;
+  columns: Array<any>;
+}
 
 @Component({
   selector: 'app-auto-complete',
@@ -34,7 +47,7 @@ export class AutoCompleteComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: any;
+  configProps$: AutoCompleteProps;
 
   label$: string = '';
   value$: string = '';
@@ -42,7 +55,7 @@ export class AutoCompleteComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   options$: Array<any>;
@@ -127,24 +140,24 @@ export class AutoCompleteComponent implements OnInit {
     // starting very simple...
 
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AutoCompleteProps;
 
-    if (this.configProps$['value'] != undefined) {
-      const index = this.options$?.findIndex((element) => element.key === this.configProps$['value']);
-      this.value$ = index > -1 ? this.options$[index].value : this.configProps$['value'];
+    if (this.configProps$.value != undefined) {
+      const index = this.options$?.findIndex((element) => element.key === this.configProps$.value);
+      this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
     }
 
-    this.testId = this.configProps$['testId'];
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.listType = this.configProps$['listType'];
-    const displayMode = this.configProps$['displayMode'];
-    let datasource = this.configProps$['datasource'];
-    let columns = this.configProps$['columns'];
-    this.hideLabel = this.configProps$['hideLabel'];
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.listType = this.configProps$.listType;
+    const displayMode = this.configProps$.displayMode;
+    let datasource = this.configProps$.datasource;
+    let columns = this.configProps$.columns;
+    this.hideLabel = this.configProps$.hideLabel;
     // const { deferDatasource, datasourceMetadata } = this.configProps$;
     const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
-    this.helperText = this.configProps$['helperText'];
+    this.helperText = this.configProps$.helperText;
     this.parameters = this.configProps$?.parameters;
     const context = this.pConn$.getContextName();
     // convert associated to datapage listtype and transform props
@@ -178,19 +191,19 @@ export class AutoCompleteComponent implements OnInit {
     }
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -199,8 +212,8 @@ export class AutoCompleteComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     this.componentReference = this.pConn$.getStateProps()['value'];

@@ -9,10 +9,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
 const SEARCH_BOX = 'Search box';
+
+interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
+  // If any, enter additional props that only exist on UserReference here
+  displayAs?: string;
+  value?: any;
+  showAsFormattedText?: boolean;
+  additionalProps?: object;
+}
 
 @Component({
   selector: 'app-user-reference',
@@ -43,8 +52,8 @@ export class UserReferenceComponent implements OnInit {
   options$: any;
   bReadonly$: boolean;
   bRequired$: boolean;
-  showAsFormattedText$: boolean;
-  displayAs$: string;
+  showAsFormattedText$?: boolean;
+  displayAs$?: string;
   testId: string;
   helperText: string;
 
@@ -111,7 +120,7 @@ export class UserReferenceComponent implements OnInit {
   }
 
   updateSelf() {
-    const props: any = this.pConn$.getConfigProps();
+    const props = this.pConn$.getConfigProps() as UserReferenceProps;
     this.testId = props['testId'];
 
     const { label, displayAs, value, showAsFormattedText, helperText } = props;

@@ -1,9 +1,18 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getToDoAssignments } from '../../infra/Containers/flow-container/helpers';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+interface ConfirmationProps {
+  // If any, enter additional props that only exist on this component
+  datasource: { source: any };
+  label: string;
+  showLabel: boolean;
+  showTasks: boolean;
+}
 
 @Component({
   selector: 'app-confirmation',
@@ -16,15 +25,16 @@ export class ConfirmationComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
   angularPConnectData: AngularPConnectData = {};
+  configProps$: ConfirmationProps;
+
   rootInfo: any;
   datasource: any;
   showTasks: any;
   detailProps: any;
   toDoList: any;
-  label: any;
-  CONSTS: any;
+  label: string;
+  CONSTS: typeof publicConstants;
   showDetails: boolean;
-  configProps$: any;
   showConfirmView = true;
 
   constructor(private angularPConnect: AngularPConnectService) {}
@@ -60,7 +70,7 @@ export class ConfirmationComponent implements OnInit {
   }
 
   updateSelf() {
-    const theConfigProps: any = this.pConn$.getConfigProps();
+    const theConfigProps = this.pConn$.getConfigProps() as ConfirmationProps;
     this.datasource = theConfigProps?.datasource;
     this.showTasks = theConfigProps?.showTasks;
     this.label = theConfigProps?.label;

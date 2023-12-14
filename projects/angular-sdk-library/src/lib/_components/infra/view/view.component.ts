@@ -13,6 +13,15 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
  * is totally at your own risk.
  */
 
+interface ViewProps {
+  // If any, enter additional props that only exist on this component
+  template?: string;
+  label?: string;
+  showLabel: boolean;
+  title?: string;
+  visibility?: boolean;
+}
+
 @Component({
   selector: 'app-view',
   templateUrl: './view.component.html',
@@ -28,7 +37,7 @@ export class ViewComponent implements OnInit {
 
   angularPConnectData: AngularPConnectData = {};
 
-  configProps$: Object;
+  configProps$: ViewProps;
   inheritedProps$: Object;
   arChildren$: Array<any>;
   templateName$: string;
@@ -82,20 +91,20 @@ export class ViewComponent implements OnInit {
     // normalize this.pConn$ in case it contains a 'reference'
     this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewProps;
     this.inheritedProps$ = this.pConn$.getInheritedProps();
 
-    // NOTE: this.configProps$['visibility'] is used in view.component.ts such that
-    //  the View will only be rendered when this.configProps$['visibility'] is false.
+    // NOTE: this.configProps$.visibility'] is used in view.component.ts such that
+    //  the View will only be rendered when this.configProps$.visibility'] is false.
     //  It WILL render if true or undefined.
 
-    this.templateName$ = 'template' in this.configProps$ ? (this.configProps$['template'] as string) : '';
-    this.title$ = 'title' in this.configProps$ ? (this.configProps$['title'] as string) : '';
-    this.label$ = 'label' in this.configProps$ ? (this.configProps$['label'] as string) : '';
-    this.showLabel$ = 'showLabel' in this.configProps$ ? (this.configProps$['showLabel'] as boolean) : this.showLabel$;
+    this.templateName$ = this.configProps$.template || '';
+    this.title$ = this.configProps$.title || '';
+    this.label$ = this.configProps$.label || '';
+    this.showLabel$ = this.configProps$.showLabel || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = 'label' in this.inheritedProps$ ? (this.inheritedProps$['label'] as string) : this.label$;
-    this.showLabel$ = 'showLabel' in this.inheritedProps$ ? (this.inheritedProps$['showLabel'] as boolean) : this.showLabel$;
+    this.label$ = this.inheritedProps$['label'] || this.label$;
+    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
     // was:  this.arChildren$ = this.pConn$.getChildren() as Array<any>;

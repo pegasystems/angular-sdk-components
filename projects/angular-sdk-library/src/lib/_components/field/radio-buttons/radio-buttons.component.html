@@ -28,7 +28,7 @@
           [value]="opt.key"
           class="psdk-radio-button"
         >
-          {{ pConn$.getLocalizedValue(opt.value, localePath, pConn$.getLocaleRuleNameFromKeys(localeClass, localeContext, localeName)) }}
+          {{ getLocalizedOptionValue(opt) }}
         </mat-radio-button>
       </mat-radio-group>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

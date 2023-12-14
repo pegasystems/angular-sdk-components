@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef } from 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
+import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
@@ -14,6 +15,14 @@ import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/c
  * Redux and creation/update of Redux containers and PConnect.  Modifying this code could have undesireable results and
  * is totally at your own risk.
  */
+
+interface FlowContainerProps {
+  // If any, enter additional props that only exist on this component
+  children?: Array<any>;
+  name?: string;
+  routingInfo?: any;
+  pageMessages: Array<any>;
+}
 
 @Component({
   selector: 'app-flow-container',
@@ -28,8 +37,8 @@ export class FlowContainerComponent implements OnInit {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  pCoreConstants;
-  configProps$: Object;
+  pCoreConstants: typeof publicConstants;
+  configProps$: FlowContainerProps;
 
   formGroup$: FormGroup;
   arChildren$: Array<any>;
@@ -145,7 +154,7 @@ export class FlowContainerComponent implements OnInit {
     if (bUpdateSelf) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
-      const completeProps = this.angularPConnect.getCurrentCompleteProps(this);
+      const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
       if (!completeProps['pageMessages'] || completeProps['pageMessages'].length == 0) {
         // with a cancel, need to timeout so todo will update correctly
         if (this.bHasCancel) {
@@ -162,7 +171,7 @@ export class FlowContainerComponent implements OnInit {
     }
   }
 
-  showPageMessages(completeProps: Object) {
+  showPageMessages(completeProps: FlowContainerProps) {
     this.ngZone.run(() => {
       const pageMessages = completeProps['pageMessages'];
       this.banners = [{ messages: pageMessages?.map((msg) => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
@@ -219,7 +228,7 @@ export class FlowContainerComponent implements OnInit {
   }
 
   initComponent(bLoadChildren: boolean) {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as FlowContainerProps;
     this.showPageMessages(this.configProps$);
 
     // when true, update arChildren from pConn, otherwise, arChilren will be updated in updateSelf()

@@ -7,6 +7,12 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps';
+
+interface TextAreaProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on TextArea here
+  fieldMetadata?: any;
+}
 
 @Component({
   selector: 'app-text-area',
@@ -21,7 +27,7 @@ export class TextAreaComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: Object;
+  configProps$: TextAreaProps;
 
   label$: string = '';
   value$: string = '';
@@ -30,7 +36,7 @@ export class TextAreaComponent implements OnInit {
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
   nMaxLength$: number;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
   componentReference: string = '';
@@ -96,34 +102,34 @@ export class TextAreaComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextAreaProps;
 
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
     // @ts-ignore -  Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'.
     // @ts-ignore - Property 'getRawConfigProps' is private and only accessible within class 'C11nEnv'
     this.nMaxLength$ = this.pConn$.getFieldMetadata(this.pConn$.getRawConfigProps()?.value)?.maxLength || 100;
-    this.testId = this.configProps$['testId'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.label$ = this.configProps$['label'];
-    this.helperText = this.configProps$['helperText'];
+    this.testId = this.configProps$.testId;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.label$ = this.configProps$.label;
+    this.helperText = this.configProps$.helperText;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -132,8 +138,8 @@ export class TextAreaComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;

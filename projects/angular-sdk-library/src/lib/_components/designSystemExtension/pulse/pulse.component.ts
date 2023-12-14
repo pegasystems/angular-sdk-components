@@ -1,6 +1,11 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface PulseProps {
+  // If any, enter additional props that only exist on this component
+  children?: Array<any>;
+}
+
 @Component({
   selector: 'app-pulse',
   templateUrl: './pulse.component.html',
@@ -11,13 +16,13 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class PulseComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
-  configProps$: Object;
+  configProps$: PulseProps;
   currentUser$: string;
   currentUserInitials$: string = '--';
 
   ngOnInit() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    // this.currentUser$ = this.configProps$["currentUser"];
+    // this.currentUser$ = this.configProps$.currentUser;
     this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
 
     if (this.currentUser$ != '') {

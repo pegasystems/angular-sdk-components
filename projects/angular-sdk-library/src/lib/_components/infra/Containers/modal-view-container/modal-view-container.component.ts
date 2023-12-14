@@ -31,7 +31,6 @@ export class ModalViewContainerComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
 
   arChildren$: Array<any>;
-  configProps$: Object;
   stateProps$: Object;
   banners: any;
   templateName$: string;
@@ -54,10 +53,10 @@ export class ModalViewContainerComponent implements OnInit {
   createdViewPConn$: any;
 
   bSubscribed: boolean = false;
-  cancelPConn$: any;
+  cancelPConn$?: typeof PConnect;
   bShowCancelAlert$: boolean = false;
   bAlertState: boolean;
-  localizedVal: any;
+  localizedVal: Function;
   localeCategory = 'Data Object';
 
   constructor(

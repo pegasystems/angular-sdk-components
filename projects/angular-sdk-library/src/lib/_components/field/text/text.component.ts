@@ -3,6 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps';
+
+interface TextProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Text here
+}
 
 @Component({
   selector: 'app-text',
@@ -17,7 +22,7 @@ export class TextComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: Object;
+  configProps$: TextProps;
 
   label$: string = '';
   value$: string = '';
@@ -25,7 +30,7 @@ export class TextComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   componentReference: string = '';
   formattedValue$: string;
@@ -67,17 +72,17 @@ export class TextComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextProps;
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
-    this.label$ = this.configProps$['label'];
-    this.displayMode$ = this.configProps$['displayMode'];
+    this.label$ = this.configProps$.label;
+    this.displayMode$ = this.configProps$.displayMode;
 
     // TDB - get formats
     switch (this.formatAs$) {

@@ -17,13 +17,14 @@ export class SubTabsComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
-  arChildren$: Array<any>;
   angularPConnectData: AngularPConnectData = {};
+
+  arChildren$: Array<any>;
   defaultTabIndex = 0;
   currentTabId = this.defaultTabIndex.toString();
   tabItems: Array<any>;
   availableTabs: any;
+
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {

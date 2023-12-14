@@ -14,7 +14,6 @@ export class NarrowWideFormComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
   arChildren$: Array<any>;
 
   ngOnInit() {
@@ -30,7 +29,6 @@ export class NarrowWideFormComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.arChildren$ = this.pConn$.getChildren() as Array<any>;
   }
 }

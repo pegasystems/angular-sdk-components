@@ -15,7 +15,6 @@ export class RegionComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
   arChildren$: Array<any>;
 
   ngOnInit() {
@@ -32,8 +31,6 @@ export class RegionComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-
     // The children may contain 'reference' components, so normalize the children...
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
   }

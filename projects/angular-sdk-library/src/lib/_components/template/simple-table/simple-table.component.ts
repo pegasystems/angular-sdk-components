@@ -5,6 +5,13 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface SimpleTableProps {
+  // If any, enter additional props that only exist on this component
+  multiRecordDisplayAs: string;
+  contextClass: any;
+  visibility: boolean;
+}
+
 @Component({
   selector: 'app-simple-table',
   templateUrl: './simple-table.component.html',
@@ -19,7 +26,7 @@ export class SimpleTableComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
 
   bVisible$: boolean = true;
-  configProps$: any;
+  configProps$: SimpleTableProps;
   fieldGroupProps: any;
 
   constructor(
@@ -56,11 +63,11 @@ export class SimpleTableComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableProps;
 
-    if (this.configProps$['visibility'] != null) {
+    if (this.configProps$.visibility != null) {
       // eslint-disable-next-line no-multi-assign
-      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     const { multiRecordDisplayAs } = this.configProps$;

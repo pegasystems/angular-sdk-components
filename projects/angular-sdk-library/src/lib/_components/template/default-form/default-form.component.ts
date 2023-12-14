@@ -5,6 +5,13 @@ import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
 
+interface DefaultFormProps {
+  // If any, enter additional props that only exist on this component
+  NumCols: string;
+  template: string;
+  instructions: string;
+}
+
 @Component({
   selector: 'app-default-form',
   templateUrl: './default-form.component.html',
@@ -16,7 +23,6 @@ export class DefaultFormComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
   arChildren$: Array<any>;
   divClass$: string;
   template: any;
@@ -38,14 +44,13 @@ export class DefaultFormComponent implements OnInit {
   constructor(private templateUtils: TemplateUtils) {}
 
   ngOnInit(): void {
-    const configProps: any = this.pConn$.getConfigProps();
+    const configProps = this.pConn$.getConfigProps() as DefaultFormProps;
     this.template = configProps?.template;
     const propToUse: any = { ...this.pConn$.getInheritedProps() };
     this.showLabel = propToUse?.showLabel;
     this.label = propToUse?.label;
     const kids = this.pConn$.getChildren() as Array<any>;
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
-    console.log(`instructions${this.instructions}`);
 
     const numCols = configProps.NumCols ? configProps.NumCols : '1';
     switch (numCols) {

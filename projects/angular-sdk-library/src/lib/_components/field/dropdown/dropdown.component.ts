@@ -9,6 +9,20 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../_types/PConnProps';
+
+interface IOption {
+  key: string;
+  value: string;
+}
+
+// Can't use DropdownProps with 8.23 until getLocaleRuleNameFromKeys is NOT private
+interface DropdownProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Dropdown here
+  datasource?: Array<any>;
+  onRecordChange?: any;
+  fieldMetadata?: any;
+}
 
 @Component({
   selector: 'app-dropdown',
@@ -18,12 +32,12 @@ import { handleEvent } from '../../../_helpers/event-util';
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DropdownComponent implements OnInit {
-  @Input() pConn$: any; // typeof PConnect; - tslint error at template
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: any;
+  configProps$: DropdownProps;
 
   label$: string = '';
   value$: string = '';
@@ -31,10 +45,10 @@ export class DropdownComponent implements OnInit {
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
   bVisible$: boolean = true;
-  displayMode$: string = '';
+  displayMode$?: string = '';
   controlName$: string;
   bHasForm$: boolean = true;
-  options$: Array<any>;
+  options$: Array<IOption>;
   componentReference: string = '';
   testId: string = '';
   helperText: string;
@@ -105,32 +119,32 @@ export class DropdownComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DropdownProps;
 
-    if (this.configProps$['value'] != undefined) {
-      this.value$ = this.configProps$['value'];
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
     }
 
-    this.testId = this.configProps$['testId'];
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.label$ = this.configProps$['label'];
-    this.helperText = this.configProps$['helperText'];
-    this.hideLabel = this.configProps$['hideLabel'];
+    this.testId = this.configProps$.testId;
+    this.displayMode$ = this.configProps$.displayMode;
+    this.label$ = this.configProps$.label;
+    this.helperText = this.configProps$.helperText;
+    this.hideLabel = this.configProps$.hideLabel;
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
-      if (this.configProps$['required'] != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$['required']);
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
       }
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // disabled
-    if (this.configProps$['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$['disabled']);
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
 
     if (this.bDisabled$) {
@@ -139,8 +153,8 @@ export class DropdownComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    if (this.configProps$['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;
@@ -157,7 +171,7 @@ export class DropdownComponent implements OnInit {
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 
-    this.fieldMetadata = this.configProps$['fieldMetadata'];
+    this.fieldMetadata = this.configProps$.fieldMetadata;
     const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter((field) => field?.classID === className)[0] : this.fieldMetadata;
 
     let displayName = metaData?.datasource?.propertyForDisplayText;
@@ -203,6 +217,15 @@ export class DropdownComponent implements OnInit {
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
     this.angularPConnectData.actions?.onBlur(this, event);
+  }
+
+  getLocalizedOptionValue(opt: IOption) {
+    return this.pConn$.getLocalizedValue(
+      opt.value,
+      this.localePath,
+      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'.
+      this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
+    );
   }
 
   getErrorMessage() {

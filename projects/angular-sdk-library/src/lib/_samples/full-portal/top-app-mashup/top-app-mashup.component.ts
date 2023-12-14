@@ -128,7 +128,7 @@ export class TopAppMashupComponent implements OnInit {
       this.portalSelectionScreen = true;
       this.defaultPortalName = defaultPortal;
       // Getting current user's access group's available portals list other than excluded portals (relies on Traditional DX APIs)
-      getAvailablePortals().then((portals: any) => {
+      getAvailablePortals().then((portals: Array<string>) => {
         this.availablePortals = portals;
       });
     }

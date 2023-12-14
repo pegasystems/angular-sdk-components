@@ -9,6 +9,11 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface AssignmentProps {
+  // If any, enter additional props that only exist on this component
+  template: string;
+}
+
 @Component({
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',
@@ -28,7 +33,7 @@ export class AssignmentComponent implements OnInit {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: Object;
+  configProps$: AssignmentProps;
 
   newPConn$: any;
   containerName$: string;
@@ -166,7 +171,7 @@ export class AssignmentComponent implements OnInit {
     // this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.configProps$ = this.newPConn$.resolveConfigProps(this.newPConn$.getConfigProps());
 
-    this.templateName$ = this.configProps$['template'];
+    this.templateName$ = this.configProps$.template;
 
     // create pointers to functions
     /*

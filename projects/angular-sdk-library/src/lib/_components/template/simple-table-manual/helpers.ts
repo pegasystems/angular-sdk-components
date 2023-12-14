@@ -1,5 +1,3 @@
-declare let PCore;
-
 export const TABLE_CELL = 'SdkRenderer';
 export const DELETE_ICON = 'DeleteIcon';
 

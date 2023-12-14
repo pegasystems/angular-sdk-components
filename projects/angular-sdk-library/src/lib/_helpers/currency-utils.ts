@@ -1,8 +1,6 @@
 import { formatters } from './formatters/format-utils';
 import { currencyMap } from './formatters/currency-map';
 
-declare const PCore;
-
 export const getCurrencyOptions = (inISOCode: string) => {
   const operatorLocale = PCore.getEnvironmentInfo().getUseLocale() || PCore.getEnvironmentInfo().getLocale() || 'en-US';
 

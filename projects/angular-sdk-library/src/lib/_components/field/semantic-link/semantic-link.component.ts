@@ -4,6 +4,12 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
+import { PConnFieldProps } from '../../../_types/PConnProps';
+
+interface SemanticLinkProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on SemanticLink here
+  text: string;
+}
 
 @Component({
   selector: 'app-semantic-link',
@@ -17,11 +23,11 @@ export class SemanticLinkComponent implements OnInit {
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
-  configProps$: Object;
+  configProps$: SemanticLinkProps;
 
   label$: string = '';
   value$: string = '';
-  displayMode$: string = '';
+  displayMode$?: string = '';
   bVisible$: boolean = true;
 
   constructor(
@@ -53,12 +59,12 @@ export class SemanticLinkComponent implements OnInit {
   }
 
   updateSelf() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.value$ = this.configProps$['text'] || '---';
-    this.displayMode$ = this.configProps$['displayMode'];
-    this.label$ = this.configProps$['label'];
-    if (this.configProps$['visibility']) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SemanticLinkProps;
+    this.value$ = this.configProps$.text || '---';
+    this.displayMode$ = this.configProps$.displayMode;
+    this.label$ = this.configProps$.label;
+    if (this.configProps$.visibility) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
   }
 }

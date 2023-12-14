@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -27,7 +28,7 @@ export class DeferLoadComponent implements OnInit {
   bShowDefer$: boolean = false;
 
   angularPConnectData: AngularPConnectData = {};
-  constants: any;
+  constants: typeof publicConstants;
   currentLoadedAssignment = '';
   isContainerPreview: boolean;
   loadViewCaseID: any;

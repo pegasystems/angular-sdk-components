@@ -20,6 +20,23 @@ import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
 
+interface SimpleTableManualProps {
+  // If any, enter additional props that only exist on this component
+  visibility?: boolean;
+  grouping?: any;
+  referenceList?: Array<any>;
+  children?: Array<any>;
+  renderMode?: string;
+  presets?: Array<any>;
+  label?: string;
+  showLabel?: boolean;
+  dataPageName?: string;
+  contextClass?: string;
+  propertyLabel?: string;
+  fieldMetadata?: any;
+  allowTableEdit?: boolean;
+}
+
 class Group {
   level = 0;
   parent: Group;
@@ -57,7 +74,7 @@ export class SimpleTableManualComponent implements OnInit {
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: any;
+  configProps$: SimpleTableManualProps;
   fields$: Array<any>;
 
   bVisible$: boolean = true;
@@ -77,7 +94,7 @@ export class SimpleTableManualComponent implements OnInit {
   prevRefLength: number;
   elementsData: MatTableDataSource<any>;
   rawFields: any;
-  label: string = '';
+  label?: string = '';
   searchIcon$: string;
 
   bShowSearch$: boolean = false;
@@ -134,7 +151,7 @@ export class SimpleTableManualComponent implements OnInit {
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.configProps$ = this.pConn$.getConfigProps();
+    this.configProps$ = this.pConn$.getConfigProps() as SimpleTableManualProps;
     // Then, continue on with other initialization
     this.menuIconOverride$ = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
     // call checkAndUpdate when initializing
@@ -171,11 +188,11 @@ export class SimpleTableManualComponent implements OnInit {
   // updateSelf
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableManualProps;
 
-    if (this.configProps$['visibility'] != null) {
+    if (this.configProps$.visibility != null) {
       // eslint-disable-next-line no-multi-assign
-      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
+      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
     // NOTE: getConfigProps() has each child.config with datasource and value undefined
@@ -191,7 +208,7 @@ export class SimpleTableManualComponent implements OnInit {
       children, // destructure children into an array var: "resolvedFields"
       presets,
       allowTableEdit,
-      labelProp,
+      label: labelProp,
       propertyLabel,
       fieldMetadata
     } = this.configProps$;

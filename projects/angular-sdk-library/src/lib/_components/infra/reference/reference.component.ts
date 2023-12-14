@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 /**
  * WARNING: It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -13,9 +13,6 @@ import { Component, OnInit, Input } from '@angular/core';
   standalone: true
 })
 export class ReferenceComponent implements OnInit {
-  @Input() pConn$: typeof PConnect;
-
-  configProps$: Object;
   referencedComponent: any = null;
 
   /* Used to toggle some class-wide logging */

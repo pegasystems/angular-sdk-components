@@ -17,13 +17,11 @@ export class DetailsSubTabsComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  configProps$: Object;
-  arChildren$: Array<any>;
   angularPConnectData: AngularPConnectData = {};
-  defaultTabIndex = 0;
-  currentTabId = this.defaultTabIndex.toString();
+  currentTabId = '0';
   tabItems: Array<any>;
-  availableTabs: any;
+  availableTabs: Array<any>;
+
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {

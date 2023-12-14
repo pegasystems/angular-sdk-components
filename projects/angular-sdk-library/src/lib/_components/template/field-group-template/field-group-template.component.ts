@@ -7,6 +7,20 @@ import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface FieldGroupTemplateProps {
+  // If any, enter additional props that only exist on this component
+  label?: string;
+  showLabel?: boolean;
+  referenceList?: Array<any>;
+  contextClass: string;
+  renderMode?: string;
+  heading?: string;
+  lookForChildInConfig?: boolean;
+  displayMode?: string;
+  fieldHeader?: string;
+  allowTableEdit: boolean;
+}
+
 @Component({
   selector: 'app-field-group-template',
   templateUrl: './field-group-template.component.html',
@@ -15,14 +29,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit {
-  @Input() configProps$: any;
+  @Input() configProps$: FieldGroupTemplateProps;
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
-  inheritedProps$: Object;
-  showLabel$: boolean = true;
-  label$: string;
+  inheritedProps$: object;
+  showLabel$?: boolean = true;
+  label$?: string;
   readonlyMode: boolean;
   contextClass: any;
   referenceList: any;
@@ -82,28 +96,28 @@ export class FieldGroupTemplateComponent implements OnInit {
 
   updateSelf() {
     this.inheritedProps$ = this.pConn$.getInheritedProps();
-    this.label$ = this.configProps$['label'];
-    this.showLabel$ = this.configProps$['showLabel'];
+    this.label$ = this.configProps$.label;
+    this.showLabel$ = this.configProps$.showLabel;
     // label & showLabel within inheritedProps takes precedence over configProps
     this.label$ = this.inheritedProps$['label'] || this.label$;
     this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
 
-    this.allowAddEdit = this.configProps$['allowTableEdit'];
+    this.allowAddEdit = this.configProps$.allowTableEdit;
 
-    const renderMode = this.configProps$['renderMode'];
-    const displayMode = this.configProps$['displayMode'];
+    const renderMode = this.configProps$.renderMode;
+    const displayMode = this.configProps$.displayMode;
     this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'LABELS_LEFT';
-    this.contextClass = this.configProps$['contextClass'];
-    const lookForChildInConfig = this.configProps$['lookForChildInConfig'];
-    this.heading = this.configProps$['heading'] ?? 'Row';
-    this.fieldHeader = this.configProps$['fieldHeader'];
+    this.contextClass = this.configProps$.contextClass;
+    const lookForChildInConfig = this.configProps$.lookForChildInConfig;
+    this.heading = this.configProps$.heading ?? 'Row';
+    this.fieldHeader = this.configProps$.fieldHeader;
     const resolvedList = this.fieldGroupUtils.getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
     if (this.readonlyMode) {
       this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     }
-    this.referenceList = this.configProps$['referenceList'];
+    this.referenceList = this.configProps$.referenceList;
     if (this.prevRefLength != this.referenceList.length) {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (!this.readonlyMode) {

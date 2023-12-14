@@ -1,10 +1,6 @@
-declare const PCore;
-
-declare const window: any;
-
 const FeedApi = (pConnect) => {
   const { invokeRestApi, getCancelTokenSource, isRequestCanceled } = PCore.getRestClient();
-  const appName = window.PCore.getEnvironmentInfo().getApplicationName();
+  const appName = PCore.getEnvironmentInfo().getApplicationName();
   let mentionsTagsCancelTokenSource: any = [];
 
   const getPulseContext = (pulseContext) => {
@@ -38,6 +34,7 @@ const FeedApi = (pConnect) => {
 
     return invokeRestApi(
       'getFeedMessages',
+      // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers
       {
         queryPayload,
         cancelTokenSource: newCancelTokenSource
@@ -125,6 +122,7 @@ const FeedApi = (pConnect) => {
       attachments: attachmentIDs
     });
 
+    // @ts-ignore - Type 'string' is not assignable to type 'object': The expected type comes from property 'body' which is declared here on type 'RestApiOptionsObject'
     invokeRestApi('postFeedMessages', { body: reqBody }, pConnect.getContextName())
       .then((response) => {
         if (response.status === 201 && response.data) {
@@ -191,6 +189,7 @@ const FeedApi = (pConnect) => {
       pulseContext
     };
 
+    // @ts-ignore - Type 'string' is not assignable to type 'object': The expected type comes from property 'body' which is declared here on type 'RestApiOptionsObject'
     invokeRestApi(routeKey, { body, queryPayload }, pConnect.getContextName())
       .then((response) => {
         if (response.status === 200) {
@@ -272,6 +271,7 @@ const FeedApi = (pConnect) => {
       messageID: messageKey
     };
 
+    // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers, cancelTokenSource
     invokeRestApi('deleteFeedMessage', { queryPayload }, pConnect.getContextName())
       .then((response) => {
         if (response.status === 200) {
@@ -329,6 +329,7 @@ const FeedApi = (pConnect) => {
 
     return invokeRestApi(
       'getMentionSuggestions',
+      // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers
       {
         queryPayload,
         cancelTokenSource: newCancelTokenSource
@@ -372,6 +373,7 @@ const FeedApi = (pConnect) => {
 
     return invokeRestApi(
       'getTagSuggestions',
+      // @ts-ignore -  PCore.getRestClient().invokeRestApi(): 2nd parameter missing the following properties from type 'RestApiOptionsObject': body, headers
       {
         queryPayload,
         cancelTokenSource: newCancelTokenSource

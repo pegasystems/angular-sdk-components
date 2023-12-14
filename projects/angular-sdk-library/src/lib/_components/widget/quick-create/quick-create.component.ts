@@ -3,7 +3,12 @@ import { Utils } from '../../../_helpers/utils';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const PCore: any;
+interface QuickCreateProps {
+  // If any, enter additional props that only exist on this component
+  heading?: string;
+  showCaseIcons?: boolean;
+  classFilter?: any;
+}
 
 @Component({
   selector: 'lib-quick-create',
@@ -16,10 +21,10 @@ export class QuickCreateComponent {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: any;
 
-  configProps$: Object;
+  configProps$: QuickCreateProps;
   arChildren$: Array<any>;
-  heading$: string;
-  showCaseIcons$: boolean;
+  heading$?: string;
+  showCaseIcons$?: boolean;
   classFilter$: any;
   cases$: any = [];
 
@@ -35,11 +40,11 @@ export class QuickCreateComponent {
   }
 
   initComponent() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as QuickCreateProps;
 
-    this.heading$ = this.configProps$['heading'];
-    this.showCaseIcons$ = this.configProps$['showCaseIcons'];
-    this.classFilter$ = this.configProps$['classFilter'];
+    this.heading$ = this.configProps$.heading;
+    this.showCaseIcons$ = this.configProps$.showCaseIcons;
+    this.classFilter$ = this.configProps$.classFilter;
 
     const envInfo = PCore.getEnvironmentInfo();
     if (
