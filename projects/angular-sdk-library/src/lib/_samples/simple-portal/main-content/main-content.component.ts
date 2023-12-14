@@ -10,13 +10,9 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ComponentMapperComponent]
 })
 export class MainContentComponent implements OnInit {
-  @Input() PCore$: any;
-  @Input() pConn$: any;
-  @Input() props$: any;
+  @Input() pConn$: typeof PConnect;
 
   sComponentName$: string;
-
-  constructor() {}
 
   ngOnInit(): void {
     if (this.pConn$) {

@@ -1,14 +1,13 @@
 import { ChangeDetectorRef, Component, Input, NgZone } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { Utils } from '../../../_helpers/utils';
-import { CommonModule } from '@angular/common';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-wss-nav-bar',
@@ -19,15 +18,14 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
 })
 export class WssNavBarComponent {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() appName$: string;
   @Input() pages$: Array<any>;
   @Input() caseTypes$: Array<any>;
   @Input() homePage: any;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   navPages$: Array<any>;
   navExpandCollapse$: string;
@@ -57,10 +55,6 @@ export class WssNavBarComponent {
   ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
@@ -83,7 +77,7 @@ export class WssNavBarComponent {
   }
 
   loadImage(src: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       resolve(src);
     });
   }
@@ -115,7 +109,7 @@ export class WssNavBarComponent {
       // making a copy, so can add info
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
-      for (let page in this.navPages$) {
+      for (const page in this.navPages$) {
         this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
       }
 
@@ -125,14 +119,14 @@ export class WssNavBarComponent {
       this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
       this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
 
-      let oData = this.pConn$.getDataObject();
+      // const oData = this.pConn$.getDataObject();
 
       this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-      this.portalOperator$ = this.PCore$.getEnvironmentInfo().getOperatorName();
+      this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
       this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$);
       this.showAppName$ = this.configProps['showAppName'];
 
-      this.portalApp$ = this.PCore$.getEnvironmentInfo().getApplicationLabel();
+      this.portalApp$ = PCore.getEnvironmentInfo().getApplicationLabel();
     });
   }
 
@@ -159,7 +153,7 @@ export class WssNavBarComponent {
 
     const actionInfo = {
       containerName: 'primary',
-      flowType: sFlowType ? sFlowType : 'pyStartCase'
+      flowType: sFlowType || 'pyStartCase'
     };
     this.createWork(sCaseType, actionInfo);
   }

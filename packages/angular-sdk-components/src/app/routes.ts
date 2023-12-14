@@ -6,12 +6,12 @@ import { endpoints } from '../../../../projects/angular-sdk-library/src/lib/_ser
 
 // Adding path to remove "Cannot match routes" error at launch
 //  Tried this at one point... Need to add /app in path now...
-// const appName = window.PCore.getStore().getState().data.app.Application.pyLabel;
+// const appName = PCore.getStore().getState().data.app.Application.pyLabel;
 //  Unfortunately, called before onPCoreReady...
 //
 // But we can get it from window.location.pathname
 
-const appName = window.location.pathname.split('/')[3];
+// const appName = window.location.pathname.split('/')[3];
 
 // TopAppComponent no longer used (was for when login into PegaInfinity and being directed from there to an Angular app,
 // similiar to Nebula/Constellaion)

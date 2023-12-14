@@ -1,10 +1,8 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-simple-table-select',
@@ -14,12 +12,11 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableSelectComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   label = '';
   renderMode = '';
@@ -37,10 +34,6 @@ export class SimpleTableSelectComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.updateSelf();
@@ -64,7 +57,7 @@ export class SimpleTableSelectComponent implements OnInit {
   }
 
   updateSelf() {
-    const theConfigProps = this.pConn$.getConfigProps();
+    const theConfigProps: any = this.pConn$.getConfigProps();
     this.label = theConfigProps.label;
     this.renderMode = theConfigProps.renderMode;
     this.showLabel = theConfigProps.showLabel;
@@ -77,25 +70,25 @@ export class SimpleTableSelectComponent implements OnInit {
     if (this.propsToUse.showLabel === false) {
       this.propsToUse.label = '';
     }
-    const { MULTI } = this.PCore$.getConstants().LIST_SELECTION_MODE;
-    const { selectionMode, selectionList } = this.pConn$.getConfigProps();
+    const { MULTI } = PCore.getConstants().LIST_SELECTION_MODE;
+    const { selectionMode, selectionList }: any = this.pConn$.getConfigProps();
     const isMultiSelectMode = selectionMode === MULTI;
     if (isMultiSelectMode && this.renderMode === 'ReadOnly') {
       this.showSimpleTableManual = true;
     } else {
       const pageReference = this.pConn$.getPageReference();
-      let referenceProp = isMultiSelectMode
-        ? selectionList.substring(1)
-        : pageReference.substring(pageReference.lastIndexOf('.') + 1);
+      let referenceProp = isMultiSelectMode ? selectionList.substring(1) : pageReference.substring(pageReference.lastIndexOf('.') + 1);
       // Replace here to use the context name instead
-      let contextPageReference = null;
+      let contextPageReference: string | null = null;
       if (this.dataRelationshipContext !== null && selectionMode === 'single') {
         referenceProp = this.dataRelationshipContext;
         contextPageReference = pageReference.concat('.').concat(referenceProp);
       }
       const metadata = isMultiSelectMode
-        ? this.pConn$.getFieldMetadata(`@P .${referenceProp}`)
-        : this.pConn$.getCurrentPageFieldMetadata(contextPageReference);
+        ? // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
+          this.pConn$.getFieldMetadata(`@P .${referenceProp}`)
+        : // @ts-ignore - Property 'getCurrentPageFieldMetadata' is private and only accessible within class 'C11nEnv'
+          this.pConn$.getCurrentPageFieldMetadata(contextPageReference);
 
       const { datasource: { parameters: fieldParameters = {} } = {}, pageClass } = metadata;
 
@@ -146,7 +139,7 @@ export class SimpleTableSelectComponent implements OnInit {
       parameters: this.parameters
     };
 
-    this.filters = this.pConn$.getRawMetadata().config.promotedFilters ?? [];
+    this.filters = (this.pConn$.getRawMetadata() as any).config.promotedFilters ?? [];
 
     this.isSearchable = this.filters.length > 0;
   }

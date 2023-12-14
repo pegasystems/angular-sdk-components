@@ -16,7 +16,7 @@ declare const window: any;
   imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() caseInfoID$: string;
   @Input() datasource$: any;
   @Input() headerText$: string;
@@ -27,8 +27,6 @@ export class TodoComponent implements OnInit {
   @Input() context$: string;
   @Input() myWorkList$: any;
   @Input() isConfirm;
-
-  PCore$: any;
 
   configProps$: Object;
   currentUser$: string;
@@ -44,24 +42,26 @@ export class TodoComponent implements OnInit {
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
 
-  constructor(private psService: ProgressSpinnerService, private erService: ErrorMessagesService, private ngZone: NgZone, private utils: Utils) {}
+  constructor(
+    private psService: ProgressSpinnerService,
+    private erService: ErrorMessagesService,
+    private ngZone: NgZone,
+    private utils: Utils
+  ) {}
 
   ngOnInit() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-    this.CONSTS = this.PCore$.getConstants();
-    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = this.PCore$.getEvents().getCaseEvent();
+    this.CONSTS = PCore.getConstants();
+    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED }: any = PCore.getEvents().getCaseEvent();
 
-    this.PCore$.getPubSubUtils().subscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {
         this.updateToDo();
       },
       'updateToDo'
     );
 
-    this.PCore$.getPubSubUtils().subscribe(
+    PCore.getPubSubUtils().subscribe(
       CREATE_STAGE_SAVED,
       () => {
         this.updateList();
@@ -69,7 +69,7 @@ export class TodoComponent implements OnInit {
       CREATE_STAGE_SAVED
     );
 
-    this.PCore$.getPubSubUtils().subscribe(
+    PCore.getPubSubUtils().subscribe(
       CREATE_STAGE_DELETED,
       () => {
         this.updateList();
@@ -81,25 +81,28 @@ export class TodoComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = this.PCore$.getEvents().getCaseEvent();
+    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED }: any = PCore.getEvents().getCaseEvent();
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'updateToDo');
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'updateToDo');
 
-    this.PCore$.getPubSubUtils().unsubscribe(CREATE_STAGE_SAVED, CREATE_STAGE_SAVED);
+    PCore.getPubSubUtils().unsubscribe(CREATE_STAGE_SAVED, CREATE_STAGE_SAVED);
 
-    this.PCore$.getPubSubUtils().unsubscribe(CREATE_STAGE_DELETED, CREATE_STAGE_DELETED);
+    PCore.getPubSubUtils().unsubscribe(CREATE_STAGE_DELETED, CREATE_STAGE_DELETED);
   }
 
-  ngOnChanges(data: any) {
+  ngOnChanges() {
     // don't update until we'va had an init
-    if (this.PCore$) {
+    if (PCore) {
       this.updateToDo();
     }
   }
 
   updateWorkList(key) {
-    this.PCore$.getDataApiUtils()
-      .getData(key)
+    (
+      PCore.getDataApiUtils()
+        // @ts-ignore - 2nd parameter "payload" and 3rd parameter "context" should be optional in getData method
+        .getData(key) as Promise<any>
+    )
       .then((responseData) => {
         const dataObject = {};
         dataObject[key] = {
@@ -135,12 +138,13 @@ export class TodoComponent implements OnInit {
       this.arAssignments$ = this.topThreeAssignments(this.assignmentsSource$);
     } else {
       // get caseInfoId assignment.
+      // eslint-disable-next-line no-lonely-if
       if (this.caseInfoID$ != undefined) {
         this.arAssignments$ = this.getCaseInfoAssignment(this.assignmentsSource$, this.caseInfoID$);
       }
     }
 
-    this.currentUser$ = this.PCore$.getEnvironmentInfo().getOperatorName();
+    this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
     this.currentUserInitials$ = this.utils.getInitials(this.currentUser$);
   }
 
@@ -221,7 +225,7 @@ export class TodoComponent implements OnInit {
     const sTarget = this.pConn$.getContainerName();
     const sTargetContainerName = sTarget;
 
-    const options = { containerName: sTargetContainerName };
+    const options: any = { containerName: sTargetContainerName };
 
     if (classname === null || classname === '') {
       classname = this.pConn$.getCaseInfo().getClassName();
@@ -249,8 +253,8 @@ export class TodoComponent implements OnInit {
         }
       })
       .catch(() => {
-      this.psService.sendMessage(false);
-      this.erService.sendMessage('show', "Failed to open");
+        this.psService.sendMessage(false);
+        this.erService.sendMessage('show', 'Failed to open');
       });
   }
 }

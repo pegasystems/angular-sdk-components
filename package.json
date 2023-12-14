@@ -90,6 +90,7 @@
     "@angular/language-service": "^15.2.8",
     "@pega/configs": "^0.5.3",
     "@pega/eslint-config": "^0.5.3",
+    "@pega/pcore-pconnect-typedefs": "^2.0.0",
     "@pega/prettier-config": "^0.5.3",
     "@playwright/test": "^1.40.0",
     "@types/jasmine": "~3.6.0",

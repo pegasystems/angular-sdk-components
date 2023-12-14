@@ -16,8 +16,7 @@
           [value]="value$"
           [required]="bRequired$"
           [formControlName]="controlName$"
-          (dateChange)="fieldOnDateChange($event, dateInput.value)"
-          (click)="fieldOnClick($event)"
+          (dateChange)="fieldOnDateChange($event)"
           (blur)="fieldOnBlur($event)"
         />
         <mat-datepicker-toggle matSuffix [for]="pegadate"></mat-datepicker-toggle>

@@ -66,11 +66,9 @@ export class ListViewComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() bInForm$: boolean = true;
   @Input() payload;
-
-  PCore$: any;
 
   repeatList$: MatTableDataSource<any>;
   fields$: Array<any>;
@@ -134,13 +132,13 @@ export class ListViewComponent implements OnInit {
   filters: any = {};
   selectParam: Array<any> = [];
   filterPayload: any;
-  constructor(private psService: ProgressSpinnerService, private utils: Utils) { }
+
+  constructor(
+    private psService: ProgressSpinnerService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.configProps = this.pConn$.getConfigProps();
     /** By default, pyGUID is used for Data classes and pyID is for Work classes as row-id/key */
     const defRowID = this.configProps?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
@@ -167,17 +165,17 @@ export class ListViewComponent implements OnInit {
 
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
     setTimeout(() => {
-      this.PCore$.getPubSubUtils().subscribe(
-        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
-        data => {
+      PCore.getPubSubUtils().subscribe(
+        PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
+        (data) => {
           this.processFilterChange(data);
         },
         `dashboard-component-${'id'}`,
         false,
         this.pConn$.getContextName()
       );
-      this.PCore$.getPubSubUtils().subscribe(
-        this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
+      PCore.getPubSubUtils().subscribe(
+        PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
         () => {
           this.filters = {};
           this.processFilterClear();
@@ -211,14 +209,14 @@ export class ListViewComponent implements OnInit {
     };
 
     this.filters[filterId] = filterExpression;
-    let isDateRange = data.filterExpression?.AND ? true : false;
+    let isDateRange = !!data.filterExpression?.AND;
     // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
     const relationalOp = 'AND';
 
     let field = this.getFieldFromFilter(filterExpression, isDateRange);
-    let selectParam = [];
+    const selectParam: Array<any> = [];
     // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-    this.displayedColumns$?.forEach(col => {
+    this.displayedColumns$?.forEach((col) => {
       selectParam.push({
         field: col
       });
@@ -242,7 +240,7 @@ export class ListViewComponent implements OnInit {
       }
 
       // Checking if the filter is of type- Date Range
-      isDateRange = filter?.AND ? true : false;
+      isDateRange = !!filter?.AND;
       field = this.getFieldFromFilter(filter, isDateRange);
 
       if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
@@ -262,11 +260,11 @@ export class ListViewComponent implements OnInit {
           [`T${index++}`]: { ...filter[relationalOp][1].condition }
         };
         if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic
-            } ${relationalOp} (T${index - 2} ${dateRelationalOp} T${index - 1})`;
+          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} (T${
+            index - 2
+          } ${dateRelationalOp} T${index - 1})`;
         } else {
-          dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${index - 1
-            })`;
+          dashboardFilterPayload.query.filter.logic = `(T${index - 2} ${relationalOp} T${index - 1})`;
         }
 
         dashboardFilterPayload.query.select = selectParam;
@@ -277,8 +275,7 @@ export class ListViewComponent implements OnInit {
         };
 
         if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic
-            } ${relationalOp} T${index - 1}`;
+          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index - 1}`;
         } else {
           dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
         }
@@ -295,24 +292,26 @@ export class ListViewComponent implements OnInit {
     this.getListData();
   }
 
-
   processFilterClear() {
     this.filterPayload = undefined;
     this.getListData();
   }
 
   getFieldsMetadata(refList) {
-    return this.PCore$.getAnalyticsUtils().getDataViewMetadata(refList, this.showDynamicFields);
+    // @ts-ignore - 3rd parameter "associationFilter" should be optional for getDataViewMetadata method
+    return PCore.getAnalyticsUtils().getDataViewMetadata(refList, this.showDynamicFields);
   }
 
   getListData() {
+    // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
     const componentConfig = this.pConn$.getComponentConfig();
     if (this.configProps) {
       const refList = this.configProps?.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
       const payload = this.payload || this.filterPayload || {};
-      const workListDataPromise = this.PCore$.getDataApiUtils().getData(refList, payload);
+      // @ts-ignore - 3rd parameter "context" should be optional in getData method
+      const workListDataPromise = PCore.getDataApiUtils().getData(refList, payload);
 
       this.bShowFilterPopover$ = false;
 
@@ -325,7 +324,7 @@ export class ListViewComponent implements OnInit {
 
           this.fields$ = this.configProps.presets[0].children[0].children;
           // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
-          let columnFields = componentConfig.presets[0].children[0].children;
+          const columnFields = componentConfig.presets[0].children[0].children;
 
           const tableDataResults = workListData['data'].data;
 
@@ -371,17 +370,15 @@ export class ListViewComponent implements OnInit {
     }
   }
 
-  ngOnDestroy() { 
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
+  ngOnDestroy() {
+    PCore.getPubSubUtils().unsubscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
       `dashboard-component-${'id'}`,
-      false,
       this.pConn$.getContextName()
     );
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
+    PCore.getPubSubUtils().unsubscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL,
       `dashboard-component-${'id'}`,
-      false,
       this.pConn$.getContextName()
     );
   }
@@ -399,8 +396,8 @@ export class ListViewComponent implements OnInit {
   }
 
   updateFields(arFields, arColumns, fields): Array<any> {
-    let arReturn = arFields;
-    for (let i in arReturn) {
+    const arReturn = arFields;
+    for (const i in arReturn) {
       arReturn[i].config = { ...arReturn[i].config, ...fields[i], name: fields[i].id };
     }
 
@@ -414,7 +411,7 @@ export class ListViewComponent implements OnInit {
     if (this.groupByColumns$.length > 0) {
       this.repeatList$.data = this.repeatListData.slice();
       this.repeatList$.filter = this.searchFilter;
-      let repeatData = this.repeatList$.sortData(this.repeatList$.filteredData, this.repeatList$.sort);
+      const repeatData = this.repeatList$.sortData(this.repeatList$.filteredData, this.repeatList$.sort as MatSort);
       this.repeatList$.data = this.addGroups(repeatData, this.groupByColumns$);
 
       this.perfFilter = performance.now().toString();
@@ -472,17 +469,17 @@ export class ListViewComponent implements OnInit {
 
   _getIconStyle(level): string {
     let sReturn = '';
-    let nLevel = parseInt(level);
+    let nLevel = parseInt(level, 10);
     nLevel--;
-    nLevel = nLevel * 15;
-    sReturn = 'padding-left: ' + nLevel + 'px; vertical-align: middle';
+    nLevel *= 15;
+    sReturn = `padding-left: ${nLevel}px; vertical-align: middle`;
 
     return sReturn;
   }
 
   _getGroupName(fieldName) {
-    for (let i in this.fields$) {
-      let field = this.fields$[i];
+    for (const i in this.fields$) {
+      const field = this.fields$[i];
       if (field.config.name == fieldName) {
         return field.config.label;
       }
@@ -504,6 +501,8 @@ export class ListViewComponent implements OnInit {
         if (pxRefObjectClass != '' && pxRefObjectKey != '') {
           bReturn = true;
         }
+        break;
+      default:
         break;
     }
 
@@ -534,6 +533,8 @@ export class ListViewComponent implements OnInit {
           break;
         case 'pxRefObjectInsName':
           this.openWork(row);
+          break;
+        default:
           break;
       }
     }
@@ -576,13 +577,13 @@ export class ListViewComponent implements OnInit {
   }
 
   clearOutArrows(event, columnData) {
-    let arImages = event.srcElement.parentElement.getElementsByTagName('img');
+    const arImages = event.srcElement.parentElement.getElementsByTagName('img');
 
-    for (let theImage of arImages) {
-      //let theImage = arImages[i]
-      let arrow = theImage.getAttribute('arrow');
+    for (const theImage of arImages) {
+      // let theImage = arImages[i]
+      const arrow = theImage.getAttribute('arrow');
       if (arrow) {
-        let arrowId = theImage.getAttribute('arrowid');
+        const arrowId = theImage.getAttribute('arrowid');
         if (arrow != 'none' && arrowId != columnData.config.name) {
           theImage.setAttribute('arrow', 'none');
           theImage.src = '';
@@ -611,7 +612,6 @@ export class ListViewComponent implements OnInit {
             return 0;
           }
           return prefixX[1] - prefixY[1];
-          break;
         case 'down':
           if (prefixX[0] !== prefixY[0]) {
             if (prefixX[0] > prefixY[0]) return -1;
@@ -619,6 +619,7 @@ export class ListViewComponent implements OnInit {
             return 0;
           }
           return prefixY[1] - prefixX[1];
+        default:
           break;
       }
     }
@@ -637,6 +638,8 @@ export class ListViewComponent implements OnInit {
         } else if (aValue < bValue) {
           return 1;
         }
+        break;
+      default:
         break;
     }
 
@@ -697,11 +700,11 @@ export class ListViewComponent implements OnInit {
   }
 
   _clickAway(event: any) {
-    var bInPopUp = false;
+    let bInPopUp = false;
 
-    //run through list of elements in path, if menu not in th path, then want to
+    // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
-    for (let i in event.path) {
+    for (const i in event.path) {
       if (
         event.path[i].className == 'psdk-modal-file-top' ||
         event.path[i].tagName == 'BUTTON' ||
@@ -748,7 +751,8 @@ export class ListViewComponent implements OnInit {
       case 'submit':
         this.updateFilterWithInfo();
         this.filterSortGroupBy();
-
+        break;
+      default:
         break;
     }
 
@@ -759,7 +763,7 @@ export class ListViewComponent implements OnInit {
 
   updateFilterWithInfo() {
     let bFound = false;
-    for (let filterObj of this.filterByColumns) {
+    for (const filterObj of this.filterByColumns) {
       if (filterObj['ref'] === this.currentFilterRefData.config.name) {
         filterObj['type'] = this.currentFilterRefData.type;
         filterObj['containsFilter'] = this.filterContainsType$;
@@ -772,7 +776,7 @@ export class ListViewComponent implements OnInit {
 
     if (!bFound) {
       // add in
-      let filterObj: any = {};
+      const filterObj: any = {};
       filterObj.ref = this.currentFilterRefData.config.name;
       filterObj.type = this.currentFilterRefData.type;
       filterObj.containsFilter = this.filterContainsType$;
@@ -782,13 +786,13 @@ export class ListViewComponent implements OnInit {
     }
 
     // iterate through filters and update filterOn icon
-    for (let filterObj of this.filterByColumns) {
-      let containsFilterValue = filterObj['containsFilterValue'];
-      let containsFilter = filterObj['containsFilter'];
-      let filterRef = filterObj['ref'];
-      let filterIndex = this.displayedColumns$.indexOf(filterRef);
-      let arFilterImg = document.getElementsByName('filterOnIcon');
-      let filterImg: any = arFilterImg[filterIndex];
+    for (const filterObj of this.filterByColumns) {
+      const containsFilterValue = filterObj['containsFilterValue'];
+      const containsFilter = filterObj['containsFilter'];
+      const filterRef = filterObj['ref'];
+      const filterIndex = this.displayedColumns$.indexOf(filterRef);
+      const arFilterImg = document.getElementsByName('filterOnIcon');
+      const filterImg: any = arFilterImg[filterIndex];
       if (containsFilterValue == '' && containsFilter != 'null' && containsFilter != 'notnull') {
         // clear icon
         filterImg.src = '';
@@ -803,7 +807,7 @@ export class ListViewComponent implements OnInit {
     // find current ref, if exists, move data to variable to display
 
     let bFound = false;
-    for (let filterObj of this.filterByColumns) {
+    for (const filterObj of this.filterByColumns) {
       if (filterObj['ref'] === this.currentFilterRefData.config.name) {
         this.filterContainsType$ = filterObj['containsFilter'];
         this.filterContainsValue$ = filterObj['containsFilterValue'];
@@ -831,7 +835,7 @@ export class ListViewComponent implements OnInit {
 
   filterData(item: any) {
     let bKeep = true;
-    for (let filterObj of this.filterByColumns) {
+    for (const filterObj of this.filterByColumns) {
       if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
         let value: any;
         let filterValue: any;
@@ -846,16 +850,17 @@ export class ListViewComponent implements OnInit {
                 ? this.utils.getSeconds(filterObj.containsFilterValue)
                 : null;
 
+            // eslint-disable-next-line sonarjs/no-nested-switch
             switch (filterObj.containsFilter) {
               case 'notequal':
                 // becasue filterValue is in minutes, need to have a range of less than 60 secons
 
                 if (value != null && filterValue != null) {
                   // get rid of millisecons
-                  value = value / 1000;
-                  filterValue = filterValue / 1000;
+                  value /= 1000;
+                  filterValue /= 1000;
 
-                  let diff = value - filterValue;
+                  const diff = value - filterValue;
                   if (diff >= 0 && diff < 60) {
                     bKeep = false;
                   }
@@ -882,12 +887,15 @@ export class ListViewComponent implements OnInit {
                   bKeep = false;
                 }
                 break;
+              default:
+                break;
             }
             break;
           default:
             value = item[filterObj.ref].toLowerCase();
             filterValue = filterObj.containsFilterValue.toLowerCase();
 
+            // eslint-disable-next-line sonarjs/no-nested-switch
             switch (filterObj.containsFilter) {
               case 'contains':
                 if (value.indexOf(filterValue) < 0) {
@@ -904,8 +912,9 @@ export class ListViewComponent implements OnInit {
                   bKeep = false;
                 }
                 break;
+              default:
+                break;
             }
-
             break;
         }
       }
@@ -929,7 +938,7 @@ export class ListViewComponent implements OnInit {
     // last sort config data is global
     theData.sort(this.sortCompare.bind(this));
 
-    let reGroupData = this.addGroups(theData, this.groupByColumns$);
+    const reGroupData = this.addGroups(theData, this.groupByColumns$);
 
     this.repeatList$.data = [];
     this.repeatList$.data.push(...reGroupData);
@@ -953,7 +962,7 @@ export class ListViewComponent implements OnInit {
   //
 
   _showUnGroupBy(columnData): boolean {
-    for (let val of this.groupByColumns$) {
+    for (const val of this.groupByColumns$) {
       if (val == columnData.config.name) {
         return true;
       }
@@ -969,14 +978,14 @@ export class ListViewComponent implements OnInit {
   }
 
   _unGroupBy(event, columnData) {
-    //event.stopPropagation();
+    // event.stopPropagation();
     this.checkGroupByColumn(columnData.config.name, false);
 
     this.filterSortGroupBy();
   }
 
   checkGroupByColumn(field, add) {
-    let found = null;
+    let found: number | null = null;
     for (const column of this.groupByColumns$) {
       if (column === field) {
         found = this.groupByColumns$.indexOf(column, 0);
@@ -986,10 +995,8 @@ export class ListViewComponent implements OnInit {
       if (!add) {
         this.groupByColumns$.splice(found, 1);
       }
-    } else {
-      if (add) {
-        this.groupByColumns$.push(field);
-      }
+    } else if (add) {
+      this.groupByColumns$.push(field);
     }
   }
 
@@ -1017,7 +1024,7 @@ export class ListViewComponent implements OnInit {
     );
 
     const currentColumn = groupByColumns[level];
-    let subGroups = [];
+    let subGroups: Array<any> = [];
     groups.forEach((group) => {
       const rowsInGroup = data.filter((row) => group[currentColumn] === row[currentColumn]);
       group.totalCounts = rowsInGroup.length;
@@ -1043,7 +1050,7 @@ export class ListViewComponent implements OnInit {
 
   _groupHeaderClick(row) {
     row.expanded = !row.expanded;
-    //this.repeatList$.filter = "";
+    // this.repeatList$.filter = "";
     this.perfFilter = performance.now().toString();
     this.repeatList$.filter = this.perfFilter;
   }
@@ -1083,7 +1090,7 @@ export class ListViewComponent implements OnInit {
 
       // assume not there unless we find it
       bVisible = false;
-      for (let col of this.displayedColumns$) {
+      for (const col of this.displayedColumns$) {
         // filter is lower case
         if (data[col] && data[col].toString().toLowerCase().indexOf(filter) >= 0) {
           bVisible = true;
@@ -1096,13 +1103,13 @@ export class ListViewComponent implements OnInit {
   }
 
   updateData(listData: Array<any>, fieldData: Array<any>): Array<any> {
-    let returnList: Array<any> = new Array<any>();
-    for (let row in listData) {
+    const returnList: Array<any> = new Array<any>();
+    for (const row in listData) {
       // copy
-      let rowData = JSON.parse(JSON.stringify(listData[row]));
+      const rowData = JSON.parse(JSON.stringify(listData[row]));
 
-      for (let field in fieldData) {
-        let config = fieldData[field].config;
+      for (const field in fieldData) {
+        const config = fieldData[field].config;
         let fieldName;
         let formattedDate;
         let myFormat;
@@ -1131,7 +1138,7 @@ export class ListViewComponent implements OnInit {
             break;
           case 'Currency':
             fieldName = config.name;
-            theCurrencyOptions = getCurrencyOptions(this.PCore$?.getEnvironmentInfo()?.getLocale());
+            theCurrencyOptions = getCurrencyOptions(PCore.getEnvironmentInfo().getLocale() as string);
             // eslint-disable-next-line no-case-declarations
             const defaultOptions = {
               locale: getLocale(),
@@ -1141,7 +1148,9 @@ export class ListViewComponent implements OnInit {
             // eslint-disable-next-line no-case-declarations
             const params = { ...defaultOptions, ...theCurrencyOptions };
             rowData[fieldName] = formatters.Currency(rowData[fieldName], params);
-            //val = format(value, column.type, theCurrencyOptions);
+            // val = format(value, column.type, theCurrencyOptions);
+            break;
+          default:
             break;
         }
       }
@@ -1154,8 +1163,8 @@ export class ListViewComponent implements OnInit {
 
   openAssignment(row) {
     const { pxRefObjectClass, pzInsKey } = row;
-    let sTarget = this.pConn$.getContainerName();
-    let options = { containerName: sTarget };
+    const sTarget = this.pConn$.getContainerName();
+    const options: any = { containerName: sTarget };
     this.pConn$.getActionsApi().openAssignment(pzInsKey, pxRefObjectClass, options);
   }
 
@@ -1188,7 +1197,7 @@ export class ListViewComponent implements OnInit {
   }
 
   initializeColumns(fields = []) {
-    return fields.map((field, originalColIndex) => ({
+    return fields.map((field: any, originalColIndex) => ({
       ...field,
       type: this.getType(field),
       name: field.config.value.substring(4),

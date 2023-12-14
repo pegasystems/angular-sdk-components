@@ -4,11 +4,9 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-attachment',
@@ -18,12 +16,11 @@ declare const window: any;
   imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AttachmentComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
   PCoreVersion: string;
 
   label$: string = '';
@@ -48,22 +45,22 @@ export class AttachmentComponent implements OnInit {
   status: any;
   validatemessage: any = '';
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private ngZone: NgZone) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     // // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.removeFileFromList$ = { onClick: this._removeFileFromList.bind(this) };
-    this.PCoreVersion = this.PCore$.getPCoreVersion();
+    this.PCoreVersion = PCore.getPCoreVersion();
 
-    this.caseID = this.PCore$.getStoreValue('.pyID', 'caseInfo.content', this.pConn$.getContextName());
+    this.caseID = PCore.getStoreValue('.pyID', 'caseInfo.content', this.pConn$.getContextName());
 
-    //let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    // let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.checkAndUpdate();
   }
 
@@ -85,7 +82,7 @@ export class AttachmentComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
   }
 
   // Callback passed when subscribing to store change
@@ -94,10 +91,10 @@ export class AttachmentComponent implements OnInit {
   }
 
   updateSelf() {
-    let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    let stateProps: any = this.pConn$.getStateProps();
+    const configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const stateProps: any = this.pConn$.getStateProps();
 
-    const { value, validatemessage, label, helperText } = configProps;
+    const { value, label } = configProps;
 
     if (configProps['required'] != null) {
       this.bRequired$ = this.utils.getBooleanValue(configProps['required']);
@@ -129,7 +126,7 @@ export class AttachmentComponent implements OnInit {
       this.att_categoryName = value.pyCategoryName;
     }
 
-    this.att_valueRef = this.pConn$.getStateProps().value;
+    this.att_valueRef = (this.pConn$.getStateProps() as any).value;
     this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
 
     // let this.fileTemp: any = {};
@@ -138,7 +135,9 @@ export class AttachmentComponent implements OnInit {
       this.fileTemp = this.buildFilePropsFromResponse(value.pxResults[0]);
 
       if (this.fileTemp.responseProps) {
+        // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
         if (!this.pConn$.attachmentsInfo) {
+          // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
           this.pConn$.attachmentsInfo = {
             type: 'File',
             attachmentFieldName: this.att_valueRef,
@@ -152,7 +151,7 @@ export class AttachmentComponent implements OnInit {
           this.fileTemp.props.ID = this.fileTemp.responseProps.pzInsKey;
 
           // create the actions for the "more" menu on the attachment
-          let arMenuList = new Array();
+          const arMenuList: Array<any> = [];
           let oMenu: any = {};
 
           oMenu.icon = 'download';
@@ -169,7 +168,7 @@ export class AttachmentComponent implements OnInit {
           };
           arMenuList.push(oMenu);
 
-          this.arFileList$ = new Array();
+          this.arFileList$ = [];
           this.arFileList$.push(
             this.getNewListUtilityItemProps({
               att: this.fileTemp.props,
@@ -194,7 +193,7 @@ export class AttachmentComponent implements OnInit {
           if (index < 0) {
             tempFiles = [this.fileTemp];
           }
-          this.PCore$.getStateUtils().updateState(
+          PCore.getStateUtils().updateState(
             this.pConn$.getContextName(),
             this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
             [...currentAttachmentList, ...tempFiles],
@@ -206,15 +205,15 @@ export class AttachmentComponent implements OnInit {
         }
       }
     }
-    this.PCore$.getPubSubUtils().subscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
       this.resetAttachmentStoredState.bind(this),
       this.caseID
     );
   }
 
   resetAttachmentStoredState() {
-    this.PCore$?.getStateUtils().updateState(
+    PCore.getStateUtils().updateState(
       this.pConn$.getContextName(),
       this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
       undefined,
@@ -226,7 +225,8 @@ export class AttachmentComponent implements OnInit {
   }
 
   _downloadFileFromList(fileObj: any) {
-    this.PCore$.getAttachmentUtils()
+    PCore.getAttachmentUtils()
+      // @ts-ignore - 3rd parameter "responseEncoding" should be optional
       .downloadAttachment(fileObj.pzInsKey, this.pConn$.getContextName())
       .then((content) => {
         const extension = fileObj.pyAttachName.split('.').pop();
@@ -246,8 +246,9 @@ export class AttachmentComponent implements OnInit {
 
   _removeFileFromList(item: any) {
     const fileIndex = this.arFileList$.findIndex((element) => element?.id === item?.id);
-    if (this.PCore$.getPCoreVersion()?.includes('8.7')) {
+    if (PCore.getPCoreVersion()?.includes('8.7')) {
       if (this.value$) {
+        // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
         this.pConn$.attachmentsInfo = {
           type: 'File',
           attachmentFieldName: this.att_valueRef,
@@ -273,7 +274,7 @@ export class AttachmentComponent implements OnInit {
           }
         };
         // updating the redux store to help form-handler in passing the data to delete the file from server
-        this.PCore$.getStateUtils().updateState(
+        PCore.getStateUtils().updateState(
           this.pConn$.getContextName(),
           this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
           [...currentAttachmentList, deletedFile],
@@ -283,7 +284,7 @@ export class AttachmentComponent implements OnInit {
           }
         );
       } else {
-        this.PCore$.getStateUtils().updateState(
+        PCore.getStateUtils().updateState(
           this.pConn$.getContextName(),
           this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
           [...currentAttachmentList, ...attachmentsList],
@@ -297,11 +298,11 @@ export class AttachmentComponent implements OnInit {
         this.arFileList$.splice(fileIndex, 1);
       }
     }
-    this.bShowSelector$ = this.arFileList$?.length > 0 ? false : true;
+    this.bShowSelector$ = !(this.arFileList$?.length > 0);
   }
 
   getCurrentAttachmentsList(key, context) {
-    return this.PCore$.getStoreValue(`.${key}`, 'context_data', context) || [];
+    return PCore.getStoreValue(`.${key}`, 'context_data', context) || [];
   }
 
   errorHandler(isFetchCanceled) {
@@ -337,14 +338,14 @@ export class AttachmentComponent implements OnInit {
     // convert FileList to an array
     this.myFiles = Array.from(this.arFiles$);
 
-    //alert($event.target.files[0]); // outputs the first file
+    // alert($event.target.files[0]); // outputs the first file
 
     if (this.myFiles.length == 1) {
       this.bLoading$ = true;
 
       // this.myFiles[0].ID = undefined;
 
-      this.PCore$.getAttachmentUtils()
+      PCore.getAttachmentUtils()
         .uploadAttachment(this.myFiles[0], this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
         .then((fileRes) => {
           this.att_id = fileRes.ID;
@@ -357,6 +358,7 @@ export class AttachmentComponent implements OnInit {
               category: this.att_categoryName,
               ID: fileRes.ID
             };
+            // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
             this.pConn$.attachmentsInfo = reqObj;
           } else {
             reqObj = {
@@ -370,7 +372,7 @@ export class AttachmentComponent implements OnInit {
               this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
               this.pConn$.getContextName()
             ).filter((f) => f.label !== this.att_valueRef);
-            this.PCore$.getStateUtils().updateState(
+            PCore.getStateUtils().updateState(
               this.pConn$.getContextName(),
               this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
               [...currentAttachmentList, reqObj],
@@ -381,11 +383,12 @@ export class AttachmentComponent implements OnInit {
             );
           }
 
-          const fieldName = this.pConn$.getStateProps().value;
+          const fieldName = (this.pConn$.getStateProps() as any).value;
           const context = this.pConn$.getContextName();
 
-          this.PCore$.getMessageManager().clearMessages({
-            type: this.PCore$.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
+          // @ts-ignore - category should be optional
+          PCore.getMessageManager().clearMessages({
+            type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
             property: fieldName,
             pageReference: this.pConn$.getPageReference(),
             context
@@ -408,7 +411,7 @@ export class AttachmentComponent implements OnInit {
           });
         })
 
-        .catch((error) => {
+        .catch(() => {
           // just catching the rethrown error at uploadAttachment
           // to handle Unhandled rejections
 
@@ -474,6 +477,7 @@ export class AttachmentComponent implements OnInit {
           actions.push(action);
         }
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isDownloadable = att.links.download;
     } else if (att.error) {
       actions = [
@@ -512,10 +516,10 @@ export class AttachmentComponent implements OnInit {
     return this.setNewFiles(arFiles);
   }
 
-  setNewFiles(arFiles, current = []) {
+  setNewFiles(arFiles) {
     let index = 0;
     const maxAttachmentSize = 5;
-    for (let file of arFiles) {
+    for (const file of arFiles) {
       if (!this.validateMaxSize(file, maxAttachmentSize)) {
         file.error = true;
         file.meta = this.pConn$.getLocalizedValue('File is too big. Max allowed size is 5MB.', '', '');

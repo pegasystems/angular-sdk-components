@@ -9,9 +9,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ListPageComponent implements OnInit {
-  @Input() pConn$: any;
-
-  constructor() {}
+  @Input() pConn$: typeof PConnect;
 
   ngOnInit(): void {}
 }

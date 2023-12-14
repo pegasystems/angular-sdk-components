@@ -27,7 +27,7 @@ test.describe('E2E test', () => {
     await expect(worklist).toBeVisible();
 
     /** Click on the Create Case button */
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     /** Creating a Form Field case-type */
@@ -52,7 +52,7 @@ test.describe('E2E test', () => {
     const requiredTime = page.locator('input[id="mat-input-2"]');
     const date = new Date();
     // Converting hours from 24 to 12 format, including the special case of "12"
-    const time = `${((date.getHours() % 12) || 12).toString().padStart(2, '0')}${date.getMinutes().toString().padStart(2, '0')}AM`;
+    const time = `${(date.getHours() % 12 || 12).toString().padStart(2, '0')}${date.getMinutes().toString().padStart(2, '0')}AM`;
     requiredTime.pressSequentially(time);
     attributes = await common.getAttributes(requiredTime);
     await expect(attributes.includes('required')).toBeTruthy();

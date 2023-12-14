@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ScalarListComponent {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   configProps$: Object;
@@ -21,7 +21,7 @@ export class ScalarListComponent {
   displayMode$: string = '';
   items: Array<any>;
   isDisplayModeEnabled: Boolean = false;
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   controlName$: string;
   fieldControl = new FormControl('', null);
   bHasForm$: boolean = true;
@@ -36,7 +36,7 @@ export class ScalarListComponent {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {

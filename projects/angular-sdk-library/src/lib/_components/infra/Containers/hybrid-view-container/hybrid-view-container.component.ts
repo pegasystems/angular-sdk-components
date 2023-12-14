@@ -18,11 +18,9 @@ import { FormGroup } from '@angular/forms';
   imports: [CommonModule]
 })
 export class HybridViewContainerComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
-
-  constructor() {}
 
   ngOnInit(): void {}
 }

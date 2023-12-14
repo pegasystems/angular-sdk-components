@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
 
@@ -13,10 +13,10 @@ import { Utils } from '../../../_helpers/utils';
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SemanticLinkComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   label$: string = '';
@@ -24,7 +24,10 @@ export class SemanticLinkComponent implements OnInit {
   displayMode$: string = '';
   bVisible$: boolean = true;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service

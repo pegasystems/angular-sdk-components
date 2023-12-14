@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ProgressSpinnerService {
   private subject = new Subject<any>();
-
-  constructor() {}
 
   /**
    * Function to show/hide spinner

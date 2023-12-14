@@ -1,17 +1,13 @@
 /* eslint-disable no-case-declarations */
-import { Component, OnInit, Input, SimpleChange, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const PCore: any;
-
-declare const window: any;
 
 @Component({
   selector: 'app-assignment',
@@ -21,7 +17,7 @@ declare const window: any;
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() arChildren$: Array<any>;
   @Input() itemKey$: string;
@@ -31,8 +27,7 @@ export class AssignmentComponent implements OnInit {
   @Input() banners;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   newPConn$: any;
@@ -50,8 +45,8 @@ export class AssignmentComponent implements OnInit {
 
   bHasNavigation$: boolean = false;
   bIsVertical$: boolean = false;
-  arCurrentStepIndicies$: Array<number> = new Array();
-  arNavigationSteps$: Array<any> = new Array();
+  arCurrentStepIndicies$: Array<number> = [];
+  arNavigationSteps$: Array<any> = [];
 
   init: boolean;
   finishAssignment: any;
@@ -61,7 +56,7 @@ export class AssignmentComponent implements OnInit {
   cancelCreateStageAssignment: any;
   showPage: any;
 
-  //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
+  // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   bReInit: boolean = false;
   localizedVal;
@@ -77,11 +72,7 @@ export class AssignmentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    // // First thing in initialization is registering and subscribing to the AngularPConnect service
+    // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.initComponent();
@@ -89,7 +80,7 @@ export class AssignmentComponent implements OnInit {
     this.angularPConnect.shouldComponentUpdate(this);
 
     this.bInitialized = true;
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
     this.localeReference = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
   }
 
@@ -114,7 +105,7 @@ export class AssignmentComponent implements OnInit {
     if (bUpdateSelf) {
       let loadingInfo;
       try {
-        //loadingInfo = this.pConn$.getLoadingStatus();
+        // loadingInfo = this.pConn$.getLoadingStatus();
         loadingInfo = this.newPConn$.getLoadingStatus();
 
         this.psService.sendMessage(loadingInfo);
@@ -122,7 +113,7 @@ export class AssignmentComponent implements OnInit {
     }
   }
 
-  ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+  ngOnChanges() {
     if (this.bInitialized) {
       this.updateChanges();
     }
@@ -133,12 +124,12 @@ export class AssignmentComponent implements OnInit {
 
     this.ngZone.run(() => {
       // pConn$ may be a 'reference' component, so normalize it
-      //this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
+      // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
       this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
       //  If 'reference' so we need to get the children of the normalized pConn
       if (this.bIsRefComponent) {
-        //this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+        // this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
         this.arChildren$ = ReferenceComponent.normalizePConnArray(this.newPConn$.getChildren());
       }
     });
@@ -159,12 +150,12 @@ export class AssignmentComponent implements OnInit {
     this.bIsRefComponent = this.checkIfRefComponent(this.pConn$);
 
     // pConn$ may be a 'reference' component, so normalize it
-    //this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
+    // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
     this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
     // If 'reference' so we need to get the children of the normalized pConn
     if (this.bIsRefComponent) {
-      //this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+      // this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
       this.arChildren$ = ReferenceComponent.normalizePConnArray(this.newPConn$.getChildren());
     }
 
@@ -172,7 +163,7 @@ export class AssignmentComponent implements OnInit {
     this.bReInit = false;
     this.bHasNavigation$ = false;
 
-    //this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    // this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.configProps$ = this.newPConn$.resolveConfigProps(this.newPConn$.getConfigProps());
 
     this.templateName$ = this.configProps$['template'];
@@ -185,16 +176,16 @@ export class AssignmentComponent implements OnInit {
     let acName = this.pConn$.getContainerName();
     */
 
-    let actionsAPI = this.newPConn$.getActionsApi();
-    let baseContext = this.newPConn$.getContextName();
-    let acName = this.newPConn$.getContainerName();
+    const actionsAPI = this.newPConn$.getActionsApi();
+    const baseContext = this.newPConn$.getContextName();
+    const acName = this.newPConn$.getContainerName();
 
     // for now, in general this should be overridden by updateSelf(), and not be blank
     if (this.itemKey$ === '') {
       this.itemKey$ = baseContext.concat('/').concat(acName);
     }
 
-    //this.pConn$.isBoundToState();
+    // this.pConn$.isBoundToState();
     this.newPConn$.isBoundToState();
 
     this.init = false;
@@ -212,25 +203,25 @@ export class AssignmentComponent implements OnInit {
   }
 
   createButtons() {
-    //let oData = this.pConn$.getDataObject();
-    let oData = this.newPConn$.getDataObject();
+    // let oData = this.pConn$.getDataObject();
+    const oData = this.newPConn$.getDataObject();
 
     // inside
     // get fist kid, get the name and displa
     // pass first kid to a view container, which will disperse it to a view which will use one column, two column, etc.
-    let oWorkItem = this.arChildren$[0].getPConnect();
-    let oWorkData = oWorkItem.getDataObject();
+    const oWorkItem = this.arChildren$[0].getPConnect();
+    const oWorkData = oWorkItem.getDataObject();
 
     if (oWorkData) {
       this.actionsAPI = oWorkItem.getActionsApi();
 
-      //this.containerName$ = oWorkMeta["name"];
+      // this.containerName$ = oWorkMeta["name"];
 
       if (oWorkData.caseInfo && oWorkData.caseInfo.assignments !== null) {
         this.containerName$ = oWorkData.caseInfo.assignments?.[0].name;
 
         // get caseInfo
-        let oCaseInfo = oData.caseInfo;
+        const oCaseInfo = oData.caseInfo;
 
         if (oCaseInfo && oCaseInfo.actionButtons) {
           this.arMainButtons$ = oCaseInfo.actionButtons.main;
@@ -255,10 +246,10 @@ export class AssignmentComponent implements OnInit {
             this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
             this.arNavigationSteps$.forEach((step) => {
               if (step.name) {
-                step.name = this.PCore$.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
+                step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
               }
             });
-            this.arCurrentStepIndicies$ = new Array();
+            this.arCurrentStepIndicies$ = [];
             this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
           });
         } else {
@@ -295,7 +286,7 @@ export class AssignmentComponent implements OnInit {
   onSaveActionSuccess(data) {
     this.actionsAPI.cancelAssignment(this.itemKey$).then(() => {
       this.psService.sendMessage(false);
-      this.PCore$.getPubSubUtils().publish(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
+      PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CREATE_STAGE_SAVED, data);
     });
   }
 
@@ -315,15 +306,15 @@ export class AssignmentComponent implements OnInit {
     let itemID = baseContext.concat("/").concat(acName);
     */
 
-    let baseContext = this.newPConn$.getContextName();
-    let acName = this.newPConn$.getContainerName();
-    let itemID = baseContext.concat('/').concat(acName);
+    // const baseContext = this.newPConn$.getContextName();
+    // const acName = this.newPConn$.getContainerName();
+    // const itemID = baseContext.concat('/').concat(acName);
 
     if (sButtonType == 'secondary') {
-      let stepID = ''; // ???
+      // const stepID = ''; // ???
 
       // need to handle cancel as this.cancel(dispatchInfo)
-      //this.actionsAPI[sAction](dispatchInfo);
+      // this.actionsAPI[sAction](dispatchInfo);
       switch (sAction) {
         case 'navigateToStep':
           this.erService.sendMessage('publish', '');
@@ -331,7 +322,7 @@ export class AssignmentComponent implements OnInit {
             this.bReInit = true;
             this.psService.sendMessage(true);
 
-            let navigatePromise = this.navigateToStep('previous', this.itemKey$);
+            const navigatePromise = this.navigateToStep('previous', this.itemKey$);
             navigatePromise
               .then(() => {
                 this.updateChanges();
@@ -352,7 +343,8 @@ export class AssignmentComponent implements OnInit {
           savePromise
             .then(() => {
               const caseType = this.pConn$.getCaseInfo().c11nEnv.getValue(PCore.getConstants().CASE_INFO.CASE_TYPE_ID);
-              this.PCore$.getPubSubUtils().publish('cancelPressed');
+              // @ts-ignore - second parameter “payload” for publish method should be optional
+              PCore.getPubSubUtils().publish('cancelPressed');
               this.onSaveActionSuccess({ caseType, caseID, assignmentID });
             })
             .catch(() => {
@@ -366,9 +358,12 @@ export class AssignmentComponent implements OnInit {
         case 'cancelAssignment':
           this.bReInit = true;
           this.erService.sendMessage('dismiss', '');
+          // @ts-ignore - Property 'isAssignmentInCreateStage' is private and only accessible within class 'CaseInfo'
           const isAssignmentInCreateStage = this.pConn$.getCaseInfo().isAssignmentInCreateStage();
           const isLocalAction =
+            // @ts-ignore - Property 'isLocalAction' is private and only accessible within class 'CaseInfo'.
             this.pConn$.getCaseInfo().isLocalAction() ||
+            // @ts-ignore - second parameter pageReference for getValue method should be optional
             (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION && this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
           // check if create stage (modal)
           if (isAssignmentInCreateStage && this.isInModal$ && !isLocalAction) {
@@ -376,8 +371,8 @@ export class AssignmentComponent implements OnInit {
             cancelPromise
               .then(() => {
                 this.psService.sendMessage(false);
-                // this.PCore$.getPubSubUtils().publish(
-                //   this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
+                // PCore.getPubSubUtils().publish(
+                //   PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
               })
               .catch(() => {
                 this.psService.sendMessage(false);
@@ -388,13 +383,15 @@ export class AssignmentComponent implements OnInit {
 
             // publish before cancel pressed, because
             // cancel assignment happens "after" cancel assignment happens
-            this.PCore$.getPubSubUtils().publish('cancelPressed');
+            // @ts-ignore - second parameter “payload” for publish method should be optional
+            PCore.getPubSubUtils().publish('cancelPressed');
 
             const cancelPromise = this.cancelAssignment(this.itemKey$);
             cancelPromise
               .then(() => {
                 this.psService.sendMessage(false);
-                this.PCore$.getPubSubUtils().publish(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
+                // @ts-ignore - second parameter “payload” for publish method should be optional
+                PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
               })
               .catch(() => {
                 this.psService.sendMessage(false);
@@ -413,7 +410,7 @@ export class AssignmentComponent implements OnInit {
           if (this.formValid()) {
             this.bReInit = true;
             this.psService.sendMessage(true);
-            let finishPromise = this.finishAssignment(this.itemKey$); // JA - was itemID but Nebula/Constellation uses itemKey
+            const finishPromise = this.finishAssignment(this.itemKey$); // JA - was itemID but Nebula/Constellation uses itemKey
             finishPromise
               .then(() => {
                 this.psService.sendMessage(false);
@@ -424,7 +421,7 @@ export class AssignmentComponent implements OnInit {
                 this.snackBar.open(`${this.localizedVal('Submit failed!', this.localeCategory)}`, 'Ok');
               });
           } else {
-            //let snackBarRef = this.snackBar.open("Please fix errors on form.",  "Ok");
+            // let snackBarRef = this.snackBar.open("Please fix errors on form.",  "Ok");
             this.erService.sendMessage('show', this.localizedVal('Please fix errors on form.', this.localeCategory));
           }
           break;

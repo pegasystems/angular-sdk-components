@@ -26,7 +26,7 @@ test.describe('E2E test', () => {
     const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
     await expect(worklist).toBeVisible();
 
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     /** Creating a Form Field case-type */

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -11,11 +11,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnPageComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   constructor(private angularPConnect: AngularPConnectService) {}
 

@@ -2,8 +2,6 @@ import { Component, OnInit, Input, OnChanges, SimpleChanges, forwardRef } from '
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
-
 @Component({
   selector: 'app-utility',
   templateUrl: './utility.component.html',
@@ -12,9 +10,7 @@ declare const window: any;
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class UtilityComponent implements OnInit, OnChanges {
-  @Input() pConn$: any;
-
-  PCore$: any;
+  @Input() pConn$: typeof PConnect;
 
   configProps$: any;
   headerIcon$: string;
@@ -25,10 +21,6 @@ export class UtilityComponent implements OnInit, OnChanges {
   constructor(private utils: Utils) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.updateSelf();
   }
 

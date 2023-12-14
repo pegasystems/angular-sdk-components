@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -5,8 +6,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import isEqual from 'fast-deep-equal';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import FeedApi from './feed-api';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
@@ -20,11 +20,10 @@ declare const window: any;
   imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   userName$: string;
   imageKey$: string;
@@ -64,12 +63,8 @@ export class FeedContainerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    this.userName$ = this.PCore$.getEnvironmentInfo().getOperatorName();
-    this.imageKey$ = this.PCore$.getEnvironmentInfo().getOperatorImageInsKey();
+    this.userName$ = PCore.getEnvironmentInfo().getOperatorName();
+    this.imageKey$ = PCore.getEnvironmentInfo().getOperatorImageInsKey();
     this.updateCurrentUserName(this.userName$);
 
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -103,13 +98,13 @@ export class FeedContainerComponent implements OnInit {
     // //  and no longer takes 2nd argument
     // this./*feedAPI.*/fetchMessages(owner /*, this.pConn$.getContextName()*/);
 
-    let configProps = this.pConn$.getConfigProps();
+    // const configProps: any = this.pConn$.getConfigProps();
 
-    const { messageIDs } = configProps;
+    // const { messageIDs } = configProps;
 
-    const { fetchMessages, postMessage, getMentionSuggestions, getTagSuggestions } = FeedApi(this.pConn$);
+    // const { fetchMessages, postMessage, getMentionSuggestions, getTagSuggestions } = FeedApi(this.pConn$);
 
-    const appName = this.PCore$.getEnvironmentInfo().getApplicationName();
+    const appName = PCore.getEnvironmentInfo().getApplicationName();
     let value = '';
     let feedID = '';
     let feedClass = '';
@@ -130,9 +125,9 @@ export class FeedContainerComponent implements OnInit {
 
     const postComment = ({ value: message, clear }) => {
       const attachmentIDs = [];
-      const attachmentUtils = this.PCore$.getAttachmentUtils();
+      const attachmentUtils = PCore.getAttachmentUtils();
       if (attachments && !!attachments.length) {
-        attachments; /*
+        /* attachments;
           .filter((file) => !file.error)
           .map((file) => {
             return attachmentUtils
@@ -155,11 +150,11 @@ export class FeedContainerComponent implements OnInit {
                   setAttachments([]);
                 }
               })
-  
+
               .catch(console.error);
           }); */
       } else {
-        //postMessage(value, transformMarkdownToMsg(message));
+        // postMessage(value, transformMarkdownToMsg(message));
         clear();
       }
     };
@@ -192,7 +187,7 @@ export class FeedContainerComponent implements OnInit {
     }
     // For cancelling fetchrequest for filetrs
     const fetchMessagesCancelTokenSource = useRef([]);
-  
+
     useEffect(() => {
       fetchMessages(
         value,
@@ -206,7 +201,7 @@ export class FeedContainerComponent implements OnInit {
       PCore.getAssetLoader().getLoader("component-loader")(["Activity"]);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-  
+
     const onUploadProgress = useCallback((file) => {
       return ({ loaded, total }) => {
         file.progress = Math.floor((loaded / total) * 100);
@@ -217,7 +212,7 @@ export class FeedContainerComponent implements OnInit {
         });
       };
     }, []);
-  
+
     const errorHandler = useCallback((isFetchCanceled, file) => {
       return (error) => {
         if (!isFetchCanceled(error)) {
@@ -244,7 +239,7 @@ export class FeedContainerComponent implements OnInit {
         throw error;
       };
     }, []);
-  
+
     const postComment = ({ value: message, clear }) => {
       const attachmentIDs = [];
       const attachmentUtils = window.PCore.getAttachmentUtils();
@@ -272,7 +267,7 @@ export class FeedContainerComponent implements OnInit {
                   setAttachments([]);
                 }
               })
-  
+
               .catch(console.error);
           });
       } else {
@@ -302,10 +297,10 @@ export class FeedContainerComponent implements OnInit {
         });
       }
     }, 150);
-  
+
     const userName = getPConnect().getEnvironmentInfo().getOperatorName();
     const imageKey = getPConnect().getEnvironmentInfo().getOperatorImageInsKey();
-  
+
     const onFilesAdded = useCallback((newlyAddedFiles) => {
       setAttachments((current) => [
         ...newlyAddedFiles.map((file) => {
@@ -322,7 +317,7 @@ export class FeedContainerComponent implements OnInit {
         ...current
       ]);
     }, []);
-  
+
     const onFilterChange = useCallback(
       (filterID) => {
         const updatedFilters = [...feedFilters];
@@ -379,7 +374,7 @@ export class FeedContainerComponent implements OnInit {
   onStateChange() {
     const bLogging = false;
     if (bLogging) {
-      //console.log( `in ${this.constructor.name} onStateChange` );
+      // console.log( `in ${this.constructor.name} onStateChange` );
       // debugger;
     }
     // Should always check the bridge to see if the component should update itself (re-render)
@@ -392,13 +387,15 @@ export class FeedContainerComponent implements OnInit {
     if (bUpdateSelf) {
       this.updateSelf();
     } else {
-      let newPulseData = this.pConn$.getDataObject().pulse;
+      // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+      const newPulseData = this.pConn$.getDataObject().pulse;
 
       if (!isEqual(newPulseData, this.pulseData)) {
         this.updateSelf();
       }
     }
 
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     this.pulseData = this.pConn$.getDataObject().pulse;
   }
 
@@ -407,11 +404,13 @@ export class FeedContainerComponent implements OnInit {
   }
 
   getMessageData() {
-    let messageIDs = this.pConn$.getConfigProps().messageIDs;
-    let userName = this.pConn$.getConfigProps().currentUser;
-    let imageKey = this.pConn$.getValue('OperatorID.pyImageInsKey');
+    const messageIDs = (this.pConn$.getConfigProps() as any).messageIDs;
+    const userName = (this.pConn$.getConfigProps() as any).currentUser;
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const imageKey = this.pConn$.getValue('OperatorID.pyImageInsKey');
 
-    let oData = this.pConn$.getDataObject();
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+    const oData: any = this.pConn$.getDataObject();
 
     if (messageIDs && messageIDs.length > 0) {
       this.pulseMessages$ = JSON.parse(JSON.stringify(oData.pulse.messages));
@@ -428,9 +427,9 @@ export class FeedContainerComponent implements OnInit {
   }
 
   convertToArray(messages: Array<any>): Array<any> {
-    let arMessages: Array<any> = new Array();
+    const arMessages: Array<any> = [];
 
-    for (let message in messages) {
+    for (const message in messages) {
       arMessages.push(messages[message]);
     }
 
@@ -438,10 +437,10 @@ export class FeedContainerComponent implements OnInit {
   }
 
   appendPulseMessage(messages: Array<any>): Array<any> {
-    for (let i in messages) {
-      let message = messages[i];
-      let postedTime = message['postedTime'];
-      let updatedTime = message['updatedTime'];
+    for (const i in messages) {
+      const message = messages[i];
+      const postedTime = message['postedTime'];
+      const updatedTime = message['updatedTime'];
 
       this.showReplyComment$[message.ID] = false;
 
@@ -458,14 +457,14 @@ export class FeedContainerComponent implements OnInit {
       message['displayPostedByInitials'] = this.utils.getInitials(message.postedByUser.name);
 
       // if didn't break, the look at the replies
-      for (let iR in message.replies) {
-        let reply = message.replies[iR];
+      for (const iR in message.replies) {
+        const reply = message.replies[iR];
 
-        let replyPostedTime = reply['postedTime'];
+        const replyPostedTime = reply['postedTime'];
         reply['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
-        //let oReplyUser = this.userData.get(reply.postedByUser);
-        let oReplyUser = reply.postedByUser;
+        // let oReplyUser = this.userData.get(reply.postedByUser);
+        const oReplyUser = reply.postedByUser;
 
         if (oReplyUser) {
           reply['displayPostedBy'] = oReplyUser.name;
@@ -478,34 +477,34 @@ export class FeedContainerComponent implements OnInit {
   }
 
   updateMessagesWithOperators() {
-    for (let i in this.pulseMessages$) {
-      let message = this.pulseMessages$[i];
+    for (const i in this.pulseMessages$) {
+      const message = this.pulseMessages$[i];
 
-      let postedTime = message['postedTime'];
+      const postedTime = message['postedTime'];
 
       this.showReplyComment$[message.ID] = false;
 
       message['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
-      let oUser = this.userData.get(message.postedBy);
+      const oUser = this.userData.get(message.postedBy);
 
       if (oUser) {
         message['displayPostedBy'] = oUser.pyUserName;
         message['displayPostedByInitials'] = this.utils.getInitials(oUser.pyUserName);
       } else {
-        let oUserParams = new Object();
+        const oUserParams = {};
         oUserParams['OperatorId'] = message.postedBy;
       }
 
       // if didn't break, the look at the replies
-      for (let iR in message.replies) {
-        let reply = message.replies[iR];
+      for (const iR in message.replies) {
+        const reply = message.replies[iR];
 
-        let replyPostedTime = reply['postedTime'];
+        const replyPostedTime = reply['postedTime'];
         reply['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
-        //let oReplyUser = this.userData.get(reply.postedByUser);
-        let oReplyUser = reply.postedByUser;
+        // let oReplyUser = this.userData.get(reply.postedByUser);
+        const oReplyUser = reply.postedByUser;
 
         if (oReplyUser) {
           reply['displayPostedBy'] = oReplyUser.name;
@@ -535,14 +534,14 @@ export class FeedContainerComponent implements OnInit {
 
       // If feedAPI is defined then only post message
       if (this.feedAPI) {
-        this./*feedAPI.*/ postMessage(this.pConn$.getConfigProps().value, this.pulseConversation);
+        this./* feedAPI. */ postMessage((this.pConn$.getConfigProps() as any).value, this.pulseConversation);
       } else {
         console.log("We don't support Pulse yet");
       }
     }
 
     // clear out local copy
-    document.getElementById('pulseMessage')['value'] = '';
+    (document.getElementById('pulseMessage') as HTMLElement)['value'] = '';
     this.pulseConversation = '';
   }
 
@@ -572,12 +571,12 @@ export class FeedContainerComponent implements OnInit {
     }
 
     // debugger;
-    this./*feedAPI.*/ likeMessage(pulseMessage);
+    this./* feedAPI. */ likeMessage(pulseMessage);
   }
 
   commentClick(messageID) {
     // iterator through messages, find match, turn on comment entry
-    for (let i in this.pulseMessages$) {
+    for (const i in this.pulseMessages$) {
       if (this.pulseMessages$[i].ID === messageID) {
         this.showReplyComment$[this.pulseMessages$[i].ID] = true;
       }
@@ -603,7 +602,7 @@ export class FeedContainerComponent implements OnInit {
       //  the pulse context...
       // used to use: contextName
       // new FeedAPI wants args to be messageID, this.pulseComment[messageID], true (since this is a reply)
-      this./*feedAPI.*/ postMessage(messageID, this.pulseComment[messageID], true);
+      this./* feedAPI. */ postMessage(messageID, this.pulseComment[messageID], true);
 
       this.pulseComment[messageID] = '';
     }

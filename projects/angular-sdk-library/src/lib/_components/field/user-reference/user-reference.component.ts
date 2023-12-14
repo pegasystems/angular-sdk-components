@@ -6,11 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
@@ -33,11 +31,10 @@ const SEARCH_BOX = 'Search box';
   ]
 })
 export class UserReferenceComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  PCore$: any;
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   controlName$: string;
   value$;
   userName$: string;
@@ -53,13 +50,12 @@ export class UserReferenceComponent implements OnInit {
 
   fieldControl = new FormControl('', null);
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
@@ -94,6 +90,8 @@ export class UserReferenceComponent implements OnInit {
     if (this.displayAs$ === SEARCH_BOX) {
       return 'searchbox';
     }
+
+    return '';
   }
 
   // Callback passed when subscribing to store change
@@ -113,7 +111,7 @@ export class UserReferenceComponent implements OnInit {
   }
 
   updateSelf() {
-    let props = this.pConn$.getConfigProps();
+    const props: any = this.pConn$.getConfigProps();
     this.testId = props['testId'];
 
     const { label, displayAs, value, showAsFormattedText, helperText } = props;
@@ -123,10 +121,8 @@ export class UserReferenceComponent implements OnInit {
     this.displayAs$ = displayAs;
     this.helperText = helperText;
 
-    let { readOnly, required, disabled } = props;
-    [this.bReadonly$, this.bRequired$, disabled] = [readOnly, required, disabled].map(
-      (prop) => prop === true || (typeof prop === 'string' && prop === 'true')
-    );
+    const { readOnly, required } = props;
+    [this.bReadonly$, this.bRequired$] = [readOnly, required].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));
 
     const isUserNameAvailable = (user) => {
       return typeof user === 'object' && user !== null && user.userName;
@@ -140,7 +136,7 @@ export class UserReferenceComponent implements OnInit {
       } else {
         // if same user ref field is referred in view as editable & readonly formatted text
         // referenced users won't be available, so get user details from dx api
-        const { getOperatorDetails } = this.PCore$.getUserApi();
+        const { getOperatorDetails } = PCore.getUserApi();
         getOperatorDetails(this.userID$).then((resp) => {
           if (resp.data && resp.data.pyOperatorInfo && resp.data.pyOperatorInfo.pyUserName) {
             this.userName$ = resp.data.pyOperatorInfo.pyUserName;
@@ -151,8 +147,8 @@ export class UserReferenceComponent implements OnInit {
       const queryPayload = {
         dataViewName: OPERATORS_DP
       };
-      this.PCore$.getRestClient()
-        .invokeRestApi('getListData', { queryPayload })
+      PCore.getRestClient()
+        .invokeRestApi('getListData', { queryPayload } as any, '') // 3rd arg empty string until typedef marked correctly
         .then((resp) => {
           const ddDataSource = resp.data.data.map((listItem) => ({
             key: listItem.pyUserIdentifier,
@@ -170,7 +166,7 @@ export class UserReferenceComponent implements OnInit {
     if (event?.value === 'Select') {
       event.value = '';
     }
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
 
   fieldOnBlur(event: any) {
@@ -184,7 +180,7 @@ export class UserReferenceComponent implements OnInit {
       value: key
     };
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onChange(this, eve);
+    this.angularPConnectData.actions?.onChange(this, eve);
   }
 
   getErrorMessage() {
@@ -192,7 +188,7 @@ export class UserReferenceComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

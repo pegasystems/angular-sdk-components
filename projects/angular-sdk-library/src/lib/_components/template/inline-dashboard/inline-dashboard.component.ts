@@ -11,15 +11,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() filtersFormGroup$: FormGroup;
   @Input() inlineProps;
   @Input() children;
 
-
-  constructor() { }
-
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 }

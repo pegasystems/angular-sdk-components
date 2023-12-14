@@ -33,8 +33,6 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   // parent prop is compulsory when outputEvents is present
   @Input() parent: any;
 
-  constructor() {}
-
   ngOnInit(): void {
     this.loadComponent();
     this.isInitialized = true;
@@ -79,7 +77,7 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
             continue;
           }
 
-          this.componentRef.setInput(propName, this.props[propName]);
+          this.componentRef?.setInput(propName, this.props[propName]);
         }
       }
     } catch (e) {
@@ -90,7 +88,7 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
   bindOutputEvents() {
     try {
       for (const event in this.outputEvents) {
-        this.componentRef.instance[event].subscribe((value) => {
+        this.componentRef?.instance[event].subscribe((value) => {
           const callbackFn = this.outputEvents[event].bind(this.parent);
           callbackFn(value);
         });

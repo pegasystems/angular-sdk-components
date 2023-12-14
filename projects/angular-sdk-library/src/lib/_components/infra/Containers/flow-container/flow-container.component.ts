@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef } from 
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
@@ -15,8 +15,6 @@ import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/c
  * is totally at your own risk.
  */
 
-declare const window: any;
-
 @Component({
   selector: 'app-flow-container',
   templateUrl: './flow-container.component.html',
@@ -26,11 +24,10 @@ declare const window: any;
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
   pCoreConstants;
   configProps$: Object;
 
@@ -40,7 +37,7 @@ export class FlowContainerComponent implements OnInit {
   containerName$: string;
   buildName$: string;
 
-  //todo
+  // todo
   todo_showTodo$: boolean = false;
   todo_caseInfoID$: string;
   todo_showTodoList$: boolean = false;
@@ -48,7 +45,7 @@ export class FlowContainerComponent implements OnInit {
   todo_headerText$: string = 'To do';
   todo_type$: string;
   todo_context$: string;
-  todo_pConn$: any;
+  todo_pConn$: typeof PConnect;
 
   bHasCancel = false;
 
@@ -64,7 +61,7 @@ export class FlowContainerComponent implements OnInit {
   localeCategory = 'Messages';
   localeReference: any;
   banners: Array<any>;
-  //itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
+  // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -82,33 +79,30 @@ export class FlowContainerComponent implements OnInit {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
     const caseInfo = this.pConn$.getCaseInfo();
     this.localeReference = `${caseInfo?.getClassName()}!CASE!${caseInfo.getName()}`.toUpperCase();
 
     // Then, continue on with other initialization
 
     // get the PCore constants
-    this.pCoreConstants = this.PCore$.getConstants();
+    this.pCoreConstants = PCore.getConstants();
     const { TODO } = this.pCoreConstants;
     this.TODO = TODO;
-    //with init, force children to be loaded of global pConn
+    // with init, force children to be loaded of global pConn
     this.initComponent(true);
 
     this.initContainer();
 
-    this.PCore$.getPubSubUtils().subscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {
         this.handleCancel();
       },
       'cancelAssignment'
     );
 
-    this.PCore$.getPubSubUtils().subscribe(
+    PCore.getPubSubUtils().subscribe(
       'cancelPressed',
       () => {
         this.handleCancelPressed();
@@ -122,12 +116,10 @@ export class FlowContainerComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
-    this.PCore$.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
+    PCore.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
   }
-
-  ngOnChanges(data: any) {}
 
   handleCancel() {
     // cancel happened, so ok to initialize the flow container
@@ -178,30 +170,28 @@ export class FlowContainerComponent implements OnInit {
   }
 
   getTodoVisibilty() {
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
     if (caseViewMode && caseViewMode === 'review') {
-      let kid = this.pConn$.getChildren()[0];
-      let todoKid = kid.getPConnect().getChildren()[0];
+      const kid = this.pConn$.getChildren()[0];
+      const todoKid = kid.getPConnect().getChildren()[0];
 
       this.todo_pConn$ = todoKid.getPConnect();
 
       return true;
     }
-    if (caseViewMode && caseViewMode === 'perform') {
-      return false;
-    }
 
-    return true;
+    return !(caseViewMode && caseViewMode === 'perform');
   }
 
   initContainer() {
-    let containerMgr = this.pConn$.getContainerManager();
-    let baseContext = this.pConn$.getContextName();
+    const containerMgr: any = this.pConn$.getContainerManager();
+    const baseContext = this.pConn$.getContextName();
     const containerName = this.pConn$.getContainerName();
     const containerType = 'single';
 
     const flowContainerTarget = `${baseContext}/${containerName}`;
-    const isContainerItemAvailable = this.PCore$.getContainerUtils().getActiveContainerItemName(flowContainerTarget);
+    const isContainerItemAvailable = PCore.getContainerUtils().getActiveContainerItemName(flowContainerTarget);
 
     // clear out since we are initializing
     sessionStorage.setItem('okToInitFlowContainer', 'false');
@@ -234,21 +224,21 @@ export class FlowContainerComponent implements OnInit {
 
     // when true, update arChildren from pConn, otherwise, arChilren will be updated in updateSelf()
     if (bLoadChildren) {
-      this.arChildren$ = this.pConn$.getChildren();
+      this.arChildren$ = this.pConn$.getChildren() as Array<any>;
     }
 
-    let oData = this.pConn$.getDataObject();
+    // const oData = this.pConn$.getDataObject();
 
-    let activeActionLabel: string = '';
-    let { getPConnect } = this.arChildren$[0].getPConnect();
+    // const activeActionLabel: string = '';
+    // const { getPConnect } = this.arChildren$[0].getPConnect();
 
     this.todo_showTodo$ = this.getTodoVisibilty();
 
     // create pointers to functions
-    let containerMgr = this.pConn$.getContainerManager();
-    let actionsAPI = this.pConn$.getActionsApi();
-    let baseContext = this.pConn$.getContextName();
-    let acName = this.pConn$.getContainerName();
+    // const containerMgr = this.pConn$.getContainerManager();
+    // const actionsAPI = this.pConn$.getActionsApi();
+    const baseContext = this.pConn$.getContextName();
+    const acName = this.pConn$.getContainerName();
 
     if (this.itemKey$ === '') {
       this.itemKey$ = baseContext.concat('/').concat(acName);
@@ -259,11 +249,11 @@ export class FlowContainerComponent implements OnInit {
     // inside
     // get fist kid, get the name and display
     // pass first kid to a view container, which will disperse it to a view which will use one column, two column, etc.
-    let oWorkItem = this.arChildren$[0].getPConnect();
-    let oWorkMeta = oWorkItem.getRawMetadata();
-    let oWorkData = oWorkItem.getDataObject();
+    const oWorkItem = this.arChildren$[0].getPConnect();
+    // const oWorkMeta = oWorkItem.getRawMetadata();
+    const oWorkData = oWorkItem.getDataObject();
 
-    //this.containerName$ = oWorkMeta["name"];
+    // this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
       this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name, undefined, this.localeReference);
     }
@@ -274,8 +264,9 @@ export class FlowContainerComponent implements OnInit {
 
   hasAssignments() {
     let hasAssignments = false;
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
-    const thisOperator = this.PCore$.getEnvironmentInfo().getOperatorIdentifier();
+    const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
     // 8.7 includes assignments in Assignments List that may be assigned to
     //  a different operator. So, see if there are any assignments for
     //  the current operator
@@ -302,8 +293,10 @@ export class FlowContainerComponent implements OnInit {
   }
 
   isCaseWideLocalAction() {
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
-    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS);
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as Array;
     let bCaseWideAction = false;
     if (caseActions && actionID) {
       const actionObj = caseActions.find((caseAction) => caseAction.ID === actionID);
@@ -315,20 +308,20 @@ export class FlowContainerComponent implements OnInit {
   }
 
   hasChildCaseAssignments() {
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const childCases = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.CHILD_ASSIGNMENTS);
-    let allAssignments = [];
-    if (childCases && childCases.length > 0) {
-      return true;
-    }
-    return false;
+
+    return childCases && childCases.length > 0;
   }
 
   getActiveViewLabel() {
     let activeActionLabel = '';
 
-    const { CASE_INFO: CASE_CONSTS, CONTAINER_TYPE } = this.PCore$.getConstants();
+    const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
 
-    const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS) as Array;
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
     const activeAction = caseActions?.find((action) => action.ID === activeActionID);
     if (activeAction) {
@@ -365,19 +358,21 @@ export class FlowContainerComponent implements OnInit {
   //  should update itself (re-render)
   updateSelf() {
     // for now
-    let { getPConnect } = this.arChildren$[0].getPConnect();
-    let localPConn = this.arChildren$[0].getPConnect();
+    // const { getPConnect } = this.arChildren$[0].getPConnect();
+    const localPConn = this.arChildren$[0].getPConnect();
 
     // routingInfo was added as component prop in populateAdditionalProps
-    let routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
+    const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
 
     let loadingInfo: any;
     try {
+      // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {}
 
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
-    const { CASE_INFO: CASE_CONSTS, CONTAINER_TYPE } = this.PCore$.getConstants();
+    const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
     this.bShowBanner = showBanner(this.pConn$);
 
     if (caseViewMode && caseViewMode == 'review') {
@@ -404,12 +399,13 @@ export class FlowContainerComponent implements OnInit {
           const todoAssignments = getToDoAssignments(this.pConn$);
 
           if (todoAssignments && todoAssignments.length > 0) {
+            // @ts-ignore - second parameter pageReference for getValue method should be optional
             this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
             this.todo_datasource$ = { source: todoAssignments };
           }
 
           /* remove this commented out code when update React/WC */
-          //let kid = this.pConn$.getChildren()[0];
+          // let kid = this.pConn$.getChildren()[0];
 
           // kid.getPConnect() can be a Reference component. So normalize it just in case
           //        let todoKid = ReferenceComponent.normalizePConn(kid.getPConnect()).getChildren()[0];
@@ -445,6 +441,7 @@ export class FlowContainerComponent implements OnInit {
     }
 
     // if have caseMessage show message and end
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
     if (this.caseMessages$ || !this.hasAssignments()) {
       this.bHasCaseMessages$ = true;
@@ -457,7 +454,8 @@ export class FlowContainerComponent implements OnInit {
       }
 
       // publish this "assignmentFinished" for mashup, need to get approved as a standard
-      this.PCore$.getPubSubUtils().publish('assignmentFinished');
+      // @ts-ignore - second parameter “payload” for publish method should be optional
+      PCore.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
     } else if (this.bHasCaseMessages$) {
@@ -468,12 +466,12 @@ export class FlowContainerComponent implements OnInit {
     // this check in routingInfo, mimic Nebula/Constellation (React) to check and get the internals of the
     // flowContainer and force updates to pConnect/redux
     if (routingInfo && loadingInfo !== undefined) {
-      let currentOrder = routingInfo.accessedOrder;
-      let currentItems = routingInfo.items;
-      let type = routingInfo.type;
+      const currentOrder = routingInfo.accessedOrder;
+      const currentItems = routingInfo.items;
+      const type = routingInfo.type;
       if (currentOrder && currentItems) {
         // JA - making more similar to Nebula/Constellation
-        let key = currentOrder[currentOrder.length - 1];
+        const key = currentOrder[currentOrder.length - 1];
 
         // save off itemKey to be used for finishAssignment, etc.
         // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
@@ -484,15 +482,16 @@ export class FlowContainerComponent implements OnInit {
           }
         });
 
+        // eslint-disable-next-line sonarjs/no-collapsible-if
         if (currentOrder.length > 0) {
           if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
             // when we get here, it it because the flow action data has changed
             // from the server, and need to add to pConnect and update children
 
-            let currentItem = currentItems[key];
-            let rootView = currentItem.view;
-            let { context, name: ViewName } = rootView.config;
-            let config = { meta: rootView };
+            const currentItem = currentItems[key];
+            const rootView = currentItem.view;
+            const { context, name: ViewName } = rootView.config;
+            const config = { meta: rootView };
 
             // Don't go ahead if View doesn't exist
             if (!ViewName) {
@@ -511,7 +510,7 @@ export class FlowContainerComponent implements OnInit {
               parentPageReference: localPConn.getPageReference()
             };
 
-            const configObject = this.PCore$.createPConnect(config);
+            const configObject = PCore.createPConnect(config);
             this.confirm_pconn = configObject.getPConnect();
             // 8.7 - config might be a Reference component so, need to normalize it to get
             //  the View if it is a Reference component. And need to pass in the getPConnect
@@ -527,13 +526,14 @@ export class FlowContainerComponent implements OnInit {
               this.buildName$ = this.getBuildName();
               // what comes back now in configObject is the children of the flowContainer
 
-              this.arChildren$ = new Array();
+              this.arChildren$ = [];
               this.arChildren$.push(normalizedConfigObjectAsPConnect);
 
               this.psService.sendMessage(false);
 
-              let oWorkItem = configObject.getPConnect();
-              let oWorkData = oWorkItem.getDataObject();
+              const oWorkItem = configObject.getPConnect();
+              // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+              const oWorkData: any = oWorkItem.getDataObject();
 
               this.containerName$ = this.localizedVal(
                 this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name,
@@ -549,7 +549,7 @@ export class FlowContainerComponent implements OnInit {
 
   getBuildName(): string {
     // let { getPConnect, name } = this.pConn$.props;
-    let context = this.pConn$.getContextName();
+    const context = this.pConn$.getContextName();
     let viewContainerName = this.pConn$.getContainerName();
 
     if (!viewContainerName) viewContainerName = '';
@@ -586,8 +586,8 @@ export class FlowContainerComponent implements OnInit {
 
     if (caseViewMode !== 'review') {
       const target = contextName.substring(0, contextName.lastIndexOf('_'));
-      const activeContainerItemID = this.PCore$.getContainerUtils().getActiveContainerItemName(target);
-      const containerItemData = this.PCore$.getContainerUtils().getContainerItemData(target, activeContainerItemID);
+      const activeContainerItemID = PCore.getContainerUtils().getActiveContainerItemName(target);
+      const containerItemData = PCore.getContainerUtils().getContainerItemData(target, activeContainerItemID);
 
       if (containerItemData) {
         ({ key, flowName } = containerItemData);

@@ -27,7 +27,7 @@ test.describe('E2E test', () => {
     await expect(worklist).toBeVisible();
 
     /** Click on the Create Case button */
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     /** Creating a Form Field case-type */

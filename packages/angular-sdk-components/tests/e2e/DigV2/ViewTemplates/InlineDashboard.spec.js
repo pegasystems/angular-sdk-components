@@ -25,7 +25,7 @@ test.describe('E2E test', () => {
     await navbar.locator('div[class="psdk-appshell-nav"]').hover();
 
     /** Click on the Create Case button */
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
@@ -64,7 +64,7 @@ test.describe('E2E test', () => {
     await expect(myworkList).toBeVisible();
 
     /* Testing the filters */
-    let filters = await page.locator('div[id="filters"]');
+    const filters = await page.locator('div[id="filters"]');
     const caseIdInput = filters.getByLabel('Case ID');
     await caseIdInput.click();
     await caseIdInput.fill(caseID);
@@ -87,7 +87,7 @@ test.describe('E2E test', () => {
     await dateFilterInput.click();
     await dateFilterInput.pressSequentially(`${nextDay}`);
 
-    await Promise.all([page.waitForResponse(complexFieldsListApiUrl),complexFieldsList.click()]);
+    await Promise.all([page.waitForResponse(complexFieldsListApiUrl), complexFieldsList.click()]);
 
     await expect(page.locator(`td:has-text("${new Date().getDate()}") >> nth=1`)).toBeVisible();
 

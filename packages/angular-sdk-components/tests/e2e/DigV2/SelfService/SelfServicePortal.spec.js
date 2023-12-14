@@ -1,6 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
-/* eslint-disable no-undef */
-
 const { test, expect } = require('@playwright/test');
 const config = require('../../../config');
 const common = require('../../../common');
@@ -11,14 +8,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('E2E test', () => {
-  test('should login and able to render self-service portal', async ({
-    page
-  }) => {
-    await common.login(
-      config.config.apps.digv2.user.username,
-      config.config.apps.digv2.user.password,
-      page
-    );
+  test('should login and able to render self-service portal', async ({ page }) => {
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
     /** Testing app name presence */
     const appName = page.locator('div[class="psdk-nav-portal-app"]:has-text("DigV2")');
@@ -44,7 +35,7 @@ test.describe('E2E test', () => {
     // const myWork = await page.locator('h6:has-text("My Work")');
     // await expect(myWork).toBeVisible();
 
-     /** Testing the Inline Dashboard navigation link */
+    /** Testing the Inline Dashboard navigation link */
     await expect(navLinks.locator('div[class="psdk-nav-button-span"]:has-text("Inline Dashboard")')).toBeVisible();
 
     await navLinks.locator('div[class="psdk-nav-button-span"]:has-text("Inline Dashboard")').click();

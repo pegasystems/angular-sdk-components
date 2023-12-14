@@ -10,14 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, MatIconModule]
 })
 export class AlertComponent implements OnInit {
-  constructor() { }
-
   @Input() message: Array<any>;
   @Input() severity;
   @Input() hideClose;
   @Output() onClose: EventEmitter<any> = new EventEmitter();
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   getMatIcon(severity) {
     let variant;
@@ -34,6 +32,8 @@ export class AlertComponent implements OnInit {
       case 'info':
         variant = 'info_outline';
         break;
+      default:
+        break;
     }
     return variant;
   }
@@ -42,5 +42,4 @@ export class AlertComponent implements OnInit {
     alert("Close clicked");
     this.onClose.emit({'Page': 'Page', 'target': 'target', 'type': 'type'});
   }
-
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -13,7 +13,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class DetailsTwoColumnComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   showHighlightedData: boolean;
@@ -26,13 +26,13 @@ export class DetailsTwoColumnComponent implements OnInit {
   propsToUse: any = {};
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
   }
 
@@ -58,12 +58,12 @@ export class DetailsTwoColumnComponent implements OnInit {
   }
 
   updateSelf() {
-    const rawMetaData = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata().config);  
+    const rawMetaData: any = this.pConn$.resolveConfigProps((this.pConn$.getRawMetadata() as any).config);
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 
-    if( this.showHighlightedData ){
+    if (this.showHighlightedData) {
       const highlightedData = rawMetaData?.highlightedData;
-      this.highlightedDataArr = highlightedData.map(field => {
+      this.highlightedDataArr = highlightedData.map((field) => {
         field.config.displayMode = 'STACKED_LARGE_VAL';
 
         if (field.config.value === '@P .pyStatusWork') {
@@ -77,11 +77,11 @@ export class DetailsTwoColumnComponent implements OnInit {
 
     this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     this.pConn$.setInheritedProp('readOnly', true);
-    
-    let kids = this.pConn$.getChildren();
-    for (let kid of kids) {
-      let pKid = kid.getPConnect();
-      let pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());
+
+    const kids = this.pConn$.getChildren() as Array<any>;
+    for (const kid of kids) {
+      const pKid = kid.getPConnect();
+      const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());
       if (kids.indexOf(kid) == 0) {
         this.arFields$ = pKidData.children;
       } else {

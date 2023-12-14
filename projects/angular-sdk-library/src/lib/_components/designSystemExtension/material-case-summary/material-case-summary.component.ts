@@ -33,7 +33,7 @@ export class MaterialCaseSummaryComponent implements OnInit {
   }
 
   updateLabelAndDate(arData: Array<any>) {
-    for (let field of arData) {
+    for (const field of arData) {
       switch (field.type.toLowerCase()) {
         case 'caseoperator':
           if (field.config.label.toLowerCase() == 'create operator') {
@@ -53,13 +53,15 @@ export class MaterialCaseSummaryComponent implements OnInit {
         case 'checkbox':
           field.config['displayLabel'] = field.config.caption;
           break;
+        default:
+          break;
       }
     }
   }
 
   updatePrimaryWithStatus() {
     this.primaryFieldsWithStatus$ = [];
-    for (let prim of this.primaryFields$) {
+    for (const prim of this.primaryFields$) {
       this.primaryFieldsWithStatus$.push(prim);
     }
 

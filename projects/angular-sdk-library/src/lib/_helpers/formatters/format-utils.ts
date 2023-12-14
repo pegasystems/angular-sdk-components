@@ -1,6 +1,7 @@
 import { getLocale } from '../common';
 import { currencyMap } from './currency-map';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function NumberFormatter(value, { locale = 'en-US', decPlaces = 2, style = '', currency = 'USD' } = {}) {
   const currentLocale = getLocale(locale);
   if (value !== null && value !== undefined) {
@@ -26,7 +27,7 @@ function CurrencyFormatter(
       currency
     });
 
-    let countryCode = currentLocale.split('-')[1].toUpperCase();
+    let countryCode = currentLocale?.split('-')[1].toUpperCase();
 
     // If countryCode is still undefined, setting it as US
     if (!countryCode) {

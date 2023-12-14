@@ -27,7 +27,7 @@ test.describe('E2E test', () => {
     await expect(worklist).toBeVisible();
 
     /** Click on the Create Case button */
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     /** Creating a Form Field case-type */
@@ -50,7 +50,7 @@ test.describe('E2E test', () => {
 
     /** Required tests */
     const requiredDate = page.locator('input[data-test-id="4aeccb2d830e2836aebba27424c057e1"]');
-    //const requiredDateInput = requiredDate.locator('input');
+    // const requiredDateInput = requiredDate.locator('input');
     await requiredDate.click();
     const futureDate = common.getFutureDate();
     await requiredDate.fill(futureDate);
@@ -61,7 +61,7 @@ test.describe('E2E test', () => {
     await expect(attributes.includes('required')).toBeTruthy();
 
     const notRequiredDate = page.locator('input[data-test-id="3f56f9d617e6174716d7730f8d69cce5"]');
-    //const notRequiredDateInput = notRequiredDate.locator('input');
+    // const notRequiredDateInput = notRequiredDate.locator('input');
     attributes = await common.getAttributes(notRequiredDate);
     await expect(attributes.includes('required')).toBeFalsy();
 
@@ -72,12 +72,12 @@ test.describe('E2E test', () => {
 
     // /** Disable tests */
     const alwaysDisabledDate = page.locator('input[data-test-id="058f04d806163a3ea0ad42d63a44bff8"]');
-    //const alwaysDisabledDateInput = alwaysDisabledDate.locator('input');
+    // const alwaysDisabledDateInput = alwaysDisabledDate.locator('input');
     attributes = await common.getAttributes(alwaysDisabledDate);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
     const conditionallyDisabledDate = page.locator('input[data-test-id="1064f84bc0ba8525d5f141869fb73a3d"]');
-    //const conditionallyDisabledDateInput = conditionallyDisabledDate.locator('input');
+    // const conditionallyDisabledDateInput = conditionallyDisabledDate.locator('input');
     attributes = await common.getAttributes(conditionallyDisabledDate);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -86,7 +86,7 @@ test.describe('E2E test', () => {
     }
 
     const neverDisabledDate = page.locator('input[data-test-id="3cf7f70f60efb4035b562b6d5994badd"]');
-    //const neverDisabledDateInput = neverDisabledDate.locator('input');
+    // const neverDisabledDateInput = neverDisabledDate.locator('input');
     attributes = await common.getAttributes(neverDisabledDate);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -101,7 +101,7 @@ test.describe('E2E test', () => {
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
     const editableDate = page.locator('input[data-test-id="80f5dcc587f457378158bb305ec858a8"]');
-    //const editableDateInput = editableDate.locator('input');
+    // const editableDateInput = editableDate.locator('input');
     await editableDate.click();
     await editableDate.fill(futureDate);
     attributes = await common.getAttributes(editableDate);
@@ -119,7 +119,7 @@ test.describe('E2E test', () => {
     await expect(neverVisibleDate).not.toBeVisible();
 
     const conditionallyVisibleDate = await page.locator('input[data-test-id="2a50b142f72fe68effc573bb904c8364"]');
-    //const conditionallyVisibleDateInput = conditionallyVisibleDate.locator('input');
+    // const conditionallyVisibleDateInput = conditionallyVisibleDate.locator('input');
     if (isVisible) {
       await expect(conditionallyVisibleDate).toBeVisible();
     } else {

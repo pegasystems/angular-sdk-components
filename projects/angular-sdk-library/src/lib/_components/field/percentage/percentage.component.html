@@ -17,7 +17,6 @@
           [formControlName]="controlName$"
           [attr.data-test-id]="testId"
           (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

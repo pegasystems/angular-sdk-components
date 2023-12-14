@@ -2,16 +2,16 @@
 export const loginBoxType = {
   Main: 1,
   Popup: 2,
-  Modal: 3,
+  Modal: 3
 };
 
 export const endpoints = {
   // Change this URL if you want to point the React application at another Pega server.
   // local
-  //BASEURL: "http://localhost:1080/prweb/api",
-  //BASEURL: "https://localhost:1080/prweb/api",
+  // BASEURL: "http://localhost:1080/prweb/api",
+  // BASEURL: "https://localhost:1080/prweb/api",
   // 85
-  //BASEURL: "https://lu-85-cam.eng.pega.com/prweb/api",
+  // BASEURL: "https://lu-85-cam.eng.pega.com/prweb/api",
 
   loginExperience: loginBoxType.Main,
 
@@ -62,5 +62,5 @@ export const endpoints = {
   PORTAL: 'portal',
   PORTALHTML: 'portal.html',
   FULLPORTAL: 'fullportal',
-  FULLPORTALHTML: 'fullportal.html',
+  FULLPORTALHTML: 'fullportal.html'
 };

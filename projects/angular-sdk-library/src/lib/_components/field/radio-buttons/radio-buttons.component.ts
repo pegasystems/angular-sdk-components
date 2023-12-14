@@ -5,7 +5,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -18,11 +18,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RadioButtonsComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: any; // typeof PConnect; - tslint error at template
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   label$: string = '';
@@ -48,7 +48,11 @@ export class RadioButtonsComponent implements OnInit {
   localePath: string = '';
   localizedValue: string = '';
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -58,7 +62,7 @@ export class RadioButtonsComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -146,11 +150,12 @@ export class RadioButtonsComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
 
-    const propName = this.pConn$.getStateProps().value;
+    const propName = (this.pConn$.getStateProps() as any).value;
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 
@@ -167,11 +172,12 @@ export class RadioButtonsComponent implements OnInit {
     this.localizedValue = this.pConn$.getLocalizedValue(
       this.value$,
       this.localePath,
+      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -181,22 +187,16 @@ export class RadioButtonsComponent implements OnInit {
   }
 
   isSelected(buttonValue: string): boolean {
-    if (this.value$ === buttonValue) {
-      return true;
-    }
-
-    return false;
+    return this.value$ === buttonValue;
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -204,7 +204,7 @@ export class RadioButtonsComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

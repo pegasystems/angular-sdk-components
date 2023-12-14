@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -16,11 +16,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class IntegerComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   label$: string = '';
@@ -52,7 +52,7 @@ export class IntegerComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -102,7 +102,7 @@ export class IntegerComponent implements OnInit {
     let nValue = this.configProps$['value'];
     if (nValue) {
       if (typeof nValue == 'string') {
-        nValue = parseInt(nValue);
+        nValue = parseInt(nValue, 10);
       }
       this.value$ = nValue;
     }
@@ -135,11 +135,11 @@ export class IntegerComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -149,14 +149,12 @@ export class IntegerComponent implements OnInit {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -166,7 +164,7 @@ export class IntegerComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
@@ -177,4 +175,3 @@ export class IntegerComponent implements OnInit {
     return errMessage;
   }
 }
-

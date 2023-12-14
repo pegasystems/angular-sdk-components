@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
@@ -29,12 +29,11 @@ import { handleEvent } from '../../../_helpers/event-util';
   ]
 })
 export class AutoCompleteComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
   configProps$: any;
 
   label$: string = '';
@@ -55,7 +54,7 @@ export class AutoCompleteComponent implements OnInit {
   helperText: string;
   fieldControl = new FormControl('', null);
   parameters: {};
-  hideLabel: any;
+  hideLabel: boolean;
   filteredOptions: Observable<Array<string>>;
 
   constructor(
@@ -70,13 +69,10 @@ export class AutoCompleteComponent implements OnInit {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
 
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     await this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -146,8 +142,8 @@ export class AutoCompleteComponent implements OnInit {
     let datasource = this.configProps$['datasource'];
     let columns = this.configProps$['columns'];
     this.hideLabel = this.configProps$['hideLabel'];
-    //const { deferDatasource, datasourceMetadata } = this.configProps$;
-    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps();
+    // const { deferDatasource, datasourceMetadata } = this.configProps$;
+    const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
     this.helperText = this.configProps$['helperText'];
     this.parameters = this.configProps$?.parameters;
     const context = this.pConn$.getContextName();
@@ -207,9 +203,9 @@ export class AutoCompleteComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = this.pConn$.getStateProps()['value'];
     if (this.listType === 'associated') {
-      this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
+      this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
 
     if (!displayMode && this.listType !== 'associated') {
@@ -219,7 +215,7 @@ export class AutoCompleteComponent implements OnInit {
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -275,40 +271,35 @@ export class AutoCompleteComponent implements OnInit {
   }
 
   isSelected(buttonValue: string): boolean {
-    if (this.value$ === buttonValue) {
-      return true;
-    }
-
-    return false;
+    return this.value$ === buttonValue;
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange(event: Event) {
     // this works - this.pConn$.setValue( this.componentReference, `property: ${this.componentReference}`);
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
 
-  optionChanged(event: any) {
-    this.angularPConnectData.actions.onChange(this, event);
+  optionChanged(event: Event) {
+    this.angularPConnectData.actions?.onChange(this, event);
   }
 
-  fieldOnClick(event: any) {}
-
-  fieldOnBlur(event: any) {
+  fieldOnBlur(event: Event) {
     let key = '';
-    if (event?.target?.value) {
-      const index = this.options$?.findIndex((element) => element.value === event.target.value);
-      key = index > -1 ? (key = this.options$[index].key) : event.target.value;
+    const el = event?.target as HTMLInputElement;
+    if (el?.value) {
+      const index = this.options$?.findIndex((element) => element.value === el.value);
+      key = index > -1 ? (key = this.options$[index].key) : el.value;
     }
 
     const value = key;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = this.pConn$?.getStateProps()['value'];
     handleEvent(actionsApi, 'changeNblur', propName, value);
     if (this.configProps$?.onRecordChange) {
-      event.target.value = value;
+      el.value = value;
       this.configProps$.onRecordChange(event);
     }
   }
@@ -318,7 +309,7 @@ export class AutoCompleteComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

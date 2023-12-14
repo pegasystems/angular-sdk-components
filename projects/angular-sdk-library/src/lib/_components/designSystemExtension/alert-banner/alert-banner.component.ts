@@ -10,8 +10,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AlertBannerComponent implements OnInit {
-  constructor() { }
-
   @Input() banners: Array<any>;
  
   SEVERITY_MAP = {
@@ -21,12 +19,11 @@ export class AlertBannerComponent implements OnInit {
     info: 'info'
   };
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   onAlertClose(config) {
-    const { PAGE, type, target } = config
-    const { clearMessages } = window.PCore.getMessageManager();
-    clearMessages({ category: PAGE, type, context: target });
+    const { PAGE, type, target } = config;
+    const { clearMessages } = PCore.getMessageManager();
+    clearMessages({ category: PAGE, type, context: target } as any);
   }
-
 }

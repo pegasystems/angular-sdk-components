@@ -15,12 +15,10 @@ import { Component, OnInit, Input } from '@angular/core';
   standalone: true
 })
 export class PreviewViewContainerComponent implements OnInit {
-  @Input() pConn$: any;
-
-  constructor() {}
+  @Input() pConn$: typeof PConnect;
 
   ngOnInit(): void {
-    const containerMgr = this.pConn$.getContainerManager();
+    const containerMgr: any = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'
@@ -28,7 +26,7 @@ export class PreviewViewContainerComponent implements OnInit {
   }
 
   buildName() {
-    const context = this.pConn$.getPConnect().getContextName();
+    const context = this.pConn$.getContextName();
     let viewContainerName = this.pConn$.getComponentName();
 
     if (!viewContainerName) viewContainerName = '';

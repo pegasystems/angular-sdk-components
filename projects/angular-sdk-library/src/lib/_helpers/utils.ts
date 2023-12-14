@@ -32,7 +32,7 @@ export class Utils {
 
   consoleKidDump(pConn: any, level: number = 1, kidNum: number = 1) {
     let sDash = '';
-    for (var i = 0; i < level; i++) {
+    for (let i = 0; i < level; i++) {
       sDash = sDash.concat('-');
     }
     let cName = 'blank';
@@ -40,32 +40,32 @@ export class Utils {
     try {
       cName = pConn.getComponentName();
       ctxName = pConn.getContextName();
-      console.log(sDash + 'level ' + level + ' component(' + kidNum + '):' + cName + ' context:' + ctxName);
+      console.log(`${sDash}level ${level} component(${kidNum}):${cName} context:${ctxName}`);
       if (pConn.getConfigProps() != null) {
-        console.log(sDash + 'configProps:' + JSON.stringify(pConn.getConfigProps()));
+        console.log(`${sDash}configProps:${JSON.stringify(pConn.getConfigProps())}`);
       }
       if (pConn.getRawMetadata() != null) {
-        console.log(sDash + 'rawMetadata:' + JSON.stringify(pConn.getRawMetadata()));
+        console.log(`${sDash}rawMetadata:${JSON.stringify(pConn.getRawMetadata())}`);
       }
 
       if (pConn.hasChildren() && pConn.getChildren() != null) {
-        console.log(sDash + 'kidCount:' + pConn.getChildren().length);
-        let kids = pConn.getChildren();
-        for (let index in kids) {
-          let kid = kids[index];
-          this.consoleKidDump(kid.getPConnect(), level + 1, parseInt(index) + 1);
+        console.log(`${sDash}kidCount:${pConn.getChildren().length}`);
+        const kids = pConn.getChildren();
+        for (const index in kids) {
+          const kid = kids[index];
+          this.consoleKidDump(kid.getPConnect(), level + 1, parseInt(index, 10) + 1);
         }
       }
     } catch (ex) {}
   }
 
-  htmlDecode(sVal: string): string {
-    let doc = new DOMParser().parseFromString(sVal, 'text/html');
+  htmlDecode(sVal: string): string | null {
+    const doc = new DOMParser().parseFromString(sVal, 'text/html');
     return doc.documentElement.textContent;
   }
 
   getUniqueControlID(): string {
-    var sPrefix = 'control-';
+    const sPrefix = 'control-';
 
     this.lastControlID++;
 
@@ -73,8 +73,8 @@ export class Utils {
   }
 
   getOptionList(configProps: any, dataObject: any): Array<any> {
-    let listType = configProps.listType;
-    let arReturn: Array<any>;
+    const listType = configProps.listType;
+    let arReturn: Array<any> = [];
 
     if (listType != null) {
       switch (listType.toLowerCase()) {
@@ -87,7 +87,7 @@ export class Utils {
         case 'datapage':
           // get data page
           // eslint-disable-next-line no-case-declarations
-          let dataPage = configProps.datasource;
+          const dataPage = configProps.datasource;
           if (dataObject[dataPage]) {
             alert('need to handle data page');
           } else {
@@ -100,6 +100,8 @@ export class Utils {
             });
             arReturn = listSourceItems || [];
           }
+          break;
+        default:
           break;
       }
     }
@@ -114,10 +116,10 @@ export class Utils {
       userInitials = userName.charAt(0);
 
       if (userName.lastIndexOf(' ') > 0) {
-        let lastName = userName.substring(userName.lastIndexOf(' ') + 1);
+        const lastName = userName.substring(userName.lastIndexOf(' ') + 1);
         userInitials += lastName.charAt(0);
       } else if (userName.lastIndexOf('.') > 0) {
-        let lastName = userName.substring(userName.lastIndexOf('.') + 1);
+        const lastName = userName.substring(userName.lastIndexOf('.') + 1);
         userInitials += lastName.charAt(0);
       }
     } else {
@@ -133,7 +135,7 @@ export class Utils {
       iconName = 'chart-line';
     }
 
-    //return serverUrl.concat("assets/icons/").concat(iconName).concat(".svg");
+    // return serverUrl.concat("assets/icons/").concat(iconName).concat(".svg");
     return this.getIconPath(serverUrl).concat(iconName).concat('.svg');
   }
 
@@ -219,7 +221,7 @@ export class Utils {
         sReturnDate = dayjs(dateVal).format('YYYY/MM/DD');
         break;
       case 'Date-Gregorian-1':
-        // 01 January, 2001
+        // 01 January, 2001
         sReturnDate = dayjs(dateVal).format('DD MMMM, YYYY');
         break;
       case 'Date-Gregorian-2':
@@ -231,6 +233,8 @@ export class Utils {
         sReturnDate = dayjs(dateVal).format('YYYY, MMMM DD');
         break;
       case 'DateTime-Custom':
+        break;
+      default:
         break;
     }
 
@@ -294,7 +298,7 @@ export class Utils {
         sReturnDate = dayjs(dateTimeVal).format('YYYY/MM/DD h:mm:ss A');
         break;
       case 'DateTime-Gregorian-1':
-        // 01 January, 2001 1:00:00 AM
+        // 01 January, 2001 1:00:00 AM
         sReturnDate = dayjs(dateTimeVal).format('DD MMMM, YYYY h:mm:ss A');
         break;
       case 'DateTime-Gregorian-2':
@@ -306,6 +310,8 @@ export class Utils {
         sReturnDate = dayjs(dateTimeVal).format('YYYY, MMMM DD h:mm:ss A');
         break;
       case 'DateTime-Custom':
+        break;
+      default:
         break;
     }
 
@@ -363,7 +369,7 @@ export class Utils {
       sessionStorage.setItem('viewContainerCount', '0');
     }
 
-    let count = parseInt(sessionStorage.getItem('viewContainerCount'));
+    let count = parseInt(sessionStorage.getItem('viewContainerCount') as string, 10);
     count++;
 
     sessionStorage.setItem('viewContainerCount', count.toString());
@@ -372,7 +378,7 @@ export class Utils {
   removeViewContainer() {
     return;
 
-    let count = parseInt(sessionStorage.getItem('viewContainerCount'));
+    let count = parseInt(sessionStorage.getItem('viewContainerCount') as string, 10);
     count--;
 
     sessionStorage.setItem('viewContainerCount', count.toString());
@@ -383,13 +389,9 @@ export class Utils {
       sessionStorage.setItem('viewContainerCount', '0');
     }
 
-    let count = parseInt(sessionStorage.getItem('viewContainerCount'));
+    const count = parseInt(sessionStorage.getItem('viewContainerCount') as string, 10);
 
-    if (count == 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return count === 0;
   }
 
   getUserId = (user) => {
@@ -403,7 +405,7 @@ export class Utils {
   };
 
   static sdkGetAuthHeader(): string {
-    return sessionStorage.getItem('asdk_AH');
+    return sessionStorage.getItem('asdk_AH') as string;
   }
 
   static isEmptyObject(obj: Object): Boolean {

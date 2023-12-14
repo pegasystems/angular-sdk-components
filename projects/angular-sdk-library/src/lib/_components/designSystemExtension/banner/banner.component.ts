@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormGroup } from '@angular/forms';
 import { Component, Input, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -10,8 +11,8 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class BannerComponent {
-  @Input() pConn$: any;
-  @Input() formGroup$: any;
+  @Input() pConn$: typeof PConnect;
+  @Input() formGroup$: FormGroup;
 
   @Input() configProps$: Object;
   @Input() arChildren$: Array<any>;
@@ -19,8 +20,6 @@ export class BannerComponent {
   @Input() message: any;
   @Input() backgroundImage: string;
   @Input() layout$: string;
-
-  constructor() {}
 
   ngOnInit(): void {}
 

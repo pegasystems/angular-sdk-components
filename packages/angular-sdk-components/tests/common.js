@@ -4,8 +4,8 @@ const login = async (username, password, page) => {
   await page.locator('#submit_row .loginButton').click();
 };
 
-const getAttributes = async element => {
-  const attributes = await element.evaluate(async ele => ele.getAttributeNames());
+const getAttributes = async (element) => {
+  const attributes = await element.evaluate(async (ele) => ele.getAttributeNames());
   return attributes;
 };
 
@@ -13,10 +13,7 @@ const getFormattedDate = (date) => {
   if (!date) {
     return date;
   }
-  const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
-    .getDate()
-    .toString()
-    .padStart(2, '0')}/${date.getFullYear()}`;
+  const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
   return formattedDate;
 };
 

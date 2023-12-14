@@ -2,12 +2,10 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-field-group-template',
@@ -18,12 +16,10 @@ declare const window: any;
 })
 export class FieldGroupTemplateComponent implements OnInit {
   @Input() configProps$: any;
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  PCore$: any;
-
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   inheritedProps$: Object;
   showLabel$: boolean = true;
   label$: string;
@@ -38,14 +34,18 @@ export class FieldGroupTemplateComponent implements OnInit {
   allowAddEdit: boolean;
   fieldHeader: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private fieldGroupUtils: FieldGroupUtils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils,
+    private fieldGroupUtils: FieldGroupUtils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.updateSelf();
 
-    let menuIconOverride$ = 'trash';
+    const menuIconOverride$ = 'trash';
     if (menuIconOverride$) {
       this.menuIconOverride$ = this.utils.getImageSrc(menuIconOverride$, this.utils.getSDKStaticContentUrl());
     }
@@ -68,10 +68,6 @@ export class FieldGroupTemplateComponent implements OnInit {
   }
 
   ngOnChanges(changes) {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     if (changes && changes.configProps$) {
       const props = changes.configProps$;
       if (props.currentValue !== props.previousValue) {
@@ -109,13 +105,14 @@ export class FieldGroupTemplateComponent implements OnInit {
     }
     this.referenceList = this.configProps$['referenceList'];
     if (this.prevRefLength != this.referenceList.length) {
+      // eslint-disable-next-line sonarjs/no-collapsible-if
       if (!this.readonlyMode) {
         if (this.referenceList?.length === 0 && this.allowAddEdit !== false) {
           this.addFieldGroupItem();
         }
       }
-      let children: any = [];
-      this.referenceList?.map((item, index) => {
+      const children: any = [];
+      this.referenceList?.forEach((item, index) => {
         children.push({
           id: index,
           name: this.fieldHeader === 'propertyRef' ? this.getDynamicHeader(item, index) : this.getStaticHeader(this.heading, index),
@@ -139,17 +136,19 @@ export class FieldGroupTemplateComponent implements OnInit {
   };
 
   addFieldGroupItem() {
-    if (this.PCore$?.getPCoreVersion()?.includes('8.7')) {
+    if (PCore.getPCoreVersion()?.includes('8.7')) {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
+      // @ts-ignore - second parameter "pageRef" is optional for insert method
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }
   }
 
   deleteFieldGroupItem(index) {
-    if (this.PCore$?.getPCoreVersion()?.includes('8.7')) {
+    if (PCore.getPCoreVersion()?.includes('8.7')) {
       this.pConn$.getListActions().deleteEntry(index, this.pageReference);
     } else {
+      // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
       this.pConn$.getListActions().deleteEntry(index);
     }
   }

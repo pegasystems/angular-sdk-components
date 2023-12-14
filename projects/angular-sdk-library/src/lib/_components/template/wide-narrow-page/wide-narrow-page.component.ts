@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -12,23 +12,23 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowPageComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   thePConnType: string = '';
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
     // normalize the pConn$ in case the incoming pConn$ is a 'reference'
-    //this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
+    // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
   }
 

@@ -12,7 +12,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentCardComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() arMainButtons$: Array<any>;
   @Input() arSecondaryButtons$: Array<any>;
@@ -21,15 +21,13 @@ export class AssignmentCardComponent implements OnInit {
 
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
-  constructor() {}
-
   ngOnInit(): void {
     // Children may contain 'reference' component, so we need to
     //  normalize them
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.arChildren$);
   }
 
-  ngOnChanges(data: any) {
+  ngOnChanges() {
     // Children may contain 'reference' component, so we need to
     //  normalize them
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.arChildren$);
@@ -39,4 +37,3 @@ export class AssignmentCardComponent implements OnInit {
     this.actionButtonClick.emit(oData);
   }
 }
-

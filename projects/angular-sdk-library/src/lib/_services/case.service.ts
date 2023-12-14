@@ -5,18 +5,21 @@ import { ServerConfigService } from './server-config.service';
 import { Utils } from '../_helpers/utils';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CaseService {
-  constructor(private http: HttpClient, private scService: ServerConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private scService: ServerConfigService
+  ) {}
 
   caseTypeUrl: string;
-  //caseTypeUrl = endpoints.BASEURL + endpoints.CASETYPES;
+  // caseTypeUrl = endpoints.BASEURL + endpoints.CASETYPES;
 
   // get a list of possible case types to create
   getCaseTypes() {
-    var caseParams = new HttpParams();
-    var caseHeaders = new HttpHeaders();
+    const caseParams = new HttpParams();
+    let caseHeaders = new HttpHeaders();
 
     this.caseTypeUrl = this.scService.getBaseUrl() + endpoints.API + endpoints.CASETYPES;
 

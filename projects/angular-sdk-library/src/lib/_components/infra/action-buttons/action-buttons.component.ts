@@ -16,10 +16,8 @@ export class ActionButtonsComponent implements OnInit {
 
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
-  localizedVal = window.PCore?.getLocaleUtils().getLocaleValue;
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'Assignment';
-
-  constructor() {}
 
   ngOnInit(): void {}
 

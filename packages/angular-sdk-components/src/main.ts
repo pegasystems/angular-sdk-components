@@ -1,6 +1,6 @@
 import { APP_BASE_HREF } from '@angular/common';
-import { HttpClientModule, provideHttpClient } from '@angular/common/http';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { provideHttpClient } from '@angular/common/http';
+import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/routes';

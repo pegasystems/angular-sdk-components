@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -12,13 +12,13 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseCreateStageComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   arChildren$: Array<any>;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -26,7 +26,7 @@ export class CaseCreateStageComponent implements OnInit {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
   }
 
@@ -53,6 +53,6 @@ export class CaseCreateStageComponent implements OnInit {
   }
 
   updateSelf() {
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
   }
 }

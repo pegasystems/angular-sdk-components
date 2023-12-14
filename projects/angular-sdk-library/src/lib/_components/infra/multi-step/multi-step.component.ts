@@ -4,8 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
-
 @Component({
   selector: 'app-multi-step',
   templateUrl: './multi-step.component.html',
@@ -15,7 +13,7 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiStepComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() arMainButtons$: Array<any>;
   @Input() arSecondaryButtons$: Array<any>;
@@ -25,8 +23,6 @@ export class MultiStepComponent implements OnInit {
   @Input() arNavigationSteps$: Array<any>;
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
-  PCore$: any;
-
   svgCurrent$: string;
   svgNotCurrent$: string;
   bShow$: boolean = true;
@@ -34,10 +30,6 @@ export class MultiStepComponent implements OnInit {
   constructor(private utils: Utils) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // svg icons
     this.svgCurrent$ = this.utils.getImageSrc('circle-solid', this.utils.getSDKStaticContentUrl());
     this.svgNotCurrent$ = this.utils.getImageSrc('circle-solid', this.utils.getSDKStaticContentUrl());
@@ -88,10 +80,6 @@ export class MultiStepComponent implements OnInit {
   }
 
   _showHLine(index: number): boolean {
-    if (index < this.arNavigationSteps$.length - 1) {
-      return true;
-    }
-
-    return false;
+    return index < this.arNavigationSteps$.length - 1;
   }
 }

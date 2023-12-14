@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectService, AngularPConnectData } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -16,12 +16,12 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextInputComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  configProps$: Object;
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: object;
 
   label$: string = '';
   value$: string = '';
@@ -105,8 +105,8 @@ export class TextInputComponent implements OnInit {
 
     this.label$ = this.configProps$['label'];
     this.displayMode$ = this.configProps$['displayMode'];
-    
-    this.componentReference = this.pConn$.getStateProps().value;
+
+    this.componentReference = this.pConn$.getStateProps()['value'];
 
     if (this.configProps$['visibility'] != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$['visibility']);
@@ -138,7 +138,7 @@ export class TextInputComponent implements OnInit {
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -148,14 +148,12 @@ export class TextInputComponent implements OnInit {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -163,7 +161,7 @@ export class TextInputComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
@@ -174,4 +172,3 @@ export class TextInputComponent implements OnInit {
     return errMessage;
   }
 }
-

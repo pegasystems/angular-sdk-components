@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -13,10 +13,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class MultiReferenceReadonlyComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: any;
   label: string;
 

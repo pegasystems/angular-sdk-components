@@ -6,10 +6,6 @@ import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component'
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare function loadMashup(targetDom, preLoadComponents);
-
-declare const window: any;
-
 @Component({
   selector: 'app-main-screen',
   templateUrl: './main-screen.component.html',
@@ -18,9 +14,7 @@ declare const window: any;
   imports: [CommonModule, BundleSwatchComponent, ComponentMapperComponent, ResolutionScreenComponent]
 })
 export class MainScreenComponent implements OnInit {
-  @Input() pConn$: any;
-
-  PCore$: any;
+  @Input() pConn$: typeof PConnect;
 
   firstConfig$: any;
   secondConfig$: any;
@@ -29,13 +23,12 @@ export class MainScreenComponent implements OnInit {
   showPega$: boolean = false;
   showResolution$: boolean = false;
 
-  constructor(private psservice: ProgressSpinnerService, private scservice: ServerConfigService) {}
+  constructor(
+    private psservice: ProgressSpinnerService,
+    private scservice: ServerConfigService
+  ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // first
     this.firstConfig$ = {
       play: 'Triple Play',
@@ -72,15 +65,15 @@ export class MainScreenComponent implements OnInit {
       calling: ' & International'
     };
 
-    this.PCore$.getPubSubUtils().subscribe(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {
         this.cancelAssignment();
       },
       'cancelAssignment'
     );
 
-    this.PCore$.getPubSubUtils().subscribe(
+    PCore.getPubSubUtils().subscribe(
       'assignmentFinished',
       () => {
         this.assignmentFinished();
@@ -90,9 +83,9 @@ export class MainScreenComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.PCore$.getPubSubUtils().unsubscribe(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
-    this.PCore$.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
+    PCore.getPubSubUtils().unsubscribe('assignmentFinished', 'assignmentFinished');
   }
 
   cancelAssignment() {
@@ -114,11 +107,11 @@ export class MainScreenComponent implements OnInit {
     this.scservice.getSdkConfig().then((sdkConfig) => {
       let mashupCaseType = sdkConfig.serverConfig.appMashupCaseType;
       if (!mashupCaseType) {
-        const caseTypes = this.PCore$.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;
+        const caseTypes = PCore.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;
         mashupCaseType = caseTypes[0].pyWorkTypeImplementationClassName;
       }
 
-      const options = {
+      const options: any = {
         pageName: 'pyEmbedAssignment',
         startingFields:
           mashupCaseType === 'DIXL-MediaCo-Work-NewService'
@@ -127,11 +120,9 @@ export class MainScreenComponent implements OnInit {
               }
             : {}
       };
-      this.PCore$.getMashupApi()
-        .createCase(mashupCaseType, this.PCore$.getConstants().APP.APP, options)
-        .then(() => {
-          console.log('createCase rendering is complete');
-        });
+      (PCore.getMashupApi().createCase(mashupCaseType, PCore.getConstants().APP.APP, options) as Promise<any>).then(() => {
+        console.log('createCase rendering is complete');
+      });
     });
   }
 

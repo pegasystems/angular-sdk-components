@@ -12,13 +12,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RegionComponent implements OnInit, OnChanges {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   configProps$: Object;
   arChildren$: Array<any>;
-
-  constructor() {}
 
   ngOnInit() {
     // console.log(`ngOnInit (no registerAndSubscribe!): Region`);

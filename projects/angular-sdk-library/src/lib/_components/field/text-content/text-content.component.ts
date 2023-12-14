@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
@@ -11,10 +11,10 @@ import { Utils } from '../../../_helpers/utils';
   imports: [CommonModule]
 })
 export class TextContentComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   content$: string = '';
@@ -22,7 +22,10 @@ export class TextContentComponent implements OnInit {
   displayMode$: string = '';
   bVisible$: boolean = true;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -31,7 +34,7 @@ export class TextContentComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
   }
 

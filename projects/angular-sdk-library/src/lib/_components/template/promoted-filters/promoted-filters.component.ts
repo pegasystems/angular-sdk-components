@@ -2,10 +2,8 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   'TextInput',
@@ -36,12 +34,11 @@ export class PromotedFiltersComponent implements OnInit {
   @Input() filters;
   @Input() listViewProps;
   @Input() pageClass;
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() parameters = {};
 
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   showFilters: boolean;
   localeCategory = 'SimpleTable';
@@ -49,16 +46,12 @@ export class PromotedFiltersComponent implements OnInit {
   filtersProperties = {};
   showTable;
   transientItemID;
-  processedFilters = [];
+  processedFilters: Array<any> = [];
   payload = {};
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.updateSelf();
@@ -82,17 +75,15 @@ export class PromotedFiltersComponent implements OnInit {
   }
 
   updateSelf() {
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
     this.filters.forEach((filter) => {
-      this.filtersProperties[this.PCore$.getAnnotationUtils().getPropertyName(filter.config.value)] = '';
+      this.filtersProperties[PCore.getAnnotationUtils().getPropertyName(filter.config.value)] = '';
     });
 
     const filtersWithClassID = { ...this.filtersProperties, classID: this.pageClass };
-    this.transientItemID = this.pConn$
-      .getContainerManager()
-      .addTransientItem({ id: this.viewName, data: filtersWithClassID });
+    this.transientItemID = (this.pConn$.getContainerManager() as any).addTransientItem({ id: this.viewName, data: filtersWithClassID });
     this.processedFilters = [];
-    this.filters.map((filter) => {
+    this.filters.forEach((filter) => {
       const filterClone = { ...filter };
       // convert any field which is not supported to TextInput and delete the placeholder as it may contain placeholder specific to original type.
       if (!SUPPORTED_TYPES_IN_PROMOTED_FILTERS.includes(filterClone.type)) {
@@ -103,7 +94,7 @@ export class PromotedFiltersComponent implements OnInit {
       filterClone.config.readOnly = false;
       filterClone.config.context = this.transientItemID;
       filterClone.config.localeReference = this.listViewProps.localeReference;
-      const c11nEnv = this.PCore$.createPConnect({
+      const c11nEnv = PCore.createPConnect({
         meta: filterClone,
         options: {
           hasForm: true,
@@ -137,7 +128,7 @@ export class PromotedFiltersComponent implements OnInit {
   }
 
   getFilterData() {
-    const changes = this.PCore$.getFormUtils().getChanges(this.transientItemID);
+    const changes = PCore.getFormUtils().getChanges(this.transientItemID);
     const formValues = {};
     Object.keys(changes).forEach((key) => {
       if (!['context_data', 'pageInstructions'].includes(key)) {
@@ -145,7 +136,7 @@ export class PromotedFiltersComponent implements OnInit {
       }
     });
     const promotedFilters = this.formatPromotedFilters(formValues);
-    if (this.PCore$.getFormUtils().isFormValid(this.transientItemID) && this.isValidInput(formValues)) {
+    if (PCore.getFormUtils().isFormValid(this.transientItemID) && this.isValidInput(formValues)) {
       this.showTable = true;
       const Query: any = {
         dataViewParameters: this.parameters || {}
@@ -159,7 +150,7 @@ export class PromotedFiltersComponent implements OnInit {
   }
 
   clearFilterData() {
-    this.PCore$.getContainerUtils().clearTransientData(this.transientItemID);
+    PCore.getContainerUtils().clearTransientData(this.transientItemID);
     this.showTable = false;
     this.pConn$?.getListActions?.()?.setSelectedRows([]); // Clear the selection (if any made by user)
   }

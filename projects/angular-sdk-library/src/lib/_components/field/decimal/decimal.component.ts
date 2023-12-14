@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
+
 @Component({
   selector: 'app-decimal',
   templateUrl: './decimal.component.html',
@@ -24,11 +25,11 @@ import { ThousandSeparatorDirective } from '../../../_directives/thousand-sepera
   ]
 })
 export class DecimalComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   label$: string = '';
@@ -46,7 +47,11 @@ export class DecimalComponent implements OnInit {
 
   fieldControl = new FormControl<number | null>(null, null);
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -56,7 +61,7 @@ export class DecimalComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -141,19 +146,15 @@ export class DecimalComponent implements OnInit {
       this.fieldControl.enable();
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
   }
-
-  fieldOnChange(event: any) {}
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = (this.pConn$?.getStateProps() as any).value;
     let value = event?.target?.value;
     value = value.replace(/,/g, '');
-    value !== '' ? Number(value) : value;
+    value = value !== '' ? Number(value) : value;
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 
@@ -162,7 +163,7 @@ export class DecimalComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

@@ -10,10 +10,8 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnPageComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-
-  constructor() {}
 
   ngOnInit(): void {}
 }

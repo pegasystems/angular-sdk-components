@@ -4,11 +4,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import download from 'downloadjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-file-utility',
@@ -18,11 +16,10 @@ declare const window: any;
   imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   arFullListAttachments: Array<any> = [];
 
@@ -75,24 +72,24 @@ export class FileUtilityComponent implements OnInit {
     }
   ];
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils, private ngZone: NgZone) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
     // // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
     this.lu_name$ = configProps.label;
     this.lu_icon$ = 'paper-clip';
 
     this.closeSvgIcon$ = this.utils.getImageSrc('times', this.utils.getSDKStaticContentUrl());
 
-    let onViewAllCallback = () => this.onViewAll(this.arFullListAttachments);
+    // const onViewAllCallback = () => this.onViewAll(this.arFullListAttachments);
 
     this.lu_onViewAllFunction = { onClick: this.onViewAll.bind(this) };
 
@@ -103,8 +100,8 @@ export class FileUtilityComponent implements OnInit {
 
     this.createModalButtons();
 
-    this.PCore$.getPubSubUtils().subscribe(
-      this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
+    PCore.getPubSubUtils().subscribe(
+      (PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
       this.updateSelf.bind(this),
       'caseAttachmentsUpdateFromCaseview'
     );
@@ -115,8 +112,8 @@ export class FileUtilityComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    this.PCore$.getPubSubUtils().unsubscribe(
-      this.PCore$.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
+    PCore.getPubSubUtils().unsubscribe(
+      (PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
       'caseAttachmentsUpdateFromCaseview'
     );
   }
@@ -126,7 +123,7 @@ export class FileUtilityComponent implements OnInit {
     // adding a property to track in configProps, when ever the attachment file changes
     // need to trigger a redraw
     this.pConn$.registerAdditionalProps({
-      lastRefreshTime: `@P ${this.PCore$.getConstants().SUMMARY_OF_ATTACHMENTS_LAST_REFRESH_TIME}`
+      lastRefreshTime: `@P ${PCore.getConstants().SUMMARY_OF_ATTACHMENTS_LAST_REFRESH_TIME}`
     });
 
     // Should always check the bridge to see if the component should update itself (re-render)
@@ -139,24 +136,24 @@ export class FileUtilityComponent implements OnInit {
   }
 
   onAttachFiles(files) {
-    const attachmentUtils = this.PCore$.getAttachmentUtils();
-    const caseID = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID);
+    const attachmentUtils = PCore.getAttachmentUtils();
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
 
     if (files.length > 0) {
       this.lu_bLoading$ = true;
     }
 
-    const uploadedFiles = [];
+    // const uploadedFiles = [];
 
-    for (let file of files) {
+    for (const file of files) {
       attachmentUtils
         .uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
         .then((fileResponse) => {
           if (fileResponse.type === 'File') {
-            attachmentUtils
-              .linkAttachmentsToCase(caseID, [fileResponse], 'File', this.pConn$.getContextName())
-              .then((attachments) => {
-                this.refreshAttachments(file.ID);
+            (attachmentUtils.linkAttachmentsToCase(caseID, [fileResponse], 'File', this.pConn$.getContextName()) as Promise<any>)
+              .then(() => {
+                this.refreshAttachments();
               })
               .catch(console.error);
           }
@@ -167,17 +164,18 @@ export class FileUtilityComponent implements OnInit {
     this.arFileList$ = [];
   }
 
-  refreshAttachments(attachedFileID) {
+  refreshAttachments() {
     this.updateSelf();
   }
 
-  onUploadProgress(file) {}
+  onUploadProgress() {}
 
-  errorHandler(isFetchedCanceled, file) {}
+  errorHandler() {}
 
   onAttachLinks(links) {
-    const attachmentUtils = this.PCore$.getAttachmentUtils();
-    const caseID = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID);
+    const attachmentUtils = PCore.getAttachmentUtils();
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
 
     if (links.length > 0) {
       this.lu_bLoading$ = true;
@@ -190,15 +188,14 @@ export class FileUtilityComponent implements OnInit {
       name: link.linkTitle
     }));
 
-    attachmentUtils
-      .linkAttachmentsToCase(caseID, linksToAttach, 'URL', this.pConn$.getContextName())
-      .then((data) => {
-        this.refreshAttachments(data);
+    (attachmentUtils.linkAttachmentsToCase(caseID, linksToAttach, 'URL', this.pConn$.getContextName()) as Promise<any>)
+      .then(() => {
+        this.refreshAttachments();
       })
       .catch(console.log);
   }
 
-  addAttachments(attsFromResp: Array<any> = [], attachedFileID: string = '') {
+  addAttachments(attsFromResp: Array<any> = []) {
     this.lu_bLoading$ = false;
 
     attsFromResp = attsFromResp.map((respAtt) => {
@@ -215,7 +212,7 @@ export class FileUtilityComponent implements OnInit {
     return attsFromResp;
   }
 
-  onViewAll(arAttachments: Array<any> = []): void {
+  onViewAll(): void {
     this.bShowViewAllModal$ = true;
 
     // add clickAway listener
@@ -223,11 +220,11 @@ export class FileUtilityComponent implements OnInit {
   }
 
   _clickAway(event: any) {
-    var bInPopUp = false;
+    let bInPopUp = false;
 
-    //run through list of elements in path, if menu not in th path, then want to
+    // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
-    for (let i in event.path) {
+    for (const i in event.path) {
       if (event.path[i].className == 'psdk-modal-file-top' || event.path[i].tagName == 'BUTTON') {
         bInPopUp = true;
         break;
@@ -248,11 +245,11 @@ export class FileUtilityComponent implements OnInit {
 
   removeFileFromList(item: any) {
     if (item != null) {
-      for (let fileIndex in this.arFileList$) {
+      for (const fileIndex in this.arFileList$) {
         if (this.arFileList$[fileIndex].id == item.id) {
           // remove the file from the list and redraw
           this.ngZone.run(() => {
-            this.arFileList$.splice(parseInt(fileIndex), 1);
+            this.arFileList$.splice(parseInt(fileIndex, 10), 1);
           });
           break;
         }
@@ -261,14 +258,14 @@ export class FileUtilityComponent implements OnInit {
   }
 
   removeLinksFromList(item: any) {
-    let localLinksList = this.arLinksList$.slice();
+    const localLinksList = this.arLinksList$.slice();
 
     if (item != null) {
-      for (let linkIndex in localLinksList) {
+      for (const linkIndex in localLinksList) {
         if (localLinksList[linkIndex].id == item.id) {
           // remove the file from the list and redraw
 
-          localLinksList.splice(parseInt(linkIndex), 1);
+          localLinksList.splice(parseInt(linkIndex, 10), 1);
 
           this.ngZone.run(() => {
             this.arLinksList$ = localLinksList.slice();
@@ -322,6 +319,7 @@ export class FileUtilityComponent implements OnInit {
           actions.push(action);
         }
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isDownloadable = att.links.download;
     } else if (att.error) {
       actions = [
@@ -395,6 +393,7 @@ export class FileUtilityComponent implements OnInit {
           actions.push(action);
         }
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isDownloadable = att.links.download;
     } else if (att.error) {
       actions = [
@@ -426,11 +425,11 @@ export class FileUtilityComponent implements OnInit {
     };
   };
 
-  _addLink(event: any) {
+  _addLink() {
     // copy list locally
-    let localList = this.arLinksList$.slice();
+    const localList = this.arLinksList$.slice();
 
-    let url = this.link_url$;
+    const url = this.link_url$;
 
     if (!/^(http|https):\/\//.test(this.link_url$)) {
       this.link_url$ = `http://${this.link_url$}`;
@@ -463,7 +462,7 @@ export class FileUtilityComponent implements OnInit {
       this.arLinksList$.push(oLink);
 
       // list for actually attachments
-      let link: any = {};
+      const link: any = {};
       link.id = oLink.id;
       link.linkTitle = this.link_title$;
       link.type = oLink.type;
@@ -486,11 +485,12 @@ export class FileUtilityComponent implements OnInit {
   }
 
   downloadFile(att: any) {
-    let attachUtils = this.PCore$.getAttachmentUtils();
+    const attachUtils = PCore.getAttachmentUtils();
     const { ID, name, extension, type } = att;
-    let context = this.pConn$.getContextName();
+    const context = this.pConn$.getContextName();
 
     attachUtils
+      // @ts-ignore - 3rd parameter "responseEncoding" is optional
       .downloadAttachment(ID, context)
       .then((content) => {
         if (type === 'FILE') {
@@ -511,15 +511,15 @@ export class FileUtilityComponent implements OnInit {
     download(atob(data), file);
   };
 
-  cancelFile(attID: string) {
+  cancelFile() {
     alert('cancel');
   }
 
   deleteFile(att: any) {
     setTimeout(() => {
-      let attachUtils = this.PCore$.getAttachmentUtils();
+      const attachUtils = PCore.getAttachmentUtils();
       const { ID } = att;
-      let context = this.pConn$.getContextName();
+      const context = this.pConn$.getContextName();
 
       attachUtils
         .deleteAttachment(ID, context)
@@ -538,11 +538,11 @@ export class FileUtilityComponent implements OnInit {
     });
   }
 
-  removeFile(attID: string) {
+  removeFile() {
     alert('remove');
   }
 
-  removeNewFile(attID: string) {
+  removeNewFile() {
     alert('remove');
   }
 
@@ -558,7 +558,8 @@ export class FileUtilityComponent implements OnInit {
         this.ngZone.run(() => {
           this.bShowLinkModal$ = true;
         });
-
+        break;
+      default:
         break;
     }
   }
@@ -572,19 +573,19 @@ export class FileUtilityComponent implements OnInit {
   }
 
   uploadMyFiles($event) {
-    //alert($event.target.files[0]); // outputs the first file
+    // alert($event.target.files[0]); // outputs the first file
     this.arFiles$ = this.getFiles($event.target.files);
 
     // convert FileList to an array
-    let myFiles = Array.from(this.arFiles$);
+    const myFiles = Array.from(this.arFiles$);
 
     this.arFileList$ = myFiles.map((att) => {
       return this.getNewListUtilityItemProps({
         att,
         downloadFile: !att.progress ? () => this.downloadFile(att) : null,
-        cancelFile: att.progress ? () => this.cancelFile(att.ID) : null,
+        cancelFile: att.progress ? () => this.cancelFile() : null,
         deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-        removeFile: att.error ? () => this.removeNewFile(att.ID) : null
+        removeFile: att.error ? () => this.removeNewFile() : null
       });
     });
   }
@@ -593,9 +594,9 @@ export class FileUtilityComponent implements OnInit {
     return this.setNewFiles(arFiles);
   }
 
-  setNewFiles(arFiles, current = []) {
+  setNewFiles(arFiles) {
     let index = 0;
-    for (let file of arFiles) {
+    for (const file of arFiles) {
       if (!this.validateMaxSize(file, 5)) {
         file.error = true;
         file.meta = 'File is too big. Max allowed size is 5MB.';
@@ -628,6 +629,8 @@ export class FileUtilityComponent implements OnInit {
 
         this.clearOutFiles();
         break;
+      default:
+        break;
     }
   }
 
@@ -644,6 +647,8 @@ export class FileUtilityComponent implements OnInit {
         this.onAttachLinks(this.arLinks$);
 
         this.clearOutLinks();
+        break;
+      default:
         break;
     }
   }
@@ -671,11 +676,12 @@ export class FileUtilityComponent implements OnInit {
   }
 
   updateSelf() {
-    const attachmentUtils = this.PCore$.getAttachmentUtils();
-    const caseID = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID);
+    const attachmentUtils = PCore.getAttachmentUtils();
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
 
     if (caseID && caseID != '') {
-      let attPromise = attachmentUtils.getCaseAttachments(caseID, this.pConn$.getContextName());
+      const attPromise = attachmentUtils.getCaseAttachments(caseID, this.pConn$.getContextName());
 
       this.lu_bLoading$ = true;
 
@@ -688,9 +694,9 @@ export class FileUtilityComponent implements OnInit {
           return this.getListUtilityItemProps({
             att,
             downloadFile: !att.progress ? () => this.downloadFile(att) : null,
-            cancelFile: att.progress ? () => this.cancelFile(att.ID) : null,
+            cancelFile: att.progress ? () => this.cancelFile() : null,
             deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-            removeFile: att.error ? () => this.removeFile(att.ID) : null
+            removeFile: att.error ? () => this.removeFile() : null
           });
         });
 
@@ -698,9 +704,9 @@ export class FileUtilityComponent implements OnInit {
           return this.getListUtilityItemProps({
             att,
             downloadFile: !att.progress ? () => this.downloadFile(att) : null,
-            cancelFile: att.progress ? () => this.cancelFile(att.ID) : null,
+            cancelFile: att.progress ? () => this.cancelFile() : null,
             deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-            removeFile: att.error ? () => this.removeFile(att.ID) : null
+            removeFile: att.error ? () => this.removeFile() : null
           });
         });
       });
@@ -708,7 +714,8 @@ export class FileUtilityComponent implements OnInit {
   }
 
   caseHasChanged(): boolean {
-    const caseID = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID);
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
     if (this.currentCaseID !== caseID) {
       this.currentCaseID = caseID;
       return true;

@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-details',
@@ -14,26 +12,20 @@ declare const window: any;
 export class DetailsComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
-  @Input() pConn$: any;
-
-  PCore$: any;
+  @Input() pConn$: typeof PConnect;
 
   highlightedDataArr: Array<any> = [];
   showHighlightedData: boolean;
   arFields$: Array<any> = [];
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
   }
 
@@ -59,12 +51,12 @@ export class DetailsComponent implements OnInit {
   }
 
   updateSelf() {
-    const rawMetaData = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata().config);  
+    const rawMetaData: any = this.pConn$.resolveConfigProps((this.pConn$.getRawMetadata() as any).config);
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 
-    if( this.showHighlightedData ){
+    if (this.showHighlightedData) {
       const highlightedData = rawMetaData?.highlightedData;
-      this.highlightedDataArr = highlightedData.map(field => {
+      this.highlightedDataArr = highlightedData.map((field) => {
         field.config.displayMode = 'STACKED_LARGE_VAL';
 
         if (field.config.value === '@P .pyStatusWork') {
@@ -75,11 +67,11 @@ export class DetailsComponent implements OnInit {
         return field;
       });
     }
-    
-    let kids = this.pConn$.getChildren();
-    for (let kid of kids) {
+
+    const kids = this.pConn$.getChildren() as Array<any>;
+    for (const kid of kids) {
       this.arFields$ = [];
-      let pKid = kid.getPConnect();
+      const pKid = kid.getPConnect();
       const fields = pKid.getChildren();
       fields?.forEach((field) => {
         const thePConn = field.getPConnect();
@@ -102,7 +94,7 @@ export class DetailsComponent implements OnInit {
             },
             options
           };
-          const theViewCont = this.PCore$.createPConnect(viewContConfig);
+          const theViewCont = window.PCore.createPConnect(viewContConfig);
           const data = {
             type: theCompType,
             pConn: theViewCont?.getPConnect()

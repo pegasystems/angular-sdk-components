@@ -2,7 +2,7 @@ import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
@@ -15,8 +15,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
  * Redux and creation/update of Redux containers and PConnect.  Modifying this code could have undesireable results and
  * is totally at your own risk.
  */
-
-declare const window: any;
 
 const options = { context: 'app' };
 
@@ -35,14 +33,12 @@ const options = { context: 'app' };
   ]
 })
 export class RootContainerComponent implements OnInit {
-  @Input() pConn$: any;
-  @Input() props$: any;
-  @Input() PCore$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() displayOnlyFA$: boolean;
   @Input() isMashup$: boolean;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   componentName$: string = '';
   bIsProgress$: boolean = false;
@@ -59,24 +55,24 @@ export class RootContainerComponent implements OnInit {
   localizedVal: any;
   localeCategory = 'Messages';
 
-  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private psService: ProgressSpinnerService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit(): void {
-    let myContext = 'app';
+    const myContext = 'app';
 
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    const { containers } = this.PCore$.getStore().getState();
+    const { containers } = PCore.getStore().getState();
     const items = Object.keys(containers).filter((item) => item.includes('root'));
 
-    this.PCore$.getContainerUtils().getContainerAPI().addContainerItems(items);
+    (PCore.getContainerUtils().getContainerAPI() as any).addContainerItems(items);
 
     // add preview and modalview containers to redux
     // keep local copies of the the pConnect that is related
 
-    const configObjPreview = this.PCore$.createPConnect({
+    const configObjPreview = PCore.createPConnect({
       meta: {
         type: 'PreviewViewContainer',
         config: {
@@ -88,7 +84,7 @@ export class RootContainerComponent implements OnInit {
 
     this.pvConn$ = configObjPreview.getPConnect();
 
-    const configObjModal = this.PCore$.createPConnect({
+    const configObjModal = PCore.createPConnect({
       meta: {
         type: 'ModalViewContainer',
         config: {
@@ -113,7 +109,7 @@ export class RootContainerComponent implements OnInit {
     this.progressSpinnerSubscription = this.psService.getMessage().subscribe((message) => {
       this.showHideProgress(message.show);
     });
-    this.localizedVal = this.PCore$.getLocaleUtils.getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
   }
 
   ngOnDestroy() {
@@ -160,7 +156,7 @@ export class RootContainerComponent implements OnInit {
         if (items[key] && items[key].view && Object.keys(items[key].view).length > 0) {
           const itemView = items[key].view;
 
-          const rootObject: any = this.PCore$.createPConnect({
+          const rootObject: any = PCore.createPConnect({
             meta: itemView,
             options: {
               context: items[key].context
@@ -190,16 +186,16 @@ export class RootContainerComponent implements OnInit {
 
       // bootstrap loadMashup resolves to here
 
-      let arChildren = this.pConn$.getChildren();
+      const arChildren = this.pConn$.getChildren() as Array<any>;
       if (arChildren && arChildren.length == 1) {
         // have to have a quick timeout or get an "expressions changed" angular error
         setTimeout(() => {
           this.ngZone.run(() => {
-            let localPConn = arChildren[0].getPConnect();
+            const localPConn = arChildren[0].getPConnect();
 
             this.componentName$ = localPConn.getComponentName();
             if (this.componentName$ === 'ViewContainer') {
-              const configProps = this.pConn$.getConfigProps();
+              const configProps: any = this.pConn$.getConfigProps();
               const viewContConfig = {
                 meta: {
                   type: 'ViewContainer',
@@ -208,7 +204,7 @@ export class RootContainerComponent implements OnInit {
                 options
               };
 
-              this.viewContainerPConn$ = this.PCore$.createPConnect(viewContConfig).getPConnect();
+              this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
             }
             this.bShowRoot$ = true;
           });
@@ -218,13 +214,13 @@ export class RootContainerComponent implements OnInit {
       // haven't resolved to here
     } else if (skeleton !== undefined) {
       // TODO: need to update once skeletons are available;
-    } else {
     }
   }
 
   showHideProgress(bShow: boolean) {
     // only show spinner after 500ms wait, so if server fast, won't see
     if (bShow) {
+      // eslint-disable-next-line sonarjs/no-collapsible-if
       if (!this.bIsProgress$) {
         // makes sure Angular tracks these changes
         if (!this.spinnerTimer || this.spinnerTimer.isStopped) {

@@ -5,6 +5,16 @@ import { ProgressSpinnerService } from '../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../_messages/error-messages.service';
 import { Utils } from '../_helpers/utils';
 
+export interface AngularPConnectData {
+  compID?: string;
+  unsubscribeFn?: Function;
+  validateMessage?: string;
+  actions?: {
+    onChange: Function;
+    onBlur: Function;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -30,20 +40,24 @@ export class AngularPConnectService {
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
 
-  constructor(private psService: ProgressSpinnerService, private erService: ErrorMessagesService, private utils: Utils) {
+  constructor(
+    private psService: ProgressSpinnerService,
+    private erService: ErrorMessagesService,
+    private utils: Utils
+  ) {
     // Establish necessary override flags for our use of Core
-    //const coreOverrides = { "dynamicLoadComponents": false };
-    // let coreOverrides = window.PCore.getBehaviorOverrides();
+    // const coreOverrides = { "dynamicLoadComponents": false };
+    // let coreOverrides = PCore.getBehaviorOverrides();
     // coreOverrides["dynamicLoadComponents"] = false;
-    // window.PCore.setBehaviorOverrides( coreOverrides );
-    window.PCore.setBehaviorOverride('dynamicLoadComponents', false);
+    // PCore.setBehaviorOverrides( coreOverrides );
+    PCore.setBehaviorOverride('dynamicLoadComponents', false);
 
     // Always best to use deep object compare when it's available
-    if (isEqual !== undefined) {
-      //console.log(`AngularPConnect is using deep object compare`);
-    } else {
-      //console.log(`AngularPConnect is using JSON.stringify compare`);
-    }
+    // if (isEqual !== undefined) {
+    // console.log(`AngularPConnect is using deep object compare`);
+    // } else {
+    // console.log(`AngularPConnect is using JSON.stringify compare`);
+    // }
   }
 
   /**
@@ -55,7 +69,7 @@ export class AngularPConnectService {
    * @returns the next componentID
    */
   private getNextComponentId(): string {
-    this.counterComponentID = this.counterComponentID + 1;
+    this.counterComponentID += 1;
     // Note that we use the string version of the number so we have an
     //  associative array that we can clean up later, if needed.
     return this.counterComponentID.toString();
@@ -69,10 +83,10 @@ export class AngularPConnectService {
    * @returns The **unsubscribe** function that should be called when the component needs
    * to unsubscribe from the store. (Typically during ngOnDestroy)
    */
-  private subscribeToStore(inComp: object = null, inCallback: Function = null): Function {
-    const theCompName: string = inComp ? `${inComp.constructor.name}` : 'no component provided';
-    let fnUnsubscribe = null;
-    //console.log( `Bridge subscribing: ${theCompName} `);
+  private subscribeToStore(inComp: any = null, inCallback: Function | null = null): Function {
+    // const theCompName: string = inComp ? `${inComp.constructor.name}` : 'no component provided';
+    let fnUnsubscribe;
+    // console.log( `Bridge subscribing: ${theCompName} `);
     if (inComp) {
       fnUnsubscribe = this.getStore().subscribe(inCallback);
     }
@@ -84,7 +98,7 @@ export class AngularPConnectService {
   //  and (b) to determine whether the component should update itself (re-render)
    * @param inComp The component whose properties are being obtained
    */
-  private getComponentProps(inComp = null): Object {
+  private getComponentProps(inComp: any = null): Object {
     let compProps: any = {};
     let addProps = {};
 
@@ -101,14 +115,14 @@ export class AngularPConnectService {
       if (typeof inComp.additionalProps === 'object') {
         addProps = inComp.pConn$.resolveConfigProps(inComp.additionalProps);
       } else if (typeof inComp.additionalProps === 'function') {
-        const propsToAdd = inComp.additionalProps(window.PCore.getStore().getState(), inComp.pConn$);
+        const propsToAdd = inComp.additionalProps(PCore.getStore().getState(), inComp.pConn$);
         addProps = inComp.pConn$.resolveConfigProps(propsToAdd);
       }
     }
 
     compProps = inComp.pConn$.getConfigProps();
 
-    let componentName = inComp.constructor.name;
+    // const componentName = inComp.constructor.name;
 
     // The following comment is from the Nebula/Constellation version of this code. Meant as a reminder to check this occasionally
     // populate additional props which are component specific and not present in configurations
@@ -118,7 +132,7 @@ export class AngularPConnectService {
     compProps = inComp.pConn$.resolveConfigProps(compProps);
 
     if (compProps && undefined !== compProps.validatemessage && compProps.validatemessage != '') {
-      //console.log( `   validatemessage for ${inComp.constructor.name} ${inComp.angularPConnectData.compID}: ${compProps.validatemessage}`);
+      // console.log( `   validatemessage for ${inComp.constructor.name} ${inComp.angularPConnectData.compID}: ${compProps.validatemessage}`);
     }
 
     return {
@@ -142,9 +156,7 @@ export class AngularPConnectService {
    * @param inComp The component whose property is being requested.
    * @param inProp The property being requested.
    */
-  public getComponentProp(inComp = null, inProp = '') {
-    let propVal;
-
+  public getComponentProp(inComp: any = null, inProp = '') {
     if (inComp === null) {
       console.error(`AngularPConnect: getComponentProp called with bad component: ${inComp}`);
     }
@@ -152,9 +164,7 @@ export class AngularPConnectService {
     const compID = inComp.angularPConnectData.compID;
 
     // Look up property in the component's entry in componentPropArray (which should have the most recent value)
-    propVal = this.componentPropsArr[compID][inProp];
-
-    return propVal;
+    return this.componentPropsArr[compID][inProp];
   }
 
   /**
@@ -163,7 +173,7 @@ export class AngularPConnectService {
    * this component.
    * This is the full set of properties that are tracked in Redux for this component.
    */
-  public getCurrentCompleteProps(inComp = null) {
+  public getCurrentCompleteProps(inComp: any = null) {
     if (inComp === null) {
       console.error(`AngularPConnect: getCurrentCompleteProps called with bad component: ${inComp}`);
     }
@@ -186,13 +196,13 @@ export class AngularPConnectService {
    * validateMessage: any validation/error message that gets generated for this object,
    * actions: any actions that are defined for this object
    */
-  registerAndSubscribeComponent(inComp, inCallback: Function = null): Object {
+  registerAndSubscribeComponent(inComp, inCallback: Function | null = null): AngularPConnectData {
     // Create an initial object to be returned.
-    let returnObject = {
+    const returnObject: AngularPConnectData = {
       compID: '',
-      unsubscribeFn: null,
+      unsubscribeFn: undefined,
       validateMessage: '',
-      actions: null
+      actions: undefined
     };
 
     if (inComp === null || inCallback === null) {
@@ -244,7 +254,7 @@ export class AngularPConnectService {
 
     // Now proceed to register and subscribe...
     const theCompID: string = this.getNextComponentId();
-    const theUnsub: Function = this.subscribeToStore(inComp, inCallback);
+    const theUnsub: Function | null = this.subscribeToStore(inComp, inCallback);
 
     if (undefined === inComp.angularPConnectData) {
       inComp.bridgeComponentID = theCompID;
@@ -283,7 +293,7 @@ export class AngularPConnectService {
    * If the ***inComp*** input is bad, false is also returned.
    */
   shouldComponentUpdate(inComp): boolean {
-    const bShowLogging = false;
+    // const bShowLogging = false;
     let bRet: boolean = false;
     // check for reasonable input
     if (Utils.isEmptyObject(inComp)) {
@@ -299,7 +309,7 @@ export class AngularPConnectService {
     const currentProps = this.componentPropsArr[compID];
     const currentPropsAsStr: string = JSON.stringify(currentProps);
 
-    let incomingProps: any = this.getComponentProps(inComp);
+    const incomingProps: any = this.getComponentProps(inComp);
 
     // if have pageMessages, and it is blank, remove it.  This causes issues of making it appear
     // that a will cause an update, when there is no change
@@ -313,16 +323,14 @@ export class AngularPConnectService {
       incomingProps['httpMessages'] = undefined;
     }
 
-    let incomingPropsAsStr: string = JSON.stringify(incomingProps);
+    const incomingPropsAsStr: string = JSON.stringify(incomingProps);
 
     // fast-deep-equal version
     if (isEqual !== undefined) {
       bRet = !isEqual(currentProps, incomingProps);
-    } else {
+    } else if (currentPropsAsStr != incomingPropsAsStr) {
       // stringify compare version
-      if (currentPropsAsStr != incomingPropsAsStr) {
-        bRet = true;
-      }
+      bRet = true;
     }
 
     // Now update the entry in componentPropsArr with the incoming value so
@@ -335,7 +343,7 @@ export class AngularPConnectService {
 
       if (inComp.angularPConnectData.validateMessage != '') {
         // if have a validate message, turn off spinner
-        let timer = interval(100).subscribe(() => {
+        const timer = interval(100).subscribe(() => {
           this.psService.sendMessage(false);
 
           timer.unsubscribe();
@@ -353,8 +361,8 @@ export class AngularPConnectService {
       bRet = false;
     }
 
-    //console.log( `AngularPConnect component ${compID} - ${inComp.constructor.name} - shouldComponentUpdate: ${bRet}`);
-    //console.log("current props: " + currentPropsAsStr);
+    // console.log( `AngularPConnect component ${compID} - ${inComp.constructor.name} - shouldComponentUpdate: ${bRet}`);
+    // console.log("current props: " + currentPropsAsStr);
 
     if (bRet) {
       // console.log(`**** change for: ${inComp.constructor.name}`);
@@ -372,7 +380,7 @@ export class AngularPConnectService {
 
     // }
 
-    //console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}`);
+    // console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}`);
 
     return bRet;
   }
@@ -385,7 +393,7 @@ export class AngularPConnectService {
   changeHandler(inComp, event) {
     const bLogging = false;
     if (bLogging) {
-      //console.log(`AngularPConnect.changeHandler`);
+      // console.log(`AngularPConnect.changeHandler`);
     }
     // check for reasonable input
     if (undefined === inComp || Utils.isEmptyObject(inComp)) {
@@ -413,7 +421,7 @@ export class AngularPConnectService {
   eventHandler(inComp, event) {
     const bLogging = false;
     if (bLogging) {
-      //console.log(`AngularPConnect.eventHandler`);
+      // console.log(`AngularPConnect.eventHandler`);
     }
     // check for reasonable input
     if (undefined === inComp || Utils.isEmptyObject(inComp)) {
@@ -435,7 +443,7 @@ export class AngularPConnectService {
    */
   getStore() {
     if (this.theStore === null) {
-      this.theStore = window.PCore.getStore();
+      this.theStore = PCore.getStore();
     }
     return this.theStore;
   }
@@ -445,7 +453,7 @@ export class AngularPConnectService {
    * @param inComp If supplied, the component that is requesting the store's state
    * @returns A handle to the __state__ of application's store
    */
-  getState(bLogMsg: boolean = false, inComp: object = null) {
+  getState(bLogMsg: boolean = false, inComp: any = null) {
     const theState: object = this.getStore().getState();
     if (bLogMsg) {
       const theCompName: string = inComp ? `${inComp.constructor.name}: ` : '';
@@ -471,14 +479,4 @@ export class AngularPConnectService {
       inComp.pConn$.setAction('onBlur', this.eventHandler.bind(this));
     }
   }
-}
-
-// Set behavior overrides at load time
-//  (in addition to constructor since that's too late for ui-bootstrap)
-// check if window.PCore exists first.  In mashup, this will NOT exist until later
-if (window.PCore) {
-  // let coreOverrides = window.PCore.getBehaviorOverrides();
-  // coreOverrides["dynamicLoadComponents"] = false;
-  // window.PCore.setBehaviorOverrides( coreOverrides );
-  window.PCore.setBehaviorOverride('dynamicLoadComponents', false);
 }

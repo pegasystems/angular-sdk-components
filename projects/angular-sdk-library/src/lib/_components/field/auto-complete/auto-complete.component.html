@@ -15,7 +15,6 @@
           [required]="bRequired$"
           [matAutocomplete]="auto"
           (change)="fieldOnChange($event)"
-          (click)="fieldOnClick($event)"
           (blur)="fieldOnBlur($event)"
         />
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionChanged($event)">

@@ -39,7 +39,7 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("submit")').click();
 
     /** ListOfRecord options type test */
-    let selectedOption = await page.locator('mat-select[data-test-id="c6be2b6191e6660291b6b0c92bd2f0df"]');
+    const selectedOption = await page.locator('mat-select[data-test-id="c6be2b6191e6660291b6b0c92bd2f0df"]');
     await selectedOption.click();
     await page.locator('mat-option > span:has-text("ListOfRecords")').click();
 
@@ -60,7 +60,7 @@ test.describe('E2E test', () => {
       await editModeType.click();
       await page.locator('mat-option > span:has-text("Table rows")').click();
     }
-    
+
     const noRecordsMsg = page.locator('div[id="no-records"]');
     await expect(noRecordsMsg.locator('text="No Records Found."')).toBeVisible();
 

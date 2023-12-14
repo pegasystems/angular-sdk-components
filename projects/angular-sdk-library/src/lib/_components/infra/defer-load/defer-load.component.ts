@@ -1,16 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
  * Redux and creation/update of Redux containers and PConnect.  Modifying this code could have undesireable results and
  * is totally at your own risk.
  */
-
-declare const window: any;
 
 @Component({
   selector: 'app-defer-load',
@@ -20,17 +18,15 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DeferLoadComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() loadData$: any;
   @Input() name;
-
-  PCore$: any;
 
   componentName$: string;
   loadedPConn$: any;
   bShowDefer$: boolean = false;
 
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   constants: any;
   currentLoadedAssignment = '';
   isContainerPreview: boolean;
@@ -42,16 +38,10 @@ export class DeferLoadComponent implements OnInit {
   PAGE: any;
   DATA: any;
   constructor(private angularPConnect: AngularPConnectService) {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-    this.constants = this.PCore$.getConstants();
+    this.constants = PCore.getConstants();
   }
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.loadActiveTab();
   }
@@ -65,7 +55,8 @@ export class DeferLoadComponent implements OnInit {
   onStateChange() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
-    const theRequestedAssignment = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const theRequestedAssignment = this.pConn$.getValue(PCore.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
     if (theRequestedAssignment !== this.currentLoadedAssignment) {
       this.currentLoadedAssignment = theRequestedAssignment;
       this.loadActiveTab();
@@ -73,12 +64,13 @@ export class DeferLoadComponent implements OnInit {
   }
 
   ngOnChanges() {
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.loadViewCaseID = this.pConn$.getValue(this.constants.PZINSKEY) || this.pConn$.getValue(this.constants.CASE_INFO.CASE_INFO_ID);
     let containerItemData;
     const targetName = this.pConn$.getTarget();
     if (targetName) {
-      this.containerName = this.PCore$.getContainerUtils().getActiveContainerItemName(targetName);
-      containerItemData = this.PCore$.getContainerUtils().getContainerItemData(targetName, this.containerName);
+      this.containerName = PCore.getContainerUtils().getActiveContainerItemName(targetName);
+      containerItemData = PCore.getContainerUtils().getContainerItemData(targetName, this.containerName);
     }
     const { CASE, PAGE, DATA } = this.constants.RESOURCE_TYPES;
     this.CASE = CASE;
@@ -89,7 +81,7 @@ export class DeferLoadComponent implements OnInit {
     this.resourceType = resourceType;
     this.isContainerPreview = /preview_[0-9]*/g.test(this.pConn$.getContextName());
 
-    const theConfigProps = this.pConn$.getConfigProps();
+    const theConfigProps: any = this.pConn$.getConfigProps();
     this.deferLoadId = theConfigProps.deferLoadId;
     this.name = this.name || theConfigProps.name;
 
@@ -98,6 +90,7 @@ export class DeferLoadComponent implements OnInit {
 
   getViewOptions = () => ({
     viewContext: this.resourceType,
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     pageClass: this.loadViewCaseID ? '' : this.pConn$.getDataObject().pyPortal.classID,
     container: this.isContainerPreview ? 'preview' : null,
     containerName: this.isContainerPreview ? 'preview' : null,
@@ -106,7 +99,7 @@ export class DeferLoadComponent implements OnInit {
 
   onResponse(data) {
     if (this.deferLoadId) {
-      this.PCore$.getDeferLoadManager().start(
+      PCore.getDeferLoadManager().start(
         this.name,
         this.pConn$.getCaseInfo().getKey(),
         this.pConn$.getPageReference().replace('caseInfo.content', ''),
@@ -123,12 +116,12 @@ export class DeferLoadComponent implements OnInit {
           pageReference: this.pConn$.getPageReference()
         }
       };
-      const configObject = this.PCore$.createPConnect(config);
+      const configObject = PCore.createPConnect(config);
       configObject.getPConnect().setInheritedProp('displayMode', 'LABELS_LEFT');
       this.loadedPConn$ = ReferenceComponent.normalizePConn(configObject.getPConnect());
       this.componentName$ = this.loadedPConn$.getComponentName();
       if (this.deferLoadId) {
-        this.PCore$.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
+        PCore.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
       }
     }
     // this.cdRef.detectChanges();
@@ -138,12 +131,13 @@ export class DeferLoadComponent implements OnInit {
     if (this.resourceType === this.DATA) {
       // Rendering defer loaded tabs in data context
       if (this.containerName) {
-        const dataContext = this.PCore$.getStoreValue('.dataContext', 'dataInfo', this.containerName);
-        const dataContextParameters = this.PCore$.getStoreValue('.dataContextParameters', 'dataInfo', this.containerName);
+        const dataContext = PCore.getStoreValue('.dataContext', 'dataInfo', this.containerName);
+        const dataContextParameters = PCore.getStoreValue('.dataContextParameters', 'dataInfo', this.containerName);
 
         this.pConn$
           .getActionsApi()
           .showData(this.name, dataContext, dataContextParameters, {
+            // @ts-ignore - skipSemanticUrl should be boolean type
             skipSemanticUrl: true,
             isDeferLoaded: true
           })
@@ -164,7 +158,7 @@ export class DeferLoadComponent implements OnInit {
     } else {
       this.pConn$
         .getActionsApi()
-        .refreshCaseView(encodeURI(this.loadViewCaseID), this.name)
+        .refreshCaseView(encodeURI(this.loadViewCaseID), this.name, null)
         .then((data) => {
           this.onResponse(data.root);
         });

@@ -10,7 +10,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class SingleReferenceReadonlyComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   ngOnInit(): void {}

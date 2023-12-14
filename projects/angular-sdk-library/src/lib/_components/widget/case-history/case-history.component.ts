@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
-
 @Component({
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
@@ -13,9 +11,8 @@ declare const window: any;
   imports: [CommonModule, MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
-  PCore$: any;
   configProps$: any;
 
   repeatList$: MatTableDataSource<any>;
@@ -26,19 +23,20 @@ export class CaseHistoryComponent implements OnInit {
   constructor(private utils: Utils) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.configProps$ = this.pConn$.getConfigProps();
 
-    const caseID = this.pConn$.getValue(this.PCore$.getConstants().CASE_INFO.CASE_INFO_ID);
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
     const dataViewName = 'D_pyWorkHistory';
     const context = this.pConn$.getContextName();
 
     this.waitingForData = true;
 
-    const caseHistoryData = this.PCore$.getDataApiUtils().getData(dataViewName, `{"dataViewParameters":[{"CaseInstanceKey":"${caseID}"}]}`, context);
+    const caseHistoryData = PCore.getDataApiUtils().getData(
+      dataViewName,
+      { dataViewParameters: [{ CaseInstanceKey: caseID }] } as any,
+      context
+    ) as Promise<any>;
 
     caseHistoryData.then((historyJSON: Object) => {
       this.fields$ = [
@@ -60,8 +58,8 @@ export class CaseHistoryComponent implements OnInit {
   ngOnDestroy() {}
 
   updateFields(arFields, arColumns): Array<any> {
-    let arReturn = arFields;
-    for (let i in arReturn) {
+    const arReturn = arFields;
+    for (const i in arReturn) {
       arReturn[i].config.name = arColumns[i];
     }
 
@@ -69,13 +67,13 @@ export class CaseHistoryComponent implements OnInit {
   }
 
   updateData(listData: Array<any>, fieldData: Array<any>): Array<any> {
-    let returnList: Array<any> = new Array<any>();
-    for (let row in listData) {
+    const returnList: Array<any> = new Array<any>();
+    for (const row in listData) {
       // copy
-      let rowData = JSON.parse(JSON.stringify(listData[row]));
+      const rowData = JSON.parse(JSON.stringify(listData[row]));
 
-      for (let field of fieldData) {
-        let fieldName = field['fieldName'];
+      for (const field of fieldData) {
+        const fieldName = field['fieldName'];
         let formattedDate;
 
         switch (field['type']) {
@@ -87,6 +85,8 @@ export class CaseHistoryComponent implements OnInit {
             formattedDate = this.utils.generateDateTime(rowData[fieldName], 'DateTime-Short-YYYY');
             rowData[fieldName] = formattedDate;
             break;
+          default:
+            break;
         }
       }
 
@@ -96,12 +96,13 @@ export class CaseHistoryComponent implements OnInit {
     return returnList;
   }
 
-  getDisplayColumns(fields = []) {
-    let arReturn = fields.map((field, colIndex) => {
-      let theField = field.fieldName;
+  getDisplayColumns(fields: Array<any> = []) {
+    const arReturn = fields.map((field) => {
+      const theField = field.fieldName;
 
       return theField;
     });
+
     return arReturn;
   }
 }

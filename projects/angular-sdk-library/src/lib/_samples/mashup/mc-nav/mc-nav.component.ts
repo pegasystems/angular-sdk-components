@@ -36,8 +36,7 @@ declare global {
 })
 export class MCNavComponent implements OnInit {
   starterPackVersion$: string = endpoints.SP_VERSION;
-  PCore$: any;
-  pConn$: any;
+  pConn$: typeof PConnect;
 
   applicationLabel: string = '';
   bLoggedIn$: boolean = false;
@@ -71,10 +70,6 @@ export class MCNavComponent implements OnInit {
   }
 
   async initialize() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.titleService.setTitle('Media Co');
 
     sessionStorage.clear();
@@ -88,10 +83,10 @@ export class MCNavComponent implements OnInit {
       if (message.reset) {
         this.bPConnectLoaded$ = false;
 
-        ///window.PCore = null;
+        /// window.PCore = null;
 
-        let timer = interval(1000).subscribe(() => {
-          //this.getPConnectAndUpdate();
+        const timer = interval(1000).subscribe(() => {
+          // this.getPConnectAndUpdate();
           window.myLoadMashup('app-root', false);
 
           // update the worklist
@@ -134,20 +129,17 @@ export class MCNavComponent implements OnInit {
     }
 
     // Login if needed, without doing an initial main window redirect
+    // eslint-disable-next-line no-restricted-globals
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
     loginIfNecessary({appName: sAppName, mainRedirect: false});
   }
 
   startMashup() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    this.PCore$.onPCoreReady((renderObj) => {
+    PCore.onPCoreReady((renderObj) => {
       console.log('PCore ready!');
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
-      this.applicationLabel = this.PCore$.getEnvironmentInfo().getApplicationLabel();
+      this.applicationLabel = PCore.getEnvironmentInfo().getApplicationLabel();
 
       this.titleService.setTitle(this.applicationLabel);
 
@@ -166,12 +158,12 @@ export class MCNavComponent implements OnInit {
   initialRender(renderObj) {
     // Need to register the callback function for PCore.registerComponentCreator
     //  This callback is invoked if/when you call a PConnect createComponent
-    this.PCore$.registerComponentCreator((c11nEnv, additionalProps = {}) => {
+    PCore.registerComponentCreator((c11nEnv) => {
       // debugger;
 
       // experiment with returning a PConnect that has deferenced the
       //  referenced View if the c11n is a 'reference' component
-      const compType = c11nEnv.getPConnect().getComponentName();
+      // const compType = c11nEnv.getPConnect().getComponentName();
       // console.log( `mc-nav - registerComponentCreator c11nEnv type: ${compType}`);
 
       return c11nEnv;

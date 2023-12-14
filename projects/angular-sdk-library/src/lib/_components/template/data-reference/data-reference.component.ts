@@ -1,10 +1,8 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
@@ -16,12 +14,11 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DataReferenceComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   arFields$: Array<any> = [];
   referenceType = '';
@@ -36,7 +33,7 @@ export class DataReferenceComponent implements OnInit {
   viewName: String = '';
   firstChildMeta: any = {};
   canBeChangedInReviewMode: Boolean = false;
-  propName: String = '';
+  propName: string = '';
   firstChildPConnect;
   children;
   displaySingleRef: boolean;
@@ -46,20 +43,21 @@ export class DataReferenceComponent implements OnInit {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.children = this.pConn$.getChildren();
+    this.children = this.pConn$.getChildren() as Array<any>;
     this.updateSelf();
     if (this.firstChildMeta?.type === 'Dropdown' && this.rawViewMetadata['config']?.parameters) {
       const { value, key, text } = this.firstChildMeta.config.datasource.fields;
-      this.PCore$.getDataApiUtils()
-        .getData(this.refList, {
-          dataViewParameters: this.parameters
-        })
+      (
+        PCore.getDataApiUtils().getData(
+          this.refList,
+          {
+            dataViewParameters: this.parameters
+          } as any,
+          ''
+        ) as Promise<any>
+      )
         .then((res) => {
           if (res.data.data !== null) {
             const ddDataSource = res.data.data
@@ -77,7 +75,7 @@ export class DataReferenceComponent implements OnInit {
             this.dropDownDataSource = ddDataSource;
           }
         })
-        .catch((err) => {
+        .catch(() => {
           return Promise.resolve({
             data: { data: [] }
           });
@@ -105,7 +103,7 @@ export class DataReferenceComponent implements OnInit {
 
   updateSelf() {
     // Update properties based on configProps
-    const theConfigProps = this.pConn$.getConfigProps();
+    const theConfigProps: any = this.pConn$.getConfigProps();
     const label = theConfigProps.label;
     const showLabel = theConfigProps.showLabel;
     const displayMode = theConfigProps.displayMode;
@@ -152,9 +150,9 @@ export class DataReferenceComponent implements OnInit {
         this.firstChildMeta.config.displayMode = displayMode;
       }
       if (this.firstChildMeta.type === 'SimpleTableSelect' && this.selectionMode === SELECTION_MODE.MULTI) {
-        this.propName = this.PCore$.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.selectionList);
+        this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.selectionList);
       } else {
-        this.propName = this.PCore$.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.value);
+        this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.value);
       }
 
       const theRecreatedFirstChild = this.recreatedFirstChild();
@@ -170,9 +168,11 @@ export class DataReferenceComponent implements OnInit {
   handleSelection(event) {
     const caseKey = this.pConn$.getCaseInfo().getKey();
     const refreshOptions = { autoDetectRefresh: true };
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     if (this.canBeChangedInReviewMode && this.pConn$.getValue('__currentPageTabViewName')) {
+      // @ts-ignore - second parameter pageReference for getValue method should be optional
       this.pConn$.getActionsApi().refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), null, refreshOptions);
-      this.PCore$.getDeferLoadManager().refreshActiveComponents(this.pConn$.getContextName());
+      PCore.getDeferLoadManager().refreshActiveComponents(this.pConn$.getContextName());
     } else {
       const pgRef = this.pConn$.getPageReference().replace('caseInfo.content', '');
       this.pConn$.getActionsApi().refreshCaseView(caseKey, this.viewName, pgRef, refreshOptions);
@@ -181,37 +181,41 @@ export class DataReferenceComponent implements OnInit {
     // AutoComplete sets value on event.id whereas Dropdown sets it on event.target.value
     const propValue = event?.id || event?.target?.value;
     if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
-      this.PCore$.getDataApiUtils()
-        .getCaseEditLock(caseKey)
-        .then((caseResponse) => {
-          const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
-          let curr = {};
-          const commitData = curr;
+      (PCore.getDataApiUtils().getCaseEditLock(caseKey, '') as Promise<any>).then((caseResponse) => {
+        const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
+        let curr = {};
+        const commitData = curr;
 
-          pageTokens.forEach((el) => {
-            if (el !== '') {
-              curr[el] = {};
-              curr = curr[el];
-            }
-          });
-
-          // expecting format like {Customer: {pyID:"C-100"}}
-          const propArr = this.propName.split('.');
-          propArr.forEach((element, idx) => {
-            if (idx + 1 === propArr.length) {
-              curr[element] = propValue;
-            } else {
-              curr[element] = {};
-              curr = curr[element];
-            }
-          });
-
-          this.PCore$.getDataApiUtils()
-            .updateCaseEditFieldsData(caseKey, { [caseKey]: commitData }, caseResponse.headers.etag, this.pConn$.getContextName())
-            .then((response) => {
-              this.PCore$.getContainerUtils().updateChildContainersEtag(this.pConn$.getContextName(), response.headers.etag);
-            });
+        pageTokens.forEach((el) => {
+          if (el !== '') {
+            curr[el] = {};
+            curr = curr[el];
+          }
         });
+
+        // expecting format like {Customer: {pyID:"C-100"}}
+        const propArr = this.propName.split('.');
+        propArr.forEach((element, idx) => {
+          if (idx + 1 === propArr.length) {
+            curr[element] = propValue;
+          } else {
+            curr[element] = {};
+            curr = curr[element];
+          }
+        });
+
+        (
+          PCore.getCaseUtils().updateCaseEditFieldsData(
+            caseKey,
+            { [caseKey]: commitData },
+            caseResponse.headers.etag,
+            this.pConn$.getContextName()
+          ) as Promise<any>
+        ).then((response) => {
+          PCore.getContainerUtils().updateParentLastUpdateTime(this.pConn$.getContextName(), response.data.data.caseInfo.lastUpdateTime);
+          PCore.getContainerUtils().updateRelatedContextEtag(this.pConn$.getContextName(), response.headers.etag);
+        });
+      });
     }
   }
 
@@ -222,8 +226,10 @@ export class DataReferenceComponent implements OnInit {
     const { type, config } = this.firstChildMeta;
     if (this.firstChildMeta?.type !== 'Region') {
       this.pConn$.clearErrorMessages({
-        property: this.propName
-      });
+        property: this.propName,
+        category: '',
+        context: ''
+      } as any);
       if (!this.canBeChangedInReviewMode && this.isDisplayModeEnabled && this.selectionMode === SELECTION_MODE.SINGLE) {
         this.displaySingleRef = true;
       }

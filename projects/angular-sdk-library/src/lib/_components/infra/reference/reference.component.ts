@@ -13,7 +13,7 @@ import { Component, OnInit, Input } from '@angular/core';
   standalone: true
 })
 export class ReferenceComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   configProps$: Object;
   referencedComponent: any = null;
@@ -65,7 +65,7 @@ export class ReferenceComponent implements OnInit {
     }
 
     // If we get here, we have metadata for a View component...
-    const referencedComponentName = viewMetadata.type;
+    // const referencedComponentName = viewMetadata.type;
 
     const viewObject = {
       ...viewMetadata,

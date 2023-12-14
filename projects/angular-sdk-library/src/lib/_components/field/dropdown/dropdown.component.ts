@@ -5,7 +5,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -18,11 +18,11 @@ import { handleEvent } from '../../../_helpers/event-util';
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DropdownComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: any; // typeof PConnect; - tslint error at template
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: any;
 
   label$: string = '';
@@ -48,7 +48,11 @@ export class DropdownComponent implements OnInit {
   localePath: string = '';
   localizedValue: string = '';
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -58,7 +62,7 @@ export class DropdownComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -139,8 +143,9 @@ export class DropdownComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const optionsList = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
     optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
     this.options$ = optionsList;
@@ -148,7 +153,7 @@ export class DropdownComponent implements OnInit {
       this.value$ = 'Select';
     }
 
-    const propName = this.pConn$.getStateProps().value;
+    const propName = (this.pConn$.getStateProps() as any).value;
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 
@@ -165,11 +170,12 @@ export class DropdownComponent implements OnInit {
     this.localizedValue = this.pConn$.getLocalizedValue(
       this.value$,
       this.localePath,
+      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'.
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -179,11 +185,7 @@ export class DropdownComponent implements OnInit {
   }
 
   isSelected(buttonValue: string): boolean {
-    if (this.value$ === buttonValue) {
-      return true;
-    }
-
-    return false;
+    return this.value$ === buttonValue;
   }
 
   fieldOnChange(event: any) {
@@ -191,18 +193,16 @@ export class DropdownComponent implements OnInit {
       event.value = '';
     }
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = (this.pConn$?.getStateProps() as any).value;
     handleEvent(actionsApi, 'changeNblur', propName, event.value);
     if (this.configProps$?.onRecordChange) {
       this.configProps$.onRecordChange(event);
     }
   }
 
-  fieldOnClick(event: any) {}
-
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -210,7 +210,7 @@ export class DropdownComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

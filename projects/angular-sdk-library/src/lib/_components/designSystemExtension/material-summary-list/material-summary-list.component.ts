@@ -2,8 +2,6 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
-
 @Component({
   selector: 'app-material-summary-list',
   templateUrl: './material-summary-list.component.html',
@@ -17,13 +15,5 @@ export class MaterialSummaryListComponent implements OnInit {
   @Input() menuIconOverride$: string = '';
   @Input() menuIconOverrideAction$: any;
 
-  PCore$: any;
-
-  constructor() {}
-
-  ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-  }
+  ngOnInit(): void {}
 }

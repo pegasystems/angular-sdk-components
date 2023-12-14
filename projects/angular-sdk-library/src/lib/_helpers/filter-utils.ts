@@ -1,6 +1,7 @@
 /** This file contains various utility methods to generate filter components, regionLayout data, filter expressions, etc.  */
 // Remove this and use "real" PCore type once .d.ts is fixed (currently shows 5 errors)
 import { v4 as uuidv4 } from 'uuid';
+
 declare const PCore: any;
 
 export const createFilter = (value, fieldId, comparator = 'EQ') => {
@@ -37,17 +38,14 @@ export const combineFilters = (filterList, existingFilters) => {
 };
 
 export const createFilterComponent = (getPConnect, filterMeta, index) => {
-  const dashboardFilter = [];
+  // const dashboardFilter = [];
   const name = filterMeta.config.value.substring(4);
   const filterId = uuidv4();
   let cleanedName = name;
   if (name.indexOf('.') !== -1) {
     cleanedName = name.substring(name.indexOf('.') + 1);
   }
-  let propInfo = PCore.getMetadataUtils().getPropertyMetadata(
-    cleanedName,
-    filterMeta.config.ruleClass
-  );
+  let propInfo = PCore.getMetadataUtils().getPropertyMetadata(cleanedName, filterMeta.config.ruleClass);
   if (!propInfo) {
     propInfo = PCore.getMetadataUtils().getPropertyMetadata(cleanedName);
   }
@@ -59,7 +57,7 @@ export const createFilterComponent = (getPConnect, filterMeta, index) => {
   const filterProp = `.pyDashboardFilter${index}`;
   if (type === 'DateTime') {
     const label = filterMeta.config.label.substring(3);
-    return {type: filterMeta.type, getPConnect, name, filterProp, metadata: filterMeta, label, filterId};
+    return { type: filterMeta.type, getPConnect, name, filterProp, metadata: filterMeta, label, filterId };
   }
   if (datasource && datasource.fields) {
     datasource.fields.key = datasource.fields.value;
@@ -76,13 +74,11 @@ export const createFilterComponent = (getPConnect, filterMeta, index) => {
       hasForm: true
     }
   });
-  return {type: filterMeta.type, getPConnect, name, filterProp, metadata: filterMeta, c11nEnv, filterId};
+  return { type: filterMeta.type, getPConnect, name, filterProp, metadata: filterMeta, c11nEnv, filterId };
 };
 
 export const buildFilterComponents = (getPConnect, allFilters) => {
-  const filterComponents = allFilters.children.map((filter, index) =>
-    createFilterComponent(getPConnect, filter, index)
-  );
+  const filterComponents = allFilters.children.map((filter, index) => createFilterComponent(getPConnect, filter, index));
   return filterComponents;
 };
 
@@ -96,8 +92,9 @@ export const getFilterExpression = (filterValue, name, metadata) => {
   }
 
   if (metadata.config.filterType && metadata.config.filterType === 'RelativeDates') {
-    const fieldSource = metadata.config.datasource.filter(source => source.key === filterValue)[0];
+    const fieldSource = metadata.config.datasource.filter((source) => source.key === filterValue)[0];
     const relativeDateExpression = JSON.parse(fieldSource.json);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const fields = [
       {
         name: relativeDateExpression.condition.lhs.field,
@@ -110,12 +107,10 @@ export const getFilterExpression = (filterValue, name, metadata) => {
   return createFilter(filterValue, name, comparator);
 };
 
-export const getFormattedDate = date => {
+export const getFormattedDate = (date) => {
   if (!date) {
     return date;
   }
-  const formattedDate = `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${(
-    '0' + date.getDate()
-  ).slice(-2)}`;
+  const formattedDate = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(-2)}-${`0${date.getDate()}`.slice(-2)}`;
   return formattedDate;
 };

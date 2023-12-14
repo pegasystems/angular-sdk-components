@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -15,11 +15,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   label$: string = '';
@@ -55,7 +55,7 @@ export class CheckBoxComponent implements OnInit {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -137,7 +137,7 @@ export class CheckBoxComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     if (this.label$ != '') {
       this.showLabel$ = true;
@@ -153,14 +153,12 @@ export class CheckBoxComponent implements OnInit {
   fieldOnChange(event: any) {
     event.value = event.checked;
 
-    this.angularPConnectData.actions.onChange(this, event);
+    this.angularPConnectData.actions?.onChange(this, event);
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     event.value = event.checked;
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
@@ -168,7 +166,7 @@ export class CheckBoxComponent implements OnInit {
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
@@ -179,4 +177,3 @@ export class CheckBoxComponent implements OnInit {
     return errMessage;
   }
 }
-

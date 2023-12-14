@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef } fr
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
-import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 import { getBanners } from '../../../../_helpers/case-utils';
@@ -13,8 +13,6 @@ import { getBanners } from '../../../../_helpers/case-utils';
  * is totally at your own risk.
  */
 
-declare const window: any;
-
 @Component({
   selector: 'app-modal-view-container',
   templateUrl: './modal-view-container.component.html',
@@ -23,15 +21,14 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() displayOnlyFA$: boolean;
 
   // for when non modal
   @Output() modalVisibleChange = new EventEmitter<boolean>();
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   arChildren$: Array<any>;
   configProps$: Object;
@@ -74,10 +71,6 @@ export class ModalViewContainerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     if (this.displayOnlyFA$) {
       // for when non modal
       this.bShowAsModal$ = false;
@@ -86,24 +79,24 @@ export class ModalViewContainerComponent implements OnInit {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    let baseContext = this.pConn$.getContextName();
-    let acName = this.pConn$.getContainerName();
+    const baseContext = this.pConn$.getContextName();
+    const acName = this.pConn$.getContainerName();
 
-    //for now, in general this should be overridden by updateSelf(), and not be blank
+    // for now, in general this should be overridden by updateSelf(), and not be blank
     if (this.itemKey$ === '') {
       this.itemKey$ = baseContext.concat('/').concat(acName);
     }
 
-    const containerMgr = this.pConn$.getContainerManager();
+    const containerMgr: any = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'
     });
 
-    const { CONTAINER_TYPE, PUB_SUB_EVENTS } = this.PCore$.getConstants();
+    // const { CONTAINER_TYPE, PUB_SUB_EVENTS } = PCore.getConstants();
 
     this.angularPConnect.shouldComponentUpdate(this);
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
   }
 
   ngOnChanges(): void {}
@@ -113,9 +106,9 @@ export class ModalViewContainerComponent implements OnInit {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    const { CONTAINER_TYPE, PUB_SUB_EVENTS } = this.PCore$.getConstants();
+    const { PUB_SUB_EVENTS } = PCore.getConstants();
 
-    this.PCore$.getPubSubUtils().unsubscribe(
+    PCore.getPubSubUtils().unsubscribe(
       PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT,
       PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT /* Should be same unique string passed during subscription */
     );
@@ -126,7 +119,7 @@ export class ModalViewContainerComponent implements OnInit {
   onStateChange() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
-    let bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
     // ONLY call updateSelf when the component should update
     if (bUpdateSelf) {
@@ -134,46 +127,47 @@ export class ModalViewContainerComponent implements OnInit {
     } else if (this.bShowModal$) {
       // right now onlu get one updated when initial diaplay.  So, once modal is up
       // let fall through and do a check with "compareCaseInfoIsDifferent" until fixed
-      //this.updateSelf();
+      // this.updateSelf();
     }
   }
 
   // updateSelf
   updateSelf(): void {
     // routingInfo was added as component prop in populateAdditionalProps
-    let routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
+    const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
     this.routingInfoRef['current'] = routingInfo;
 
     let loadingInfo;
     try {
+      // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {}
-    let configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    // const configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.stateProps$ = this.pConn$.getStateProps();
     this.banners = this.getBanners();
 
     if (!loadingInfo) {
       // turn off spinner
-      //this.psService.sendMessage(false);
+      // this.psService.sendMessage(false);
     }
 
     if (routingInfo && !loadingInfo /* && this.bUpdate */) {
-      let currentOrder = routingInfo.accessedOrder;
+      const currentOrder = routingInfo.accessedOrder;
 
       if (undefined == currentOrder) {
         return;
       }
 
-      let currentItems = routingInfo.items;
+      const currentItems = routingInfo.items;
 
       const { key, latestItem } = this.getKeyAndLatestItem(routingInfo);
 
       if (currentOrder.length > 0) {
         if (currentItems[key] && currentItems[key].view && Object.keys(currentItems[key].view).length > 0) {
-          let currentItem = currentItems[key];
-          let rootView = currentItem.view;
-          let { context } = rootView.config;
-          let config = { meta: rootView };
+          const currentItem = currentItems[key];
+          const rootView = currentItem.view;
+          const { context } = rootView.config;
+          const config = { meta: rootView };
           config['options'] = {
             context: currentItem.context,
             hasForm: true,
@@ -182,26 +176,25 @@ export class ModalViewContainerComponent implements OnInit {
 
           if (!this.bSubscribed) {
             this.bSubscribed = true;
-            const { CONTAINER_TYPE, PUB_SUB_EVENTS } = this.PCore$.getConstants();
-            this.routingInfoRef['current'] = routingInfo;
-            this.PCore$.getPubSubUtils().subscribe(
+            const { PUB_SUB_EVENTS } = PCore.getConstants();
+            PCore.getPubSubUtils().subscribe(
               PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT,
               (payload) => {
                 this.showAlert(payload);
               },
-              PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT,
-              this.routingInfoRef
+              PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT
             );
           }
 
-          //let configObject = this.PCore$.createPConnect(config);
+          // let configObject = PCore.createPConnect(config);
 
-          let configObject = this.getConfigObject(currentItem, this.pConn$);
+          const configObject = this.getConfigObject(currentItem, this.pConn$);
 
           // THIS is where the ViewContainer creates a View
           //    The config has meta.config.type = "view"
-          const newComp = configObject.getPConnect();
-          const newCompName = newComp.getComponentName();
+          const newComp = configObject?.getPConnect();
+          // const newCompName = newComp.getComponentName();
+          // @ts-ignore - parameter “contextName” for getDataObject method should be optional
           const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
           // The metadata for pyDetails changed such that the "template": "CaseView"
           //  is no longer a child of the created View but is in the created View's
@@ -209,7 +202,7 @@ export class ModalViewContainerComponent implements OnInit {
           //  component is a View (and not a ViewContainer). We now look for the
           //  "template" type directly in the created component (newComp) and NOT
           //  as a child of the newly created component.
-          //console.log(`---> ModalViewContainer created new ${newCompName}`);
+          // console.log(`---> ModalViewContainer created new ${newCompName}`);
 
           // Use the newly created component (View) info but DO NOT replace
           //  this ModalViewContainer's pConn$, etc.
@@ -225,16 +218,16 @@ export class ModalViewContainerComponent implements OnInit {
             this.ngZone.run(() => {
               this.createdViewPConn$ = newComp;
               const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = 'template' in newConfigProps ? newConfigProps['template'] : '';
+              this.templateName$ = 'template' in newConfigProps ? (newConfigProps['template'] as string) : '';
 
-              const { actionName, isMinimizable } = latestItem;
-              const caseInfo = newComp.getCaseInfo();
-              const caseName = caseInfo.getName();
-              const ID = caseInfo.getID();
+              const { actionName } = latestItem;
+              const theNewCaseInfo = newComp.getCaseInfo();
+              const caseName = theNewCaseInfo.getName();
+              const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
 
               this.title$ = actionName || `${this.localizedVal('New', this.localeCategory)} ${caseName} (${ID})`;
               // // update children with new view's children
-              this.arChildren$ = newComp.getChildren();
+              this.arChildren$ = newComp.getChildren() as Array<any>;
               this.bShowModal$ = true;
 
               // for when non modal
@@ -279,10 +272,10 @@ export class ModalViewContainerComponent implements OnInit {
           context,
           pageReference: view.config.context || pConnect.getPageReference(),
           hasForm: true,
-          containerName: pConnect?.getContainerName() || this.PCore$.getConstants().MODAL
+          containerName: pConnect?.getContainerName() || PCore.getConstants().MODAL
         }
       };
-      return this.PCore$.createPConnect(config);
+      return PCore.createPConnect(config);
     }
     return null;
   }
@@ -306,7 +299,7 @@ export class ModalViewContainerComponent implements OnInit {
     if (latestItem && isModalAction) {
       const configObject = this.getConfigObject(latestItem, this.pConn$);
       this.ngZone.run(() => {
-        this.cancelPConn$ = configObject.getPConnect();
+        this.cancelPConn$ = configObject?.getPConnect();
         this.bShowCancelAlert$ = true;
       });
     }
@@ -337,8 +330,8 @@ export class ModalViewContainerComponent implements OnInit {
     if (isEqual !== undefined) {
       bRet = !isEqual(this.oCaseInfo, oCurrentCaseInfo);
     } else {
-      let sCurrnentCaseInfo = JSON.stringify(oCurrentCaseInfo);
-      let sOldCaseInfo = JSON.stringify(this.oCaseInfo);
+      const sCurrnentCaseInfo = JSON.stringify(oCurrentCaseInfo);
+      const sOldCaseInfo = JSON.stringify(this.oCaseInfo);
       // stringify compare version
       if (sCurrnentCaseInfo != sOldCaseInfo) {
         bRet = true;

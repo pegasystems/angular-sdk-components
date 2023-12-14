@@ -14,38 +14,34 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './repeating-structures.component.html',
   styleUrls: ['./repeating-structures.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule
-  ]
+  imports: [CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule]
 })
 export class RepeatingStructuresComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   configProps: any;
   repeatList$: MatTableDataSource<any>;
   fields$: Array<any>;
   displayedColumns$ = Array<string>();
 
-  constructor(private psService: ProgressSpinnerService, private utils: Utils) {}
+  constructor(
+    private psService: ProgressSpinnerService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
-    const componentConfig = this.pConn$.getRawMetadata().config || { fields: [] };
+    const componentConfig = (this.pConn$.getRawMetadata() as any).config || { fields: [] };
     this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.fields$ = this.initializeColumns(componentConfig.fields);
 
     const refList = this.configProps.referenceList;
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const tableDataResults = JSON.parse(JSON.stringify(this.pConn$.getValue(refList)));
 
     // update elements like date format
-    let updatedRefList = this.updateData(tableDataResults, this.fields$);
+    const updatedRefList = this.updateData(tableDataResults, this.fields$);
 
     this.repeatList$ = new MatTableDataSource(updatedRefList);
     this.displayedColumns$ = this.getDisplayColumns(this.fields$);
@@ -76,19 +72,21 @@ export class RepeatingStructuresComponent implements OnInit {
         this.psService.sendMessage(true);
         this.openAssignment(row);
         break;
+      default:
+        break;
     }
   }
 
   updateData(listData: Array<any>, fieldData: Array<any>): Array<any> {
-    let returnList: Array<any> = new Array<any>();
-    for (let row in listData) {
+    const returnList: Array<any> = new Array<any>();
+    for (const row in listData) {
       // copy
-      let rowData = JSON.parse(JSON.stringify(listData[row]));
+      const rowData = JSON.parse(JSON.stringify(listData[row]));
 
-      for (let field in fieldData) {
+      for (const field in fieldData) {
         if (fieldData[field].type == 'date') {
-          let fieldName = fieldData[field].name;
-          let formattedDate = rowData[fieldName];
+          const fieldName = fieldData[field].name;
+          const formattedDate = rowData[fieldName];
 
           // format date
           // formattedDate = formattedDate.replace("GMT", "+0000");
@@ -107,8 +105,8 @@ export class RepeatingStructuresComponent implements OnInit {
 
   openAssignment(row) {
     const { pxRefObjectClass, pzInsKey } = row;
-    let sTarget = this.pConn$.getContainerName();
-    let options = { containerName: sTarget };
+    const sTarget = this.pConn$.getContainerName();
+    const options: any = { containerName: sTarget };
     this.pConn$
       .getActionsApi()
       .openAssignment(pzInsKey, pxRefObjectClass, options)
@@ -135,7 +133,7 @@ export class RepeatingStructuresComponent implements OnInit {
   }
 
   initializeColumns(fields = []) {
-    return fields.map((field, originalColIndex) => ({
+    return fields.map((field: any, originalColIndex) => ({
       ...field,
       type: this.getType(field),
       name: field.config.value.substring(4),
@@ -149,7 +147,7 @@ export class RepeatingStructuresComponent implements OnInit {
     }));
   }
 
-  getDisplayColumns(fields = []) {
-    return fields.map((field, colIndex) => field.name);
+  getDisplayColumns(fields: Array<any> = []): Array<string> {
+    return fields.map((field: any) => field.name);
   }
 }

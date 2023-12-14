@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
-
 @Component({
   selector: 'app-operator',
   templateUrl: './operator.component.html',
@@ -20,19 +18,17 @@ export class OperatorComponent implements OnInit {
   @Input() helperText$: string;
   @Input() id$: string;
 
-  PCore$: any;
-
   fields$: Array<any> = [];
   bShowPopover$: boolean;
 
-  constructor(private renderer: Renderer2, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private renderer: Renderer2,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
-    this.renderer.listen('window', 'click', (e: Event) => {
+    this.renderer.listen('window', 'click', () => {
       if (this.bShowPopover$) {
         this.bShowPopover$ = false;
       }
@@ -47,8 +43,8 @@ export class OperatorComponent implements OnInit {
   }
 
   showOperator() {
-    const operatorPreviewPromise = this.PCore$.getUserApi().getOperatorDetails(this.id$);
-    const localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    const operatorPreviewPromise = PCore.getUserApi().getOperatorDetails(this.id$);
+    const localizedVal = PCore.getLocaleUtils().getLocaleValue;
     const localeCategory = 'Operator';
     const fillerString = '---';
 

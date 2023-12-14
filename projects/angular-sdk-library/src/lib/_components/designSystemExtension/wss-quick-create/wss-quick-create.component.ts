@@ -13,7 +13,5 @@ export class WssQuickCreateComponent {
   @Input() actions$: any;
   @Input() heading$: any;
 
-  constructor() {}
-
   ngOnInit() {}
 }

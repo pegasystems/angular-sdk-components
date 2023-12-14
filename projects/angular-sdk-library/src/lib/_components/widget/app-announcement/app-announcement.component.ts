@@ -10,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, MatButtonModule]
 })
 export class AppAnnouncementComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   header$: string;
   description$: string;
@@ -18,10 +18,8 @@ export class AppAnnouncementComponent implements OnInit {
   label$: string;
   whatsnewlink$: string;
 
-  constructor() {}
-
   ngOnInit(): void {
-    let configProps = this.pConn$.getConfigProps();
+    const configProps: any = this.pConn$.getConfigProps();
 
     this.header$ = configProps.header;
     this.description$ = configProps.description;

@@ -1,17 +1,10 @@
 import { Injectable } from '@angular/core';
 import { getSdkConfig, SdkConfigAccess } from '@pega/auth/lib/sdk-auth-manager';
-import { Utils } from '../_helpers/utils';
-import { endpoints } from './endpoints';
-
-declare const window: any;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ServerConfigService {
-
-  constructor() {}
-
   /**
    * Asynchronous initialization of the config file contents.
    * @returns Promise of config file fetch
@@ -19,7 +12,6 @@ export class ServerConfigService {
   readSdkConfig(): Promise<any> {
     return getSdkConfig();
   }
-
 
   /**
    *

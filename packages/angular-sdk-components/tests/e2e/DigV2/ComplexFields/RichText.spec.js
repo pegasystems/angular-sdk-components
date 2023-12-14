@@ -21,7 +21,7 @@ test.describe('E2E test', () => {
     await expect(worklist).toBeVisible();
 
     /** Creating a RichText Editor case-type */
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     const richTextCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("RichText Editor")');

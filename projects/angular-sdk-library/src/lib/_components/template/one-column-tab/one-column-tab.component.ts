@@ -11,13 +11,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnTabComponent implements OnInit, OnChanges {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   configProps$: Object;
   arChildren$: Array<any>;
-
-  constructor() {}
 
   ngOnInit(): void {
     this.updateSelf();
@@ -33,6 +31,6 @@ export class OneColumnTabComponent implements OnInit, OnChanges {
 
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
   }
 }

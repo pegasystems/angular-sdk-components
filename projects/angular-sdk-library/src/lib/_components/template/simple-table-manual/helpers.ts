@@ -1,37 +1,36 @@
-declare var PCore;
+declare let PCore;
 
-export const TABLE_CELL = "SdkRenderer";
-export const DELETE_ICON = "DeleteIcon";
+export const TABLE_CELL = 'SdkRenderer';
+export const DELETE_ICON = 'DeleteIcon';
 
 // BUG-615253: Workaround for autosize in table with lazy loading components
 /* istanbul ignore next */
 function getFiledWidth(field, label) {
   let width;
   switch (field.type) {
-    case "Time":
+    case 'Time':
       width = 150;
       break;
-    case "Date":
+    case 'Date':
       width = 160;
       break;
-    case "DateTime":
+    case 'DateTime':
       width = 205;
       break;
-    case "AutoComplete":
-    case "TextArea":
+    case 'AutoComplete':
+    case 'TextArea':
       width = 190;
       break;
-    case "Currency":
-    case "TextInput":
+    case 'Currency':
+    case 'TextInput':
       width = 182;
       break;
-    case "Checkbox":
-       
+    case 'Checkbox':
       // eslint-disable-next-line no-case-declarations
-      const text = document.createElement("span");
+      const text = document.createElement('span');
       document.body.appendChild(text);
-      text.style.fontSize = "13px";
-      text.style.position = "absolute";
+      text.style.fontSize = '13px';
+      text.style.position = 'absolute';
       text.innerHTML = label;
       width = Math.ceil(text.clientWidth) + 30;
       document.body.removeChild(text);
@@ -45,18 +44,13 @@ function getFiledWidth(field, label) {
 export const getContext = (thePConn) => {
   const contextName = thePConn.getContextName();
   const pageReference = thePConn.getPageReference();
-  // 8.7 change = referenceList may now be in top-level of state props, 
+  // 8.7 change = referenceList may now be in top-level of state props,
   //  not always in config of state props
   let { referenceList } = thePConn.getStateProps()?.config || thePConn.getStateProps();
-  const pageReferenceForRows = referenceList.startsWith(".")
-    ? `${pageReference}.${referenceList.substring(1)}`
-    : referenceList;
+  const pageReferenceForRows = referenceList.startsWith('.') ? `${pageReference}.${referenceList.substring(1)}` : referenceList;
 
   // removing "caseInfo.content" prefix to avoid setting it as a target while preparing pageInstructions
-  referenceList = pageReferenceForRows.replace(
-    PCore.getConstants().CASE_INFO.CASE_INFO_CONTENT,
-    ""
-  );
+  referenceList = pageReferenceForRows.replace(PCore.getConstants().CASE_INFO.CASE_INFO_CONTENT, '');
 
   return {
     contextName,
@@ -88,24 +82,12 @@ export const getApiContext = (processedData, pConnect, reorderCB) => {
     applyRowReorder: (sourceKey, destinationKey) => {
       // indexes are keys for simple table so, it should work.
       reorderCB();
-      return Promise.resolve(
-        pConnect
-          .getListActions()
-          .reorder(parseInt(sourceKey, 10), parseInt(destinationKey, 10))
-      );
+      return Promise.resolve(pConnect.getListActions().reorder(parseInt(sourceKey, 10), parseInt(destinationKey, 10)));
     }
   };
 };
 
-export const buildMetaForListView = (
-  fieldMetadata,
-  fields,
-  type,
-  ruleClass,
-  name,
-  propertyLabel,
-  parameters
-) => {
+export const buildMetaForListView = (fieldMetadata, fields, type, ruleClass, name, propertyLabel, parameters) => {
   return {
     name,
     config: {
@@ -117,22 +99,22 @@ export const buildMetaForListView = (
       globalSearch: true,
       reorderFields: true,
       toggleFieldVisibility: true,
-      personalizationId: "" /* TODO */,
-      template: "ListView",
+      personalizationId: '' /* TODO */,
+      template: 'ListView',
       presets: [
         {
-          name: "presets",
-          template: "Table",
+          name: 'presets',
+          template: 'Table',
           config: {},
           children: [
             {
-              name: "Columns",
-              type: "Region",
+              name: 'Columns',
+              type: 'Region',
               children: fields
             }
           ],
           label: propertyLabel,
-          id: "P_" /* TODO */
+          id: 'P_' /* TODO */
         }
       ],
       ruleClass
@@ -143,7 +125,7 @@ export const buildMetaForListView = (
 export const buildFieldsForTable = (configFields, fields, showDeleteButton) => {
   const fieldDefs = configFields?.map((field, index) => {
     return {
-      type: "text",
+      type: 'text',
       label: fields[index].config.label || fields[index].config.caption,
       fillAvailableSpace: !!field.config.fillAvailableSpace,
       id: index,
@@ -163,8 +145,8 @@ export const buildFieldsForTable = (configFields, fields, showDeleteButton) => {
   // ONLY add DELETE_ICON to fields when the table is requested as EDITABLE
   if (showDeleteButton) {
     fieldDefs.push({
-      type: "text",
-      label: "",
+      type: 'text',
+      label: '',
       name: DELETE_ICON,
       id: fieldDefs.length,
       cellRenderer: DELETE_ICON,
@@ -173,7 +155,7 @@ export const buildFieldsForTable = (configFields, fields, showDeleteButton) => {
       showMenu: false,
       // BUG-615253: Workaround for autosize in table with lazy loading components
       width: 46
-    });  
+    });
   }
 
   return fieldDefs;
@@ -182,17 +164,17 @@ export const buildFieldsForTable = (configFields, fields, showDeleteButton) => {
 export const createMetaForTable = (fields, renderMode) => {
   return {
     height: {
-      minHeight: "auto",
-      fitHeightToElement: "fitHeightToElement",
-      deltaAdjustment: "deltaAdjustment",
+      minHeight: 'auto',
+      fitHeightToElement: 'fitHeightToElement',
+      deltaAdjustment: 'deltaAdjustment',
       autoSize: true
     },
     fieldDefs: fields,
-    itemKey: "index",
+    itemKey: 'index',
     grouping: false,
     reorderFields: false,
-    reorderItems: renderMode === "Editable",
-    dragHandle: renderMode === "Editable",
+    reorderItems: renderMode === 'Editable',
+    dragHandle: renderMode === 'Editable',
     globalSearch: false,
     personalization: false,
     toggleFieldVisibility: false,

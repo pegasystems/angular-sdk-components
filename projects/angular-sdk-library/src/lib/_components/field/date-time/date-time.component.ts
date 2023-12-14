@@ -9,14 +9,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { handleEvent } from '../../../_helpers/event-util';
 
 class MyFormat {
-  constructor() {}
   theDateFormat: any = getDateFormatInfo();
 
   get display() {
@@ -55,11 +54,11 @@ class MyFormat {
   providers: [{ provide: NGX_MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateTimeComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   label$: string = '';
@@ -86,7 +85,11 @@ export class DateTimeComponent implements OnInit {
   theDateFormat: any = getDateFormatInfo();
   placeholder: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private cdRef: ChangeDetectorRef, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm a`;
@@ -95,7 +98,7 @@ export class DateTimeComponent implements OnInit {
     this.controlName$ = this.angularPConnect.getComponentID(this);
     // Then, continue on with other initialization
     // call updateSelf when initializing
-    //this.updateSelf();
+    // this.updateSelf();
     this.checkAndUpdate();
 
     if (this.formGroup$ != null) {
@@ -172,11 +175,11 @@ export class DateTimeComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$['readOnly']);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      let timer = interval(100).subscribe(() => {
+      const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
 
@@ -188,24 +191,22 @@ export class DateTimeComponent implements OnInit {
   fieldOnChange(event: any) {
     const value = event.value && event.value.isValid() ? event.value : null;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = (this.pConn$?.getStateProps() as any).value;
     handleEvent(actionsApi, 'changeNblur', propName, value?.toISOString());
   }
-
-  fieldOnClick(event: any) {}
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
     if (event.target.value) event.value = event.target.value;
 
-    this.angularPConnectData.actions.onBlur(this, event);
+    this.angularPConnectData.actions?.onBlur(this, event);
   }
 
   getErrorMessage() {
     let errMessage: string = '';
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage;
+      errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';

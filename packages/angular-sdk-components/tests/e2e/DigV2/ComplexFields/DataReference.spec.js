@@ -21,7 +21,7 @@ test.describe('E2E test', () => {
     await expect(worklist).toBeVisible();
 
     /** Click on the Create Case button */
-    let createCase = page.locator('mat-list-item[id="create-case-button"]');
+    const createCase = page.locator('mat-list-item[id="create-case-button"]');
     await createCase.click();
 
     /** Creating a Complex Fields case-type */
@@ -56,7 +56,7 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    //await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
+    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
@@ -72,7 +72,7 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Dropdown' }).click();
 
     selectedProduct = page.getByLabel('Selected Product');
-    //selectedProduct = page.locator('mat-select[role="combobox"]');
+    // selectedProduct = page.locator('mat-select[role="combobox"]');
     await selectedProduct.click();
     await page.getByRole('option', { name: 'Basic Product' }).click();
 
@@ -82,7 +82,7 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    //await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
+    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
@@ -107,7 +107,7 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    //await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
+    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
@@ -125,7 +125,7 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'SingleRecord' }).click();
 
     selectedProduct = page.getByLabel('Selected Product');
-    //selectedProduct = page.locator('input[id="mat-input-9"]');
+    // selectedProduct = page.locator('input[id="mat-input-9"]');
     await selectedProduct.click();
     await page.getByRole('option', { name: 'Basic Product' }).click();
 
@@ -135,7 +135,7 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    //await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
+    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
@@ -180,7 +180,7 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'SingleSelect' }).click();
 
     selectedProduct = page.getByLabel('Selected Product');
-    //selectedProduct = page.locator('input[id="mat-input-6"]');
+    // selectedProduct = page.locator('input[id="mat-input-6"]');
     await selectedProduct.click();
     await page.getByRole('option', { name: 'Basic Product' }).click();
     await expect(selectedProduct).toBeVisible();
@@ -191,7 +191,7 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    //await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
+    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
@@ -215,7 +215,7 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    //await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
+    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 

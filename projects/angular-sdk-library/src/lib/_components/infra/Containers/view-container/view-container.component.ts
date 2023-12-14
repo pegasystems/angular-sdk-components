@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
@@ -12,8 +12,6 @@ import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/c
  * is totally at your own risk.
  */
 
-declare const window: any;
-
 @Component({
   selector: 'app-view-container',
   templateUrl: './view-container.component.html',
@@ -22,13 +20,12 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = null;
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   arChildren$: Array<any>;
   configProps$: Object;
@@ -47,18 +44,18 @@ export class ViewContainerComponent implements OnInit {
   state: any;
   dispatchObject: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private psService: ProgressSpinnerService, private ngZone: NgZone) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private psService: ProgressSpinnerService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
-    if (this.PCore$ == null) {
-      this.PCore$ = window.PCore;
-    }
-
     if (this.displayOnlyFA$ == null) {
       this.displayOnlyFA$ = false;
     }
 
-    //debugger;
+    // debugger;
 
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
@@ -73,12 +70,12 @@ export class ViewContainerComponent implements OnInit {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.templateName$ = 'template' in this.configProps$ ? (this.configProps$['template'] as string) : '';
     this.title$ = 'title' in this.configProps$ ? (this.configProps$['title'] as string) : '';
-    const { CONTAINER_TYPE, APP } = this.PCore$.getConstants();
-    const { name, mode, limit, loadingInfo } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const { CONTAINER_TYPE, APP } = PCore.getConstants();
+    const { name, mode, limit }: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
     this.pConn$.isBoundToState();
 
-    const containerMgr = this.pConn$.getContainerManager();
+    const containerMgr: any = this.pConn$.getContainerManager();
 
     this.prepareDispatchObject = this.prepareDispatchObject.bind(this);
 
@@ -90,7 +87,7 @@ export class ViewContainerComponent implements OnInit {
       dispatchObject: this.dispatchObject,
       // PCore is defined in pxBootstrapShell - eventually will be exported in place of constellationCore
 
-      visible: !this.PCore$['checkIfSemanticURL']()
+      visible: !PCore.checkIfSemanticURL()
     };
 
     // here, to match Nebula/Constellation, the constructor of ViewContainer is only called once, and thus init/add container is only
@@ -108,11 +105,12 @@ export class ViewContainerComponent implements OnInit {
 
       if (mode === CONTAINER_TYPE.MULTIPLE && limit) {
         /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
-        this.PCore$.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
+        PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
       }
     }
 
     if (sessionStorage.getItem('hasViewContainer') == 'false') {
+      // @ts-ignore - Property 'getMetadata' is private and only accessible within class
       if (this.pConn$.getMetadata()['children']) {
         containerMgr.addContainerItem(this.dispatchObject);
       }
@@ -157,23 +155,25 @@ export class ViewContainerComponent implements OnInit {
     }
 
     // routingInfo was added as component prop in populateAdditionalProps
-    let routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
+    const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
 
     let loadingInfo;
     try {
+      // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
 
       this.psService.sendMessage(loadingInfo);
     } catch (ex) {}
 
-    const buildName = this.buildName();
-    const { CREATE_DETAILS_VIEW_NAME } = this.PCore$.getConstants();
+    // const buildName = this.buildName();
+    const { CREATE_DETAILS_VIEW_NAME } = PCore.getConstants();
     if (routingInfo) {
       const { accessedOrder, items } = routingInfo;
       if (accessedOrder && items) {
         const key = accessedOrder[accessedOrder.length - 1];
         let componentVisible = accessedOrder.length > 0;
         const { visible } = this.state;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         componentVisible = visible || componentVisible;
         if (items[key] && items[key].view && Object.keys(items[key].view).length > 0) {
           const latestItem = items[key];
@@ -187,12 +187,12 @@ export class ViewContainerComponent implements OnInit {
             containerItemName: key,
             hasForm: viewName === CREATE_DETAILS_VIEW_NAME
           };
-          const configObject = this.PCore$.createPConnect(config);
+          const configObject = PCore.createPConnect(config);
 
           // THIS is where the ViewContainer creates a View
           //    The config has meta.config.type = "view"
           const newComp = configObject.getPConnect();
-          const newCompName = newComp.getComponentName();
+          // const newCompName = newComp.getComponentName();
           // The metadata for pyDetails changed such that the "template": "CaseView"
           //  is no longer a child of the created View but is in the created View's
           //  config. So, we DON'T want to replace this.pConn$ since the created
@@ -228,7 +228,7 @@ export class ViewContainerComponent implements OnInit {
               const newConfigProps = theDereferencedView.getConfigProps();
 
               // children may have a 'reference' so normalize the children arra
-               
+
               const theDereferencedViewChildren = ReferenceComponent.normalizePConnArray(theDereferencedView.getChildren());
               this.templateName$ = ('template' in newConfigProps) ? newConfigProps["template"] : "";
               this.title$ = ('title' in newConfigProps) ? newConfigProps["title"] : "";
@@ -243,8 +243,8 @@ export class ViewContainerComponent implements OnInit {
 
               this.createdViewPConn$ = newComp;
               const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = 'template' in newConfigProps ? newConfigProps['template'] : '';
-              this.title$ = 'title' in newConfigProps ? newConfigProps['title'] : '';
+              this.templateName$ = newConfigProps['template'] || '';
+              this.title$ = newConfigProps['title'] || '';
               // update children with new view's children
               // children may have a 'reference' so normalize the children array
               this.arChildren$ = ReferenceComponent.normalizePConnArray(newComp.getChildren());
@@ -256,10 +256,9 @@ export class ViewContainerComponent implements OnInit {
   }
 
   prepareDispatchObject(): any {
-    //const { getPConnect } = this.configProps$;
-    const pConn = this.pConn$;
-    const baseContext = pConn.getContextName();
-    const { acName = 'primary' } = pConn.getContainerName();
+    const baseContext = this.pConn$.getContextName();
+    // const { acName = "primary" } = pConn.getContainerName(); // doesn't work with 8.23 typings
+    const acName = this.pConn$.getContainerName() || 'primary';
 
     return {
       semanticURL: '',
@@ -269,9 +268,9 @@ export class ViewContainerComponent implements OnInit {
   }
 
   buildName(): string {
-    let sContext = this.pConn$.getContextName();
-    let sName = this.pConn$.getContainerName();
+    const sContext = this.pConn$.getContextName();
+    const sName = this.pConn$.getContainerName();
 
-    return sContext.toUpperCase() + '/' + sName.toUpperCase();
+    return `${sContext.toUpperCase()}/${sName.toUpperCase()}`;
   }
 }

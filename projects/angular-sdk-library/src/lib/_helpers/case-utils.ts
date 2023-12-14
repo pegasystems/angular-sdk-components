@@ -19,7 +19,7 @@ function getMessagesGrouped(inputMessages) {
   const messages = {};
 
   if (inputMessages && inputMessages instanceof Array && inputMessages.length > 0) {
-    inputMessages.forEach(item => {
+    inputMessages.forEach((item) => {
       const { message, type } = item;
       messages[type] = [...(messages[type] || []), message];
     });
@@ -35,8 +35,7 @@ function getMessagesGrouped(inputMessages) {
  * Eg: 'urgent'
  */
 function getVariant(type) {
-  const { BANNER_VARIANT_SUCCESS, BANNER_VARIANT_INFO, BANNER_VARIANT_URGENT, MESSAGES } =
-    window.PCore.getConstants();
+  const { BANNER_VARIANT_SUCCESS, BANNER_VARIANT_INFO, BANNER_VARIANT_URGENT, MESSAGES } = window.PCore.getConstants();
   const { MESSAGES_TYPE_ERROR, MESSAGES_TYPE_INFO, MESSAGES_TYPE_SUCCESS } = MESSAGES;
 
   let variant;
@@ -59,11 +58,11 @@ function getVariant(type) {
 function getBanners(config) {
   const { target, pageMessages, httpMessages } = config;
   const { PAGE } = window.PCore.getConstants();
-  const { clearMessages } = window.PCore.getMessageManager();
+  // const { clearMessages } = window.PCore.getMessageManager();
   const banners: any = [];
   const groupedPageMessages = getMessagesGrouped(pageMessages);
 
-  Object.keys(groupedPageMessages).forEach(type => {
+  Object.keys(groupedPageMessages).forEach((type) => {
     const messagesByType = groupedPageMessages[type];
     const variant = getVariant(type);
     const pageMessagesBannerID = `${target}_${PAGE}_${type}`.toLowerCase().replace('/', '_');

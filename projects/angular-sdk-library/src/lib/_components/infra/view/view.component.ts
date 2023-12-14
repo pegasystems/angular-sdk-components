@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { getAllFields } from '../../template/utils';
 import { ReferenceComponent } from '../reference/reference.component';
@@ -21,12 +21,12 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
-  //@Input() updateToken$: number;
+  // @Input() updateToken$: number;
 
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   configProps$: Object;
   inheritedProps$: Object;
@@ -36,7 +36,10 @@ export class ViewComponent implements OnInit {
   label$: string = '';
   showLabel$: boolean = true;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit() {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -74,7 +77,7 @@ export class ViewComponent implements OnInit {
       return;
     }
 
-    //debugger;
+    // debugger;
 
     // normalize this.pConn$ in case it contains a 'reference'
     this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
@@ -95,14 +98,14 @@ export class ViewComponent implements OnInit {
     this.showLabel$ = 'showLabel' in this.inheritedProps$ ? (this.inheritedProps$['showLabel'] as boolean) : this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
-    // was:  this.arChildren$ = this.pConn$.getChildren();
+    // was:  this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     // debug
     // let  kidList: string = "";
     // for (let i in this.arChildren$) {
     //   kidList = kidList.concat(this.arChildren$[i].getPConnect().getComponentName()).concat(",");
     // }
-    //console.log("-->view update: " + this.angularPConnect.getComponentID(this) + ", template: " + this.templateName$ + ", kids: " + kidList);
+    // console.log("-->view update: " + this.angularPConnect.getComponentID(this) + ", template: " + this.templateName$ + ", kids: " + kidList);
   }
 
   // JA - adapting additionalProps from Nebula/Constellation version which uses static methods
@@ -129,6 +132,8 @@ export class ViewComponent implements OnInit {
         case 'Details':
           allFields = getAllFields(getPConnect);
           propObj = { fields: allFields[0] };
+          break;
+        default:
           break;
       }
     }

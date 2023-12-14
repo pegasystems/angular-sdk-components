@@ -13,7 +13,7 @@ declare const PCore: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class QuickCreateComponent {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: any;
 
   configProps$: Object;
@@ -28,7 +28,7 @@ export class QuickCreateComponent {
   createCase(className) {
     this.pConn$
       .getActionsApi()
-      .createWork(className, {})
+      .createWork(className, {} as any)
       .catch((error) => {
         console.log('Error in case creation: ', error?.message);
       });

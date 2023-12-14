@@ -12,7 +12,6 @@ import { Utils } from '../../../_helpers/utils';
   imports: [CommonModule, MatButtonModule, MatMenuModule]
 })
 export class MaterialSummaryItemComponent implements OnInit {
-  @Input() PCore$: any;
   @Input() item$: any;
   @Input() menuIconOverride$: string = '';
   @Input() menuIconOverrideAction$: any;

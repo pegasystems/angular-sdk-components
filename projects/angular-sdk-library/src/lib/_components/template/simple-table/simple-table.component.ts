@@ -1,11 +1,9 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-simple-table',
@@ -15,24 +13,23 @@ declare const window: any;
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
 
   bVisible$: boolean = true;
   configProps$: any;
   fieldGroupProps: any;
 
-  constructor(private angularPConnect: AngularPConnectService, private utils: Utils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     // Then, continue on with other initialization
 
     // call checkAndUpdate when initializing
@@ -69,8 +66,10 @@ export class SimpleTableComponent implements OnInit {
     const { multiRecordDisplayAs } = this.configProps$;
     let { contextClass } = this.configProps$;
     if (!contextClass) {
+      // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
       let listName = this.pConn$.getComponentConfig().referenceList;
-      listName = this.PCore$.getAnnotationUtils().getPropertyName(listName);
+      listName = PCore.getAnnotationUtils().getPropertyName(listName);
+      // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
       contextClass = this.pConn$.getFieldMetadata(listName)?.pageClass;
     }
     if (multiRecordDisplayAs === 'fieldGroup') {
@@ -83,4 +82,3 @@ export class SimpleTableComponent implements OnInit {
     this.checkAndUpdate();
   }
 }
-

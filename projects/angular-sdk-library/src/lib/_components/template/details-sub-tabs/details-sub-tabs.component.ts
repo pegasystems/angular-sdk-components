@@ -2,11 +2,9 @@ import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tab-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-
-declare const window: any;
 
 @Component({
   selector: 'app-details-sub-tabs',
@@ -16,13 +14,12 @@ declare const window: any;
   imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsSubTabsComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   configProps$: Object;
   arChildren$: Array<any>;
-  angularPConnectData: any = {};
-  PCore$: any;
+  angularPConnectData: AngularPConnectData = {};
   defaultTabIndex = 0;
   currentTabId = this.defaultTabIndex.toString();
   tabItems: Array<any>;
@@ -32,9 +29,6 @@ export class DetailsSubTabsComponent implements OnInit {
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     this.checkAndUpdate();
   }
 

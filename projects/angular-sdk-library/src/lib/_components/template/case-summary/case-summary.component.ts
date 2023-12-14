@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -12,10 +12,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseSummaryComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   configProps$: Object;
   arChildren$: Array<any>;
@@ -47,7 +47,7 @@ export class CaseSummaryComponent implements OnInit {
     // Then, continue on with other initialization
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     this.generatePrimaryAndSecondaryFields();
 
@@ -79,13 +79,13 @@ export class CaseSummaryComponent implements OnInit {
     this.primaryFields$ = [];
     this.secondaryFields$ = [];
 
-    for (let oField of this.arChildren$[0].getPConnect().getChildren()) {
-      let kid = oField.getPConnect();
+    for (const oField of this.arChildren$[0].getPConnect().getChildren()) {
+      const kid = oField.getPConnect();
       this.primaryFields$.push(kid.resolveConfigProps(kid.getRawMetadata()));
     }
 
-    for (let oField of this.arChildren$[1].getPConnect().getChildren()) {
-      let kid = oField.getPConnect();
+    for (const oField of this.arChildren$[1].getPConnect().getChildren()) {
+      const kid = oField.getPConnect();
       this.secondaryFields$.push(kid.resolveConfigProps(kid.getRawMetadata()));
     }
   }

@@ -8,10 +8,13 @@ import { Utils } from '../_helpers/utils';
   providedIn: 'root'
 })
 export class DatapageService {
-  constructor(private http: HttpClient, private scService: ServerConfigService) {}
+  constructor(
+    private http: HttpClient,
+    private scService: ServerConfigService
+  ) {}
 
-  //dataPageUrl = endpoints.BASEURL + endpoints.DATA;
-  //dataPageUrl = this.scService.getBaseUrl() + endpoints.API + endpoints.DATA;
+  // dataPageUrl = endpoints.BASEURL + endpoints.DATA;
+  // dataPageUrl = this.scService.getBaseUrl() + endpoints.API + endpoints.DATA;
   dataPageUrl: string;
 
   getDataPage(id, dpParams) {
@@ -23,7 +26,7 @@ export class DatapageService {
 
     dataHeaders = dataHeaders.append('Content-Type', 'application/json');
 
-    return this.http.get(this.dataPageUrl + '/' + id, { observe: 'response', params: dpParams, headers: dataHeaders });
+    return this.http.get(`${this.dataPageUrl}/${id}`, { observe: 'response', params: dpParams, headers: dataHeaders });
   }
 
   getResults(response) {
@@ -38,9 +41,8 @@ export class DatapageService {
       };
     }
     return new Promise((resolve, reject) => {
-      window.PCore.getDataApiUtils()
-        .getData(dataPageName, dataViewParams, context)
-        .then((response) => {
+      (window.PCore.getDataApiUtils().getData(dataPageName, dataViewParams, context) as Promise<object>)
+        .then((response: any) => {
           resolve(response.data.data);
         })
         .catch((e) => {

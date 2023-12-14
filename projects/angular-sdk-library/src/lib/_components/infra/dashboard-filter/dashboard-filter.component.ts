@@ -10,35 +10,36 @@ import { Subject } from 'rxjs';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getFilterExpression, getFormattedDate, createFilter, combineFilters } from '../../../_helpers/filter-utils';
 
-
 @Component({
   selector: 'app-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatFormFieldModule, ReactiveFormsModule, MatDatepickerModule, MatButtonModule, MatNativeDateModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatNativeDateModule,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class DashboardFilterComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() filtersFormGroup$: FormGroup;
   @Input() inlineProps;
   @Input() children;
-  angularPConnectData: any = {};
+
   configProps$: Object;
   arChildren$: Array<any>;
-  PCore$: any;
   private filterChangeSubject = new Subject<string>();
-  
+
   constructor() {
-    this.filterChangeSubject.pipe(
-      debounceTime(500)
-    ).subscribe((val) => this.fireFilterChange(val));
+    this.filterChangeSubject.pipe(debounceTime(500)).subscribe((val) => this.fireFilterChange(val));
   }
 
   ngOnInit() {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
     if (this.filtersFormGroup$ != null) {
       this.filtersFormGroup$.addControl('start', new FormControl(null));
       this.filtersFormGroup$.addControl('end', new FormControl(null));
@@ -47,9 +48,8 @@ export class DashboardFilterComponent implements OnInit {
 
   clearFilters() {
     this.filtersFormGroup$.reset();
-    this.PCore$.getPubSubUtils().publish(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL
-    );
+    // @ts-ignore - second parameter “payload” for publish method should be optional
+    PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL);
   }
 
   updateTmpData(filterData) {
@@ -58,8 +58,8 @@ export class DashboardFilterComponent implements OnInit {
 
   dateRangeChangeHandler(field) {
     const { filterId, name } = field;
-    const start = this.filtersFormGroup$.get('start').value;
-    const end = this.filtersFormGroup$.get('end').value;
+    const start = (this.filtersFormGroup$.get('start') as FormControl).value;
+    const end = (this.filtersFormGroup$.get('end') as FormControl).value;
     if (start && end) {
       let startDate = getFormattedDate(start);
       let endDate = getFormattedDate(end);
@@ -74,10 +74,7 @@ export class DashboardFilterComponent implements OnInit {
           filterId,
           filterExpression: combineFilters([startFilter, endFilter], null)
         };
-        this.PCore$.getPubSubUtils().publish(
-          this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
-          filterData
-        );
+        PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE, filterData);
       }
     }
   }
@@ -89,10 +86,6 @@ export class DashboardFilterComponent implements OnInit {
       filterExpression: getFilterExpression(event.target.value, field.name, field.metadata)
     };
 
-    this.PCore$.getPubSubUtils().publish(
-      this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
-      filterData
-    );
-  };
-
+    PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE, filterData);
+  }
 }

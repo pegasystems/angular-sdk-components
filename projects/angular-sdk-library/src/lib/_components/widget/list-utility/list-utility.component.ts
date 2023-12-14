@@ -6,8 +6,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-declare const window: any;
-
 @Component({
   selector: 'app-list-utility',
   templateUrl: './list-utility.component.html',
@@ -26,8 +24,6 @@ export class ListUtilityComponent implements OnInit {
   // function to all
   @Input() onViewAll$: any;
 
-  PCore$: any;
-
   headerSvgIcon$: string;
   settingsSvgIcon$: string;
 
@@ -38,10 +34,6 @@ export class ListUtilityComponent implements OnInit {
   constructor(private utils: Utils) {}
 
   ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-
     this.imagePath$ = this.getIconPath();
 
     this.headerSvgIcon$ = this.utils.getImageSrc(this.icon$, this.utils.getSDKStaticContentUrl());
@@ -51,6 +43,6 @@ export class ListUtilityComponent implements OnInit {
   ngOnChanges() {}
 
   getIconPath(): string {
-    return this.utils.getSDKStaticContentUrl() + 'assets/icons/';
+    return `${this.utils.getSDKStaticContentUrl()}assets/icons/`;
   }
 }

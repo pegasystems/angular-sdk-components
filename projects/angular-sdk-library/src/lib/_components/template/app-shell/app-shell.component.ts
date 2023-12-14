@@ -2,7 +2,7 @@ import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -14,10 +14,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AppShellComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
   configProps$: Object;
 
   pages$: Array<any>;
@@ -60,7 +60,7 @@ export class AppShellComponent implements OnInit {
     }
     this.caseTypes$ = this.configProps$['caseTypes'];
 
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     this.portalTemplate = this.configProps$['portalTemplate'];
 
@@ -111,7 +111,7 @@ export class AppShellComponent implements OnInit {
       }
 
       this.caseTypes$ = this.configProps$['caseTypes'];
-      this.arChildren$ = this.pConn$.getChildren();
+      this.arChildren$ = this.pConn$.getChildren() as Array<any>;
     });
   }
 
@@ -125,7 +125,7 @@ export class AppShellComponent implements OnInit {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
 
           if (this.bOkDisplayError) {
-            let config = { panelClass: ['snackbar-newline'] };
+            const config = { panelClass: ['snackbar-newline'] };
             this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
           }
         }
@@ -141,7 +141,7 @@ export class AppShellComponent implements OnInit {
         this.bOkDisplayError = true;
 
         if (this.bOkDisplayError) {
-          let config = { panelClass: ['snackbar-newline'] };
+          const config = { panelClass: ['snackbar-newline'] };
           this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
         }
         // this.snackBarRef.afterDismissed().subscribe( info => {
@@ -166,7 +166,8 @@ export class AppShellComponent implements OnInit {
 
         this.bOkDisplayError = true;
         this.sErrorMessages = '';
-
+        break;
+      default:
         break;
     }
   }

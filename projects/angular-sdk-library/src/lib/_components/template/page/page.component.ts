@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -12,11 +12,11 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PageComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
-  angularPConnectData: any = {};
+  angularPConnectData: AngularPConnectData = {};
 
   configProps$: Object;
   arChildren$: Array<any>;
@@ -28,13 +28,13 @@ export class PageComponent implements OnInit {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    this.arChildren$ = this.pConn$.getChildren();
+    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     this.title$ = this.configProps$['title'];
-    let operator = this.configProps$['operator'];
+    const operator = this.configProps$['operator'];
 
     if (operator && operator != '') {
-      this.title$ += ', ' + operator;
+      this.title$ += `, ${operator}`;
     }
 
     // when showing a page, similar to updating root, need to cause viewContainer to call "initContainer"
@@ -56,7 +56,7 @@ export class PageComponent implements OnInit {
     //      should be the real "gate"
     if (bUpdateSelf) {
       // turn off spinner
-      //this.psService.sendMessage(false);
+      // this.psService.sendMessage(false);
     }
   }
 }

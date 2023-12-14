@@ -13,7 +13,7 @@ import { TemplateUtils } from '../../../_helpers/template-utils';
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DefaultFormComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   configProps$: Object;
@@ -34,20 +34,20 @@ export class DefaultFormComponent implements OnInit {
     'WideNarrowDetails',
     'Confirmation'
   ];
-  
+
   constructor(private templateUtils: TemplateUtils) {}
 
   ngOnInit(): void {
-    let configProps = this.pConn$.getConfigProps();
+    const configProps: any = this.pConn$.getConfigProps();
     this.template = configProps?.template;
-    const propToUse = { ...this.pConn$.getInheritedProps() };
+    const propToUse: any = { ...this.pConn$.getInheritedProps() };
     this.showLabel = propToUse?.showLabel;
     this.label = propToUse?.label;
-    let kids = this.pConn$.getChildren();
+    const kids = this.pConn$.getChildren() as Array<any>;
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
-    console.log("instructions" + this.instructions);
+    console.log(`instructions${this.instructions}`);
 
-    let numCols = configProps.NumCols ? configProps.NumCols : '1';
+    const numCols = configProps.NumCols ? configProps.NumCols : '1';
     switch (numCols) {
       case '1':
         this.divClass$ = 'psdk-default-form-one-column';

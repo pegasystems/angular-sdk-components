@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ErrorMessagesService } from '../../../_messages/error-messages.service';
-
-declare const window: any;
 
 @Component({
   selector: 'app-cancel-alert',
@@ -15,29 +12,22 @@ declare const window: any;
   imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class CancelAlertComponent implements OnInit {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
   @Input() bShowAlert$: boolean;
-  @Output() onAlertState$ = new EventEmitter<boolean>();
-
-  PCore$: any;
+  @Output() onAlertState$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   heading$: string;
   body1$: string;
   body2$: string;
   itemKey: string;
-  snackBarRef: any;
-  localizedVal: any;
-  localeCategory = 'ModalContainer';
+  localizedVal: Function;
+  localeCategory: string = 'ModalContainer';
 
-  constructor(private erService: ErrorMessagesService, private psService: ProgressSpinnerService) {}
+  constructor(private psService: ProgressSpinnerService) {}
 
-  ngOnInit(): void {
-    if (!this.PCore$) {
-      this.PCore$ = window.PCore;
-    }
-  }
+  ngOnInit(): void {}
 
-  ngOnChanges(changes) {
+  ngOnChanges() {
     if (this.bShowAlert$) {
       this.psService.sendMessage(false);
 
@@ -45,14 +35,14 @@ export class CancelAlertComponent implements OnInit {
       const caseInfo = this.pConn$.getCaseInfo();
       const caseName = caseInfo.getName();
       const ID = caseInfo.getID();
-      this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+      this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
       this.itemKey = contextName;
-      this.heading$ = 'Delete ' + caseName + ' (' + ID + ')';
-      this.body1$ = this.localizedVal('Are you sure you want to delete ', this.localeCategory) + caseName + ' (' + ID + ')?';
+      this.heading$ = `Delete ${caseName} (${ID})`;
+      this.body1$ = `${this.localizedVal('Are you sure you want to delete ', this.localeCategory) + caseName} (${ID})?`;
       this.body2$ = this.localizedVal('Alternatively, you can continue working or save your work for later.', this.localeCategory);
 
-      //this.onAlertState$.emit(true);
+      // this.onAlertState$.emit(true);
     }
   }
 
@@ -69,19 +59,12 @@ export class CancelAlertComponent implements OnInit {
   }
 
   sendMessage(sMessage: string) {
-    //this.snackBarRef = this.snackBar.open(sMessage,"Ok", { duration: 3000});
-    //this.erService.sendMessage("show", sMessage);
     alert(sMessage);
   }
 
   buttonClick(sAction) {
-    const dispatchInfo = {
-      context: this.itemKey,
-      semanticURL: ''
-    };
-
     const actionsAPI = this.pConn$.getActionsApi();
-    this.localizedVal = this.PCore$.getLocaleUtils().getLocaleValue;
+    this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
     switch (sAction) {
       case 'save':
@@ -93,7 +76,8 @@ export class CancelAlertComponent implements OnInit {
             this.psService.sendMessage(false);
             this.dismissAlert();
 
-            this.PCore$.getPubSubUtils().publish(this.PCore$.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CASE_CREATED);
+            // @ts-ignore - second parameter “payload” for publish method should be optional
+            PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CASE_CREATED);
           })
           .catch(() => {
             this.psService.sendMessage(false);
@@ -113,12 +97,15 @@ export class CancelAlertComponent implements OnInit {
           .then(() => {
             this.psService.sendMessage(false);
             this.dismissAlert();
-            this.PCore$.getPubSubUtils().publish(this.PCore$.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
+            // @ts-ignore - second parameter “payload” for publish method should be optional
+            PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
           })
           .catch(() => {
             this.psService.sendMessage(false);
             this.sendMessage(this.localizedVal('Delete failed.', this.localeCategory));
           });
+        break;
+      default:
         break;
     }
   }
