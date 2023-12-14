@@ -168,7 +168,7 @@ export class TopAppMashupComponent implements OnInit {
 
       return c11nEnv;
 
-      // REACT implementaion:
+      // REACT implementation:
       // const PConnectComp = createPConnectComponent();
       // return (
       //     <PConnectComp {
@@ -218,7 +218,7 @@ export class TopAppMashupComponent implements OnInit {
         this.spinnerTimer = null;
       }
 
-      // don't touch bIsProgress$ unless differnent
+      // don't touch bIsProgress$ unless different
       if (bShow != this.isProgress$) {
         // makes sure Angular tracks these changes
         this.ngZone.run(() => {
