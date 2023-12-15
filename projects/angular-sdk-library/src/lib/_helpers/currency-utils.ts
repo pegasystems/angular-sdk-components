@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-default */
 import { formatters } from './formatters/format-utils';
 import { currencyMap } from './formatters/currency-map';
 

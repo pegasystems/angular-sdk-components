@@ -8,7 +8,6 @@ export * from './lib/angular-sdk-library.service';
 export * from './lib/angular-sdk-library.component';
 export * from './lib/angular-sdk-library.module';
 
-
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
@@ -122,7 +121,6 @@ export * from './lib/_components/designSystemExtension/pulse/pulse.component';
 export * from './lib/_directives/thousand-seperator.directive';
 
 export * from './lib/_services/server-config.service';
-export * from './lib/_services/auth.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';

@@ -3,9 +3,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "angular-sdk-library": [
-        "dist/angular-sdk-library"
-      ]
+      "angular-sdk-library": ["dist/angular-sdk-library"]
     },
     "baseUrl": "./",
     "outDir": "./packages/angular-sdk-components/lib",
@@ -22,10 +20,8 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"],
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
