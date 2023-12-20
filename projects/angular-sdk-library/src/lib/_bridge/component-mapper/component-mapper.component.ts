@@ -1,6 +1,6 @@
 import { Component, ComponentRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SdkComponentMap } from '../helpers/sdk_component_map';
+import { getComponentFromMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
 const componentsRequireDisplayOnlyFAProp: Array<string> = [
@@ -52,40 +52,19 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
     }
   }
 
-  loadComponent() {
-    if (SdkComponentMap) {
-      let component: any;
+  async loadComponent() {
+    const component = await getComponentFromMap(this.name);
 
-      const theLocalComponent = SdkComponentMap.getLocalComponentMap()[this.name];
-      if (theLocalComponent) {
-        console.log(`component_mapper found ${this.name}: Local`);
-        component = theLocalComponent;
+    if (this.dynamicComponent) {
+      this.dynamicComponent.clear();
+      this.componentRef = this.dynamicComponent.createComponent(component);
+
+      if (component === ErrorBoundaryComponent) {
+        this.componentRef.instance.message = this.errorMsg;
       } else {
-        const thePegaProvidedComponent = SdkComponentMap.getPegaProvidedComponentMap()[this.name];
-        if (thePegaProvidedComponent !== undefined) {
-          console.log(`component_mapper found ${this.name}: Pega-provided`);
-          component = thePegaProvidedComponent;
-        } else {
-          console.error(`component_mapper doesn't have an entry for type ${this.name}`);
-          component = ErrorBoundaryComponent;
-        }
+        this.bindInputProps();
+        this.bindOutputEvents();
       }
-
-      if (this.dynamicComponent) {
-        this.dynamicComponent.clear();
-        this.componentRef = this.dynamicComponent.createComponent(component);
-
-        if (component === ErrorBoundaryComponent) {
-          this.componentRef.instance.message = this.errorMsg;
-        } else {
-          this.bindInputProps();
-          this.bindOutputEvents();
-        }
-      }
-    } else {
-      // We no longer handle the "old" switch statement that was here in the original packaging.
-      //  All components seen here need to be in the SdkComponentMap
-      console.error(`SdkComponentMap not defined! Unable to process component: ${this.name}`);
     }
   }
 

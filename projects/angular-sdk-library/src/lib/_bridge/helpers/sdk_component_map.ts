@@ -44,10 +44,7 @@ class ComponentMap {
    */
   async readSdkComponentMap(inLocalSdkComponentMap = {}) {
     // debugger;
-    if (
-      Object.keys(this.sdkComponentMap.localComponentMap).length === 0 &&
-      Object.keys(this.sdkComponentMap.pegaProvidedComponentMap).length === 0
-    ) {
+    if (Object.keys(this.sdkComponentMap.localComponentMap).length === 0 && Object.keys(this.sdkComponentMap.pegaProvidedComponentMap).length === 0) {
       const theLocalCompPromise = this.readLocalSdkComponentMap(inLocalSdkComponentMap);
       const thePegaCompPromise = this.readPegaSdkComponentMap(pegaSdkComponentMap);
 
@@ -143,4 +140,26 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
       }
     }
   });
+}
+
+export async function getComponentFromMap(inComponentName: string): Promise<any> {
+  let theComponentImplementation = null;
+  if (!SdkComponentMap) {
+    await getSdkComponentMap();
+  }
+  const theLocalComponent = SdkComponentMap.getLocalComponentMap()[inComponentName];
+  if (theLocalComponent !== undefined) {
+    console.log(`Requested component found ${inComponentName}: Local`);
+    theComponentImplementation = theLocalComponent;
+  } else {
+    const thePegaProvidedComponent = SdkComponentMap.getPegaProvidedComponentMap()[inComponentName];
+    if (thePegaProvidedComponent !== undefined) {
+      // console.log(`Requested component found ${inComponentName}: Pega-provided`);
+      theComponentImplementation = thePegaProvidedComponent;
+    } else {
+      console.error(`Requested component has neither Local nor Pega-provided implementation: ${inComponentName}`);
+      theComponentImplementation = getComponentFromMap('ErrorBoundary');
+    }
+  }
+  return theComponentImplementation;
 }
