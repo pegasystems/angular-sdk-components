@@ -158,7 +158,7 @@ export async function getComponentFromMap(inComponentName: string): Promise<any>
       theComponentImplementation = thePegaProvidedComponent;
     } else {
       console.error(`Requested component has neither Local nor Pega-provided implementation: ${inComponentName}`);
-      theComponentImplementation = getComponentFromMap('ErrorBoundary');
+      theComponentImplementation = await getComponentFromMap('ErrorBoundary');
     }
   }
   return theComponentImplementation;
