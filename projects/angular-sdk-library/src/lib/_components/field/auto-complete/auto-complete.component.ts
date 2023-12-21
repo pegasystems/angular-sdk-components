@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval, Observable } from 'rxjs';
@@ -12,7 +12,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface AutoCompleteProps extends PConnFieldProps {
   // If any, enter additional props that only exist on AutoComplete here
@@ -63,12 +63,13 @@ export class AutoCompleteComponent implements OnInit {
   testId: string;
   listType: string;
   columns = [];
-
   helperText: string;
+  placeholder: string;
+
   fieldControl = new FormControl('', null);
   parameters: {};
   hideLabel: boolean;
-  filteredOptions: Observable<Array<string>>;
+  filteredOptions: Observable<Array<any>>;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -149,9 +150,9 @@ export class AutoCompleteComponent implements OnInit {
 
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
+    this.placeholder = this.configProps$.placeholder || '';
     this.displayMode$ = this.configProps$.displayMode;
     this.listType = this.configProps$.listType;
-    const displayMode = this.configProps$.displayMode;
     let datasource = this.configProps$.datasource;
     let columns = this.configProps$.columns;
     this.hideLabel = this.configProps$.hideLabel;
@@ -221,7 +222,7 @@ export class AutoCompleteComponent implements OnInit {
       this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
 
-    if (!displayMode && this.listType !== 'associated') {
+    if (!this.displayMode$ && this.listType !== 'associated') {
       const results = await this.dataPageService.getDataPageData(datasource, this.parameters, context);
       this.fillOptions(results);
     }
@@ -295,7 +296,7 @@ export class AutoCompleteComponent implements OnInit {
     this.angularPConnectData.actions?.onChange(this, event);
   }
 
-  optionChanged(event: Event) {
+  optionChanged(event: MatAutocompleteSelectedEvent) {
     this.angularPConnectData.actions?.onChange(this, event);
   }
 

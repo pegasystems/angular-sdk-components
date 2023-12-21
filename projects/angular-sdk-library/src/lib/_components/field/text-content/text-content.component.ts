@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface TextContentProps extends PConnFieldProps {
   // If any, enter additional props that only exist on TextContent here

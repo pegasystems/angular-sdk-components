@@ -45,7 +45,7 @@
                   {{ element[dCol.config.name] }}
                 </button>
                 <ng-template #regular>
-                  {{ element[dCol.config.name] || "---" }}
+                  {{ element[dCol.config.name] || '---' }}
                 </ng-template>
               </td>
             </ng-container>
@@ -138,7 +138,7 @@
     <div *ngIf="bInForm$">
       <div>
         <div>
-          <table *ngIf="repeatListData?.length > 0" mat-table [dataSource]="repeatList$" matSort>
+          <table *ngIf="repeatListData.length > 0" mat-table [dataSource]="repeatList$" matSort>
             <ng-container *ngIf="singleSelectionMode" matColumnDef="select">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let row">
@@ -194,7 +194,7 @@
         </mat-form-field>
 
         <mat-form-field class="psdk-full-width">
-          <input matInput [placeholder]="" type="text" [value]="filterContainsValue$" (change)="_filterContainsValue($event)" />
+          <input matInput type="text" [value]="filterContainsValue$" (change)="_filterContainsValue($event)" />
         </mat-form-field>
       </div>
 
@@ -215,7 +215,6 @@
             matInput
             #dateInput
             [matDatepicker]="pegadate"
-            [placeholder]=""
             type="text"
             [value]="filterContainsValue$"
             (dateChange)="_filterContainsDateValue($event, dateInput.value)"

@@ -43,21 +43,25 @@ class ComponentMap {
    * @returns Promise of config file fetch
    */
   async readSdkComponentMap(inLocalSdkComponentMap = {}) {
-    // debugger;
-    if (Object.keys(this.sdkComponentMap.localComponentMap).length === 0 && Object.keys(this.sdkComponentMap.pegaProvidedComponentMap).length === 0) {
-      const theLocalCompPromise = this.readLocalSdkComponentMap(inLocalSdkComponentMap);
-      const thePegaCompPromise = this.readPegaSdkComponentMap(pegaSdkComponentMap);
+    return new Promise((resolve) => {
+      if (
+        Object.keys(this.sdkComponentMap.localComponentMap).length === 0 &&
+        Object.keys(this.sdkComponentMap.pegaProvidedComponentMap).length === 0
+      ) {
+        const theLocalCompPromise = this.readLocalSdkComponentMap(inLocalSdkComponentMap);
+        const thePegaCompPromise = this.readPegaSdkComponentMap(pegaSdkComponentMap);
 
-      Promise.all([theLocalCompPromise, thePegaCompPromise])
-        .then((/* results */) => {
-          return this.sdkComponentMap;
-        })
-        .catch((error) => {
-          console.error(`Error in readSdkComponentMap: ${error}`);
-        });
-    } else {
-      return Promise.resolve(this.sdkComponentMap);
-    }
+        Promise.all([theLocalCompPromise, thePegaCompPromise])
+          .then((/* results */) => {
+            resolve(this.sdkComponentMap);
+          })
+          .catch((error) => {
+            console.error(`Error in readSdkComponentMap: ${error}`);
+          });
+      } else {
+        resolve(this.sdkComponentMap);
+      }
+    });
   }
 
   async readLocalSdkComponentMap(inLocalSdkComponentMap = {}) {

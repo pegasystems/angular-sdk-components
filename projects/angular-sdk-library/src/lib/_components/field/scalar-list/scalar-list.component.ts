@@ -3,7 +3,7 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on ScalarList here

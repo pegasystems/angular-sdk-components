@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { loginIfNecessary, logout, getAvailablePortals } from '@pega/auth/lib/sdk-auth-manager';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -29,17 +29,12 @@ export class TopAppMashupComponent implements OnInit {
   pConn$: typeof PConnect;
 
   sComponentName$: string;
-  arChildren$: Array<any>;
   bPCoreReady$: boolean = false;
 
-  store: any;
-
   bLoggedIn$: boolean = false;
-  bPConnectLoaded$: boolean = false;
   isProgress$: boolean = false;
 
   progressSpinnerSubscription: Subscription;
-  resetPConnectSubscription: Subscription;
 
   spinnerTimer: any;
 
@@ -61,7 +56,6 @@ export class TopAppMashupComponent implements OnInit {
 
   ngOnDestroy() {
     this.progressSpinnerSubscription.unsubscribe();
-    this.resetPConnectSubscription.unsubscribe();
   }
 
   initialize() {
@@ -83,7 +77,8 @@ export class TopAppMashupComponent implements OnInit {
     });
 
     /* Login if needed */
-    const sAppName = window.location.pathname.substring(window.location.pathname.indexOf('/') + 1);
+    // eslint-disable-next-line no-restricted-globals
+    const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
     loginIfNecessary({ appName: sAppName, mainRedirect: true });
 
     /* Check if portal is specified as a query parameter */
@@ -166,7 +161,6 @@ export class TopAppMashupComponent implements OnInit {
 
     this.pConn$ = props.getPConnect();
     this.sComponentName$ = this.pConn$.getComponentName();
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
     this.bPCoreReady$ = true;
   }
 

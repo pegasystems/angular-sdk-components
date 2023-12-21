@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
@@ -56,6 +56,7 @@ export class UserReferenceComponent implements OnInit {
   displayAs$?: string;
   testId: string;
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl('', null);
 
@@ -123,12 +124,13 @@ export class UserReferenceComponent implements OnInit {
     const props = this.pConn$.getConfigProps() as UserReferenceProps;
     this.testId = props['testId'];
 
-    const { label, displayAs, value, showAsFormattedText, helperText } = props;
+    const { label, displayAs, value, showAsFormattedText, helperText, placeholder } = props;
 
     this.label$ = label;
     this.showAsFormattedText$ = showAsFormattedText;
     this.displayAs$ = displayAs;
     this.helperText = helperText;
+    this.placeholder = placeholder || '';
 
     const { readOnly, required } = props;
     [this.bReadonly$, this.bRequired$] = [readOnly, required].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));

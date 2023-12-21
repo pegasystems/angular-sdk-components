@@ -1,18 +1,20 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "extends": "@pega/tsconfig/index.json",
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
       "angular-sdk-library": ["dist/angular-sdk-library"]
     },
     "typeRoots": ["node_modules/@types", "node_modules/@pega"],
-    "types": ["pcore-pconnect-typedefs"],
+    "types": ["pcore-pconnect-typedefs", "jasmine"],
     "baseUrl": "./",
     "outDir": "./packages/angular-sdk-components/lib",
     "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "noImplicitAny": false,
     "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
@@ -31,7 +33,9 @@
     "skipLibCheck": true
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
   }
 }

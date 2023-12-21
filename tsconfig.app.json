@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {},
-  "files": ["packages/angular-sdk-components/src/main.ts", "packages/angular-sdk-components/src/polyfills.ts"],
-  "include": ["packages/angular-sdk-components/src/**/*.d.ts"],
-  "exclude": ["packages/angular-sdk-components/src/test.ts", "packages/angular-sdk-components/src/**/*.spec.ts"]
-}

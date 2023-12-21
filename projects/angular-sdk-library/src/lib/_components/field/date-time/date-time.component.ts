@@ -14,7 +14,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here

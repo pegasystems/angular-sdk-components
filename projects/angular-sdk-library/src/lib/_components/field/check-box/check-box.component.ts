@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on Checkbox here
@@ -35,7 +35,6 @@ export class CheckBoxComponent implements OnInit {
   caption$?: string = '';
   testId: string = '';
   showLabel$: boolean = false;
-  checkboxLabelPos$ = 'after';
   isChecked$: boolean = false;
   bRequired$: boolean = false;
   bReadonly$: boolean = false;

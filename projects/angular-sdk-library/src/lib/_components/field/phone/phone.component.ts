@@ -8,7 +8,7 @@ import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface PhoneProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Phone here

@@ -8,7 +8,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DecimalProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Decimal here
@@ -52,6 +52,7 @@ export class DecimalComponent implements OnInit {
   componentReference: string = '';
   testId: string;
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
 
@@ -126,6 +127,7 @@ export class DecimalComponent implements OnInit {
       this.value$ = nValue;
     }
     this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

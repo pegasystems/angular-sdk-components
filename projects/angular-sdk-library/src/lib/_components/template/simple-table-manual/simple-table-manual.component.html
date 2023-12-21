@@ -5,13 +5,7 @@
     </h3>
     <table *ngIf="readOnlyMode" mat-table [dataSource]="rowData" class="mat-elevation-z8" id="readonly-table" matSort>
       <ng-container *ngFor="let dCol of processedFields" [matColumnDef]="dCol.config.name">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          (click)="_headerSortClick($event, dCol)"
-          arrowPosition="before"
-        >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="_headerSortClick($event, dCol)" arrowPosition="before">
           <div>{{ dCol.config.label }}</div>
           <div class="psdk-mat-header-filter">
             <img class="psdk-filter-svg-icon" name="filterOnIcon" />
@@ -65,16 +59,10 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-    <div class="psdk-no-records" id="no-records" *ngIf="editableMode && referenceList?.length === 0">
-      No Records Found.
-    </div>
-    <div class="psdk-no-records" id="no-records" *ngIf="readOnlyMode && rowData?.data?.length === 0">
-      No Records Found.
-    </div>
+    <div class="psdk-no-records" id="no-records" *ngIf="editableMode && referenceList?.length === 0">No Records Found.</div>
+    <div class="psdk-no-records" id="no-records" *ngIf="readOnlyMode && rowData?.data?.length === 0">No Records Found.</div>
   </div>
-  <button *ngIf="showAddRowButton" mat-button color="primary" style="font-size: 16px" (click)="addRecord()">
-    + Add
-  </button>
+  <button *ngIf="showAddRowButton" mat-button color="primary" style="font-size: 16px" (click)="addRecord()">+ Add</button>
 </ng-container>
 
 <!-- pop overs for filters-->
@@ -93,13 +81,7 @@
       </mat-form-field>
 
       <mat-form-field class="psdk-full-width">
-        <input
-          matInput
-          [placeholder]=""
-          type="text"
-          [value]="filterContainsValue$"
-          (change)="_filterContainsValue($event)"
-        />
+        <input matInput type="text" [value]="filterContainsValue$" (change)="_filterContainsValue($event)" />
       </mat-form-field>
     </div>
 
@@ -114,16 +96,12 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field
-        *ngIf="bIsDate$ && filterContainsType$ !== 'null' && filterContainsType$ != 'notnull'"
-        class="psdk-full-width"
-      >
+      <mat-form-field *ngIf="bIsDate$ && filterContainsType$ !== 'null' && filterContainsType$ != 'notnull'" class="psdk-full-width">
         <mat-label>Date</mat-label>
         <input
           matInput
           #dateInput
           [matDatepicker]="pegadate"
-          [placeholder]=""
           type="text"
           [value]="filterContainsValue$"
           (dateChange)="_filterContainsDateValue($event, dateInput.value)"
@@ -132,23 +110,12 @@
         <mat-datepicker #pegadate [startAt]="filterContainsValue$"></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field
-        *ngIf="bIsDateTime$ && filterContainsType$ !== 'null' && filterContainsType$ != 'notnull'"
-        class="psdk-full-width"
-      >
+      <mat-form-field *ngIf="bIsDateTime$ && filterContainsType$ !== 'null' && filterContainsType$ != 'notnull'" class="psdk-full-width">
         <mat-label>Date time</mat-label>
-        <input
-          matInput
-          type="datetime-local"
-          [value]="filterContainsValue$"
-          (change)="_filterContainsDateTimeValue($event)"
-        />
+        <input matInput type="datetime-local" [value]="filterContainsValue$" (change)="_filterContainsDateTimeValue($event)" />
       </mat-form-field>
 
-      <mat-form-field
-        *ngIf="bIsTime$ && filterContainsType$ !== 'null' && filterContainsType$ != 'notnull'"
-        class="psdk-full-width"
-      >
+      <mat-form-field *ngIf="bIsTime$ && filterContainsType$ !== 'null' && filterContainsType$ != 'notnull'" class="psdk-full-width">
         <mat-label>Time</mat-label>
         <input matInput type="time" [value]="filterContainsValue$" (change)="_filterContainsTimeValue($event)" />
       </mat-form-field>

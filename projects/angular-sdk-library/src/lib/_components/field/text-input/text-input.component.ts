@@ -7,7 +7,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectService, AngularPConnectData } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface TextInputProps extends PConnFieldProps {
   // If any, enter additional props that only exist on TextInput here
@@ -41,6 +41,7 @@ export class TextInputComponent implements OnInit {
   bHasForm$: boolean = true;
   componentReference: string = '';
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl('', null);
 
@@ -118,6 +119,7 @@ export class TextInputComponent implements OnInit {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
     this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

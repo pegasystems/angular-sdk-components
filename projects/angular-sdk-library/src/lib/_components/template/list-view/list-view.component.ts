@@ -80,7 +80,7 @@ export class ListViewComponent implements OnInit {
 
   updatedRefList: any;
 
-  repeatListData: Array<any>;
+  repeatListData: Array<any> = [];
 
   searchIcon$: string;
 

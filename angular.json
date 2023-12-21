@@ -24,7 +24,7 @@
             "index": "packages/angular-sdk-components/src/index.html",
             "main": "packages/angular-sdk-components/src/main.ts",
             "polyfills": "packages/angular-sdk-components/src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "packages/angular-sdk-components/tsconfig.app.json",
             "aot": true,
             "assets": [
               "src/favicon.ico",
@@ -75,17 +75,12 @@
                 "output": "./constellation/assets/icons"
               }
             ],
-            "styles": [
-              "packages/angular-sdk-components/src/styles.scss"
-            ],
+            "styles": ["packages/angular-sdk-components/src/styles.scss"],
             "scripts": [],
             "customWebpackConfig": {
               "path": "./extra-webpack.config.js"
             },
-            "allowedCommonJsDependencies" : [
-              "downloadjs",
-              "rxjs/internal/observable/interval"
-            ]
+            "allowedCommonJsDependencies": ["downloadjs", "rxjs/internal/observable/interval"]
           },
           "configurations": {
             "production": {
@@ -137,19 +132,16 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
+            "main": "packages/angular-sdk-components/src/test.ts",
+            "polyfills": "packages/angular-sdk-components/src/polyfills.ts",
+            "tsConfig": "packages/angular-sdk-components/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              "src/assets/mdi.svg"
+              "packages/angular-sdk-components/src/favicon.ico",
+              "packages/angular-sdk-components/src/assets",
+              "packages/angular-sdk-components/src/assets/mdi.svg"
             ],
-            "styles": [
-              "./node_modules/intl-tel-input/build/css/intlTelInput.css",
-              "src/styles.scss"
-            ],
+            "styles": ["./node_modules/intl-tel-input/build/css/intlTelInput.css", "packages/angular-sdk-components/src/styles.scss"],
             "scripts": []
           }
         },
@@ -192,10 +184,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "projects/angular-sdk-library/tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ]
+            "polyfills": ["zone.js", "zone.js/testing"]
           }
         }
       }

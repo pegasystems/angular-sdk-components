@@ -13,7 +13,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DateProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Date here
@@ -75,6 +75,7 @@ export class DateComponent implements OnInit {
   componentReference: string = '';
   testId: string = '';
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl('', null);
 
@@ -163,6 +164,7 @@ export class DateComponent implements OnInit {
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
     this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -235,7 +237,7 @@ export class DateComponent implements OnInit {
     } else if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
-      errMessage = `${this.fieldControl.errors.matDatepickerParse.text} is not a valid date value`;
+      errMessage = `${this.fieldControl.errors['matDatepickerParse'].text} is not a valid date value`;
     }
     return errMessage;
   }

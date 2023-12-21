@@ -79,7 +79,7 @@
         </button>
         <div *ngIf="replyMessage?.likeCount; else replyNotLiked">
           <button
-            *ngIf="replyMessage?.likedByMe === 'true'; else"
+            *ngIf="replyMessage?.likedByMe === 'true'"
             mat-button
             (click)="likeClick(pulseMessage.ID, replyMessage.ID, true, 'reply')"
             class="psdk-pulse-reply-like"

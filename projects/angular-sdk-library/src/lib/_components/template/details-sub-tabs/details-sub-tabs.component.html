@@ -1,6 +1,6 @@
 <mat-tab-group (selectedTabChange)="handleTabClick($event)">
   <mat-tab *ngFor="let tab of tabItems; let i = index" [label]="tab.name">
-    <div *ngIf="currentTabId == i">
+    <div *ngIf="+currentTabId == i">
       <component-mapper
         *ngIf="tab.content?.getPConnect()"
         [name]="tab.content?.getPConnect().getComponentName()"

@@ -8,7 +8,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface CurrrencyProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Currency here
@@ -42,6 +42,7 @@ export class CurrencyComponent implements OnInit {
   componentReference: string = '';
   testId: string;
   helperText: string;
+  placeholder: string;
   currencyISOCode: string = 'USD';
   currencyOptions: Object = {};
 
@@ -116,6 +117,8 @@ export class CurrencyComponent implements OnInit {
     const nValue: any = this.configProps$.value;
     this.value$ = nValue && typeof nValue == 'string' ? parseFloat(nValue) : nValue;
     this.helperText = this.configProps$.helperText;
+    this.placeholder = this.configProps$.placeholder || '';
+
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {

@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
-import { PConnFieldProps } from '../../../_types/PConnProps';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface SemanticLinkProps extends PConnFieldProps {
   // If any, enter additional props that only exist on SemanticLink here
