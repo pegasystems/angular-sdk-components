@@ -9,6 +9,11 @@ import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
 
+interface NavBarProps {
+  // If any, enter additional props that only exist on this component
+  showAppName?: boolean;
+}
+
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -25,6 +30,7 @@ export class NavbarComponent implements OnInit {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
+  configProps$: NavBarProps;
 
   navPages$: Array<any>;
   navExpandCollapse$: string;
@@ -32,7 +38,7 @@ export class NavbarComponent implements OnInit {
 
   portalApp$: string = '';
   portalLogoImage$: string;
-  showAppName$: boolean = false;
+  showAppName$?: boolean = false;
 
   portalOperator$: string;
   portalOperatorInitials$: string;
@@ -42,7 +48,6 @@ export class NavbarComponent implements OnInit {
   showPage: any;
   logout: any;
 
-  configProps: any;
   navIcon$: string;
   localizedVal: any;
   localeCategory = 'AppShell';
@@ -118,7 +123,7 @@ export class NavbarComponent implements OnInit {
       this.actionsAPI = this.pConn$.getActionsApi();
       this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
       this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
-      this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+      this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as NavBarProps;
       this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
 
       // const oData = this.pConn$.getDataObject();
@@ -126,7 +131,7 @@ export class NavbarComponent implements OnInit {
       this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
       this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
       this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$);
-      this.showAppName$ = this.configProps['showAppName'];
+      this.showAppName$ = this.configProps$.showAppName;
 
       this.portalApp$ = PCore.getEnvironmentInfo().getApplicationLabel();
     });
