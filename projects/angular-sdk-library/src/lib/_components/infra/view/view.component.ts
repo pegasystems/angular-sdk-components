@@ -13,6 +13,43 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
  * is totally at your own risk.
  */
 
+/**
+ *
+ * @param pConnn - PConnect Object
+ * @returns visibility expression result if exists, otherwise true
+ */
+function evaluateVisibility(pConnn) {
+  let bVisibility = true;
+  const sVisibility = pConnn.meta.config.visibility;
+  if (sVisibility && sVisibility.length) {
+    // e.g. "@E .EmbeddedData_SelectedTestName == 'Readonly' && .EmbeddedData_SelectedSubCategory == 'Mode'"
+    const aVisibility = sVisibility.split('&&');
+    // e.g. ["EmbeddedData_SelectedTestName": "Readonly", "EmbeddedData_SelectedSubCategory": "Mode"]
+    const context = pConnn.getContextName();
+    // Reading values from the Store to evaluate the visibility expressions
+    const storeData = PCore.getStore().getState()?.data[context].caseInfo.content;
+    let properties = {};
+    aVisibility.forEach((s) => {
+      const keyStartIndex = s.indexOf('.');
+      const keyEndIndex = s.indexOf('=') - 1;
+      const valueStartIndex = s.indexOf("'");
+      const valueEndIndex = s.lastIndexOf("'") - 1;
+
+      properties = {
+        ...properties,
+        [s.substr(keyStartIndex + 1, keyEndIndex - keyStartIndex - 1)]: s.substr(valueStartIndex + 1, valueEndIndex - valueStartIndex)
+      };
+    });
+
+    for (const property in properties) {
+      if (storeData[property] !== properties[property]) {
+        bVisibility = false;
+      }
+    }
+  }
+  return bVisibility;
+}
+
 interface ViewProps {
   // If any, enter additional props that only exist on this component
   template?: string;
@@ -44,6 +81,7 @@ export class ViewComponent implements OnInit {
   title$: string = '';
   label$: string = '';
   showLabel$: boolean = true;
+  visibility$: boolean = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -107,6 +145,13 @@ export class ViewComponent implements OnInit {
     this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+
+    this.visibility$ = this.configProps$.visibility ?? this.visibility$;
+
+    if (this.pConn$.getPageReference().length > 'caseInfo.content'.length) {
+      this.visibility$ = evaluateVisibility(this.pConn$);
+    }
+
     // was:  this.arChildren$ = this.pConn$.getChildren() as Array<any>;
 
     // debug
