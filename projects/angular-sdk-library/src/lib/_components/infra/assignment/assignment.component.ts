@@ -236,7 +236,10 @@ export class AssignmentComponent implements OnInit {
         if (oCaseInfo.navigation != null) {
           this.bHasNavigation$ = true;
 
-          if (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'standard') {
+          if (
+            (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'standard') ||
+            oCaseInfo?.navigation?.steps?.length === 1
+          ) {
             this.bHasNavigation$ = false;
           } else if (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'vertical') {
             this.bIsVertical$ = true;
