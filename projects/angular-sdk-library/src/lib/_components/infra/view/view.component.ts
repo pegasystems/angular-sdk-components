@@ -28,21 +28,21 @@ function evaluateVisibility(pConnn) {
     const context = pConnn.getContextName();
     // Reading values from the Store to evaluate the visibility expressions
     const storeData = PCore.getStore().getState()?.data[context].caseInfo.content;
-    let properties = {};
-    aVisibility.forEach((s) => {
-      const keyStartIndex = s.indexOf('.');
-      const keyEndIndex = s.indexOf('=') - 1;
-      const valueStartIndex = s.indexOf("'");
-      const valueEndIndex = s.lastIndexOf("'") - 1;
 
-      properties = {
+    const initialVal = {};
+    const oProperties = aVisibility.reduce((properties, property) => {
+      const keyStartIndex = property.indexOf('.');
+      const keyEndIndex = property.indexOf('=') - 1;
+      const valueStartIndex = property.indexOf("'");
+      const valueEndIndex = property.lastIndexOf("'") - 1;
+      return {
         ...properties,
-        [s.substr(keyStartIndex + 1, keyEndIndex - keyStartIndex - 1)]: s.substr(valueStartIndex + 1, valueEndIndex - valueStartIndex)
+        [property.substr(keyStartIndex + 1, keyEndIndex - keyStartIndex - 1)]: property.substr(valueStartIndex + 1, valueEndIndex - valueStartIndex)
       };
-    });
+    }, initialVal);
 
-    for (const property in properties) {
-      if (storeData[property] !== properties[property]) {
+    for (const property in oProperties) {
+      if (storeData[property] !== oProperties[property]) {
         bVisibility = false;
       }
     }
@@ -148,6 +148,12 @@ export class ViewComponent implements OnInit {
 
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 
+    // In instances where there is context, like with "shippingAddress," the pageReference becomes "caseInfo.content.shippingAddress."
+    // This leads to problems in the getProperty API, as it incorrectly assesses the visibility condition by looking in the wrong location
+    // in the Store for the property values. Reference component should be able to handle such scenarios(as done in SDK-R) since it has the
+    // expected pageReference values, the View component currently cannot handle this.
+    // The resolution lies in transferring this responsibility to the Reference component, eliminating the need for this code when Reference
+    // component is able to handle it.
     if (this.pConn$.getPageReference().length > 'caseInfo.content'.length) {
       this.visibility$ = evaluateVisibility(this.pConn$);
     }
