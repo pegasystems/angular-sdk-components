@@ -2,6 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
+interface AppAnnouncementProps {
+  // If any, enter additional props that only exist on this component
+  header?: string;
+  description?: string;
+  whatsnewlink?: string;
+  label?: string;
+  datasource?: any;
+}
+
 @Component({
   selector: 'app-app-announcement',
   templateUrl: './app-announcement.component.html',
@@ -12,19 +21,15 @@ import { MatButtonModule } from '@angular/material/button';
 export class AppAnnouncementComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
-  header$: string;
-  description$: string;
-  arDetails$: Array<string>;
-  label$: string;
-  whatsnewlink$: string;
+  configProps$: AppAnnouncementProps;
+  details$: Array<any>;
 
   ngOnInit(): void {
-    const configProps: any = this.pConn$.getConfigProps();
+    this.configProps$ = this.pConn$.getConfigProps();
+    const { datasource } = this.configProps$;
 
-    this.header$ = configProps.header;
-    this.description$ = configProps.description;
-    this.arDetails$ = configProps.details;
-    this.label$ = configProps.label;
-    this.whatsnewlink$ = configProps.whatsnewlink;
+    if (datasource?.source) {
+      this.details$ = datasource.source.map((item) => item.name);
+    }
   }
 }

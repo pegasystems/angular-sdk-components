@@ -9,6 +9,11 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 
+interface RepeatingStructuresProps {
+  referenceList?: Array<any>;
+  rowClickAction?: string;
+}
+
 @Component({
   selector: 'app-repeating-structures',
   templateUrl: './repeating-structures.component.html',
@@ -21,7 +26,7 @@ export class RepeatingStructuresComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   @Input() pConn$: typeof PConnect;
 
-  configProps: any;
+  configProps$: RepeatingStructuresProps;
   repeatList$: MatTableDataSource<any>;
   fields$: Array<any>;
   displayedColumns$ = Array<string>();
@@ -33,10 +38,10 @@ export class RepeatingStructuresComponent implements OnInit {
 
   ngOnInit(): void {
     const componentConfig = (this.pConn$.getRawMetadata() as any).config || { fields: [] };
-    this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.fields$ = this.initializeColumns(componentConfig.fields);
 
-    const refList = this.configProps.referenceList;
+    const refList = this.configProps$.referenceList;
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const tableDataResults = JSON.parse(JSON.stringify(this.pConn$.getValue(refList)));
 
@@ -67,7 +72,7 @@ export class RepeatingStructuresComponent implements OnInit {
   }
 
   rowClick(row) {
-    switch (this.configProps.rowClickAction) {
+    switch (this.configProps$.rowClickAction) {
       case 'openAssignment':
         this.psService.sendMessage(true);
         this.openAssignment(row);

@@ -7,6 +7,12 @@ import download from 'downloadjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
+  // If any, enter additional props that only exist on this component
+  value: any;
+}
 
 @Component({
   selector: 'app-attachment',
@@ -91,25 +97,25 @@ export class AttachmentComponent implements OnInit {
   }
 
   updateSelf() {
-    const configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
     const stateProps: any = this.pConn$.getStateProps();
 
     const { value, label } = configProps;
 
-    if (configProps['required'] != null) {
-      this.bRequired$ = this.utils.getBooleanValue(configProps['required']);
+    if (configProps.required != null) {
+      this.bRequired$ = this.utils.getBooleanValue(configProps.required);
     }
-    if (configProps['visibility'] != null) {
-      this.bVisible$ = this.utils.getBooleanValue(configProps['visibility']);
+    if (configProps.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(configProps.visibility);
     }
 
     // disabled
-    if (configProps['disabled'] != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(configProps['disabled']);
+    if (configProps.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(configProps.disabled);
     }
 
-    if (configProps['readOnly'] != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(configProps['readOnly']);
+    if (configProps.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(configProps.readOnly);
     }
 
     this.label$ = label;

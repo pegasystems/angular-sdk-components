@@ -8,6 +8,11 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+interface FileUtilityProps {
+  // If any, enter additional props that only exist on this component
+  label?: string;
+}
+
 @Component({
   selector: 'app-file-utility',
   templateUrl: './file-utility.component.html',
@@ -82,9 +87,9 @@ export class FileUtilityComponent implements OnInit {
     // // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    const configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const configProps: FileUtilityProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
-    this.lu_name$ = configProps.label;
+    this.lu_name$ = configProps.label ?? '';
     this.lu_icon$ = 'paper-clip';
 
     this.closeSvgIcon$ = this.utils.getImageSrc('times', this.utils.getSDKStaticContentUrl());

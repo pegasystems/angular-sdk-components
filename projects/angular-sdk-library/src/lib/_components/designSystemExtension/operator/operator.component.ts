@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Renderer2, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, OnInit, Input, Renderer2, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Utils } from '../../../_helpers/utils';
@@ -15,21 +15,23 @@ export class OperatorComponent implements OnInit {
   @Input() name$: string;
 
   @Input() label$: string;
-  @Input() helperText$: string;
   @Input() id$: string;
 
   fields$: Array<any> = [];
   bShowPopover$: boolean;
 
   constructor(
+    private el: ElementRef,
     private renderer: Renderer2,
     private cdRef: ChangeDetectorRef,
     private utils: Utils
   ) {}
 
   ngOnInit(): void {
-    this.renderer.listen('window', 'click', () => {
-      if (this.bShowPopover$) {
+    this.renderer.listen('window', 'click', (el) => {
+      const clickedInside = this.el.nativeElement.contains(el.target);
+
+      if (!clickedInside) {
         this.bShowPopover$ = false;
       }
     });

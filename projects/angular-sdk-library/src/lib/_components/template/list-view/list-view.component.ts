@@ -26,6 +26,20 @@ declare const window: any;
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
+interface ListViewProps {
+  // If any, enter additional props that only exist on this component
+  globalSearch?: boolean;
+  referenceList?: Array<any>;
+  rowClickAction?: any;
+  selectionMode?: string;
+  referenceType?: string;
+  compositeKeys?: any;
+  showDynamicFields?: boolean;
+  presets?: any;
+  reorderFields: string | boolean;
+  grouping: string | boolean;
+}
+
 export class Group {
   level = 0;
   parent: Group;
@@ -76,7 +90,7 @@ export class ListViewComponent implements OnInit {
   displayedColumns$ = Array<any>();
   groupByColumns$: Array<string> = [];
 
-  configProps: any;
+  configProps$: ListViewProps;
 
   updatedRefList: any;
 
@@ -122,7 +136,7 @@ export class ListViewComponent implements OnInit {
 
   arFilterMainButtons$: Array<any> = [];
   arFilterSecondaryButtons$: Array<any> = [];
-  selectionMode: string;
+  selectionMode?: string;
   singleSelectionMode: boolean;
   multiSelectionMode: boolean;
   rowID: any;
@@ -139,16 +153,16 @@ export class ListViewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.configProps = this.pConn$.getConfigProps();
+    this.configProps$ = this.pConn$.getConfigProps() as ListViewProps;
     /** By default, pyGUID is used for Data classes and pyID is for Work classes as row-id/key */
-    const defRowID = this.configProps?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
+    const defRowID = this.configProps$?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
     /** If compositeKeys is defined, use dynamic value, else fallback to pyID or pyGUID. */
-    this.compositeKeys = this.configProps?.compositeKeys;
+    this.compositeKeys = this.configProps$?.compositeKeys;
     this.rowID = this.compositeKeys && this.compositeKeys?.length === 1 ? this.compositeKeys[0] : defRowID;
-    this.bShowSearch$ = this.utils.getBooleanValue(this.configProps.globalSearch);
-    this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps.reorderFields);
-    this.bGrouping$ = this.utils.getBooleanValue(this.configProps.grouping);
-    this.showDynamicFields = this.configProps?.showDynamicFields;
+    this.bShowSearch$ = this.utils.getBooleanValue(this.configProps$.globalSearch);
+    this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps$.reorderFields);
+    this.bGrouping$ = this.utils.getBooleanValue(this.configProps$.grouping);
+    this.showDynamicFields = this.configProps$?.showDynamicFields;
 
     this.menuSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
     this.arrowDownSvgIcon$ = this.utils.getImageSrc('arrow-down', this.utils.getSDKStaticContentUrl());
@@ -158,7 +172,7 @@ export class ListViewComponent implements OnInit {
     this.filterOnSvgIcon$ = this.utils.getImageSrc('filter-on', this.utils.getSDKStaticContentUrl());
     this.groupBySvgIcon$ = this.utils.getImageSrc('row', this.utils.getSDKStaticContentUrl());
 
-    this.selectionMode = this.configProps.selectionMode;
+    this.selectionMode = this.configProps$.selectionMode;
 
     this.arFilterMainButtons$.push({ actionID: 'submit', jsAction: 'submit', name: 'Submit' });
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
@@ -305,8 +319,8 @@ export class ListViewComponent implements OnInit {
   getListData() {
     // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
     const componentConfig = this.pConn$.getComponentConfig();
-    if (this.configProps) {
-      const refList = this.configProps?.referenceList;
+    if (this.configProps$) {
+      const refList = this.configProps$.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
       const payload = this.payload || this.filterPayload || {};
@@ -322,7 +336,7 @@ export class ListViewComponent implements OnInit {
           const fieldsMetaData = results[0];
           const workListData = results[1];
 
-          this.fields$ = this.configProps.presets[0].children[0].children;
+          this.fields$ = this.configProps$.presets[0].children[0].children;
           // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
           const columnFields = componentConfig.presets[0].children[0].children;
 
@@ -459,7 +473,7 @@ export class ListViewComponent implements OnInit {
   }
 
   // rowClick(row) {
-  //   switch (this.configProps.rowClickAction) {
+  //   switch (this.configProps$.rowClickAction) {
   //     case 'openAssignment':
   //       this.psService.sendMessage(true);
   //       this.openAssignment(row);
