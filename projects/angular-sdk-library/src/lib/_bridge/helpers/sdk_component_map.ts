@@ -146,11 +146,8 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
   });
 }
 
-export async function getComponentFromMap(inComponentName: string): Promise<any> {
+export function getComponentFromMap(inComponentName: string): any {
   let theComponentImplementation = null;
-  if (!SdkComponentMap) {
-    await getSdkComponentMap();
-  }
   const theLocalComponent = SdkComponentMap.getLocalComponentMap()[inComponentName];
   if (theLocalComponent !== undefined) {
     console.log(`Requested component found ${inComponentName}: Local`);
@@ -162,7 +159,7 @@ export async function getComponentFromMap(inComponentName: string): Promise<any>
       theComponentImplementation = thePegaProvidedComponent;
     } else {
       console.error(`Requested component has neither Local nor Pega-provided implementation: ${inComponentName}`);
-      theComponentImplementation = await getComponentFromMap('ErrorBoundary');
+      theComponentImplementation = getComponentFromMap('ErrorBoundary');
     }
   }
   return theComponentImplementation;
