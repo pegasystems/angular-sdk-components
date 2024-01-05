@@ -333,6 +333,11 @@ export class AngularPConnectService {
       bRet = true;
     }
 
+    // Below piece of code is needed to re-render the component since we wanna evaluate the Visibility expression within View component in such cases
+    if (inComp['pConn$'].meta.config.context?.length > 0 && inComp['pConn$'].getPageReference().length > 'caseInfo.content'.length) {
+      return true;
+    }
+
     // Now update the entry in componentPropsArr with the incoming value so
     //  we can compare against that next time...
     this.componentPropsArr[compID] = incomingProps;
