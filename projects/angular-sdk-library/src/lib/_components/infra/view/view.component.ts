@@ -148,12 +148,14 @@ export class ViewComponent implements OnInit {
 
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 
-    // In instances where there is context, like with "shippingAddress," the pageReference becomes "caseInfo.content.shippingAddress."
-    // This leads to problems in the getProperty API, as it incorrectly assesses the visibility condition by looking in the wrong location
-    // in the Store for the property values. Reference component should be able to handle such scenarios(as done in SDK-R) since it has the
-    // expected pageReference values, the View component currently cannot handle this.
-    // The resolution lies in transferring this responsibility to the Reference component, eliminating the need for this code when Reference
-    // component is able to handle it.
+    /**
+     * In instances where there is context, like with "shippingAddress," the pageReference becomes "caseInfo.content.shippingAddress."
+     * This leads to problems in the getProperty API, as it incorrectly assesses the visibility condition by looking in the wrong location
+     * in the Store for the property values. Reference component should be able to handle such scenarios(as done in SDK-R) since it has the
+     * expected pageReference values, the View component currently cannot handle this.
+     * The resolution lies in transferring this responsibility to the Reference component, eliminating the need for this code when Reference
+     * component is able to handle it.
+     */
     if (this.pConn$.getPageReference().length > 'caseInfo.content'.length) {
       this.visibility$ = evaluateVisibility(this.pConn$);
     }
