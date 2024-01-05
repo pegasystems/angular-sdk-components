@@ -50,8 +50,8 @@ export class ComponentMapperComponent implements OnInit, OnChanges {
     }
   }
 
-  async loadComponent() {
-    const component = await getComponentFromMap(this.name);
+  loadComponent() {
+    const component = getComponentFromMap(this.name);
 
     if (this.dynamicComponent) {
       this.dynamicComponent.clear();
