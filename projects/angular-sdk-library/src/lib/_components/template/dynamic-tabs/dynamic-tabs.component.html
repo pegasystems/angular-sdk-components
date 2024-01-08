@@ -1,0 +1,5 @@
+<mat-tab-group id="dynamic-tabs" mat-stretch-tabs="false" mat-align-tabs="start">
+  <mat-tab *ngFor="let tab of tabsItems" [label]="tab.name">
+    <component-mapper name="View" [props]="{ pConn$: tab.content.getPConnect() }"></component-mapper>
+  </mat-tab>
+</mat-tab-group>

@@ -131,6 +131,9 @@
           "configurations": {
             "production": {
               "browserTarget": "angular-sdk-components:build:production"
+            },
+            "development": {
+              "browserTarget": "angular-sdk-components:build:development"
             }
           }
         },

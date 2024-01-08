@@ -16,7 +16,7 @@ import isEqual from 'fast-deep-equal';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
-import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
+import { getReferenceList } from '../../../_helpers/field-group-utils';
 import { buildFieldsForTable, getContext } from './helpers';
 import { Utils } from '../../../_helpers/utils';
 
@@ -159,8 +159,7 @@ export class SimpleTableManualComponent implements OnInit {
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,
-    private dataPageService: DatapageService,
-    private fieldGroupUtils: FieldGroupUtils
+    private dataPageService: DatapageService
   ) {}
 
   ngOnInit(): void {
@@ -270,7 +269,7 @@ export class SimpleTableManualComponent implements OnInit {
     // get context name and referenceList which will be used to prepare config of PConnect
     // const { contextName, referenceListStr, pageReferenceForRows } = getContext(this.pConn$);
 
-    const resolvedList = this.fieldGroupUtils.getReferenceList(this.pConn$);
+    const resolvedList = getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
 
@@ -1001,7 +1000,7 @@ export class SimpleTableManualComponent implements OnInit {
     this.referenceList.forEach((element, index) => {
       const data: any = [];
       this.rawFields?.forEach((item) => {
-        const referenceListData = this.fieldGroupUtils.getReferenceList(this.pConn$);
+        const referenceListData = getReferenceList(this.pConn$);
         const isDatapage = referenceListData.startsWith('D_');
         const pageReferenceValue = isDatapage
           ? `${referenceListData}[${index}]`
