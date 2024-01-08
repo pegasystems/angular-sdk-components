@@ -99,6 +99,8 @@ import { MaterialDetailsComponent } from '../../_components/designSystemExtensio
 import { DashboardFilterComponent } from '../../_components/infra/dashboard-filter/dashboard-filter.component';
 import { ListUtilityComponent } from '../../_components/widget/list-utility/list-utility.component';
 import { MaterialUtilityComponent } from '../../_components/designSystemExtension/material-utility/material-utility.component';
+import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
+import { RichTextEditorComponent } from '../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -183,6 +185,8 @@ const pegaSdkComponentMap = {
   Pulse: PulseComponent,
   QuickCreate: QuickCreateComponent,
   reference: ReferenceComponent,
+  RichText: RichTextComponent,
+  RichTextEditor: RichTextEditorComponent,
   RadioButtons: RadioButtonsComponent,
   Region: RegionComponent,
   RootContainer: RootContainerComponent,

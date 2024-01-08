@@ -73,10 +73,17 @@
                 "glob": "*.*",
                 "input": "./packages/angular-sdk-components/src/assets/icons/",
                 "output": "./constellation/assets/icons"
+              },
+              {
+                "glob": "**/*",
+                "input": "./node_modules/tinymce",
+                "output": "./tinymce"
               }
             ],
             "styles": ["packages/angular-sdk-components/src/styles.scss"],
-            "scripts": [],
+            "scripts": [
+              "./node_modules/tinymce/tinymce.min.js"
+            ],
             "customWebpackConfig": {
               "path": "./extra-webpack.config.js"
             },
