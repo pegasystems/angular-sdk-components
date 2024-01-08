@@ -11,11 +11,13 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import isEqual from 'fast-deep-equal';
+
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
-import { buildFieldsForTable } from './helpers';
+import { buildFieldsForTable, getContext } from './helpers';
 import { Utils } from '../../../_helpers/utils';
 
 declare const window: any;
@@ -35,6 +37,13 @@ interface SimpleTableManualProps {
   propertyLabel?: string;
   fieldMetadata?: any;
   allowTableEdit?: boolean;
+  editMode?: string;
+  addAndEditRowsWithin?: any;
+  viewForAddAndEditModal?: any;
+  editModeConfig?: any;
+  displayMode?: string;
+  useSeparateViewForEdit: any;
+  viewForEditModal: any;
 }
 
 class Group {
@@ -91,7 +100,7 @@ export class SimpleTableManualComponent implements OnInit {
   referenceList: any;
   contextClass: any;
   showAddRowButton: boolean;
-  prevRefLength: number;
+  prevReferenceList: Array<any> = [];
   elementsData: MatTableDataSource<any>;
   rawFields: any;
   label?: string = '';
@@ -140,6 +149,12 @@ export class SimpleTableManualComponent implements OnInit {
   response: any;
   compositeKeys: any;
   parameters: any;
+  allowEditingInModal: boolean = false;
+  defaultView: any;
+  referenceListStr: any;
+  bUseSeparateViewForEdit: any;
+  editView: any;
+  settingsSvgIcon$: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -166,6 +181,8 @@ export class SimpleTableManualComponent implements OnInit {
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
 
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
+
+    this.settingsSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
   }
 
   ngOnDestroy(): void {
@@ -210,9 +227,17 @@ export class SimpleTableManualComponent implements OnInit {
       allowTableEdit,
       label: labelProp,
       propertyLabel,
-      fieldMetadata
+      fieldMetadata,
+      editMode,
+      addAndEditRowsWithin,
+      viewForAddAndEditModal,
+      editModeConfig,
+      displayMode,
+      useSeparateViewForEdit,
+      viewForEditModal
     } = this.configProps$;
 
+    this.referenceListStr = getContext(this.pConn$).referenceListStr;
     this.label = labelProp || propertyLabel;
     this.parameters = fieldMetadata?.datasource?.parameters;
 
@@ -255,8 +280,15 @@ export class SimpleTableManualComponent implements OnInit {
     this.requestedReadOnlyMode = renderMode === 'ReadOnly';
     this.readOnlyMode = renderMode === 'ReadOnly';
     this.editableMode = renderMode === 'Editable';
+    const isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
     this.showAddRowButton = !this.readOnlyMode && !hideAddRow;
-    const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
+    this.allowEditingInModal =
+      (editMode ? editMode === 'modal' : addAndEditRowsWithin === 'modal') && !(renderMode === 'ReadOnly' || isDisplayModeEnabled);
+    const showDeleteButton = this.editableMode && !hideDeleteRow;
+    this.defaultView = editModeConfig ? editModeConfig.defaultView : viewForAddAndEditModal;
+    this.bUseSeparateViewForEdit = editModeConfig ? editModeConfig.useSeparateViewForEdit : useSeparateViewForEdit;
+    this.editView = editModeConfig ? editModeConfig.editView : viewForEditModal;
+    // const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
 
     // Nebula has other handling for isReadOnlyMode but has Cosmos-specific code
     //  so ignoring that for now...
@@ -288,15 +320,17 @@ export class SimpleTableManualComponent implements OnInit {
       return field;
     });
 
-    if (this.prevRefLength !== this.referenceList?.length) {
-      if (this.editableMode) {
-        this.buildElementsForTable();
-      } else {
-        this.generateRowsData();
-      }
+    // for adding rows to table when editable and not modal view
+    if (this.prevReferenceList.length !== this.referenceList.length && this.editableMode && !this.allowEditingInModal) {
+      this.buildElementsForTable();
     }
 
-    this.prevRefLength = this.referenceList?.length;
+    // for edit and adding rows in modal view and to generate readonly list
+    if (!isEqual(this.prevReferenceList, this.referenceList) && (this.readOnlyMode || this.allowEditingInModal)) {
+      this.generateRowsData();
+    }
+
+    this.prevReferenceList = this.referenceList;
 
     // These are the data structures referred to in the html file.
     //  These are the relationships that make the table work
@@ -920,11 +954,35 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   addRecord() {
-    if (PCore.getPCoreVersion()?.includes('8.7')) {
+    if (this.allowEditingInModal && this.defaultView) {
+      this.pConn$
+        .getActionsApi()
+        .openEmbeddedDataModal(
+          this.defaultView,
+          this.pConn$,
+          this.referenceListStr,
+          this.referenceList.length,
+          PCore.getConstants().RESOURCE_STATUS.CREATE
+        );
+    } else if (PCore.getPCoreVersion()?.includes('8.7')) {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
       // @ts-ignore - second parameter "pageRef" is optional for insert method
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
+    }
+  }
+
+  editRecord(data, index) {
+    if (data) {
+      this.pConn$
+        .getActionsApi()
+        .openEmbeddedDataModal(
+          this.bUseSeparateViewForEdit ? this.editView : this.defaultView,
+          this.pConn$,
+          this.referenceListStr,
+          index,
+          PCore.getConstants().RESOURCE_STATUS.UPDATE
+        );
     }
   }
 

@@ -3,7 +3,7 @@
     <h3 *ngIf="label" className="label" style="font-weight: bold">
       {{ label }} <span class="results-count">{{ getResultsText() }}</span>
     </h3>
-    <table *ngIf="readOnlyMode" mat-table [dataSource]="rowData" class="mat-elevation-z8" id="readonly-table" matSort>
+    <table *ngIf="readOnlyMode || allowEditingInModal" mat-table [dataSource]="rowData" class="mat-elevation-z8" id="readonly-table" matSort>
       <ng-container *ngFor="let dCol of processedFields" [matColumnDef]="dCol.config.name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="_headerSortClick($event, dCol)" arrowPosition="before">
           <div>{{ dCol.config.label }}</div>
@@ -29,10 +29,26 @@
         </th>
         <td mat-cell *matCellDef="let element">{{ element[dCol.config.name] }}</td>
       </ng-container>
+      <ng-container matColumnDef="DeleteIcon">
+        <div *ngIf="allowEditingInModal">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element; index as j">
+            <div class="header-icon">
+              <button mat-icon-button [matMenuTriggerFor]="utilityMenu">
+                <img class="psdk-utility-card-actions-svg-icon" src="{{ settingsSvgIcon$ }}" />
+              </button>
+              <mat-menu #utilityMenu="matMenu" overlapTrigger="false">
+                <button mat-menu-item (click)="editRecord(element, j)">Edit</button>
+                <button mat-menu-item (click)="deleteRecord(j)">Delete</button>
+              </mat-menu>
+            </div>
+          </td>
+        </div>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
-    <table *ngIf="editableMode" mat-table [dataSource]="elementsData" class="mat-elevation-z8" id="editable-table">
+    <table *ngIf="editableMode && !allowEditingInModal" mat-table [dataSource]="elementsData" class="mat-elevation-z8" id="editable-table">
       <ng-container *ngFor="let dCol of fieldDefs; let i = index">
         <ng-container *ngIf="dCol.name != 'DeleteIcon'" [matColumnDef]="dCol.name">
           <th mat-header-cell *matHeaderCellDef class="psdk-mat-header">{{ dCol.label }}</th>
@@ -50,11 +66,11 @@
       </ng-container>
       <ng-container matColumnDef="DeleteIcon">
         <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element; index as j">
-          <button id="delete-button" mat-icon-button (click)="deleteRecord(j)">
-            <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
-          </button>
-        </td>
+          <td mat-cell *matCellDef="let element; index as j">
+            <button id="delete-button" mat-icon-button (click)="deleteRecord(j)">
+              <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
+            </button>
+          </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>

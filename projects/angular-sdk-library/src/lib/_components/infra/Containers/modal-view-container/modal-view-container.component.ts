@@ -58,6 +58,8 @@ export class ModalViewContainerComponent implements OnInit {
   bAlertState: boolean;
   localizedVal: Function;
   localeCategory = 'Data Object';
+  isMultiRecord: boolean = false;
+  actionsDialog: boolean = false;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -221,10 +223,23 @@ export class ModalViewContainerComponent implements OnInit {
 
               const { actionName } = latestItem;
               const theNewCaseInfo = newComp.getCaseInfo();
-              const caseName = theNewCaseInfo.getName();
+              // const caseName = theNewCaseInfo.getName();
               const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
 
-              this.title$ = actionName || `${this.localizedVal('New', this.localeCategory)} ${caseName} (${ID})`;
+              const caseTypeName = theNewCaseInfo.getCaseTypeName();
+              const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
+              const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
+              this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
+              this.context$ = latestItem.context;
+              this.title$ =
+                isDataObject || this.isMultiRecord
+                  ? this.getModalHeading(dataObjectAction)
+                  : this.determineModalHeaderByAction(
+                      actionName,
+                      caseTypeName,
+                      ID,
+                      `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
+                    );
               // // update children with new view's children
               this.arChildren$ = newComp.getChildren() as Array<any>;
               this.bShowModal$ = true;
@@ -295,7 +310,7 @@ export class ModalViewContainerComponent implements OnInit {
       If we are in create stage full page mode, created a new case and trying to click on cancel button
       it will show two alert dialogs which is not expected. Hence isModalAction flag to avoid that.
     */
-    if (latestItem && isModalAction) {
+    if (latestItem && isModalAction && !this.actionsDialog) {
       const configObject = this.getConfigObject(latestItem, this.pConn$);
       this.ngZone.run(() => {
         this.cancelPConn$ = configObject?.getPConnect();
@@ -348,4 +363,29 @@ export class ModalViewContainerComponent implements OnInit {
   getBanners() {
     return getBanners({ target: this.itemKey$, ...this.stateProps$ });
   }
+
+  getModalHeading(dataObjectAction) {
+    return dataObjectAction === PCore.getConstants().RESOURCE_STATUS.CREATE
+      ? this.localizedVal('Add Record', this.localeCategory)
+      : this.localizedVal('Edit Record', this.localeCategory);
+  }
+
+  determineModalHeaderByAction(actionName, caseTypeName, ID, caseLocaleRef) {
+    if (actionName) {
+      return this.localizedVal(actionName, this.localeCategory);
+    }
+    return `${this.localizedVal('Create', this.localeCategory)} ${this.localizedVal(caseTypeName, undefined, caseLocaleRef)} (${ID})`;
+  }
+
+  closeActionsDialog = () => {
+    this.actionsDialog = true;
+    // this.ngZone.run(() => {
+    this.bShowModal$ = false;
+
+    // for when non modal
+    this.modalVisibleChange.emit(this.bShowModal$);
+
+    this.oCaseInfo = {};
+    // });
+  };
 }

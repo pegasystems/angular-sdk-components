@@ -119,6 +119,99 @@ test.describe('E2E test', () => {
 
     await page.locator('button[id="delete-button"]').click();
 
+    /** Table Edit Modal tests */
+    const editModeType = await page.locator('mat-select[data-test-id="80c1db3a7b228760228004b1a532c71e"]');
+      await editModeType.click();
+      await page.locator('mat-option > span:has-text("Modal")').click();
+
+    await page.locator('button:has-text("+ Add")').click();
+
+    const modal = page.locator('div[id="dialog"]');
+
+    /** Testing Add Record Title */
+    const addRecordTitle = modal.locator('h3:has-text("Add Record")');
+    await expect(addRecordTitle).toBeVisible();
+
+    /** Adding record to the Table in Modal */
+    await modal.locator('input[data-test-id="202003240938510823869"]').type('Main St');
+    await modal.locator('input[data-test-id="202003240938510831291"]').type('Cambridge');
+    await modal.locator('input[data-test-id="202003240938510831411"]').type('MA');
+    await modal.locator('input[data-test-id="202003240938510832734"]').type('02142');
+
+    phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
+    countrySelector = phone.locator('button.country-selector');
+    await countrySelector.click();
+    await page.locator('div.flag.US >> nth=0').click();
+    await phone.locator('input[type="tel"]').fill('6175551212');
+
+    const country = modal.locator('mat-select[data-test-id="59716c97497eb9694541f7c3d37b1a4d"]');
+    await country.click();
+    await page.getByRole('option', { name: 'Switzerland' }).click();
+
+    /** submitting the record */
+    await modal.locator('button:has-text("submit")').click();
+
+    table = page.locator('table[id="readonly-table"]');
+
+    /** Testing the values present on table */
+    await expect(table.locator('td >> text="Main St"')).toBeVisible();
+    await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
+    await expect(table.locator('td >> text="MA"')).toBeVisible();
+    await expect(table.locator('td >> text="02142"')).toBeVisible();
+    await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
+
+    await page.locator('button:has-text("Next")').click();
+
+    /** Testing the values present on Confirm screen */
+    await expect(table.locator('td >> text="Main St"')).toBeVisible();
+    await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
+    await expect(table.locator('td >> text="MA"')).toBeVisible();
+    await expect(table.locator('td >> text="02142"')).toBeVisible();
+    await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** Edit Record tests */
+    await table.locator('div[class="header-icon"] >> nth=0').click();
+    let editMenu = await page.locator('div[role="menu"]');
+    await editMenu.locator('button:has-text("Edit")').click();
+
+    /** Testing Edit Record title */
+    const editRecordTitle = modal.locator('h3:has-text("Edit Record")');
+    await expect(editRecordTitle).toBeVisible();
+
+    /** Editing the added row */
+    await modal.locator('input[data-test-id="202003240938510823869"]').fill('');
+    await modal.locator('input[data-test-id="202003240938510823869"]').type('Gandhi St');
+
+    await modal.locator('input[data-test-id="202003240938510831291"]').fill('');
+    await modal.locator('input[data-test-id="202003240938510831291"]').type('Dallas');
+
+    await modal.locator('button:has-text("submit")').click();
+
+    /** Testing the edited values on table */
+    await expect(table.locator('td >> text="Gandhi St"')).toBeVisible();
+    await expect(table.locator('td >> text="Dallas"')).toBeVisible();
+
+    await page.locator('button:has-text("Next")').click();
+
+    /** Testing the edited values on Confirm Screen */
+    await expect(table.locator('td >> text="Gandhi St"')).toBeVisible();
+    await expect(table.locator('td >> text="Dallas"')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** Delete Row tests */
+    await table.locator('div[class="header-icon"] >> nth=0').click();
+    editMenu = await page.locator('div[role="menu"]');
+    await editMenu.locator('button:has-text("Delete")').click();
+
+    await expect(page.locator('div[id="no-records"]:has-text("No Records Found.")')).toBeVisible();
+
+    await page.locator('button:has-text("Next")').click();
+
+    await page.locator('button:has-text("Previous")').click();
+
     /** FieldGroup subcategory tests */
 
     selectedSubCategory = await page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
