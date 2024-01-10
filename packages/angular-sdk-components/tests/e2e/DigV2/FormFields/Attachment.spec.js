@@ -64,7 +64,7 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // Disable tests
-    const alwaysDisabledAttachment = page.locator('app-attachment').filter({ hasText: 'AttachmentDisabledAlways' }).getByRole('button'); // page.locator('button:below(input[id="AttachmentDisabledAlways"])');
+    const alwaysDisabledAttachment = page.locator('app-attachment').filter({ hasText: 'AttachmentDisabledAlways' }).getByRole('button');
 
     attributes = await common.getAttributes(alwaysDisabledAttachment);
     await expect(attributes.includes('disabled')).toBeTruthy();
