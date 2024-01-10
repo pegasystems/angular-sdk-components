@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import download from 'downloadjs';
+
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -12,8 +15,10 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on this component
   value: any;
+  extensions: any;
 }
 
+declare const PCore: any;
 @Component({
   selector: 'app-attachment',
   templateUrl: './attachment.component.html',
@@ -31,6 +36,8 @@ export class AttachmentComponent implements OnInit {
 
   label$: string = '';
   value$: any;
+  allowMultiple$: boolean = false;
+  extensions$: any = '';
   bRequired$: boolean = false;
   bReadonly$: boolean = false;
   bDisabled$: boolean = false;
@@ -38,6 +45,7 @@ export class AttachmentComponent implements OnInit {
   bLoading$: boolean = false;
   arFiles$: Array<any> = [];
   arFileList$: Array<any> = [];
+  arFilesWithError: Array<any> = [];
   removeFileFromList$: any;
   arMenuList$: Array<any> = [];
   bShowSelector$: boolean = true;
@@ -50,6 +58,8 @@ export class AttachmentComponent implements OnInit {
   caseID: any;
   status: any;
   validatemessage: any = '';
+  valueRef: any;
+  imagePath$: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -66,7 +76,6 @@ export class AttachmentComponent implements OnInit {
 
     this.caseID = PCore.getStoreValue('.pyID', 'caseInfo.content', this.pConn$.getContextName());
 
-    // let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.checkAndUpdate();
   }
 
@@ -82,8 +91,6 @@ export class AttachmentComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    // this.att_id = '';
-
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
@@ -100,7 +107,7 @@ export class AttachmentComponent implements OnInit {
     const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
     const stateProps: any = this.pConn$.getStateProps();
 
-    const { value, label } = configProps;
+    const { value, label, extensions } = configProps;
 
     if (configProps.required != null) {
       this.bRequired$ = this.utils.getBooleanValue(configProps.required);
@@ -118,10 +125,17 @@ export class AttachmentComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(configProps.readOnly);
     }
 
+    if (configProps['allowMultiple'] != null) {
+      this.allowMultiple$ = this.utils.getBooleanValue(configProps['allowMultiple']);
+    }
+
     this.label$ = label;
     this.value$ = value;
     this.status = stateProps.status;
-    this.validatemessage = stateProps.validateMessage;
+    this.validatemessage = this.angularPConnectData.validateMessage;
+    this.extensions$ = extensions;
+    this.valueRef = this.pConn$.getStateProps()['value'];
+    this.valueRef = this.valueRef.indexOf('.') === 0 ? this.valueRef.substring(1) : this.valueRef;
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
@@ -135,81 +149,80 @@ export class AttachmentComponent implements OnInit {
     this.att_valueRef = (this.pConn$.getStateProps() as any).value;
     this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
 
-    // let this.fileTemp: any = {};
-
     if (value && value.pxResults && +value.pyCount > 0) {
-      this.fileTemp = this.buildFilePropsFromResponse(value.pxResults[0]);
+      this.fileTemp = value.pxResults.map((attach) => this.buildFilePropsFromResponse(attach));
 
-      if (this.fileTemp.responseProps) {
-        // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-        if (!this.pConn$.attachmentsInfo) {
+      this.fileTemp.forEach((file, i) => {
+        if (file.responseProps) {
           // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-          this.pConn$.attachmentsInfo = {
-            type: 'File',
-            attachmentFieldName: this.att_valueRef,
-            category: this.att_categoryName
-          };
-        }
-
-        if (this.fileTemp.responseProps.pzInsKey && !this.fileTemp.responseProps.pzInsKey.includes('temp')) {
-          this.fileTemp.props.type = this.fileTemp.responseProps.pyMimeFileExtension;
-          this.fileTemp.props.mimeType = this.fileTemp.responseProps.pyMimeFileExtension;
-          this.fileTemp.props.ID = this.fileTemp.responseProps.pzInsKey;
-
-          // create the actions for the "more" menu on the attachment
-          const arMenuList: Array<any> = [];
-          let oMenu: any = {};
-
-          oMenu.icon = 'download';
-          oMenu.text = this.pConn$.getLocalizedValue('Download', '', '');
-          oMenu.onClick = () => {
-            this._downloadFileFromList(this.value$.pxResults[0]);
-          };
-          arMenuList.push(oMenu);
-          oMenu = {};
-          oMenu.icon = 'trash';
-          oMenu.text = this.pConn$.getLocalizedValue('Delete', '', '');
-          oMenu.onClick = () => {
-            this._removeFileFromList(this.arFileList$[0]);
-          };
-          arMenuList.push(oMenu);
-
-          this.arFileList$ = [];
-          this.arFileList$.push(
-            this.getNewListUtilityItemProps({
-              att: this.fileTemp.props,
-              downloadFile: null,
-              cancelFile: null,
-              deleteFile: null,
-              removeFile: null
-            })
-          );
-
-          this.arFileList$[0].actions = arMenuList;
-
-          this.bShowSelector$ = false;
-        }
-        if (this.fileTemp) {
-          const currentAttachmentList = this.getCurrentAttachmentsList(
-            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-            this.pConn$.getContextName()
-          );
-          const index = currentAttachmentList.findIndex((element) => element.props.ID === this.fileTemp.props.ID);
-          let tempFiles: any = [];
-          if (index < 0) {
-            tempFiles = [this.fileTemp];
+          if (!this.pConn$.attachmentsInfo) {
+            // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
+            this.pConn$.attachmentsInfo = {
+              type: 'File',
+              attachmentFieldName: this.att_valueRef,
+              category: this.att_categoryName
+            };
           }
-          PCore.getStateUtils().updateState(
-            this.pConn$.getContextName(),
-            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-            [...currentAttachmentList, ...tempFiles],
-            {
-              pageReference: 'context_data',
-              isArrayDeepMerge: false
+
+          if (file.responseProps.pzInsKey && !file.responseProps.pzInsKey.includes('temp')) {
+            file.props.type = file.responseProps.pyMimeFileExtension;
+            file.props.mimeType = file.responseProps.pyMimeFileExtension;
+            file.props.ID = file.responseProps.pzInsKey;
+
+            // create the actions for the "more" menu on the attachment
+            const arMenuList: Array<any> = [];
+            let oMenu: any = {};
+
+            oMenu.icon = 'download';
+            oMenu.text = this.pConn$.getLocalizedValue('Download', '', '');
+            oMenu.onClick = () => {
+              this._downloadFileFromList(this.value$.pxResults[i]);
+            };
+            arMenuList.push(oMenu);
+            oMenu = {};
+            oMenu.icon = 'trash';
+            oMenu.text = this.pConn$.getLocalizedValue('Delete', '', '');
+            oMenu.onClick = () => {
+              this._removeFileFromList(this.arFileList$[i]);
+            };
+            arMenuList.push(oMenu);
+
+            this.arFileList$.push(
+              this.getNewListUtilityItemProps({
+                att: file.props,
+                downloadFile: null,
+                cancelFile: null,
+                deleteFile: null,
+                removeFile: null
+              })
+            );
+
+            this.arFileList$[i].actions = arMenuList;
+
+            this.bShowSelector$ = false;
+          }
+          if (file) {
+            const currentAttachmentList = this.getCurrentAttachmentsList(
+              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+              this.pConn$.getContextName()
+            );
+            const index = currentAttachmentList.findIndex((element) => element.props.ID === file.props.ID);
+            let tempFiles: any = [];
+            if (index < 0) {
+              tempFiles = [file];
             }
-          );
+            PCore.getStateUtils().updateState(
+              this.pConn$.getContextName(),
+              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+              [...currentAttachmentList, ...tempFiles],
+              {
+                pageReference: 'context_data',
+                isArrayDeepMerge: false
+              }
+            );
+          }
         }
-      }
+      });
     }
     PCore.getPubSubUtils().subscribe(
       PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
@@ -250,78 +263,223 @@ export class AttachmentComponent implements OnInit {
 
   getAttachmentKey = (name = '') => (name ? `attachmentsList.${name}` : 'attachmentsList');
 
-  _removeFileFromList(item: any) {
-    const fileIndex = this.arFileList$.findIndex((element) => element?.id === item?.id);
-    if (PCore.getPCoreVersion()?.includes('8.7')) {
-      if (this.value$) {
-        // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-        this.pConn$.attachmentsInfo = {
-          type: 'File',
-          attachmentFieldName: this.att_valueRef,
-          delete: true
-        };
+  CheckForInvalidAttachment() {
+    const currentAttachmentList = this.getCurrentAttachmentsList(
+      this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+      this.pConn$.getContextName()
+    );
+
+    let isValid = true;
+    this.arFileList$.forEach((file) => {
+      if (file.secondary.error) {
+        isValid = false;
       }
-      if (fileIndex > -1) {
-        this.arFileList$.splice(fileIndex, 1);
-      }
-    } else {
-      const attachmentsList = [];
-      const currentAttachmentList = this.getCurrentAttachmentsList(
-        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-        this.pConn$.getContextName()
-      ).filter((f) => f.label !== this.att_valueRef);
-      if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0) {
-        const deletedFile = {
-          type: 'File',
-          label: this.att_valueRef,
-          delete: true,
-          responseProps: {
-            pzInsKey: this.arFileList$[fileIndex].id
-          }
-        };
-        // updating the redux store to help form-handler in passing the data to delete the file from server
-        PCore.getStateUtils().updateState(
-          this.pConn$.getContextName(),
-          this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-          [...currentAttachmentList, deletedFile],
-          {
-            pageReference: 'context_data',
-            isArrayDeepMerge: false
-          }
-        );
-      } else {
-        PCore.getStateUtils().updateState(
-          this.pConn$.getContextName(),
-          this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-          [...currentAttachmentList, ...attachmentsList],
-          {
-            pageReference: 'context_data',
-            isArrayDeepMerge: false
-          }
-        );
-      }
-      if (fileIndex > -1) {
-        this.arFileList$.splice(fileIndex, 1);
-      }
+    });
+    if (isValid) {
+      PCore.getMessageManager().clearMessages({
+        type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
+        property: (this.pConn$.getStateProps() as any).value,
+        pageReference: this.pConn$.getPageReference(),
+        context: this.pConn$.getContextName()
+      });
     }
-    this.bShowSelector$ = !(this.arFileList$?.length > 0);
+  }
+
+  _removeFileFromList(item: any) {
+    const fileListIndex = this.arFileList$.findIndex((element) => element?.id === item?.id);
+    const fileIndex = this.arFiles$.findIndex((element) => element?.ID === item?.id);
+
+    const attachmentsList = [];
+    let currentAttachmentList = this.getCurrentAttachmentsList(
+      this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+      this.pConn$.getContextName()
+    );
+    if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0) {
+      const deletedFile = {
+        type: 'File',
+        label: this.att_valueRef,
+        delete: true,
+        responseProps: {
+          pzInsKey: this.arFileList$[fileListIndex].id
+        }
+      };
+      // updating the redux store to help form-handler in passing the data to delete the file from server
+      PCore.getStateUtils().updateState(
+        this.pConn$.getContextName(),
+        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+        [...currentAttachmentList, deletedFile],
+        {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        }
+      );
+    } else {
+      currentAttachmentList = currentAttachmentList.filter((f) => f.ID !== item.id);
+      PCore.getStateUtils().updateState(
+        this.pConn$.getContextName(),
+        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+        [...currentAttachmentList, ...attachmentsList],
+        {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        }
+      );
+    }
+
+    if (fileListIndex > -1) {
+      this.arFileList$.splice(fileListIndex, 1);
+    }
+    if (fileIndex > -1) {
+      this.arFiles$.splice(fileIndex, 1);
+    }
+
+    this.CheckForInvalidAttachment();
+
+    this.bShowSelector$ = !(this.arFileList$?.length > 0) || this.allowMultiple$;
   }
 
   getCurrentAttachmentsList(key, context) {
     return PCore.getStoreValue(`.${key}`, 'context_data', context) || [];
   }
 
-  errorHandler(isFetchCanceled) {
+  errorHandler(isFetchCanceled, file) {
     return (error) => {
       if (!isFetchCanceled(error)) {
         let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong', '', '');
         if (error.response && error.response.data && error.response.data.errorDetails) {
           uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue, '', '');
         }
+        for (const myFile of this.myFiles) {
+          if (myFile.ID === file.ID) {
+            myFile.meta = uploadFailMsg;
+            myFile.error = true;
+            myFile.fileName = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
+          }
+        }
         this.bShowSelector$ = false;
-        this.myFiles[0].meta = uploadFailMsg;
-        this.myFiles[0].error = true;
-        this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
+        this.arFileList$ = this.myFiles.map((att) => {
+          return this.getNewListUtilityItemProps({
+            att,
+            downloadFile: null,
+            cancelFile: null,
+            deleteFile: null,
+            removeFile: null
+          });
+        });
+
+        PCore.getMessageManager().addMessages({
+          messages: [
+            {
+              type: 'error',
+              message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
+            }
+          ],
+          property: (this.pConn$.getStateProps() as any).value,
+          pageReference: this.pConn$.getPageReference(),
+          context: this.pConn$.getContextName()
+        });
+
+        this.bShowJustDelete$ = true;
+        this.bLoading$ = false;
+      }
+      throw error;
+    };
+  }
+
+  uploadMyFiles(event: any) {
+    this.arFiles$ = [...this.arFiles$, ...this.getFiles(event.target.files)];
+
+    // convert FileList to an array
+    this.myFiles = Array.from(this.arFiles$);
+
+    this.bLoading$ = true;
+
+    const filesToBeUploaded = this.myFiles
+      .filter((e) => {
+        const isFileUploaded = e && e.progress === 100;
+        const fileHasError = e && e.error;
+        const isFileUploadedinLastStep = e.responseProps && e.responseProps.pzInsKey;
+        return !isFileUploaded && !fileHasError && !isFileUploadedinLastStep;
+      })
+      .map((f) =>
+        PCore.getAttachmentUtils().uploadAttachment(
+          f,
+          () => {
+            this.onUploadProgress();
+          },
+          (isFetchCanceled) => {
+            return this.errorHandler(isFetchCanceled, f);
+          },
+          this.pConn$.getContextName()
+        )
+      );
+
+    Promise.allSettled(filesToBeUploaded)
+      .then((fileResponses: any) => {
+        fileResponses = fileResponses.filter((fr) => fr.status !== 'rejected'); // in case of deleting an in progress file, promise gets cancelled but still enters then block
+        let reqObj;
+        if (fileResponses.length > 0) {
+          const tempFilesUploaded = [...this.arFiles$];
+          let newAttachments: any = [];
+          tempFilesUploaded.forEach((fileRes) => {
+            const index = fileResponses.findIndex((fr: any) => fr.value.clientFileID === fileRes.ID);
+            if (index >= 0) {
+              reqObj = {
+                type: 'File',
+                label: this.att_valueRef,
+                category: this.att_categoryName,
+                handle: fileResponses[index].value.ID,
+                ID: fileRes.ID
+              };
+              newAttachments = [...newAttachments, reqObj];
+            }
+          });
+          const currentAttachmentList = this.getCurrentAttachmentsList(
+            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+            this.pConn$.getContextName()
+          ).filter((f) => f.label !== this.att_valueRef);
+          PCore.getStateUtils().updateState(
+            this.pConn$.getContextName(),
+            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+            [...currentAttachmentList, ...newAttachments],
+            {
+              pageReference: 'context_data',
+              isArrayDeepMerge: false
+            }
+          );
+          this.arFiles$ = tempFilesUploaded;
+
+          this.ngZone.run(() => {
+            this.bShowSelector$ = this.allowMultiple$;
+            this.myFiles.forEach((file) => {
+              if (!file.error) {
+                file.meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
+              }
+            });
+            this.arFileList$ = this.myFiles.map((att) => {
+              return this.getNewListUtilityItemProps({
+                att,
+                downloadFile: null,
+                cancelFile: null,
+                deleteFile: null,
+                removeFile: null
+              });
+            });
+
+            this.CheckForInvalidAttachment();
+
+            this.bShowJustDelete$ = true;
+            this.bLoading$ = false;
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        this.bShowJustDelete$ = true;
+        this.bLoading$ = false;
+        this.bShowSelector$ = this.allowMultiple$;
+        this.myFiles[0].meta = 'File uploaded failed';
+
         this.arFileList$ = this.myFiles.map((att) => {
           return this.getNewListUtilityItemProps({
             att,
@@ -334,111 +492,7 @@ export class AttachmentComponent implements OnInit {
 
         this.bShowJustDelete$ = true;
         this.bLoading$ = false;
-      }
-      throw error;
-    };
-  }
-
-  uploadMyFiles(event: any) {
-    this.arFiles$ = this.getFiles(event.target.files);
-    // convert FileList to an array
-    this.myFiles = Array.from(this.arFiles$);
-
-    // alert($event.target.files[0]); // outputs the first file
-
-    if (this.myFiles.length == 1) {
-      this.bLoading$ = true;
-
-      // this.myFiles[0].ID = undefined;
-
-      PCore.getAttachmentUtils()
-        .uploadAttachment(this.myFiles[0], this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
-        .then((fileRes) => {
-          this.att_id = fileRes.ID;
-
-          let reqObj;
-          if (this.PCoreVersion?.includes('8.7')) {
-            reqObj = {
-              type: 'File',
-              attachmentFieldName: this.att_valueRef,
-              category: this.att_categoryName,
-              ID: fileRes.ID
-            };
-            // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-            this.pConn$.attachmentsInfo = reqObj;
-          } else {
-            reqObj = {
-              type: 'File',
-              label: this.att_valueRef,
-              category: this.att_categoryName,
-              handle: fileRes.ID,
-              ID: fileRes.clientFileID
-            };
-            const currentAttachmentList = this.getCurrentAttachmentsList(
-              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-              this.pConn$.getContextName()
-            ).filter((f) => f.label !== this.att_valueRef);
-            PCore.getStateUtils().updateState(
-              this.pConn$.getContextName(),
-              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-              [...currentAttachmentList, reqObj],
-              {
-                pageReference: 'context_data',
-                isArrayDeepMerge: false
-              }
-            );
-          }
-
-          const fieldName = (this.pConn$.getStateProps() as any).value;
-          const context = this.pConn$.getContextName();
-
-          // @ts-ignore - category should be optional
-          PCore.getMessageManager().clearMessages({
-            type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
-            property: fieldName,
-            pageReference: this.pConn$.getPageReference(),
-            context
-          });
-          this.ngZone.run(() => {
-            this.bShowSelector$ = false;
-            this.myFiles[0].meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
-            this.arFileList$ = this.myFiles.map((att) => {
-              return this.getNewListUtilityItemProps({
-                att,
-                downloadFile: null,
-                cancelFile: null,
-                deleteFile: null,
-                removeFile: null
-              });
-            });
-
-            this.bShowJustDelete$ = true;
-            this.bLoading$ = false;
-          });
-        })
-
-        .catch(() => {
-          // just catching the rethrown error at uploadAttachment
-          // to handle Unhandled rejections
-
-          this.bShowJustDelete$ = true;
-          this.bLoading$ = false;
-          this.bShowSelector$ = false;
-          this.myFiles[0].meta = 'File uploaded failed';
-          this.arFileList$ = this.myFiles.map((att) => {
-            return this.getNewListUtilityItemProps({
-              att,
-              downloadFile: null,
-              cancelFile: null,
-              deleteFile: null,
-              removeFile: null
-            });
-          });
-
-          this.bShowJustDelete$ = true;
-          this.bLoading$ = false;
-        });
-    }
+      });
   }
 
   getNewListUtilityItemProps = ({ att, cancelFile, downloadFile, deleteFile, removeFile }) => {
@@ -483,7 +537,6 @@ export class AttachmentComponent implements OnInit {
           actions.push(action);
         }
       });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       isDownloadable = att.links.download;
     } else if (att.error) {
       actions = [
@@ -519,30 +572,66 @@ export class AttachmentComponent implements OnInit {
   onUploadProgress() {}
 
   getFiles(arFiles: Array<any>): Array<any> {
-    return this.setNewFiles(arFiles);
+    const files = this.allowMultiple$ ? arFiles : [arFiles[0]];
+    return this.setNewFiles(files);
   }
 
   setNewFiles(arFiles) {
     let index = 0;
-    const maxAttachmentSize = 5;
+    const maxAttachmentSize = PCore.getEnvironmentInfo().getMaxAttachmentSize() || 5;
     for (const file of arFiles) {
-      if (!this.validateMaxSize(file, maxAttachmentSize)) {
-        file.error = true;
-        file.meta = this.pConn$.getLocalizedValue('File is too big. Max allowed size is 5MB.', '', '');
-      }
       file.mimeType = file.type;
       file.icon = this.utils.getIconFromFileType(file.type);
       file.ID = `${new Date().getTime()}I${index}`;
+
+      if (!this.validateMaxSize(file, maxAttachmentSize)) {
+        file.error = true;
+        file.meta = this.pConn$.getLocalizedValue('File is too big. Max allowed size is 5MB.', '', '');
+      } else if (!this.validateFileExtension(file, this.extensions$)) {
+        file.error = true;
+        file.meta = `${this.pConn$.getLocalizedValue('File has invalid extension. Allowed extensions are:', '', '')} ${this.extensions$.replaceAll(
+          '.',
+          ''
+        )}`;
+      }
+      if (file.error) {
+        const fieldName = (this.pConn$.getStateProps() as any).value;
+        const context = this.pConn$.getContextName();
+        PCore.getMessageManager().addMessages({
+          messages: [
+            {
+              type: 'error',
+              message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
+            }
+          ],
+          property: fieldName,
+          pageReference: this.pConn$.getPageReference(),
+          context
+        });
+      }
       index++;
     }
 
-    return arFiles;
+    const tempFilesToBeUploaded = [...arFiles];
+    return tempFilesToBeUploaded;
   }
 
   validateMaxSize(fileObj, maxSizeInMB): boolean {
     const fileSize = (fileObj.size / 1048576).toFixed(2);
-    return fileSize < maxSizeInMB;
+    return parseFloat(fileSize) < parseFloat(maxSizeInMB);
   }
+
+  validateFileExtension = (fileObj, allowedExtensions) => {
+    if (!allowedExtensions) {
+      return true;
+    }
+    const allowedExtensionList = allowedExtensions
+      .toLowerCase()
+      .split(',')
+      .map((item) => item.replaceAll('.', '').trim());
+    const extension = fileObj.name.split('.').pop().toLowerCase();
+    return allowedExtensionList.includes(extension);
+  };
 
   buildFilePropsFromResponse(respObj) {
     return {

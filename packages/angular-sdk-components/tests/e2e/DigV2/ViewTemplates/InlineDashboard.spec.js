@@ -77,12 +77,13 @@ test.describe('E2E test', () => {
     await expect(page.locator('td >> text="New" >> nth=1')).toBeVisible();
 
     const today = new Date();
-    const day = common.getFormattedDate(today);
+    // Seeing issues with today's date, so changed it to yesterday
+    const yesterday = common.getFormattedDate(new Date(today.setDate(today.getDate() - 1)));
     const nextDay = common.getFormattedDate(new Date(today.setDate(today.getDate() + 1)));
     const dateFilter = filters.locator('div:has-text("Create date/time")');
     let dateFilterInput = dateFilter.locator('input[formcontrolname="start"]');
     await dateFilterInput.click();
-    await dateFilterInput.pressSequentially(`${day}`);
+    await dateFilterInput.pressSequentially(`${yesterday}`);
     dateFilterInput = dateFilter.locator('input[formcontrolname="end"]');
     await dateFilterInput.click();
     await dateFilterInput.pressSequentially(`${nextDay}`);

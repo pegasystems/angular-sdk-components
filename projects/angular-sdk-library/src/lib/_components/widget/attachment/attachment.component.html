@@ -1,16 +1,20 @@
-<div class="psdk-label-infix-readonly">
+<div class="psdk-label-infix-readonly" *ngIf="bVisible$">
   <span class="psdk-label-wrapper-readonly">
-    <label [ngClass]="{'psdk-label-readonly': true,
-  'label-required': bRequired$ === true}" [htmlFor]="att_valueRef">{{ label$ }}</label>
+    <label [ngClass]="{ 'psdk-label-readonly': true, 'label-required': bRequired$ === true }" [htmlFor]="att_valueRef">{{ label$ }}</label>
   </span>
-  <div [ngClass]="{'psdk-modal-file-selector': status !== 'error',
-  'psdk-modal-file-selector-error': status === 'error'}" id="attachment-container" *ngIf="bShowSelector$">
+  <div
+    [ngClass]="{ 'psdk-modal-file-selector': status !== 'error', 'psdk-modal-file-selector-error': status === 'error' }"
+    id="attachment-container"
+    *ngIf="bShowSelector$"
+  >
     <mat-spinner *ngIf="bLoading$" class="progress-spinner" diameter="40"></mat-spinner>
-    <input hidden type="file" [required]="bRequired$" #uploader [id]="att_valueRef" (change)="uploadMyFiles($event)" />
+    <input hidden type="file" [required]="bRequired$" #uploader [id]="att_valueRef" [multiple]="allowMultiple$" (change)="uploadMyFiles($event)" />
 
-    <button mat-stroked-button color="primary" [disabled]="bDisabled$" (click)="uploader.click()">Upload file</button>
-    <span *ngIf="validatemessage" class="file-error">{{ validatemessage }}</span>
+    <button mat-stroked-button color="primary" [disabled]="bDisabled$" (click)="uploader.click()">
+      {{ allowMultiple$ ? 'Upload files' : 'Upload file' }}
+    </button>
   </div>
+  <span *ngIf="validatemessage" class="file-error">{{ validatemessage }}</span>
 
   <div class="psdk-attachment-list" *ngIf="arFileList$ != null && arFileList$.length > 0">
     <component-mapper

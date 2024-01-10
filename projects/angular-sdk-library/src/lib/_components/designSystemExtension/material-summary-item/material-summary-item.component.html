@@ -16,7 +16,7 @@
     </div>
     <div class="psdk-utility-card-actions">
       <div *ngIf="menuIconOverride$ == '' else showCustom">
-        <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+        <button mat-icon-button [matMenuTriggerFor]="actionMenu" id="setting-button">
           <img class="psdk-utility-card-action-svg-icon" src="{{settingsSvgIcon$}}">
         </button>
         <mat-menu #actionMenu="matMenu" overlapTrigger="false">
@@ -30,7 +30,7 @@
         </mat-menu>
       </div>
       <ng-template #showCustom>
-        <button mat-icon-button (click)="menuIconOverrideAction$.onClick(item$)">
+        <button mat-icon-button id="delete-attachment" (click)="menuIconOverrideAction$.onClick(item$)">
           <img class="psdk-utility-card-action-svg-icon" src="{{menuIconOverride$}}">
         </button>
       </ng-template>
