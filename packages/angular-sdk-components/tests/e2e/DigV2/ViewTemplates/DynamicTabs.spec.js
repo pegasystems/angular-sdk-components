@@ -41,8 +41,6 @@ test.describe('E2E test', () => {
     const tablist = await page.locator('mat-tab-group[id="dynamic-tabs"] div[role="tablist"]');
     const tabpanel = await page.locator('mat-tab-group[id="dynamic-tabs"] mat-tab-body[role="tabpanel"]');
 
-    console.log('tabpanel', tabpanel);
-
     await expect(tabpanel.nth(0).getByText('Make')).toBeVisible();
     await expect(tabpanel.nth(0).getByText('BMW')).toBeVisible();
 
