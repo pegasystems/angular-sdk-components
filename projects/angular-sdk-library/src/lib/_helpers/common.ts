@@ -11,3 +11,8 @@ export function getCurrentTimezone(timezone = 'America/New_York') {
   if (timezone) return timezone;
   return window.PCore?.getLocaleUtils?.().getTimeZoneInUse?.();
 }
+
+export function isInfinity23OrHigher() {
+  const pCoreVersion = PCore.getPCoreVersion();
+  return ['8.23.0', '23.1.1'].includes(pCoreVersion);
+}

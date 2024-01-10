@@ -8,6 +8,7 @@ test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto(config.config.baseUrl, { waitUntil: 'networkidle' });
 });
+
 let caseID;
 test.describe('E2E test', () => {
   test('should login, create and send for discount', async ({ page }) => {
