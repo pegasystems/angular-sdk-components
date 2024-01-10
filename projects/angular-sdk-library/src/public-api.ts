@@ -25,6 +25,7 @@ export * from './lib/_components/field/integer/integer.component';
 export * from './lib/_components/field/percentage/percentage.component';
 export * from './lib/_components/field/phone/phone.component';
 export * from './lib/_components/field/radio-buttons/radio-buttons.component';
+export * from './lib/_components/field/rich-text/rich-text.component';
 export * from './lib/_components/field/semantic-link/semantic-link.component';
 export * from './lib/_components/field/text/text.component';
 export * from './lib/_components/field/text-area/text-area.component';
@@ -117,6 +118,7 @@ export * from './lib/_components/designSystemExtension/material-utility/material
 export * from './lib/_components/designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
 export * from './lib/_components/designSystemExtension/operator/operator.component';
 export * from './lib/_components/designSystemExtension/pulse/pulse.component';
+export * from './lib/_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 
 export * from './lib/_directives/thousand-seperator.directive';
 

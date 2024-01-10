@@ -99,6 +99,8 @@ import { MaterialDetailsComponent } from '../../_components/designSystemExtensio
 import { DashboardFilterComponent } from '../../_components/infra/dashboard-filter/dashboard-filter.component';
 import { ListUtilityComponent } from '../../_components/widget/list-utility/list-utility.component';
 import { MaterialUtilityComponent } from '../../_components/designSystemExtension/material-utility/material-utility.component';
+import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
+import { RichTextEditorComponent } from '../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
@@ -187,6 +189,8 @@ const pegaSdkComponentMap = {
   reference: ReferenceComponent,
   RadioButtons: RadioButtonsComponent,
   Region: RegionComponent,
+  RichText: RichTextComponent,
+  RichTextEditor: RichTextEditorComponent,
   RootContainer: RootContainerComponent,
   ScalarList: ScalarListComponent,
   SemanticLink: SemanticLinkComponent,
