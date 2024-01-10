@@ -11,7 +11,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   imports: [CommonModule, MatButtonToggleModule, MatBadgeModule]
 })
 export class MaterialVerticalTabsComponent implements OnInit {
-  @Input() tabConfig$: Array<any>;
+  @Input() tabConfig$: any[];
   @Output() tabClick: EventEmitter<any> = new EventEmitter();
 
   selectedTabId$: any;

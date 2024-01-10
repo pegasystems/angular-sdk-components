@@ -27,7 +27,7 @@ export class AngularPConnectService {
   /**
    * Local variable used to compute the next componentID
    */
-  private counterComponentID: number = 0;
+  private counterComponentID = 0;
 
   /**
    * Local array used to store the association of an component to its most recent "props"
@@ -35,7 +35,7 @@ export class AngularPConnectService {
    * anything added by populateAdditionalProps.
    * Each entry is: { __componentID__: _the component's most recent props_ }
    */
-  private componentPropsArr: Array<Object> = [];
+  private componentPropsArr: Object[] = [];
 
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
@@ -294,7 +294,7 @@ export class AngularPConnectService {
    */
   shouldComponentUpdate(inComp): boolean {
     // const bShowLogging = false;
-    let bRet: boolean = false;
+    let bRet = false;
     // check for reasonable input
     if (Utils.isEmptyObject(inComp)) {
       console.error(`AngularPConnect: bad call to shouldComponentUpdate: inComp: ${JSON.stringify(inComp)}`);
@@ -313,14 +313,14 @@ export class AngularPConnectService {
 
     // if have pageMessages, and it is blank, remove it.  This causes issues of making it appear
     // that a will cause an update, when there is no change
-    if (incomingProps['pageMessages'] && incomingProps['pageMessages'].length == 0) {
-      inComp.angularPConnectData.pageMessages = incomingProps['pageMessages'];
-      delete incomingProps['pageMessages'];
+    if (incomingProps.pageMessages && incomingProps.pageMessages.length == 0) {
+      inComp.angularPConnectData.pageMessages = incomingProps.pageMessages;
+      delete incomingProps.pageMessages;
     }
 
-    if (incomingProps['httpMessages']) {
-      inComp.angularPConnectData.httpMessages = incomingProps['httpMessages'];
-      incomingProps['httpMessages'] = undefined;
+    if (incomingProps.httpMessages) {
+      inComp.angularPConnectData.httpMessages = incomingProps.httpMessages;
+      incomingProps.httpMessages = undefined;
     }
 
     const incomingPropsAsStr: string = JSON.stringify(incomingProps);
@@ -334,7 +334,7 @@ export class AngularPConnectService {
     }
 
     // Below piece of code is needed to re-render the component since we wanna evaluate the Visibility expression within View component in such cases
-    if (inComp['pConn$'].meta.config.context?.length > 0 && inComp['pConn$'].getPageReference().length > 'caseInfo.content'.length) {
+    if (inComp.pConn$.meta.config.context?.length > 0 && inComp.pConn$.getPageReference().length > 'caseInfo.content'.length) {
       return true;
     }
 
@@ -354,7 +354,7 @@ export class AngularPConnectService {
           timer.unsubscribe();
         });
 
-        let sErrorMessage = currentProps && currentProps['label'] ? currentProps['label'].concat(' - ') : '';
+        let sErrorMessage = currentProps && currentProps.label ? currentProps.label.concat(' - ') : '';
         sErrorMessage = sErrorMessage.concat(inComp.angularPConnectData.validateMessage);
         this.erService.sendMessage('update', sErrorMessage);
       }

@@ -25,7 +25,7 @@ export class SimpleTableComponent implements OnInit {
 
   angularPConnectData: AngularPConnectData = {};
 
-  bVisible$: boolean = true;
+  bVisible$ = true;
   configProps$: SimpleTableProps;
   fieldGroupProps: any;
 

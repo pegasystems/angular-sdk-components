@@ -139,9 +139,9 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
       if (SdkComponentMap) {
         // eslint-disable-next-line no-promise-executor-return
         return resolve(SdkComponentMap.sdkComponentMap);
-      } else {
+      } 
         idNextCheck = setInterval(fnCheckForConfig, 500);
-      }
+      
     }
   });
 }

@@ -33,25 +33,25 @@ export class CaseViewComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: CaseViewProps;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
-  heading$: string = '';
-  id$: string = '';
-  status$: string = '';
-  caseTabs$: Array<any> = [];
+  heading$ = '';
+  id$ = '';
+  status$ = '';
+  caseTabs$: any[] = [];
   svgCase$: string;
   tabData$: any;
 
   mainTabs: any;
   mainTabData: any;
 
-  arAvailableActions$: Array<any> = [];
-  arAvailabeProcesses$: Array<any> = [];
+  arAvailableActions$: any[] = [];
+  arAvailabeProcesses$: any[] = [];
 
   caseSummaryPConn$: any;
-  currentCaseID: string = '';
+  currentCaseID = '';
   editAction: boolean;
-  bHasNewAttachments: boolean = false;
+  bHasNewAttachments = false;
   localizedVal: any;
   localeCategory = 'CaseView';
   localeKey: string;
@@ -111,9 +111,9 @@ export class CaseViewComponent implements OnInit {
       // @ts-ignore - parameter “contextName” for getDataObject method should be optional
       this.currentCaseID = this.pConn$.getDataObject().caseInfo.ID;
       return true;
-    } else {
+    } 
       return false;
-    }
+    
   }
 
   updateHeaderAndSummary() {
@@ -129,7 +129,7 @@ export class CaseViewComponent implements OnInit {
       }
     }
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const meta = kid.getPConnect().getRawMetadata();
       if (meta.type.toLowerCase() == 'region' && meta.name.toLowerCase() == 'summary') {
@@ -157,7 +157,7 @@ export class CaseViewComponent implements OnInit {
     this.localeKey = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
     this.updateHeaderAndSummary();
 
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
 
     // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const caseInfo = this.pConn$.getDataObject().caseInfo;

@@ -14,9 +14,9 @@ export class DetailsNarrowWideComponent implements OnInit {
 
   @Input() pConn$: typeof PConnect;
 
-  arFields$: Array<any> = [];
-  arFields2$: Array<any> = [];
-  highlightedDataArr: Array<any> = [];
+  arFields$: any[] = [];
+  arFields2$: any[] = [];
+  highlightedDataArr: any[] = [];
   showHighlightedData: boolean;
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -68,7 +68,7 @@ export class DetailsNarrowWideComponent implements OnInit {
       });
     }
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const pKid = kid.getPConnect();
       const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());

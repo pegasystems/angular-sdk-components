@@ -15,17 +15,17 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class MultiStepComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() arMainButtons$: Array<any>;
-  @Input() arSecondaryButtons$: Array<any>;
-  @Input() arChildren$: Array<any>;
+  @Input() arMainButtons$: any[];
+  @Input() arSecondaryButtons$: any[];
+  @Input() arChildren$: any[];
   @Input() bIsVertical$: boolean;
-  @Input() arCurrentStepIndicies$: Array<number>;
-  @Input() arNavigationSteps$: Array<any>;
+  @Input() arCurrentStepIndicies$: number[];
+  @Input() arNavigationSteps$: any[];
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
   svgCurrent$: string;
   svgNotCurrent$: string;
-  bShow$: boolean = true;
+  bShow$ = true;
 
   constructor(private utils: Utils) {}
 
@@ -39,7 +39,7 @@ export class MultiStepComponent implements OnInit {
     this.actionButtonClick.emit(oData);
   }
 
-  _getVIconClass(status): String {
+  _getVIconClass(status): string {
     if (status == 'current') {
       return 'psdk-vertical-step-icon-selected';
     }

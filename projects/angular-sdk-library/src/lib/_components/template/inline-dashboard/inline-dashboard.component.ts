@@ -20,7 +20,7 @@ export class InlineDashboardComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() filtersFormGroup$: FormGroup;
   @Input() inlineProps: InlineDashboardProps;
-  @Input() children: Array<any>;
+  @Input() children: any[];
 
   ngOnInit() {}
 }

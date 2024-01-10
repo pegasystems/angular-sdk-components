@@ -26,10 +26,10 @@ interface SimpleTableManualProps {
   // If any, enter additional props that only exist on this component
   visibility?: boolean;
   grouping?: any;
-  referenceList?: Array<any>;
-  children?: Array<any>;
+  referenceList?: any[];
+  children?: any[];
   renderMode?: string;
-  presets?: Array<any>;
+  presets?: any[];
   label?: string;
   showLabel?: boolean;
   dataPageName?: string;
@@ -84,37 +84,37 @@ export class SimpleTableManualComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
   configProps$: SimpleTableManualProps;
-  fields$: Array<any>;
+  fields$: any[];
 
-  bVisible$: boolean = true;
-  displayedColumns: Array<string> = [];
+  bVisible$ = true;
+  displayedColumns: string[] = [];
   rowData: MatTableDataSource<any>;
-  originalData: Array<any> = [];
-  processedFields: Array<any> = [];
-  fieldDefs: Array<any> = [];
-  requestedReadOnlyMode: boolean = false;
-  readOnlyMode: boolean = false;
+  originalData: any[] = [];
+  processedFields: any[] = [];
+  fieldDefs: any[] = [];
+  requestedReadOnlyMode = false;
+  readOnlyMode = false;
   editableMode: boolean;
   menuIconOverride$: string;
   pageReference: string;
   referenceList: any;
   contextClass: any;
   showAddRowButton: boolean;
-  prevReferenceList: Array<any> = [];
+  prevReferenceList: any[] = [];
   elementsData: MatTableDataSource<any>;
   rawFields: any;
   label?: string = '';
   searchIcon$: string;
 
-  bShowSearch$: boolean = false;
-  bColumnReorder$: boolean = false;
-  bGrouping$: boolean = false;
+  bShowSearch$ = false;
+  bColumnReorder$ = false;
+  bGrouping$ = false;
 
   perfFilter: string;
   searchFilter: string;
 
   menuSvgIcon$: string;
-  arrowSvgIcon$: string = '';
+  arrowSvgIcon$ = '';
   arrowDownSvgIcon$: string;
   arrowUpSvgIcon$: string;
 
@@ -122,26 +122,26 @@ export class SimpleTableManualComponent implements OnInit {
   filterOnSvgIcon$: string;
   groupBySvgIcon$: string;
 
-  groupByColumns$: Array<string> = [];
+  groupByColumns$: string[] = [];
   compareType: string;
   compareRef: string;
-  arrowDirection: string = 'down';
-  filterByColumns: Array<any> = [];
+  arrowDirection = 'down';
+  filterByColumns: any[] = [];
   currentFilterRefData: any;
-  filterContainsLabel$: string = '';
-  filterContainsType$: string = 'contains';
+  filterContainsLabel$ = '';
+  filterContainsType$ = 'contains';
   filterContainsValue$: any;
-  bShowFilterPopover$: boolean = false;
-  bContains$: boolean = true;
-  bDateTime$: boolean = false;
+  bShowFilterPopover$ = false;
+  bContains$ = true;
+  bDateTime$ = false;
 
-  bIsDate$: boolean = false;
-  bIsDateTime$: boolean = false;
-  bIsTime$: boolean = false;
+  bIsDate$ = false;
+  bIsDateTime$ = false;
+  bIsTime$ = false;
   currentFilterImageEl: any;
 
-  arFilterMainButtons$: Array<any> = [];
-  arFilterSecondaryButtons$: Array<any> = [];
+  arFilterMainButtons$: any[] = [];
+  arFilterSecondaryButtons$: any[] = [];
   selectionMode: string;
   singleSelectionMode: boolean;
   multiSelectionMode: boolean;
@@ -149,7 +149,7 @@ export class SimpleTableManualComponent implements OnInit {
   response: any;
   compositeKeys: any;
   parameters: any;
-  allowEditingInModal: boolean = false;
+  allowEditingInModal = false;
   defaultView: any;
   referenceListStr: any;
   bUseSeparateViewForEdit: any;
@@ -316,7 +316,7 @@ export class SimpleTableManualComponent implements OnInit {
     this.processedFields = [];
 
     this.processedFields = resolvedFields.map((field, i) => {
-      field.config['name'] = this.displayedColumns[i]; // .config["value"].replace(/ ./g,"_");   // replace space dot with underscore
+      field.config.name = this.displayedColumns[i]; // .config["value"].replace(/ ./g,"_");   // replace space dot with underscore
       return field;
     });
 
@@ -389,14 +389,16 @@ export class SimpleTableManualComponent implements OnInit {
       case 'up':
         if (aValue < bValue) {
           return -1;
-        } else if (aValue > bValue) {
+        }
+        if (aValue > bValue) {
           return 1;
         }
         break;
       case 'down':
         if (aValue > bValue) {
           return -1;
-        } else if (aValue < bValue) {
+        }
+        if (aValue < bValue) {
           return 1;
         }
         break;
@@ -525,10 +527,10 @@ export class SimpleTableManualComponent implements OnInit {
   updateFilterWithInfo() {
     let bFound = false;
     for (const filterObj of this.filterByColumns) {
-      if (filterObj['ref'] === this.currentFilterRefData.config.name) {
-        filterObj['type'] = this.currentFilterRefData.type;
-        filterObj['containsFilter'] = this.filterContainsType$;
-        filterObj['containsFilterValue'] = this.filterContainsValue$;
+      if (filterObj.ref === this.currentFilterRefData.config.name) {
+        filterObj.type = this.currentFilterRefData.type;
+        filterObj.containsFilter = this.filterContainsType$;
+        filterObj.containsFilterValue = this.filterContainsValue$;
 
         bFound = true;
         break;
@@ -548,9 +550,9 @@ export class SimpleTableManualComponent implements OnInit {
 
     // iterate through filters and update filterOn icon
     for (const filterObj of this.filterByColumns) {
-      const containsFilterValue = filterObj['containsFilterValue'];
-      const containsFilter = filterObj['containsFilter'];
-      const filterRef = filterObj['ref'];
+      const containsFilterValue = filterObj.containsFilterValue;
+      const containsFilter = filterObj.containsFilter;
+      const filterRef = filterObj.ref;
       const filterIndex = this.displayedColumns.indexOf(filterRef);
       const arFilterImg = document.getElementsByName('filterOnIcon');
       const filterImg: any = arFilterImg[filterIndex];
@@ -569,9 +571,9 @@ export class SimpleTableManualComponent implements OnInit {
 
     let bFound = false;
     for (const filterObj of this.filterByColumns) {
-      if (filterObj['ref'] === this.currentFilterRefData.config.name) {
-        this.filterContainsType$ = filterObj['containsFilter'];
-        this.filterContainsValue$ = filterObj['containsFilterValue'];
+      if (filterObj.ref === this.currentFilterRefData.config.name) {
+        this.filterContainsType$ = filterObj.containsFilter;
+        this.filterContainsValue$ = filterObj.containsFilterValue;
 
         bFound = true;
         break;
@@ -783,13 +785,13 @@ export class SimpleTableManualComponent implements OnInit {
     return '';
   }
 
-  addGroups(data: Array<any>, groupByColumns: Array<string>): Array<any> {
+  addGroups(data: any[], groupByColumns: string[]): any[] {
     const rootGroup = new Group();
     rootGroup.expanded = true;
     return this.getSublevel(data, 0, groupByColumns, rootGroup);
   }
 
-  getSublevel(data: Array<any>, level: number, groupByColumns: Array<string>, parent: Group): Array<any> {
+  getSublevel(data: any[], level: number, groupByColumns: string[], parent: Group): any[] {
     if (level >= groupByColumns.length) {
       return data;
     }
@@ -886,7 +888,7 @@ export class SimpleTableManualComponent implements OnInit {
   }
 
   getDisplayColumns(fields = []) {
-    const arReturn = fields.map((field: any) => {
+    return fields.map((field: any) => {
       let theField = field.config.value.substring(field.config.value.indexOf(' ') + 1);
       if (theField.indexOf('.') == 0) {
         theField = theField.substring(1);
@@ -894,7 +896,6 @@ export class SimpleTableManualComponent implements OnInit {
 
       return theField;
     });
-    return arReturn;
   }
 
   _getIconStyle(level): string {
@@ -916,7 +917,7 @@ export class SimpleTableManualComponent implements OnInit {
   //  of the given row field
   getRowValue(inRowData: Object, inColKey: string): any {
     // See what data (if any) we have to display
-    const refKeys: Array<string> = inColKey.split('.');
+    const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;
     for (const key of refKeys) {
       valBuilder = valBuilder[key];

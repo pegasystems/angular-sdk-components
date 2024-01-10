@@ -19,9 +19,9 @@ export class DetailsThreeColumnComponent implements OnInit {
   showHighlightedData: boolean;
   highlightedDataArr: any;
 
-  arFields$: Array<any> = [];
-  arFields2$: Array<any> = [];
-  arFields3$: Array<any> = [];
+  arFields$: any[] = [];
+  arFields2$: any[] = [];
+  arFields3$: any[] = [];
 
   propsToUse: any = {};
 
@@ -78,7 +78,7 @@ export class DetailsThreeColumnComponent implements OnInit {
     this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     this.pConn$.setInheritedProp('readOnly', true);
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const pKid = kid.getPConnect();
       const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());

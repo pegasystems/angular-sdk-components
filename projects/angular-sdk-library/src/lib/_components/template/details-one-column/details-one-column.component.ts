@@ -18,7 +18,7 @@ export class DetailsOneColumnComponent implements OnInit {
   showHighlightedData: boolean;
   highlightedDataArr: any;
 
-  arFields$: Array<any> = [];
+  arFields$: any[] = [];
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -73,7 +73,7 @@ export class DetailsOneColumnComponent implements OnInit {
     this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     this.pConn$.setInheritedProp('readOnly', true);
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const pKid = kid.getPConnect();
       const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());

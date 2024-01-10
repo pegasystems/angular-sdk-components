@@ -23,7 +23,7 @@ export class DefaultFormComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
   divClass$: string;
   template: any;
   showLabel: any;
@@ -49,7 +49,7 @@ export class DefaultFormComponent implements OnInit {
     const propToUse: any = { ...this.pConn$.getInheritedProps() };
     this.showLabel = propToUse?.showLabel;
     this.label = propToUse?.label;
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
 
     const numCols = configProps.NumCols ? configProps.NumCols : '1';

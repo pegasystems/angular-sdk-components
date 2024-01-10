@@ -63,17 +63,17 @@ export class DateComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: DateProps;
 
-  label$: string = '';
+  label$ = '';
   value$: any;
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  bHasForm$: boolean = true;
-  componentReference: string = '';
-  testId: string = '';
+  bHasForm$ = true;
+  componentReference = '';
+  testId = '';
   helperText: string;
   placeholder: string;
 
@@ -150,7 +150,7 @@ export class DateComponent implements OnInit {
       sDateValue = this.configProps$.value;
 
       if (sDateValue != '') {
-        if (typeof sDateValue == 'object') {
+        if (typeof sDateValue === 'object') {
           sDateValue = sDateValue.toISOString();
         } else if (sDateValue.indexOf('/') < 0) {
           // if we have the "pega" format, then for display, convert to standard format (US)
@@ -208,7 +208,7 @@ export class DateComponent implements OnInit {
 
   fieldOnDateChange(event: any) {
     // this comes from the date pop up
-    if (typeof event.value == 'object') {
+    if (typeof event.value === 'object') {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
@@ -217,7 +217,7 @@ export class DateComponent implements OnInit {
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
-    if (typeof event.value == 'object') {
+    if (typeof event.value === 'object') {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
@@ -229,12 +229,13 @@ export class DateComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = `${this.fieldControl.errors['matDatepickerParse'].text} is not a valid date value`;

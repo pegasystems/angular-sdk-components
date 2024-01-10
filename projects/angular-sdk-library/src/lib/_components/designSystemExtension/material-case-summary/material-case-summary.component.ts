@@ -13,10 +13,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class MaterialCaseSummaryComponent implements OnInit {
   @Input() status$: string;
   @Input() bShowStatus$: boolean;
-  @Input() primaryFields$: Array<any>;
-  @Input() secondaryFields$: Array<any>;
+  @Input() primaryFields$: any[];
+  @Input() secondaryFields$: any[];
 
-  primaryFieldsWithStatus$: Array<any>;
+  primaryFieldsWithStatus$: any[];
 
   constructor(private utils: Utils) {}
 
@@ -26,20 +26,21 @@ export class MaterialCaseSummaryComponent implements OnInit {
     this.updateLabelAndDate(this.secondaryFields$);
   }
 
+  // eslint-disable-next-line sonarjs/no-identical-functions
   ngOnChanges() {
     this.updatePrimaryWithStatus();
     this.updateLabelAndDate(this.primaryFieldsWithStatus$);
     this.updateLabelAndDate(this.secondaryFields$);
   }
 
-  updateLabelAndDate(arData: Array<any>) {
+  updateLabelAndDate(arData: any[]) {
     for (const field of arData) {
       switch (field.type.toLowerCase()) {
         case 'caseoperator':
           if (field.config.label.toLowerCase() == 'create operator') {
-            field.config['displayLabel'] = field.config.createLabel;
+            field.config.displayLabel = field.config.createLabel;
           } else if (field.config.label.toLowerCase() == 'update operator') {
-            field.config['displayLabel'] = field.config.updateLabel;
+            field.config.displayLabel = field.config.updateLabel;
           }
           break;
         case 'date':
@@ -48,10 +49,10 @@ export class MaterialCaseSummaryComponent implements OnInit {
         case 'userreference':
         case 'decimal':
         case 'dropdown':
-          field.config['displayLabel'] = field.config.label;
+          field.config.displayLabel = field.config.label;
           break;
         case 'checkbox':
-          field.config['displayLabel'] = field.config.caption;
+          field.config.displayLabel = field.config.caption;
           break;
         default:
           break;

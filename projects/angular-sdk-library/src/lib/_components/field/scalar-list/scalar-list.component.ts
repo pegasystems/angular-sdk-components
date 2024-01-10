@@ -8,7 +8,7 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on ScalarList here
   displayInModal: boolean;
-  value: Array<any>;
+  value: any[];
   componentType: string;
   restProps?: object;
 }
@@ -27,15 +27,15 @@ export class ScalarListComponent {
   angularPConnectData: AngularPConnectData = {};
   configProps$: ScalarListProps;
 
-  label$: string = '';
+  label$ = '';
   value$: any;
   displayMode$?: string = '';
-  items: Array<any>;
-  isDisplayModeEnabled: Boolean = false;
+  items: any[];
+  isDisplayModeEnabled = false;
   controlName$: string;
   fieldControl = new FormControl('', null);
-  bHasForm$: boolean = true;
-  bReadonly$: boolean = false;
+  bHasForm$ = true;
+  bReadonly$ = false;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 

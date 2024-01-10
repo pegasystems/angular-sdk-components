@@ -77,8 +77,7 @@ export const createFilterComponent = (getPConnect, filterMeta, index) => {
 };
 
 export const buildFilterComponents = (getPConnect, allFilters) => {
-  const filterComponents = allFilters.children.map((filter, index) => createFilterComponent(getPConnect, filter, index));
-  return filterComponents;
+  return allFilters.children.map((filter, index) => createFilterComponent(getPConnect, filter, index));
 };
 
 export const getFilterExpression = (filterValue, name, metadata) => {
@@ -110,6 +109,9 @@ export const getFormattedDate = (date) => {
   if (!date) {
     return date;
   }
-  const formattedDate = `${date.getFullYear()}-${`0${date.getMonth() + 1}`.slice(-2)}-${`0${date.getDate()}`.slice(-2)}`;
-  return formattedDate;
+  const year = date.getFullYear();
+  const month = `0${date.getMonth() + 1}`.slice(-2);
+  const day = `0${date.getDate()}`.slice(-2);
+
+  return `${year}-${month}-${day}`;
 };

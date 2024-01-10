@@ -14,9 +14,9 @@ export class DetailsComponent implements OnInit {
 
   @Input() pConn$: typeof PConnect;
 
-  highlightedDataArr: Array<any> = [];
+  highlightedDataArr: any[] = [];
   showHighlightedData: boolean;
-  arFields$: Array<any> = [];
+  arFields$: any[] = [];
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -68,7 +68,7 @@ export class DetailsComponent implements OnInit {
       });
     }
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       this.arFields$ = [];
       const pKid = kid.getPConnect();

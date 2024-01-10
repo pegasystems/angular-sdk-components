@@ -13,10 +13,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class MaterialDetailsComponent implements OnInit {
   constructor(private utils: Utils) {}
 
-  @Input() arFields$: Array<any>;
-  @Input() arFields2$: Array<any>;
-  @Input() arFields3$: Array<any>;
-  @Input() arHighlightedFields: Array<any>;
+  @Input() arFields$: any[];
+  @Input() arFields2$: any[];
+  @Input() arFields3$: any[];
+  @Input() arHighlightedFields: any[];
   @Input() layout: any;
 
   ngOnInit(): void {}
@@ -24,9 +24,9 @@ export class MaterialDetailsComponent implements OnInit {
   _getValue(configValue) {
     if (configValue && configValue != '') {
       return configValue;
-    } else {
+    } 
       return '---';
-    }
+    
   }
 
   _formatDate(dateValue: string, dateFormat: string): string {

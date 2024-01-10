@@ -24,11 +24,11 @@ interface AssignmentProps {
 export class AssignmentComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() arChildren$: Array<any>;
+  @Input() arChildren$: any[];
   @Input() itemKey$: string;
   @Input() isCreateStage$: boolean;
   @Input() updateToken$: number;
-  @Input() isInModal$: boolean = false;
+  @Input() isInModal$ = false;
   @Input() banners;
 
   // For interaction with AngularPConnect
@@ -38,20 +38,20 @@ export class AssignmentComponent implements OnInit {
   newPConn$: any;
   containerName$: string;
 
-  bIsRefComponent: boolean = false;
-  bInitialized: boolean = false;
+  bIsRefComponent = false;
+  bInitialized = false;
 
   templateName$: string;
 
-  arMainButtons$: Array<any>;
-  arSecondaryButtons$: Array<any>;
+  arMainButtons$: any[];
+  arSecondaryButtons$: any[];
 
   actionsAPI: any;
 
-  bHasNavigation$: boolean = false;
-  bIsVertical$: boolean = false;
-  arCurrentStepIndicies$: Array<number> = [];
-  arNavigationSteps$: Array<any> = [];
+  bHasNavigation$ = false;
+  bIsVertical$ = false;
+  arCurrentStepIndicies$: number[] = [];
+  arNavigationSteps$: any[] = [];
 
   init: boolean;
   finishAssignment: any;
@@ -63,7 +63,7 @@ export class AssignmentComponent implements OnInit {
 
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
-  bReInit: boolean = false;
+  bReInit = false;
   localizedVal;
   localeCategory = 'Assignment';
   localeReference;
@@ -114,7 +114,7 @@ export class AssignmentComponent implements OnInit {
         loadingInfo = this.newPConn$.getLoadingStatus();
 
         this.psService.sendMessage(loadingInfo);
-      } catch (ex) {}
+      } catch (ex) { /* empty */ }
     }
   }
 
@@ -267,14 +267,14 @@ export class AssignmentComponent implements OnInit {
     }
   }
 
-  findCurrentIndicies(arStepperSteps: Array<any>, arIndicies: Array<number>, depth: number): Array<number> {
+  findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {
     let count = 0;
     arStepperSteps.forEach((step) => {
       if (step.visited_status == 'current') {
         arIndicies[depth] = count;
 
         // add in
-        step['step_status'] = '';
+        step.step_status = '';
       } else if (step.visited_status == 'success') {
         count++;
         step.step_status = 'completed';
@@ -412,6 +412,7 @@ export class AssignmentComponent implements OnInit {
           break;
       }
     } else if (sButtonType == 'primary') {
+      // eslint-disable-next-line sonarjs/no-small-switch
       switch (sAction) {
         case 'finishAssignment':
           this.erService.sendMessage('publish', '');
@@ -450,6 +451,7 @@ export class AssignmentComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
     Object.values(this.formGroup$.controls).forEach((control: any) => {
       control.markAsTouched();

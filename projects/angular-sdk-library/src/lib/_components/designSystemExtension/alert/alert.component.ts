@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, MatIconModule]
 })
 export class AlertComponent implements OnInit {
-  @Input() message: Array<any>;
+  @Input() message: any[];
   @Input() severity;
   @Input() hideClose;
   @Output() onClose: EventEmitter<any> = new EventEmitter();

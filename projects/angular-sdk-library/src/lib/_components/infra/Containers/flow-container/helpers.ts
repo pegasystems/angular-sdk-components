@@ -15,7 +15,7 @@ function isCaseWideLocalAction(pConnect) {
 
 function getChildCaseAssignments(pConnect) {
   const childCases = pConnect.getValue(PCore.getConstants().CASE_INFO.CHILD_ASSIGNMENTS);
-  let allAssignments: Array<any> = [];
+  let allAssignments: any[] = [];
   if (childCases && childCases.length > 0) {
     childCases.forEach(({ assignments = [], Name }) => {
       const childCaseAssignments = assignments.map((assignment: any) => ({

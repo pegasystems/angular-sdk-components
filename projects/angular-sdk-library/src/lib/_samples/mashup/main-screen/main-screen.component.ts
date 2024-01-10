@@ -19,9 +19,9 @@ export class MainScreenComponent implements OnInit {
   firstConfig$: any;
   secondConfig$: any;
   thirdConfig$: any;
-  showTriplePlayOptions$: boolean = true;
-  showPega$: boolean = false;
-  showResolution$: boolean = false;
+  showTriplePlayOptions$ = true;
+  showPega$ = false;
+  showResolution$ = false;
 
   constructor(
     private psservice: ProgressSpinnerService,

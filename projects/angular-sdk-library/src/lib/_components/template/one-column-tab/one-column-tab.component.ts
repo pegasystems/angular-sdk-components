@@ -14,7 +14,7 @@ export class OneColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
   ngOnInit(): void {
     this.updateSelf();
@@ -29,6 +29,6 @@ export class OneColumnTabComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
   }
 }

@@ -13,17 +13,17 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class MaterialDetailsFieldsComponent {
   constructor(private utils: Utils) {}
 
-  @Input() arFields$: Array<any>;
-  @Input() arHighlightedFields: Array<any>;
+  @Input() arFields$: any[];
+  @Input() arHighlightedFields: any[];
 
   ngOnInit(): void {}
 
   _getValue(configValue) {
     if (configValue && configValue != '') {
       return configValue;
-    } else {
+    } 
       return '---';
-    }
+    
   }
 
   _formatDate(dateValue: string, dateFormat: string): string {

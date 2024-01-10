@@ -28,19 +28,19 @@ export class TodoComponent implements OnInit {
   @Input() caseInfoID$: string;
   @Input() datasource$: any;
   @Input() headerText$?: string;
-  @Input() showTodoList$: boolean = true;
+  @Input() showTodoList$ = true;
   @Input() target$: string;
-  @Input() type$: string = 'worklist';
+  @Input() type$ = 'worklist';
   @Input() context$: string;
   @Input() myWorkList$: any;
   @Input() isConfirm;
 
   configProps$: ToDoProps;
   currentUser$: string;
-  currentUserInitials$: string = '--';
+  currentUserInitials$ = '--';
   assignmentCount$: number;
-  bShowMore$: boolean = true;
-  arAssignments$: Array<any>;
+  bShowMore$ = true;
+  arAssignments$: any[];
   assignmentsSource$: any;
   CONSTS: typeof publicConstants;
   bLogging = true;
@@ -159,14 +159,14 @@ export class TodoComponent implements OnInit {
     if (assignment.value) {
       const refKey = assignment.value;
       return refKey.substring(refKey.lastIndexOf(' ') + 1);
-    } else {
+    } 
       const refKey = assignment.ID;
       const arKeys = refKey.split('!')[0].split(' ');
       return arKeys[2];
-    }
+    
   }
 
-  topThreeAssignments(assignmentsSource: Array<any>): Array<any> {
+  topThreeAssignments(assignmentsSource: any[]): any[] {
     return Array.isArray(assignmentsSource) ? assignmentsSource.slice(0, 3) : [];
   }
 
@@ -182,25 +182,25 @@ export class TodoComponent implements OnInit {
     return this.type$ === this.CONSTS.TODO ? assignment.name : assignment.stepName;
   }
 
-  initAssignments(): Array<any> {
+  initAssignments(): any[] {
     if (this.assignmentsSource$) {
       this.assignmentCount$ = this.assignmentsSource$.length;
       return this.topThreeAssignments(this.assignmentsSource$);
-    } else {
+    } 
       // turn off todolist
       return [];
-    }
+    
   }
 
-  getCaseInfoAssignment(assignmentsSource: Array<any>, caseInfoID: string) {
-    const result: Array<any> = [];
+  getCaseInfoAssignment(assignmentsSource: any[], caseInfoID: string) {
+    const result: any[] = [];
     for (const source of assignmentsSource) {
       if (source.ID.indexOf(caseInfoID) >= 0) {
         const listRow = JSON.parse(JSON.stringify(source));
         // urgency becomes priority
-        listRow['priority'] = listRow.urgency || undefined;
+        listRow.priority = listRow.urgency || undefined;
         // mimic regular list
-        listRow['id'] = listRow['ID'] || undefined;
+        listRow.id = listRow.ID || undefined;
         result.push(listRow);
       }
     }
@@ -239,13 +239,13 @@ export class TodoComponent implements OnInit {
     }
 
     if (sTarget === 'workarea') {
-      options['isActionFromToDoList'] = true;
-      options['target'] = '';
-      options['context'] = null;
-      options['isChild'] = this.isChildCase(assignment);
+      options.isActionFromToDoList = true;
+      options.target = '';
+      options.context = null;
+      options.isChild = this.isChildCase(assignment);
     } else {
-      options['isActionFromToDoList'] = false;
-      options['target'] = sTarget;
+      options.isActionFromToDoList = false;
+      options.target = sTarget;
     }
 
     this.psService.sendMessage(true);

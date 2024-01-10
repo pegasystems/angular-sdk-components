@@ -21,8 +21,8 @@ declare const window: any;
 export class SideBarComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
-  arButtons$: Array<any> = [];
-  arWorkItems$: Array<any> = [];
+  arButtons$: any[] = [];
+  arWorkItems$: any[] = [];
   worklistSubscription: Subscription;
 
   constructor(
@@ -52,16 +52,17 @@ export class SideBarComponent implements OnInit {
     this.cservice.getCaseTypes().subscribe(
       (response: any) => {
         const caseManagement = response.body;
-        const caseTypes = caseManagement['caseTypes'];
+        const caseTypes = caseManagement.caseTypes;
         // const displayableCaseTypes = [];
 
         for (const myCase of caseTypes) {
           if (myCase.CanCreate == 'true') {
-            const oPayload = {};
-            oPayload['caseTypeID'] = myCase.ID;
-            oPayload['processID'] = myCase.startingProcesses[0].ID;
-            oPayload['caption'] = myCase.name;
-
+            const oPayload = {
+              caseTypeID: myCase.ID,
+              processID: myCase.startingProcesses[0].ID,
+              caption: myCase.name
+            };
+            
             this.arButtons$.push(oPayload);
           }
         }
@@ -78,16 +79,16 @@ export class SideBarComponent implements OnInit {
 
     const dsubscription = this.dpservice.getDataPage('D_Worklist', worklistParams).subscribe(
       (response: any) => {
-        const datapageResults = response.body['pxResults'];
+        const datapageResults = response.body.pxResults;
 
         this.arWorkItems$ = [];
 
         for (const myWork of datapageResults) {
-          const oPayload = {};
-          oPayload['caption'] = `${myWork.pxRefObjectInsName} - ${myWork.pxTaskLabel}`;
-          oPayload['pzInsKey'] = myWork.pzInsKey;
-          oPayload['pxRefObjectClass'] = myWork.pxRefObjectClass;
-
+          const oPayload = {
+            caption: `${myWork.pxRefObjectInsName} - ${myWork.pxTaskLabel}`,
+            pzInsKey: myWork.pzInsKey,
+            pxRefObjectClass: myWork.pxRefObjectClass
+          };
           this.arWorkItems$.push(oPayload);
         }
 

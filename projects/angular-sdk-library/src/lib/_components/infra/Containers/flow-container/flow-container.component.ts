@@ -18,10 +18,10 @@ import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/c
 
 interface FlowContainerProps {
   // If any, enter additional props that only exist on this component
-  children?: Array<any>;
+  children?: any[];
   name?: string;
   routingInfo?: any;
-  pageMessages: Array<any>;
+  pageMessages: any[];
 }
 
 @Component({
@@ -41,17 +41,17 @@ export class FlowContainerComponent implements OnInit {
   configProps$: FlowContainerProps;
 
   formGroup$: FormGroup;
-  arChildren$: Array<any>;
-  itemKey$: string = '';
+  arChildren$: any[];
+  itemKey$ = '';
   containerName$: string;
   buildName$: string;
 
   // todo
-  todo_showTodo$: boolean = false;
+  todo_showTodo$ = false;
   todo_caseInfoID$: string;
-  todo_showTodoList$: boolean = false;
+  todo_showTodoList$ = false;
   todo_datasource$: any;
-  todo_headerText$: string = 'To do';
+  todo_headerText$ = 'To do';
   todo_type$: string;
   todo_context$: string;
   todo_pConn$: typeof PConnect;
@@ -60,7 +60,7 @@ export class FlowContainerComponent implements OnInit {
 
   // messages
   caseMessages$: string;
-  bHasCaseMessages$: boolean = false;
+  bHasCaseMessages$ = false;
   checkSvg$: string;
   TODO: any;
   bShowConfirm = false;
@@ -69,7 +69,7 @@ export class FlowContainerComponent implements OnInit {
   localizedVal: any;
   localeCategory = 'Messages';
   localeReference: any;
-  banners: Array<any>;
+  banners: any[];
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   constructor(
@@ -155,7 +155,7 @@ export class FlowContainerComponent implements OnInit {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
       const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
-      if (!completeProps['pageMessages'] || completeProps['pageMessages'].length == 0) {
+      if (!completeProps.pageMessages || completeProps.pageMessages.length == 0) {
         // with a cancel, need to timeout so todo will update correctly
         if (this.bHasCancel) {
           this.bHasCancel = false;
@@ -173,7 +173,7 @@ export class FlowContainerComponent implements OnInit {
 
   showPageMessages(completeProps: FlowContainerProps) {
     this.ngZone.run(() => {
-      const pageMessages = completeProps['pageMessages'];
+      const pageMessages = completeProps.pageMessages;
       this.banners = [{ messages: pageMessages?.map((msg) => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
     });
   }
@@ -233,7 +233,7 @@ export class FlowContainerComponent implements OnInit {
 
     // when true, update arChildren from pConn, otherwise, arChilren will be updated in updateSelf()
     if (bLoadChildren) {
-      this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+      this.arChildren$ = this.pConn$.getChildren() as any[];
     }
 
     // const oData = this.pConn$.getDataObject();
@@ -287,7 +287,7 @@ export class FlowContainerComponent implements OnInit {
     }
 
     for (const assignment of assignmentsList) {
-      if (assignment['assigneeInfo']['ID'] === thisOperator) {
+      if (assignment.assigneeInfo.ID === thisOperator) {
         bAssignmentsForThisOperator = true;
       }
     }
@@ -305,7 +305,7 @@ export class FlowContainerComponent implements OnInit {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
     // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as Array;
+    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as any[];
     let bCaseWideAction = false;
     if (caseActions && actionID) {
       const actionObj = caseActions.find((caseAction) => caseAction.ID === actionID);
@@ -329,7 +329,7 @@ export class FlowContainerComponent implements OnInit {
     const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
 
     // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS) as Array;
+    const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS) as any[];
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
     const activeAction = caseActions?.find((action) => action.ID === activeActionID);
@@ -339,14 +339,14 @@ export class FlowContainerComponent implements OnInit {
     return activeActionLabel;
   }
 
-  findCurrentIndicies(arStepperSteps: Array<any>, arIndicies: Array<number>, depth: number): Array<number> {
+  findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {
     let count = 0;
     arStepperSteps.forEach((step) => {
       if (step.visited_status == 'current') {
         arIndicies[depth] = count;
 
         // add in
-        step['step_status'] = '';
+        step.step_status = '';
       } else if (step.visited_status == 'success') {
         count++;
         step.step_status = 'completed';
@@ -377,7 +377,7 @@ export class FlowContainerComponent implements OnInit {
     try {
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
-    } catch (ex) {}
+    } catch (ex) { /* empty */ }
 
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
@@ -509,7 +509,7 @@ export class FlowContainerComponent implements OnInit {
 
             this.todo_context$ = currentItem.context;
 
-            config['options'] = {
+            config.options = {
               context: currentItem.context,
               pageReference: context || localPConn.getPageReference(),
               hasForm: true,
@@ -576,6 +576,7 @@ export class FlowContainerComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
     Object.values(this.formGroup$.controls).forEach((control) => {
       control.markAsTouched();

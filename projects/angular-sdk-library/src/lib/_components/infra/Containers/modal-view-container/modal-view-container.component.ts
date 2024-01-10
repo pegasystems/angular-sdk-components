@@ -30,21 +30,21 @@ export class ModalViewContainerComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
   stateProps$: Object;
   banners: any;
   templateName$: string;
   buildName$: string;
   context$: string;
-  title$: string = '';
-  bShowModal$: boolean = false;
-  bShowAsModal$: boolean = true;
+  title$ = '';
+  bShowModal$ = false;
+  bShowAsModal$ = true;
   itemKey$: string;
   formGroup$: FormGroup;
   oCaseInfo: Object = {};
 
   // for causing a change on assignment
-  updateToken$: number = 0;
+  updateToken$ = 0;
 
   routingInfoRef: Object = {};
 
@@ -52,14 +52,14 @@ export class ModalViewContainerComponent implements OnInit {
   //  Use its PConnect to render the CaseView; DON'T replace this.pConn$
   createdViewPConn$: any;
 
-  bSubscribed: boolean = false;
+  bSubscribed = false;
   cancelPConn$?: typeof PConnect;
-  bShowCancelAlert$: boolean = false;
+  bShowCancelAlert$ = false;
   bAlertState: boolean;
   localizedVal: Function;
   localeCategory = 'Data Object';
-  isMultiRecord: boolean = false;
-  actionsDialog: boolean = false;
+  isMultiRecord = false;
+  actionsDialog = false;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -136,13 +136,13 @@ export class ModalViewContainerComponent implements OnInit {
   updateSelf(): void {
     // routingInfo was added as component prop in populateAdditionalProps
     const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
-    this.routingInfoRef['current'] = routingInfo;
+    this.routingInfoRef.current = routingInfo;
 
     let loadingInfo;
     try {
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
-    } catch (ex) {}
+    } catch (ex) {/* empty */}
     // const configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.stateProps$ = this.pConn$.getStateProps();
     this.banners = this.getBanners();
@@ -169,7 +169,7 @@ export class ModalViewContainerComponent implements OnInit {
           const rootView = currentItem.view;
           const { context } = rootView.config;
           const config = { meta: rootView };
-          config['options'] = {
+          config.options = {
             context: currentItem.context,
             hasForm: true,
             pageReference: context || this.pConn$.getPageReference()
@@ -219,7 +219,7 @@ export class ModalViewContainerComponent implements OnInit {
             this.ngZone.run(() => {
               this.createdViewPConn$ = newComp;
               const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = 'template' in newConfigProps ? (newConfigProps['template'] as string) : '';
+              this.templateName$ = 'template' in newConfigProps ? (newConfigProps.template as string) : '';
 
               const { actionName } = latestItem;
               const theNewCaseInfo = newComp.getCaseInfo();
@@ -241,7 +241,7 @@ export class ModalViewContainerComponent implements OnInit {
                       `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
                     );
               // // update children with new view's children
-              this.arChildren$ = newComp.getChildren() as Array<any>;
+              this.arChildren$ = newComp.getChildren() as any[];
               this.bShowModal$ = true;
 
               // for when non modal
@@ -297,13 +297,13 @@ export class ModalViewContainerComponent implements OnInit {
   onAlertState(bData: boolean) {
     this.bAlertState = bData;
     this.bShowCancelAlert$ = false;
-    if (this.bAlertState == false) {
+    if (this.bAlertState) {
       this.hideModal();
     }
   }
 
   showAlert(payload) {
-    const { latestItem } = this.getKeyAndLatestItem(this.routingInfoRef['current']);
+    const { latestItem } = this.getKeyAndLatestItem(this.routingInfoRef.current);
     const { isModalAction } = payload;
 
     /*
@@ -338,7 +338,7 @@ export class ModalViewContainerComponent implements OnInit {
   }
 
   compareCaseInfoIsDifferent(oCurrentCaseInfo: Object): boolean {
-    let bRet: boolean = false;
+    let bRet = false;
 
     // fast-deep-equal version
     if (isEqual !== undefined) {

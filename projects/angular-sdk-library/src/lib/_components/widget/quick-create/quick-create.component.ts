@@ -22,7 +22,7 @@ export class QuickCreateComponent {
   @Input() formGroup$: any;
 
   configProps$: QuickCreateProps;
-  arChildren$: Array<any>;
+  arChildren$: any[];
   heading$?: string;
   showCaseIcons$?: boolean;
   classFilter$: any;

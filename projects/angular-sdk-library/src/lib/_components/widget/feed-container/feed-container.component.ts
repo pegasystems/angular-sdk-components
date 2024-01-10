@@ -31,7 +31,7 @@ export class FeedContainerComponent implements OnInit {
   currentUserInitials$: string;
   currentUserName$: string;
 
-  pulseMessages$: Array<any>;
+  pulseMessages$: any[];
   showReplyComment$: Object = {};
 
   svgComment$: string;
@@ -426,8 +426,8 @@ export class FeedContainerComponent implements OnInit {
     }
   }
 
-  convertToArray(messages: Array<any>): Array<any> {
-    const arMessages: Array<any> = [];
+  convertToArray(messages: any[]): any[] {
+    const arMessages: any[] = [];
 
     for (const message in messages) {
       arMessages.push(messages[message]);
@@ -436,39 +436,39 @@ export class FeedContainerComponent implements OnInit {
     return arMessages;
   }
 
-  appendPulseMessage(messages: Array<any>): Array<any> {
+  appendPulseMessage(messages: any[]): any[] {
     for (const i in messages) {
       const message = messages[i];
-      const postedTime = message['postedTime'];
-      const updatedTime = message['updatedTime'];
+      const postedTime = message.postedTime;
+      const updatedTime = message.updatedTime;
 
       this.showReplyComment$[message.ID] = false;
 
-      message['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
+      message.displayPostedTime = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
       // for sorting lasted update
       if (updatedTime != null) {
-        message['updateTimeUTC'] = new Date(updatedTime).getTime();
+        message.updateTimeUTC = new Date(updatedTime).getTime();
       } else {
-        message['updateTimeUTC'] = new Date(postedTime).getTime();
+        message.updateTimeUTC = new Date(postedTime).getTime();
       }
 
-      message['displayPostedBy'] = message.postedByUser.name;
-      message['displayPostedByInitials'] = this.utils.getInitials(message.postedByUser.name);
+      message.displayPostedBy = message.postedByUser.name;
+      message.displayPostedByInitials = this.utils.getInitials(message.postedByUser.name);
 
       // if didn't break, the look at the replies
       for (const iR in message.replies) {
         const reply = message.replies[iR];
 
-        const replyPostedTime = reply['postedTime'];
-        reply['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
+        const replyPostedTime = reply.postedTime;
+        reply.displayPostedTime = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
         // let oReplyUser = this.userData.get(reply.postedByUser);
         const oReplyUser = reply.postedByUser;
 
         if (oReplyUser) {
-          reply['displayPostedBy'] = oReplyUser.name;
-          reply['displayPostedByInitials'] = this.utils.getInitials(oReplyUser.name);
+          reply.displayPostedBy = oReplyUser.name;
+          reply.displayPostedByInitials = this.utils.getInitials(oReplyUser.name);
         }
       }
     } // for
@@ -480,35 +480,36 @@ export class FeedContainerComponent implements OnInit {
     for (const i in this.pulseMessages$) {
       const message = this.pulseMessages$[i];
 
-      const postedTime = message['postedTime'];
+      const postedTime = message.postedTime;
 
       this.showReplyComment$[message.ID] = false;
 
-      message['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
+      message.displayPostedTime = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
       const oUser = this.userData.get(message.postedBy);
 
       if (oUser) {
-        message['displayPostedBy'] = oUser.pyUserName;
-        message['displayPostedByInitials'] = this.utils.getInitials(oUser.pyUserName);
+        message.displayPostedBy = oUser.pyUserName;
+        message.displayPostedByInitials = this.utils.getInitials(oUser.pyUserName);
       } else {
-        const oUserParams = {};
-        oUserParams['OperatorId'] = message.postedBy;
+        const oUserParams = {
+          OperatorId: message.postedBy
+        };
       }
 
       // if didn't break, the look at the replies
       for (const iR in message.replies) {
         const reply = message.replies[iR];
 
-        const replyPostedTime = reply['postedTime'];
-        reply['displayPostedTime'] = this.utils.generateDateTime(postedTime, 'DateTime-Since');
+        const replyPostedTime = reply.postedTime;
+        reply.displayPostedTime = this.utils.generateDateTime(postedTime, 'DateTime-Since');
 
         // let oReplyUser = this.userData.get(reply.postedByUser);
         const oReplyUser = reply.postedByUser;
 
         if (oReplyUser) {
-          reply['displayPostedBy'] = oReplyUser.name;
-          reply['displayPostedByInitials'] = this.utils.getInitials(oReplyUser.name);
+          reply.displayPostedBy = oReplyUser.name;
+          reply.displayPostedByInitials = this.utils.getInitials(oReplyUser.name);
         }
       }
     } // for
@@ -541,7 +542,7 @@ export class FeedContainerComponent implements OnInit {
     }
 
     // clear out local copy
-    (document.getElementById('pulseMessage') as HTMLElement)['value'] = '';
+    (document.getElementById('pulseMessage') as HTMLElement).value = '';
     this.pulseConversation = '';
   }
 

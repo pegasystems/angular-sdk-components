@@ -25,10 +25,10 @@ export class SemanticLinkComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: SemanticLinkProps;
 
-  label$: string = '';
-  value$: string = '';
+  label$ = '';
+  value$ = '';
   displayMode$?: string = '';
-  bVisible$: boolean = true;
+  bVisible$ = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,

@@ -42,11 +42,11 @@ declare global {
 export class NavigationComponent implements OnInit {
   pConn$: typeof PConnect;
 
-  bLoggedIn$: boolean = false;
-  bPConnectLoaded$: boolean = false;
-  bHasPConnect$: boolean = false;
-  userName$: string = '';
-  isProgress$: boolean = false;
+  bLoggedIn$ = false;
+  bPConnectLoaded$ = false;
+  bHasPConnect$ = false;
+  userName$ = '';
+  isProgress$ = false;
   progressSpinnerSubscription: Subscription;
   resetPConnectSubscription: Subscription;
 
@@ -113,6 +113,7 @@ export class NavigationComponent implements OnInit {
     });
   }
 
+  // eslint-disable-next-line sonarjs/no-identical-functions
   assignmentFinished() {
     setTimeout(() => {
       // update the worklist

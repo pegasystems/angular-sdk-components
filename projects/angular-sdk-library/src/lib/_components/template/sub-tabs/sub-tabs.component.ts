@@ -19,10 +19,10 @@ export class SubTabsComponent implements OnInit {
 
   angularPConnectData: AngularPConnectData = {};
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
   defaultTabIndex = 0;
   currentTabId = this.defaultTabIndex.toString();
-  tabItems: Array<any>;
+  tabItems: any[];
   availableTabs: any;
 
   constructor(private angularPConnect: AngularPConnectService) {}

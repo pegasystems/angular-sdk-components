@@ -19,8 +19,8 @@ export class DetailsSubTabsComponent implements OnInit {
 
   angularPConnectData: AngularPConnectData = {};
   currentTabId = '0';
-  tabItems: Array<any>;
-  availableTabs: Array<any>;
+  tabItems: any[];
+  availableTabs: any[];
 
   constructor(private angularPConnect: AngularPConnectService) {}
 

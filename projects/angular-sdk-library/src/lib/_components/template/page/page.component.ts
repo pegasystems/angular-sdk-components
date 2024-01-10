@@ -25,7 +25,7 @@ export class PageComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
 
   configProps$: PageProps;
-  arChildren$: Array<any>;
+  arChildren$: any[];
   title$: string;
 
   constructor(private angularPConnect: AngularPConnectService) {}
@@ -34,7 +34,7 @@ export class PageComponent implements OnInit {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as PageProps;
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
 
     this.title$ = this.configProps$.title;
     const operator = this.configProps$.operator;

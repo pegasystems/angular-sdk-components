@@ -29,17 +29,17 @@ export class TextInputComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: TextInputProps;
 
-  label$: string = '';
-  value$: string = '';
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  label$ = '';
+  value$ = '';
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  testId: string = '';
-  bHasForm$: boolean = true;
-  componentReference: string = '';
+  testId = '';
+  bHasForm$ = true;
+  componentReference = '';
   helperText: string;
   placeholder: string;
 
@@ -113,7 +113,7 @@ export class TextInputComponent implements OnInit {
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
 
-    this.componentReference = this.pConn$.getStateProps()['value'];
+    this.componentReference = this.pConn$.getStateProps().value;
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
@@ -165,13 +165,14 @@ export class TextInputComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

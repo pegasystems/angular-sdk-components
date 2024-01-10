@@ -15,7 +15,7 @@ export class CaseCreateStageComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -53,6 +53,6 @@ export class CaseCreateStageComponent implements OnInit {
   }
 
   updateSelf() {
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
   }
 }

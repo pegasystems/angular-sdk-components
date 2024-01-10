@@ -38,11 +38,11 @@ export class MCNavComponent implements OnInit {
   starterPackVersion$: string = endpoints.SP_VERSION;
   pConn$: typeof PConnect;
 
-  applicationLabel: string = '';
-  bLoggedIn$: boolean = false;
-  bPConnectLoaded$: boolean = false;
-  bHasPConnect$: boolean = false;
-  isProgress$: boolean = false;
+  applicationLabel = '';
+  bLoggedIn$ = false;
+  bPConnectLoaded$ = false;
+  bHasPConnect$ = false;
+  isProgress$ = false;
 
   progressSpinnerSubscription: Subscription;
   resetPConnectSubscription: Subscription;

@@ -29,17 +29,17 @@ export class TextAreaComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: TextAreaProps;
 
-  label$: string = '';
-  value$: string = '';
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  label$ = '';
+  value$ = '';
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   nMaxLength$: number;
   displayMode$?: string = '';
   controlName$: string;
-  bHasForm$: boolean = true;
-  componentReference: string = '';
+  bHasForm$ = true;
+  componentReference = '';
   testId: string;
   helperText: string;
 
@@ -168,13 +168,14 @@ export class TextAreaComponent implements OnInit {
   getErrorMessage() {
     // field control gets error message from here
 
-    let errMessage: string = '';
+    let errMessage = '';
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

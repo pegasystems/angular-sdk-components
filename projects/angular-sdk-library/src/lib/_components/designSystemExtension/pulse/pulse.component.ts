@@ -3,7 +3,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 
 interface PulseProps {
   // If any, enter additional props that only exist on this component
-  children?: Array<any>;
+  children?: any[];
 }
 
 @Component({
@@ -18,7 +18,7 @@ export class PulseComponent implements OnInit {
 
   configProps$: PulseProps;
   currentUser$: string;
-  currentUserInitials$: string = '--';
+  currentUserInitials$ = '--';
 
   ngOnInit() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());

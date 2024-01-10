@@ -20,20 +20,20 @@ export class DataReferenceComponent implements OnInit {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  arFields$: Array<any> = [];
+  arFields$: any[] = [];
   referenceType = '';
   selectionMode = '';
   parameters;
   hideLabel = false;
-  childrenToRender: Array<any> = [];
-  dropDownDataSource: String = '';
-  isDisplayModeEnabled: Boolean = false;
+  childrenToRender: any[] = [];
+  dropDownDataSource = '';
+  isDisplayModeEnabled = false;
   propsToUse: any = {};
   rawViewMetadata: any = {};
-  viewName: String = '';
+  viewName = '';
   firstChildMeta: any = {};
-  canBeChangedInReviewMode: Boolean = false;
-  propName: string = '';
+  canBeChangedInReviewMode = false;
+  propName = '';
   firstChildPConnect;
   children;
   displaySingleRef: boolean;
@@ -45,9 +45,9 @@ export class DataReferenceComponent implements OnInit {
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.children = this.pConn$.getChildren() as Array<any>;
+    this.children = this.pConn$.getChildren() as any[];
     this.updateSelf();
-    if (this.firstChildMeta?.type === 'Dropdown' && this.rawViewMetadata['config']?.parameters) {
+    if (this.firstChildMeta?.type === 'Dropdown' && this.rawViewMetadata.config?.parameters) {
       const { value, key, text } = this.firstChildMeta.config.datasource.fields;
       (
         PCore.getDataApiUtils().getData(

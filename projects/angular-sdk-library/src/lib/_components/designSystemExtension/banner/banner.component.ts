@@ -14,7 +14,7 @@ export class BannerComponent {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  @Input() arChildren$: Array<any>;
+  @Input() arChildren$: any[];
   @Input() title: string;
   @Input() message: any;
   @Input() backgroundImage: string;

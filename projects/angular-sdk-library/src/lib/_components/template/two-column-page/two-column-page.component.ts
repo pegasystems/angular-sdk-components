@@ -36,7 +36,6 @@ export class TwoColumnPageComponent implements OnInit {
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
-    if (bUpdateSelf) {
-    }
+    if (bUpdateSelf) { /* empty */ }
   }
 }

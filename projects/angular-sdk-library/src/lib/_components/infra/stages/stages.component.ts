@@ -6,7 +6,7 @@ import { Utils } from '../../../_helpers/utils';
 
 interface StagesProps {
   // If any, enter additional props that only exist on this component
-  stages: Array<any>;
+  stages: any[];
 }
 
 @Component({
@@ -24,7 +24,7 @@ export class StagesComponent implements OnInit {
   PCore$: typeof PCore = PCore;
   configProps$: StagesProps;
 
-  arStageResults$: Array<any>;
+  arStageResults$: any[];
   lastStage$: any;
   checkSvgIcon$: string;
   key: string;

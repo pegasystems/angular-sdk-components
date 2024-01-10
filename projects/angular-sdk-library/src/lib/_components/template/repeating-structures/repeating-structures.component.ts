@@ -10,7 +10,7 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { Utils } from '../../../_helpers/utils';
 
 interface RepeatingStructuresProps {
-  referenceList?: Array<any>;
+  referenceList?: any[];
   rowClickAction?: string;
 }
 
@@ -28,7 +28,7 @@ export class RepeatingStructuresComponent implements OnInit {
 
   configProps$: RepeatingStructuresProps;
   repeatList$: MatTableDataSource<any>;
-  fields$: Array<any>;
+  fields$: any[];
   displayedColumns$ = Array<string>();
 
   constructor(
@@ -72,6 +72,7 @@ export class RepeatingStructuresComponent implements OnInit {
   }
 
   rowClick(row) {
+    // eslint-disable-next-line sonarjs/no-small-switch
     switch (this.configProps$.rowClickAction) {
       case 'openAssignment':
         this.psService.sendMessage(true);
@@ -82,8 +83,8 @@ export class RepeatingStructuresComponent implements OnInit {
     }
   }
 
-  updateData(listData: Array<any>, fieldData: Array<any>): Array<any> {
-    const returnList: Array<any> = new Array<any>();
+  updateData(listData: any[], fieldData: any[]): any[] {
+    const returnList: any[] = new Array<any>();
     for (const row in listData) {
       // copy
       const rowData = JSON.parse(JSON.stringify(listData[row]));
@@ -152,7 +153,7 @@ export class RepeatingStructuresComponent implements OnInit {
     }));
   }
 
-  getDisplayColumns(fields: Array<any> = []): Array<string> {
+  getDisplayColumns(fields: any[] = []): string[] {
     return fields.map((field: any) => field.name);
   }
 }

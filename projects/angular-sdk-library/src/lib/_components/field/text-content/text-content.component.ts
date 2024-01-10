@@ -24,10 +24,10 @@ export class TextContentComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: TextContentProps;
 
-  content$: string = '';
+  content$ = '';
   displayAs$: string;
   displayMode$?: string = '';
-  bVisible$: boolean = true;
+  bVisible$ = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,

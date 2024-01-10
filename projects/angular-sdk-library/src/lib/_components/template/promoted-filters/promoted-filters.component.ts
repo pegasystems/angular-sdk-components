@@ -46,7 +46,7 @@ export class PromotedFiltersComponent implements OnInit {
   filtersProperties = {};
   showTable;
   transientItemID;
-  processedFilters: Array<any> = [];
+  processedFilters: any[] = [];
   payload = {};
 
   constructor(private angularPConnect: AngularPConnectService) {}

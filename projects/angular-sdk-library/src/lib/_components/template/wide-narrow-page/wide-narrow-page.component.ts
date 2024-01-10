@@ -15,7 +15,7 @@ export class WideNarrowPageComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  thePConnType: string = '';
+  thePConnType = '';
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};

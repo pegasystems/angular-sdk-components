@@ -11,7 +11,7 @@ interface FieldGroupTemplateProps {
   // If any, enter additional props that only exist on this component
   label?: string;
   showLabel?: boolean;
-  referenceList?: Array<any>;
+  referenceList?: any[];
   contextClass: string;
   renderMode?: string;
   heading?: string;
@@ -99,8 +99,8 @@ export class FieldGroupTemplateComponent implements OnInit {
     this.label$ = this.configProps$.label;
     this.showLabel$ = this.configProps$.showLabel;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = this.inheritedProps$['label'] || this.label$;
-    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
+    this.label$ = this.inheritedProps$.label || this.label$;
+    this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
 
     this.allowAddEdit = this.configProps$.allowTableEdit;
 

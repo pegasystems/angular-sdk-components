@@ -29,19 +29,19 @@ export class AttachmentComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   PCoreVersion: string;
 
-  label$: string = '';
+  label$ = '';
   value$: any;
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
-  bLoading$: boolean = false;
-  arFiles$: Array<any> = [];
-  arFileList$: Array<any> = [];
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
+  bLoading$ = false;
+  arFiles$: any[] = [];
+  arFileList$: any[] = [];
   removeFileFromList$: any;
-  arMenuList$: Array<any> = [];
-  bShowSelector$: boolean = true;
-  bShowJustDelete$: boolean = false;
+  arMenuList$: any[] = [];
+  bShowSelector$ = true;
+  bShowJustDelete$ = false;
   att_valueRef: any;
   att_categoryName: string;
   att_id: string;
@@ -157,7 +157,7 @@ export class AttachmentComponent implements OnInit {
           this.fileTemp.props.ID = this.fileTemp.responseProps.pzInsKey;
 
           // create the actions for the "more" menu on the attachment
-          const arMenuList: Array<any> = [];
+          const arMenuList: any[] = [];
           let oMenu: any = {};
 
           oMenu.icon = 'download';
@@ -518,7 +518,7 @@ export class AttachmentComponent implements OnInit {
 
   onUploadProgress() {}
 
-  getFiles(arFiles: Array<any>): Array<any> {
+  getFiles(arFiles: any[]): any[] {
     return this.setNewFiles(arFiles);
   }
 

@@ -93,7 +93,7 @@ export class SimpleTableSelectComponent implements OnInit {
       const { datasource: { parameters: fieldParameters = {} } = {}, pageClass } = metadata;
 
       this.pageClass = pageClass;
-      const compositeKeys: Array<any> = [];
+      const compositeKeys: any[] = [];
       Object.values(fieldParameters).forEach((param: any) => {
         if (this.isSelfReferencedProperty(param, referenceProp)) {
           compositeKeys.push(param.substring(param.lastIndexOf('.') + 1));

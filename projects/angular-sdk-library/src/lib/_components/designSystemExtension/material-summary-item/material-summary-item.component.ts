@@ -13,11 +13,11 @@ import { Utils } from '../../../_helpers/utils';
 })
 export class MaterialSummaryItemComponent implements OnInit {
   @Input() item$: any;
-  @Input() menuIconOverride$: string = '';
+  @Input() menuIconOverride$ = '';
   @Input() menuIconOverrideAction$: any;
 
   settingsSvgIcon$: string;
-  imagePath$: string = '';
+  imagePath$ = '';
 
   constructor(private utils: Utils) {}
 

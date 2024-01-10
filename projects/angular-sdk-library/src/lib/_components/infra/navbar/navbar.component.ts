@@ -25,18 +25,18 @@ interface NavBarProps {
 export class NavbarComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() appName$: string;
-  @Input() pages$: Array<any>;
-  @Input() caseTypes$: Array<any>;
+  @Input() pages$: any[];
+  @Input() caseTypes$: any[];
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
   configProps$: NavBarProps;
 
-  navPages$: Array<any>;
+  navPages$: any[];
   navExpandCollapse$: string;
-  bShowCaseTypes$: boolean = false;
+  bShowCaseTypes$ = false;
 
-  portalApp$: string = '';
+  portalApp$ = '';
   portalLogoImage$: string;
   showAppName$?: boolean = false;
 
@@ -117,7 +117,7 @@ export class NavbarComponent implements OnInit {
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
       for (const page in this.navPages$) {
-        this.navPages$[page]['iconName'] = this.utils.getImageSrc(this.navPages$[page]['pxPageViewIcon'], this.utils.getSDKStaticContentUrl());
+        this.navPages$[page].iconName = this.utils.getImageSrc(this.navPages$[page].pxPageViewIcon, this.utils.getSDKStaticContentUrl());
       }
 
       this.actionsAPI = this.pConn$.getActionsApi();

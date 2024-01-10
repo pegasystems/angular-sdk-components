@@ -15,7 +15,7 @@ export class RegionComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
   ngOnInit() {
     // console.log(`ngOnInit (no registerAndSubscribe!): Region`);

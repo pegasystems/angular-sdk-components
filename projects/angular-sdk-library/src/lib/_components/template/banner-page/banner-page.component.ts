@@ -24,7 +24,7 @@ export class BannerPageComponent {
   @Input() formGroup$: any;
 
   configProps$: BannerPageProps;
-  arChildren$: Array<any>;
+  arChildren$: any[];
   title?: string;
   message: any;
   backgroundImage?: string;

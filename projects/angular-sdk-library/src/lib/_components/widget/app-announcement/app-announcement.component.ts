@@ -22,7 +22,7 @@ export class AppAnnouncementComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
   configProps$: AppAnnouncementProps;
-  details$: Array<any>;
+  details$: any[];
 
   ngOnInit(): void {
     this.configProps$ = this.pConn$.getConfigProps();

@@ -76,12 +76,12 @@ export class ViewComponent implements OnInit {
 
   configProps$: ViewProps;
   inheritedProps$: Object;
-  arChildren$: Array<any>;
+  arChildren$: any[];
   templateName$: string;
-  title$: string = '';
-  label$: string = '';
-  showLabel$: boolean = true;
-  visibility$: boolean = true;
+  title$ = '';
+  label$ = '';
+  showLabel$ = true;
+  visibility$ = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -141,8 +141,8 @@ export class ViewComponent implements OnInit {
     this.label$ = this.configProps$.label || '';
     this.showLabel$ = this.configProps$.showLabel || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = this.inheritedProps$['label'] || this.label$;
-    this.showLabel$ = this.inheritedProps$['showLabel'] || this.showLabel$;
+    this.label$ = this.inheritedProps$.label || this.label$;
+    this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
 

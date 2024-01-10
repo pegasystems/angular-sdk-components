@@ -20,9 +20,9 @@ export class CaseHistoryComponent implements OnInit {
   configProps$: CaseHistoryProps;
 
   repeatList$: MatTableDataSource<any>;
-  fields$: Array<any>;
+  fields$: any[];
   displayedColumns$ = Array<any>();
-  waitingForData: boolean = false;
+  waitingForData = false;
 
   constructor(private utils: Utils) {}
 
@@ -49,7 +49,7 @@ export class CaseHistoryComponent implements OnInit {
         { label: this.pConn$.getLocalizedValue('User', '', ''), type: 'TextInput', fieldName: 'pyPerformer' }
       ];
 
-      const tableDataResults = this.updateData(historyJSON['data'].data, this.fields$);
+      const tableDataResults = this.updateData(historyJSON.data.data, this.fields$);
 
       this.displayedColumns$ = this.getDisplayColumns(this.fields$);
 
@@ -61,7 +61,7 @@ export class CaseHistoryComponent implements OnInit {
 
   ngOnDestroy() {}
 
-  updateFields(arFields, arColumns): Array<any> {
+  updateFields(arFields, arColumns): any[] {
     const arReturn = arFields;
     for (const i in arReturn) {
       arReturn[i].config.name = arColumns[i];
@@ -70,17 +70,17 @@ export class CaseHistoryComponent implements OnInit {
     return arReturn;
   }
 
-  updateData(listData: Array<any>, fieldData: Array<any>): Array<any> {
-    const returnList: Array<any> = new Array<any>();
+  updateData(listData: any[], fieldData: any[]): any[] {
+    const returnList: any[] = new Array<any>();
     for (const row in listData) {
       // copy
       const rowData = JSON.parse(JSON.stringify(listData[row]));
 
       for (const field of fieldData) {
-        const fieldName = field['fieldName'];
+        const fieldName = field.fieldName;
         let formattedDate;
 
-        switch (field['type']) {
+        switch (field.type) {
           case 'Date':
             formattedDate = this.utils.generateDate(rowData[fieldName], 'Date-Short-YYYY');
             rowData[fieldName] = formattedDate;
@@ -100,13 +100,9 @@ export class CaseHistoryComponent implements OnInit {
     return returnList;
   }
 
-  getDisplayColumns(fields: Array<any> = []) {
-    const arReturn = fields.map((field) => {
-      const theField = field.fieldName;
-
-      return theField;
+  getDisplayColumns(fields: any[] = []) {
+    return fields.map((field) => {
+      return field.fieldName;
     });
-
-    return arReturn;
   }
 }

@@ -25,7 +25,7 @@ export class DeferLoadComponent implements OnInit {
 
   componentName$: string;
   loadedPConn$: any;
-  bShowDefer$: boolean = false;
+  bShowDefer$ = false;
 
   angularPConnectData: AngularPConnectData = {};
   constants: typeof publicConstants;

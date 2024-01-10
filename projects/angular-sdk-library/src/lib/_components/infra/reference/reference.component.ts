@@ -73,11 +73,11 @@ export class ReferenceComponent implements OnInit {
     };
 
     if (ReferenceComponent.bLogging) {
-      console.log(`Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps['context']}`);
+      console.log(`Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps.context}`);
     }
 
     const viewComponent = inPConn.createComponent(viewObject, null, null, {
-      pageReference: theResolvedConfigProps['context']
+      pageReference: theResolvedConfigProps.context
     });
 
     // updating the referencedComponent should trigger a render
@@ -85,8 +85,8 @@ export class ReferenceComponent implements OnInit {
 
     newCompPConnect.setInheritedConfig({
       ...referenceConfig,
-      readOnly: theResolvedConfigProps['readOnly'] ? theResolvedConfigProps['readOnly'] : false,
-      displayMode: theResolvedConfigProps['displayMode'] ? theResolvedConfigProps['displayMode'] : null
+      readOnly: theResolvedConfigProps.readOnly ? theResolvedConfigProps.readOnly : false,
+      displayMode: theResolvedConfigProps.displayMode ? theResolvedConfigProps.displayMode : null
     });
 
     if (ReferenceComponent.bLogging) {
@@ -111,7 +111,7 @@ export class ReferenceComponent implements OnInit {
     let returnObj = false;
     let thePConnType = '';
 
-    if (inPConn['getPConnect']) {
+    if (inPConn.getPConnect) {
       // inPConn is an object (ex: { getPConnect()} ), so we want to return
       //  any referenced view as the object containing the
       //  the getPConnect function
@@ -140,17 +140,15 @@ export class ReferenceComponent implements OnInit {
         // console.log(`theFullReference: ${theFullReference}`);
 
         return theRefViewPConn;
-      } else {
-        const theFullRefView = this.createFullReferencedViewFromRef(inPConn);
-
+      } 
         // console.log(`created theFullRefView full reference: ${theFullRefView.getFullReference()}`);
         // debugger;
 
-        return theFullRefView;
-      }
-    } else {
+        return this.createFullReferencedViewFromRef(inPConn);
+      
+    } 
       return inPConn;
-    }
+    
   }
 
   // STATIC method that other components can call to normalize
@@ -166,10 +164,8 @@ export class ReferenceComponent implements OnInit {
       return inPConnArray;
     }
 
-    const theDereferencedArray = inPConnArray.map((child) => {
+    return inPConnArray.map((child) => {
       return ReferenceComponent.normalizePConn(child);
     });
-
-    return theDereferencedArray;
   }
 }

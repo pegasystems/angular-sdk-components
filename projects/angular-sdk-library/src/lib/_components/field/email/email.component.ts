@@ -28,16 +28,16 @@ export class EmailComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: EmailProps;
 
-  label$: string = '';
+  label$ = '';
   value$: string;
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  bHasForm$: boolean = true;
-  componentReference: string = '';
+  bHasForm$ = true;
+  componentReference = '';
   testId: string;
   helperText: string;
   placeholder: string;
@@ -162,13 +162,14 @@ export class EmailComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

@@ -14,9 +14,9 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class AssignmentCardComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() arMainButtons$: Array<any>;
-  @Input() arSecondaryButtons$: Array<any>;
-  @Input() arChildren$: Array<any>;
+  @Input() arMainButtons$: any[];
+  @Input() arSecondaryButtons$: any[];
+  @Input() arChildren$: any[];
   @Input() updateToken$: number;
 
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();

@@ -21,7 +21,7 @@ export class CancelAlertComponent implements OnInit {
   body2$: string;
   itemKey: string;
   localizedVal: Function;
-  localeCategory: string = 'ModalContainer';
+  localeCategory = 'ModalContainer';
 
   constructor(private psService: ProgressSpinnerService) {}
 

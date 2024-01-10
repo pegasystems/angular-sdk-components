@@ -26,45 +26,45 @@ export class FileUtilityComponent implements OnInit {
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  arFullListAttachments: Array<any> = [];
+  arFullListAttachments: any[] = [];
 
-  lu_name$: string = '';
-  lu_icon$: string = '';
-  lu_bLoading$: boolean = false;
-  lu_count$: number = 0;
-  lu_arActions$: Array<any> = [];
+  lu_name$ = '';
+  lu_icon$ = '';
+  lu_bLoading$ = false;
+  lu_count$ = 0;
+  lu_arActions$: any[] = [];
   lu_arItems$: any = [];
 
-  va_arItems$: Array<any> = [];
+  va_arItems$: any[] = [];
 
   lu_onViewAllFunction: any;
 
-  bShowFileModal$: boolean = false;
-  bShowLinkModal$: boolean = false;
-  bShowViewAllModal$: boolean = false;
+  bShowFileModal$ = false;
+  bShowLinkModal$ = false;
+  bShowViewAllModal$ = false;
 
-  arFileMainButtons$: Array<any> = [];
-  arFileSecondaryButtons$: Array<any> = [];
+  arFileMainButtons$: any[] = [];
+  arFileSecondaryButtons$: any[] = [];
 
-  arLinkMainButtons$: Array<any> = [];
-  arLinkSecondaryButtons$: Array<any> = [];
+  arLinkMainButtons$: any[] = [];
+  arLinkSecondaryButtons$: any[] = [];
 
-  arFiles$: Array<any> = [];
-  arFileList$: Array<any> = [];
+  arFiles$: any[] = [];
+  arFileList$: any[] = [];
   removeFileFromList$: any;
 
-  arLinks$: Array<any> = [];
-  arLinksList$: Array<any> = [];
+  arLinks$: any[] = [];
+  arLinksList$: any[] = [];
   removeLinksFromList$: any;
 
-  link_title$: string = '';
-  link_url$: string = '';
+  link_title$ = '';
+  link_url$ = '';
 
-  closeSvgIcon$: string = '';
+  closeSvgIcon$ = '';
 
-  currentCaseID: string = '';
+  currentCaseID = '';
 
-  addAttachmentsActions: Array<any> = [
+  addAttachmentsActions: any[] = [
     {
       text: 'Add files',
       id: 'addNewFiles',
@@ -200,7 +200,7 @@ export class FileUtilityComponent implements OnInit {
       .catch(console.log);
   }
 
-  addAttachments(attsFromResp: Array<any> = []) {
+  addAttachments(attsFromResp: any[] = []) {
     this.lu_bLoading$ = false;
 
     attsFromResp = attsFromResp.map((respAtt) => {
@@ -595,7 +595,7 @@ export class FileUtilityComponent implements OnInit {
     });
   }
 
-  getFiles(arFiles: Array<any>): Array<any> {
+  getFiles(arFiles: any[]): any[] {
     return this.setNewFiles(arFiles);
   }
 

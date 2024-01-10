@@ -10,9 +10,9 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialSummaryListComponent implements OnInit {
-  @Input() arItems$: Array<any>;
+  @Input() arItems$: any[];
   @Input() icon$: string;
-  @Input() menuIconOverride$: string = '';
+  @Input() menuIconOverride$ = '';
   @Input() menuIconOverrideAction$: any;
 
   ngOnInit(): void {}

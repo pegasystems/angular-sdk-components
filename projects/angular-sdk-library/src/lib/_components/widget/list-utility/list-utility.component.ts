@@ -14,12 +14,12 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ListUtilityComponent implements OnInit {
-  @Input() name$: string = '';
-  @Input() icon$: string = '';
-  @Input() bLoading$: boolean = false;
-  @Input() count$: number = 0;
-  @Input() arActions$: Array<any> = [];
-  @Input() arItems$: Array<any> = [];
+  @Input() name$ = '';
+  @Input() icon$ = '';
+  @Input() bLoading$ = false;
+  @Input() count$ = 0;
+  @Input() arActions$: any[] = [];
+  @Input() arItems$: any[] = [];
 
   // function to all
   @Input() onViewAll$: any;
@@ -27,9 +27,9 @@ export class ListUtilityComponent implements OnInit {
   headerSvgIcon$: string;
   settingsSvgIcon$: string;
 
-  noItemsMessage$: string = 'No Items';
+  noItemsMessage$ = 'No Items';
 
-  imagePath$: string = '';
+  imagePath$ = '';
 
   constructor(private utils: Utils) {}
 

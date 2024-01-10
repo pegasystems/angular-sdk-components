@@ -16,10 +16,10 @@ export class DetailsWideNarrowComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  highlightedDataArr: Array<any> = [];
+  highlightedDataArr: any[] = [];
   showHighlightedData: boolean;
-  arFields$: Array<any> = [];
-  arFields2$: Array<any> = [];
+  arFields$: any[] = [];
+  arFields2$: any[] = [];
   propsToUse: any = {};
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -74,7 +74,7 @@ export class DetailsWideNarrowComponent implements OnInit {
     this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     this.pConn$.setInheritedProp('readOnly', true);
 
-    const kids = this.pConn$.getChildren() as Array<any>;
+    const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       const pKid = kid.getPConnect();
       const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());

@@ -13,9 +13,9 @@ dayjs.extend(relativeTime);
   providedIn: 'root'
 })
 export class Utils {
-  lastControlID: number = 0;
+  lastControlID = 0;
 
-  viewContainerCount: number = 0;
+  viewContainerCount = 0;
 
   constructor(private scService: ServerConfigService) {}
 
@@ -56,7 +56,7 @@ export class Utils {
           this.consoleKidDump(kid.getPConnect(), level + 1, parseInt(index, 10) + 1);
         }
       }
-    } catch (ex) {}
+    } catch (ex) { /* empty */ }
   }
 
   htmlDecode(sVal: string): string | null {
@@ -72,15 +72,15 @@ export class Utils {
     return sPrefix + this.lastControlID.toString();
   }
 
-  getOptionList(configProps: any, dataObject: any): Array<any> {
+  getOptionList(configProps: any, dataObject: any): any[] {
     const listType = configProps.listType;
-    let arReturn: Array<any> = [];
+    let arReturn: any[] = [];
 
     if (listType != null) {
       switch (listType.toLowerCase()) {
         case 'associated':
           // data source should be an array
-          if (typeof configProps.datasource == 'object') {
+          if (typeof configProps.datasource === 'object') {
             arReturn = configProps.datasource;
           }
           break;
@@ -146,7 +146,7 @@ export class Utils {
   getBooleanValue(inValue: any): boolean {
     let bReturn = false;
 
-    if (typeof inValue == 'string') {
+    if (typeof inValue === 'string') {
       if (inValue.toLowerCase() == 'true') {
         bReturn = true;
       }
@@ -408,7 +408,7 @@ export class Utils {
     return sessionStorage.getItem('asdk_AH') as string;
   }
 
-  static isEmptyObject(obj: Object): Boolean {
+  static isEmptyObject(obj: Object): boolean {
     return Object.keys(obj).length === 0;
   }
 }

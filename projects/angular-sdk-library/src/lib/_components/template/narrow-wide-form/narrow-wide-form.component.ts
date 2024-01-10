@@ -14,7 +14,7 @@ export class NarrowWideFormComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
   ngOnInit() {
     this.updateSelf();
@@ -29,6 +29,6 @@ export class NarrowWideFormComponent implements OnInit {
   }
 
   updateSelf() {
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
   }
 }

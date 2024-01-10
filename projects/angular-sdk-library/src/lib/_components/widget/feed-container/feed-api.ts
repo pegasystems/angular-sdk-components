@@ -45,7 +45,7 @@ const FeedApi = (pConnect) => {
         if (response.status === 200 && response.data) {
           fetchMessagesCancelTokenSource.pop();
 
-          const respMessageIDs: Array<string> = [];
+          const respMessageIDs: string[] = [];
           const respMessages = {};
           const feedViewResponse = response.data;
           if (response.data) {

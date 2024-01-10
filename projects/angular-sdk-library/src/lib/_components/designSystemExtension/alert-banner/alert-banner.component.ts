@@ -10,7 +10,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AlertBannerComponent implements OnInit {
-  @Input() banners: Array<any>;
+  @Input() banners: any[];
  
   SEVERITY_MAP = {
     urgent: 'error',

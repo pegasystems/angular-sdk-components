@@ -23,7 +23,7 @@ interface AutoCompleteProps extends PConnFieldProps {
   listType: string;
   parameters?: any;
   datasource: any;
-  columns: Array<any>;
+  columns: any[];
 }
 
 @Component({
@@ -49,17 +49,17 @@ export class AutoCompleteComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: AutoCompleteProps;
 
-  label$: string = '';
-  value$: string = '';
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  label$ = '';
+  value$ = '';
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  bHasForm$: boolean = true;
-  options$: Array<any>;
-  componentReference: string = '';
+  bHasForm$ = true;
+  options$: any[];
+  componentReference = '';
   testId: string;
   listType: string;
   columns = [];
@@ -69,7 +69,7 @@ export class AutoCompleteComponent implements OnInit {
   fieldControl = new FormControl('', null);
   parameters: {};
   hideLabel: boolean;
-  filteredOptions: Observable<Array<any>>;
+  filteredOptions: Observable<any[]>;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -115,7 +115,7 @@ export class AutoCompleteComponent implements OnInit {
     }
   }
 
-  private _filter(value: string): Array<string> {
+  private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.options$?.filter((option) => option.value.toLowerCase().includes(filterValue));
   }
@@ -217,7 +217,7 @@ export class AutoCompleteComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = this.pConn$.getStateProps()['value'];
+    this.componentReference = this.pConn$.getStateProps().value;
     if (this.listType === 'associated') {
       this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
@@ -239,7 +239,7 @@ export class AutoCompleteComponent implements OnInit {
   }
 
   fillOptions(results: any) {
-    const optionsData: Array<any> = [];
+    const optionsData: any[] = [];
     const displayColumn = this.getDisplayFieldsMetaData(this.columns);
     results?.forEach((element) => {
       const obj = {
@@ -310,7 +310,7 @@ export class AutoCompleteComponent implements OnInit {
 
     const value = key;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps()['value'];
+    const propName = this.pConn$?.getStateProps().value;
     handleEvent(actionsApi, 'changeNblur', propName, value);
     if (this.configProps$?.onRecordChange) {
       el.value = value;
@@ -319,13 +319,14 @@ export class AutoCompleteComponent implements OnInit {
   }
 
   getErrorMessage() {
-    let errMessage: string = '';
+    let errMessage = '';
 
     // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
     if (this.fieldControl.hasError('message')) {
       errMessage = this.angularPConnectData.validateMessage ?? '';
       return errMessage;
-    } else if (this.fieldControl.hasError('required')) {
+    }
+    if (this.fieldControl.hasError('required')) {
       errMessage = 'You must enter a value';
     } else if (this.fieldControl.errors) {
       errMessage = this.fieldControl.errors.toString();

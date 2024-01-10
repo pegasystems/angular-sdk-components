@@ -17,7 +17,7 @@ export class OperatorComponent implements OnInit {
   @Input() label$: string;
   @Input() id$: string;
 
-  fields$: Array<any> = [];
+  fields$: any[] = [];
   bShowPopover$: boolean;
 
   constructor(

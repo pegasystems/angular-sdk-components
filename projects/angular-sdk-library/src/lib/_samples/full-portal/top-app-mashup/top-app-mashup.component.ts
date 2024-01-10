@@ -29,17 +29,17 @@ export class TopAppMashupComponent implements OnInit {
   pConn$: typeof PConnect;
 
   sComponentName$: string;
-  bPCoreReady$: boolean = false;
+  bPCoreReady$ = false;
 
-  bLoggedIn$: boolean = false;
-  isProgress$: boolean = false;
+  bLoggedIn$ = false;
+  isProgress$ = false;
 
   progressSpinnerSubscription: Subscription;
 
   spinnerTimer: any;
 
-  portalSelectionScreen: boolean = false;
-  availablePortals: Array<string>;
+  portalSelectionScreen = false;
+  availablePortals: string[];
   defaultPortalName: string;
 
   constructor(
@@ -123,7 +123,7 @@ export class TopAppMashupComponent implements OnInit {
       this.portalSelectionScreen = true;
       this.defaultPortalName = defaultPortal;
       // Getting current user's access group's available portals list other than excluded portals (relies on Traditional DX APIs)
-      getAvailablePortals().then((portals: Array<string>) => {
+      getAvailablePortals().then((portals: string[]) => {
         this.availablePortals = portals;
       });
     }

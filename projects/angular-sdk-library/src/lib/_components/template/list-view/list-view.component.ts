@@ -29,7 +29,7 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 interface ListViewProps {
   // If any, enter additional props that only exist on this component
   globalSearch?: boolean;
-  referenceList?: Array<any>;
+  referenceList?: any[];
   rowClickAction?: any;
   selectionMode?: string;
   referenceType?: string;
@@ -81,32 +81,32 @@ export class ListViewComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   @Input() pConn$: typeof PConnect;
-  @Input() bInForm$: boolean = true;
+  @Input() bInForm$ = true;
   @Input() payload;
 
   repeatList$: MatTableDataSource<any>;
-  fields$: Array<any>;
+  fields$: any[];
 
   displayedColumns$ = Array<any>();
-  groupByColumns$: Array<string> = [];
+  groupByColumns$: string[] = [];
 
   configProps$: ListViewProps;
 
   updatedRefList: any;
 
-  repeatListData: Array<any> = [];
+  repeatListData: any[] = [];
 
   searchIcon$: string;
 
-  bShowSearch$: boolean = false;
-  bColumnReorder$: boolean = false;
-  bGrouping$: boolean = false;
+  bShowSearch$ = false;
+  bColumnReorder$ = false;
+  bGrouping$ = false;
 
   perfFilter: string;
   searchFilter: string;
 
   menuSvgIcon$: string;
-  arrowSvgIcon$: string = '';
+  arrowSvgIcon$ = '';
   arrowDownSvgIcon$: string;
   arrowUpSvgIcon$: string;
 
@@ -116,26 +116,26 @@ export class ListViewComponent implements OnInit {
 
   compareType: string;
   compareRef: string;
-  arrowDirection: string = 'down';
+  arrowDirection = 'down';
 
-  filterByColumns: Array<any> = [];
-  bShowFilterPopover$: boolean = false;
-  bContains$: boolean = true;
-  bDateTime$: boolean = false;
+  filterByColumns: any[] = [];
+  bShowFilterPopover$ = false;
+  bContains$ = true;
+  bDateTime$ = false;
 
-  filterContainsLabel$: string = '';
-  filterContainsType$: string = 'contains';
+  filterContainsLabel$ = '';
+  filterContainsType$ = 'contains';
   filterContainsValue$: any;
 
-  bIsDate$: boolean = false;
-  bIsDateTime$: boolean = false;
-  bIsTime$: boolean = false;
+  bIsDate$ = false;
+  bIsDateTime$ = false;
+  bIsTime$ = false;
 
   currentFilterRefData: any;
   currentFilterImageEl: any;
 
-  arFilterMainButtons$: Array<any> = [];
-  arFilterSecondaryButtons$: Array<any> = [];
+  arFilterMainButtons$: any[] = [];
+  arFilterSecondaryButtons$: any[] = [];
   selectionMode?: string;
   singleSelectionMode: boolean;
   multiSelectionMode: boolean;
@@ -144,7 +144,7 @@ export class ListViewComponent implements OnInit {
   compositeKeys: any;
   showDynamicFields: any;
   filters: any = {};
-  selectParam: Array<any> = [];
+  selectParam: any[] = [];
   filterPayload: any;
 
   constructor(
@@ -228,7 +228,7 @@ export class ListViewComponent implements OnInit {
     const relationalOp = 'AND';
 
     let field = this.getFieldFromFilter(filterExpression, isDateRange);
-    const selectParam: Array<any> = [];
+    const selectParam: any[] = [];
     // Constructing the select parameters list (will be sent in dashboardFilterPayload)
     this.displayedColumns$?.forEach((col) => {
       selectParam.push({
@@ -340,7 +340,7 @@ export class ListViewComponent implements OnInit {
           // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
           const columnFields = componentConfig.presets[0].children[0].children;
 
-          const tableDataResults = workListData['data'].data;
+          const tableDataResults = workListData.data.data;
 
           const columns = this.getDisplayColumns(columnFields, fieldsMetaData.data.fields, this.fields$);
           this.fields$ = this.updateFields(this.fields$, fieldsMetaData.data.fields, columns);
@@ -405,11 +405,11 @@ export class ListViewComponent implements OnInit {
     // this.repeatList$.sort = this.sort;
   }
 
-  drop(event: CdkDragDrop<Array<string>>) {
+  drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns$, event.previousIndex, event.currentIndex);
   }
 
-  updateFields(arFields, arColumns, fields): Array<any> {
+  updateFields(arFields, arColumns, fields): any[] {
     const arReturn = arFields;
     for (const i in arReturn) {
       arReturn[i].config = { ...arReturn[i].config, ...fields[i], name: fields[i].id };
@@ -464,10 +464,10 @@ export class ListViewComponent implements OnInit {
       this.compositeKeys.forEach((element) => {
         reqObj[element] = selectedRow[element];
       });
-      reqObj['$selected'] = checked;
+      reqObj.$selected = checked;
     } else {
       reqObj[this.rowID] = value;
-      reqObj['$selected'] = checked;
+      reqObj.$selected = checked;
     }
     this.pConn$?.getListActions()?.setSelectedRows([reqObj]);
   }
@@ -642,14 +642,16 @@ export class ListViewComponent implements OnInit {
       case 'up':
         if (aValue < bValue) {
           return -1;
-        } else if (aValue > bValue) {
+        }
+        if (aValue > bValue) {
           return 1;
         }
         break;
       case 'down':
         if (aValue > bValue) {
           return -1;
-        } else if (aValue < bValue) {
+        }
+        if (aValue < bValue) {
           return 1;
         }
         break;
@@ -778,10 +780,10 @@ export class ListViewComponent implements OnInit {
   updateFilterWithInfo() {
     let bFound = false;
     for (const filterObj of this.filterByColumns) {
-      if (filterObj['ref'] === this.currentFilterRefData.config.name) {
-        filterObj['type'] = this.currentFilterRefData.type;
-        filterObj['containsFilter'] = this.filterContainsType$;
-        filterObj['containsFilterValue'] = this.filterContainsValue$;
+      if (filterObj.ref === this.currentFilterRefData.config.name) {
+        filterObj.type = this.currentFilterRefData.type;
+        filterObj.containsFilter = this.filterContainsType$;
+        filterObj.containsFilterValue = this.filterContainsValue$;
 
         bFound = true;
         break;
@@ -801,9 +803,9 @@ export class ListViewComponent implements OnInit {
 
     // iterate through filters and update filterOn icon
     for (const filterObj of this.filterByColumns) {
-      const containsFilterValue = filterObj['containsFilterValue'];
-      const containsFilter = filterObj['containsFilter'];
-      const filterRef = filterObj['ref'];
+      const containsFilterValue = filterObj.containsFilterValue;
+      const containsFilter = filterObj.containsFilter;
+      const filterRef = filterObj.ref;
       const filterIndex = this.displayedColumns$.indexOf(filterRef);
       const arFilterImg = document.getElementsByName('filterOnIcon');
       const filterImg: any = arFilterImg[filterIndex];
@@ -822,9 +824,9 @@ export class ListViewComponent implements OnInit {
 
     let bFound = false;
     for (const filterObj of this.filterByColumns) {
-      if (filterObj['ref'] === this.currentFilterRefData.config.name) {
-        this.filterContainsType$ = filterObj['containsFilter'];
-        this.filterContainsValue$ = filterObj['containsFilterValue'];
+      if (filterObj.ref === this.currentFilterRefData.config.name) {
+        this.filterContainsType$ = filterObj.containsFilter;
+        this.filterContainsValue$ = filterObj.containsFilterValue;
 
         bFound = true;
         break;
@@ -1014,13 +1016,13 @@ export class ListViewComponent implements OnInit {
     }
   }
 
-  addGroups(data: Array<any>, groupByColumns: Array<string>): Array<any> {
+  addGroups(data: any[], groupByColumns: string[]): any[] {
     const rootGroup = new Group();
     rootGroup.expanded = true;
     return this.getSublevel(data, 0, groupByColumns, rootGroup);
   }
 
-  getSublevel(data: Array<any>, level: number, groupByColumns: Array<string>, parent: Group): Array<any> {
+  getSublevel(data: any[], level: number, groupByColumns: string[], parent: Group): any[] {
     if (level >= groupByColumns.length) {
       return data;
     }
@@ -1038,7 +1040,7 @@ export class ListViewComponent implements OnInit {
     );
 
     const currentColumn = groupByColumns[level];
-    let subGroups: Array<any> = [];
+    let subGroups: any[] = [];
     groups.forEach((group) => {
       const rowsInGroup = data.filter((row) => group[currentColumn] === row[currentColumn]);
       group.totalCounts = rowsInGroup.length;
@@ -1116,8 +1118,8 @@ export class ListViewComponent implements OnInit {
     return bVisible;
   }
 
-  updateData(listData: Array<any>, fieldData: Array<any>): Array<any> {
-    const returnList: Array<any> = new Array<any>();
+  updateData(listData: any[], fieldData: any[]): any[] {
+    const returnList: any[] = new Array<any>();
     for (const row in listData) {
       // copy
       const rowData = JSON.parse(JSON.stringify(listData[row]));
@@ -1228,7 +1230,7 @@ export class ListViewComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/default-param-last
   getDisplayColumns(colFields = [], fields, presetFields) {
     const AssignDashObjects = ['Assign-Worklist', 'Assign-WorkBasket'];
-    const arReturn = colFields.map((field: any, index) => {
+    return colFields.map((field: any, index) => {
       let theField = field.config.value.substring(field.config.value.indexOf(' ') + 1);
       if (theField.indexOf('.') === 0) {
         theField = theField.substring(1);
@@ -1253,6 +1255,5 @@ export class ListViewComponent implements OnInit {
       }
       return headerRow;
     });
-    return arReturn;
   }
 }

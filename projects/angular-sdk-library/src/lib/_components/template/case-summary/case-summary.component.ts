@@ -26,12 +26,12 @@ export class CaseSummaryComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: CaseSummaryProps;
 
-  arChildren$: Array<any>;
+  arChildren$: any[];
 
   status$?: string;
   bShowStatus$?: boolean;
-  primaryFields$: Array<any> = [];
-  secondaryFields$: Array<any> = [];
+  primaryFields$: any[] = [];
+  secondaryFields$: any[] = [];
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -55,7 +55,7 @@ export class CaseSummaryComponent implements OnInit {
     // Then, continue on with other initialization
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseSummaryProps;
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
 
     this.generatePrimaryAndSecondaryFields();
 

@@ -17,8 +17,8 @@ interface IPage {
 
 interface AppShellProps {
   // If any, enter additional props that only exist on this component
-  pages: Array<IPage>;
-  caseTypes?: Array<object>;
+  pages: IPage[];
+  caseTypes?: object[];
   portalLogo: string;
   portalName: string;
   portalTemplate: string;
@@ -41,15 +41,15 @@ export class AppShellComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: AppShellProps;
 
-  pages$: Array<IPage>;
-  caseTypes$?: Array<object>;
-  arChildren$: Array<any>;
-  bShowAppShell$: boolean = false;
-  appName$: string = 'PEGA';
+  pages$: IPage[];
+  caseTypes$?: object[];
+  arChildren$: any[];
+  bShowAppShell$ = false;
+  appName$ = 'PEGA';
   errorMessagesSubscription: Subscription;
-  sErrorMessages: string = '';
+  sErrorMessages = '';
   snackBarRef: any;
-  bOkDisplayError: boolean = false;
+  bOkDisplayError = false;
   portalTemplate: string;
   links: any = [];
 
@@ -80,7 +80,7 @@ export class AppShellComponent implements OnInit {
     }
     this.caseTypes$ = this.configProps$.caseTypes;
 
-    this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+    this.arChildren$ = this.pConn$.getChildren() as any[];
 
     this.portalTemplate = this.configProps$.portalTemplate;
 
@@ -129,7 +129,7 @@ export class AppShellComponent implements OnInit {
       }
 
       this.caseTypes$ = this.configProps$.caseTypes;
-      this.arChildren$ = this.pConn$.getChildren() as Array<any>;
+      this.arChildren$ = this.pConn$.getChildren() as any[];
     });
   }
 

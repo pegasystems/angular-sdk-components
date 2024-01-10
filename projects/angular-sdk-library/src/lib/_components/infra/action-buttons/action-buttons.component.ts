@@ -11,8 +11,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
   imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class ActionButtonsComponent implements OnInit {
-  @Input() arMainButtons$: Array<any>;
-  @Input() arSecondaryButtons$: Array<any>;
+  @Input() arMainButtons$: any[];
+  @Input() arSecondaryButtons$: any[];
 
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 

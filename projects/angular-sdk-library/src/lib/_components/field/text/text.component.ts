@@ -24,18 +24,18 @@ export class TextComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
   configProps$: TextProps;
 
-  label$: string = '';
-  value$: string = '';
-  bRequired$: boolean = false;
-  bReadonly$: boolean = false;
-  bDisabled$: boolean = false;
-  bVisible$: boolean = true;
+  label$ = '';
+  value$ = '';
+  bRequired$ = false;
+  bReadonly$ = false;
+  bDisabled$ = false;
+  bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  componentReference: string = '';
+  componentReference = '';
   formattedValue$: string;
-  format$: string = 'text';
-  formattedUrl$: string = '';
+  format$ = 'text';
+  formattedUrl$ = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -118,8 +118,7 @@ export class TextComponent implements OnInit {
   }
 
   generateUrl(sVal): string {
-    if (sVal.indexOf('https://') == 0 || sVal.indexOf('http://') == 0) {
-    } else {
+    if (sVal.indexOf('https://') == 0 || sVal.indexOf('http://') == 0) { /* empty */ } else {
       // assume no http
       sVal = `http://${sVal}`;
     }
