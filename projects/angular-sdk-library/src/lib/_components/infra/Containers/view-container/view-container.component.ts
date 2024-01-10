@@ -190,7 +190,7 @@ export class ViewContainerComponent implements OnInit {
           const latestItem = items[key];
           const rootView = latestItem.view;
           const { context, name: viewName } = rootView.config;
-          const config = { meta: rootView };
+          const config:any = { meta: rootView };
           config.options = {
             context: latestItem.context,
             pageReference: context || this.pConn$.getPageReference(),
@@ -253,7 +253,7 @@ export class ViewContainerComponent implements OnInit {
               console.error(`ViewContainer has a newComp that is NOT a reference!`);
 
               this.createdViewPConn$ = newComp;
-              const newConfigProps = newComp.getConfigProps();
+              const newConfigProps:any = newComp.getConfigProps();
               this.templateName$ = newConfigProps.template || '';
               this.title$ = newConfigProps.title || '';
               // update children with new view's children

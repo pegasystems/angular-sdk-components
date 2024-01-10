@@ -46,7 +46,7 @@ export class ModalViewContainerComponent implements OnInit {
   // for causing a change on assignment
   updateToken$ = 0;
 
-  routingInfoRef: Object = {};
+  routingInfoRef: any = {};
 
   // created object is now a View with a Template
   //  Use its PConnect to render the CaseView; DON'T replace this.pConn$
@@ -168,7 +168,7 @@ export class ModalViewContainerComponent implements OnInit {
           const currentItem = currentItems[key];
           const rootView = currentItem.view;
           const { context } = rootView.config;
-          const config = { meta: rootView };
+          const config:any = { meta: rootView };
           config.options = {
             context: currentItem.context,
             hasForm: true,

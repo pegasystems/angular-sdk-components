@@ -75,7 +75,7 @@ export class ViewComponent implements OnInit {
   angularPConnectData: AngularPConnectData = {};
 
   configProps$: ViewProps;
-  inheritedProps$: Object;
+  inheritedProps$: any;
   arChildren$: any[];
   templateName$: string;
   title$ = '';

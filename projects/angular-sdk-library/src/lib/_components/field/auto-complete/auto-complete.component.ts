@@ -217,7 +217,7 @@ export class AutoCompleteComponent implements OnInit {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = this.pConn$.getStateProps().value;
+    this.componentReference = (this.pConn$.getStateProps() as any).value;
     if (this.listType === 'associated') {
       this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
@@ -310,7 +310,7 @@ export class AutoCompleteComponent implements OnInit {
 
     const value = key;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
+    const propName = (this.pConn$?.getStateProps() as any).value;
     handleEvent(actionsApi, 'changeNblur', propName, value);
     if (this.configProps$?.onRecordChange) {
       el.value = value;

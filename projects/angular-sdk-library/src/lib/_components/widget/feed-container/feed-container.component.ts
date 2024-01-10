@@ -542,7 +542,7 @@ export class FeedContainerComponent implements OnInit {
     }
 
     // clear out local copy
-    (document.getElementById('pulseMessage') as HTMLElement).value = '';
+    (document.getElementById('pulseMessage') as HTMLElement|any).value = '';
     this.pulseConversation = '';
   }
 

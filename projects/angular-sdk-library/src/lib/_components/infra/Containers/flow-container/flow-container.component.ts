@@ -287,7 +287,7 @@ export class FlowContainerComponent implements OnInit {
     }
 
     for (const assignment of assignmentsList) {
-      if (assignment.assigneeInfo.ID === thisOperator) {
+      if ((assignment as any).assigneeInfo.ID === thisOperator) {
         bAssignmentsForThisOperator = true;
       }
     }
@@ -500,7 +500,7 @@ export class FlowContainerComponent implements OnInit {
             const currentItem = currentItems[key];
             const rootView = currentItem.view;
             const { context, name: ViewName } = rootView.config;
-            const config = { meta: rootView };
+            const config:any = { meta: rootView };
 
             // Don't go ahead if View doesn't exist
             if (!ViewName) {

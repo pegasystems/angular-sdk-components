@@ -42,7 +42,7 @@ export class CaseHistoryComponent implements OnInit {
       context
     ) as Promise<any>;
 
-    caseHistoryData.then((historyJSON: Object) => {
+    caseHistoryData.then((historyJSON: any) => {
       this.fields$ = [
         { label: this.pConn$.getLocalizedValue('Date', '', ''), type: 'DateTime', fieldName: 'pxTimeCreated' },
         { label: this.pConn$.getLocalizedValue('Description', '', ''), type: 'TextInput', fieldName: 'pyMessageKey' },

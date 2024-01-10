@@ -457,7 +457,7 @@ export class ListViewComponent implements OnInit {
   onCheckboxClick(row, event) {
     const value = row[this.rowID];
     const checked = event?.checked;
-    const reqObj = {};
+    const reqObj:any = {};
     if (this.compositeKeys?.length > 1) {
       const index = this.response.findIndex((element) => element[this.rowID] === value);
       const selectedRow = this.response[index];
