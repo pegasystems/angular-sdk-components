@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class ResetPConnectService {
-  private subject = new Subject<any>();
+  private subject = new Subject<void|object>();
 
   /**
    * function to reset pConnect

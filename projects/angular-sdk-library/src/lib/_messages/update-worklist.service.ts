@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class UpdateWorklistService {
-  private subject = new Subject<any>();
+  private subject = new Subject<void|object>();
 
   /**
    * Function signals to update Work list

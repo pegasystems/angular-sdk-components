@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class GetLoginStatusService {
-  private subject = new Subject<any>();
+  private subject = new Subject<void|object>();
 
   sendMessage(sLoginStatus: string) {
     this.subject.next({ loginStatus: sLoginStatus });
