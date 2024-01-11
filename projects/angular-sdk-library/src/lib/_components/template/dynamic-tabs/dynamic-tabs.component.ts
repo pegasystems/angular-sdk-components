@@ -23,7 +23,7 @@ export class DynamicTabsComponent {
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
-  tabsItems: Array<any>;
+  tabsItems: any[];
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
