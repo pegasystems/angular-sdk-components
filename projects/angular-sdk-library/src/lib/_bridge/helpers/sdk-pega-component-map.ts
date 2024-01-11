@@ -102,6 +102,7 @@ import { MaterialUtilityComponent } from '../../_components/designSystemExtensio
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 import { RichTextEditorComponent } from '../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
+import { DynamicTabsComponent } from '../../_components/template/dynamic-tabs/dynamic-tabs.component';
 
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
@@ -149,6 +150,7 @@ const pegaSdkComponentMap = {
   DetailsThreeColumn: DetailsThreeColumnComponent,
   DetailsTwoColumn: DetailsTwoColumnComponent,
   Dropdown: DropdownComponent,
+  DynamicTabs: DynamicTabsComponent,
   Email: EmailComponent,
   ErrorBoundary: ErrorBoundaryComponent,
   FeedContainer: FeedContainerComponent,

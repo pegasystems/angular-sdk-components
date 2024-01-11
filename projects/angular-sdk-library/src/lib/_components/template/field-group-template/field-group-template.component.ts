@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { FieldGroupUtils } from '../../../_helpers/field-group-utils';
+import { buildView, getReferenceList } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -50,8 +50,7 @@ export class FieldGroupTemplateComponent implements OnInit {
 
   constructor(
     private angularPConnect: AngularPConnectService,
-    private utils: Utils,
-    private fieldGroupUtils: FieldGroupUtils
+    private utils: Utils
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +110,7 @@ export class FieldGroupTemplateComponent implements OnInit {
     const lookForChildInConfig = this.configProps$.lookForChildInConfig;
     this.heading = this.configProps$.heading ?? 'Row';
     this.fieldHeader = this.configProps$.fieldHeader;
-    const resolvedList = this.fieldGroupUtils.getReferenceList(this.pConn$);
+    const resolvedList = getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
     if (this.readonlyMode) {
@@ -130,7 +129,7 @@ export class FieldGroupTemplateComponent implements OnInit {
         children.push({
           id: index,
           name: this.fieldHeader === 'propertyRef' ? this.getDynamicHeader(item, index) : this.getStaticHeader(this.heading, index),
-          children: this.fieldGroupUtils.buildView(this.pConn$, index, lookForChildInConfig)
+          children: buildView(this.pConn$, index, lookForChildInConfig)
         });
       });
       this.children = children;
