@@ -28,7 +28,7 @@ test.describe('E2E test', () => {
     const complexFieldsCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("View Templates")');
     await complexFieldsCase.click();
 
-    /** Selecting Confirmation from the Category dropdown */
+    /** Selecting Dynamic Tabs from the Category dropdown */
     const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
     await page.locator('mat-option > span:has-text("Dynamic Tabs")').click();
