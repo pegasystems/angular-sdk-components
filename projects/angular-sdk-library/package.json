@@ -2,11 +2,11 @@
   "name": "@pega/angular-sdk-library",
   "version": "8.23.10",
   "peerDependencies": {
-    "@angular/common": "^15.2.0",
-    "@angular/core": "^15.2.0"
+    "@angular/common": "^16.2.12",
+    "@angular/core": "^16.2.12"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.6.2"
   },
   "sideEffects": false,
   "exports": {
