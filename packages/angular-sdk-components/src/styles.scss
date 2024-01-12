@@ -32,7 +32,7 @@ a.mat-mdc-menu-item > mat-icon {
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled),
 .mat-mdc-form-field-focus-overlay {
-  background-color: transparent;
+  background-color: transparent !important;
 }
 
 .mdc-text-field {
