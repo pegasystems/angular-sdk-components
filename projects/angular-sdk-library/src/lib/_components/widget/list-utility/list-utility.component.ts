@@ -40,8 +40,6 @@ export class ListUtilityComponent implements OnInit {
     this.settingsSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
   }
 
-  ngOnChanges() {}
-
   getIconPath(): string {
     return `${this.utils.getSDKStaticContentUrl()}assets/icons/`;
   }

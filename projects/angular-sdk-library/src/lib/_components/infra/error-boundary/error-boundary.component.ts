@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule]
 })
 export class ErrorBoundaryComponent {
-  @Input('message') message: string;
+  @Input() message: string;
 
   localizedVal = window.PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'Messages';

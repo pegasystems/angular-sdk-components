@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
@@ -34,7 +34,7 @@ interface AppShellProps {
   standalone: true,
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class AppShellComponent implements OnInit {
+export class AppShellComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect

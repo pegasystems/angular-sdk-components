@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -20,7 +20,7 @@ interface FileUtilityProps {
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FileUtilityComponent implements OnInit {
+export class FileUtilityComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect

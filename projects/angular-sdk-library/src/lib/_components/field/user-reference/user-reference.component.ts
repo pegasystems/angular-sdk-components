@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -39,7 +39,7 @@ interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class UserReferenceComponent implements OnInit {
+export class UserReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

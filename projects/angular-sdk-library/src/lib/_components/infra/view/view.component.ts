@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, SimpleChanges, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -66,7 +66,7 @@ interface ViewProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class ViewComponent implements OnInit {
+export class ViewComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;

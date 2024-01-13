@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -10,7 +10,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class NarrowWideFormComponent implements OnInit {
+export class NarrowWideFormComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

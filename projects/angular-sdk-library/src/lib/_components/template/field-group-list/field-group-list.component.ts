@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -9,14 +9,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FieldGroupListComponent implements OnInit {
+export class FieldGroupListComponent {
   @Input() item;
   @Input() heading;
   @Input() formGroup$;
 
   fields: any = [];
-
-  ngOnInit(): void {}
-
-  ngOnChanges() {}
 }

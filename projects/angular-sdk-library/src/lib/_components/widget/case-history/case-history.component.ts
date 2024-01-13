@@ -59,8 +59,6 @@ export class CaseHistoryComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {}
-
   updateFields(arFields, arColumns): any[] {
     const arReturn = arFields;
     for (const i in arReturn) {

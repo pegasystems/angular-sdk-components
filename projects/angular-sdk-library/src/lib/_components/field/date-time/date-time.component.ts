@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
@@ -58,7 +58,7 @@ class MyFormat {
   ],
   providers: [{ provide: NGX_MAT_DATE_FORMATS, useClass: MyFormat }]
 })
-export class DateTimeComponent implements OnInit {
+export class DateTimeComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

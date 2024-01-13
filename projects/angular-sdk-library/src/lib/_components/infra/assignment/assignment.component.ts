@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup } from '@angular/forms';
@@ -21,7 +21,7 @@ interface AssignmentProps {
   standalone: true,
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class AssignmentComponent implements OnInit {
+export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() arChildren$: any[];
@@ -114,7 +114,9 @@ export class AssignmentComponent implements OnInit {
         loadingInfo = this.newPConn$.getLoadingStatus();
 
         this.psService.sendMessage(loadingInfo);
-      } catch (ex) { /* empty */ }
+      } catch (ex) {
+        /* empty */
+      }
     }
   }
 

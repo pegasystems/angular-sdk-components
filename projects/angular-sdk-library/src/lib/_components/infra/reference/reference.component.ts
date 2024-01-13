@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 /**
  * WARNING: It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -12,7 +12,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./reference.component.scss'],
   standalone: true
 })
-export class ReferenceComponent implements OnInit {
+export class ReferenceComponent {
   referencedComponent: any = null;
 
   /* Used to toggle some class-wide logging */
@@ -23,10 +23,6 @@ export class ReferenceComponent implements OnInit {
     window.alert(`in ReferenceComponent constructor!`);
 
     console.error(`in ReferenceComponent constructor!`);
-  }
-
-  ngOnInit(): void {
-    // With new static method approach, this shouldn't be called any more
   }
 
   // onStateChange and updateSelf methods removed from original implementation
@@ -140,15 +136,13 @@ export class ReferenceComponent implements OnInit {
         // console.log(`theFullReference: ${theFullReference}`);
 
         return theRefViewPConn;
-      } 
-        // console.log(`created theFullRefView full reference: ${theFullRefView.getFullReference()}`);
-        // debugger;
+      }
+      // console.log(`created theFullRefView full reference: ${theFullRefView.getFullReference()}`);
+      // debugger;
 
-        return this.createFullReferencedViewFromRef(inPConn);
-      
-    } 
-      return inPConn;
-    
+      return this.createFullReferencedViewFromRef(inPConn);
+    }
+    return inPConn;
   }
 
   // STATIC method that other components can call to normalize

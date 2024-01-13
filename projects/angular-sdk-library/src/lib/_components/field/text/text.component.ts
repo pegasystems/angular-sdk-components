@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -16,7 +16,7 @@ interface TextProps extends PConnFieldProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class TextComponent implements OnInit {
+export class TextComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formatAs$: string;
 
@@ -118,7 +118,9 @@ export class TextComponent implements OnInit {
   }
 
   generateUrl(sVal): string {
-    if (sVal.indexOf('https://') == 0 || sVal.indexOf('http://') == 0) { /* empty */ } else {
+    if (sVal.indexOf('https://') == 0 || sVal.indexOf('http://') == 0) {
+      /* empty */
+    } else {
       // assume no http
       sVal = `http://${sVal}`;
     }

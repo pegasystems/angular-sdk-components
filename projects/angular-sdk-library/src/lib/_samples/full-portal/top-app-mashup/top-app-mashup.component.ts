@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { loginIfNecessary, logout, getAvailablePortals } from '@pega/auth/lib/sdk-auth-manager';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -25,7 +25,7 @@ declare global {
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, ComponentMapperComponent]
 })
-export class TopAppMashupComponent implements OnInit {
+export class TopAppMashupComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;
 
   sComponentName$: string;

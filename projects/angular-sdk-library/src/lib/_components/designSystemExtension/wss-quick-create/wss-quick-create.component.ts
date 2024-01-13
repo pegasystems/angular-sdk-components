@@ -12,6 +12,4 @@ import { Component, Input } from '@angular/core';
 export class WssQuickCreateComponent {
   @Input() actions$: any;
   @Input() heading$: any;
-
-  ngOnInit() {}
 }

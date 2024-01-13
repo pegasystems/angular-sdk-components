@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatOptionModule } from '@angular/material/core';
@@ -76,7 +76,7 @@ export class Group {
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class ListViewComponent implements OnInit {
+export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -397,13 +397,13 @@ export class ListViewComponent implements OnInit {
     );
   }
 
-  ngAfterViewInit() {
-    // paginator has to exist for this to work,
-    // so called after init (paginator drawn)
-    // Calls are now in workListData promise
-    // this.repeatList$.paginator = this.paginator;
-    // this.repeatList$.sort = this.sort;
-  }
+  // ngAfterViewInit() {
+  //   // paginator has to exist for this to work,
+  //   // so called after init (paginator drawn)
+  //   // Calls are now in workListData promise
+  //   // this.repeatList$.paginator = this.paginator;
+  //   // this.repeatList$.sort = this.sort;
+  // }
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.displayedColumns$, event.previousIndex, event.currentIndex);
@@ -457,7 +457,7 @@ export class ListViewComponent implements OnInit {
   onCheckboxClick(row, event) {
     const value = row[this.rowID];
     const checked = event?.checked;
-    const reqObj:any = {};
+    const reqObj: any = {};
     if (this.compositeKeys?.length > 1) {
       const index = this.response.findIndex((element) => element[this.rowID] === value);
       const selectedRow = this.response[index];

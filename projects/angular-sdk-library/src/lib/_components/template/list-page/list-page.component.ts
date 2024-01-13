@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
@@ -8,8 +8,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
-export class ListPageComponent implements OnInit {
+export class ListPageComponent {
   @Input() pConn$: typeof PConnect;
-
-  ngOnInit(): void {}
 }

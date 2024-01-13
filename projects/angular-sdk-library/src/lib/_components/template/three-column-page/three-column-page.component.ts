@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -9,9 +9,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
-export class ThreeColumnPageComponent implements OnInit {
+export class ThreeColumnPageComponent {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-
-  ngOnInit(): void {}
 }

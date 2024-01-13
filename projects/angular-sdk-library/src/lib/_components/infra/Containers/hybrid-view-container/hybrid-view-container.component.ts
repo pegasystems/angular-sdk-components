@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
@@ -17,10 +17,8 @@ import { FormGroup } from '@angular/forms';
   standalone: true,
   imports: [CommonModule]
 })
-export class HybridViewContainerComponent implements OnInit {
+export class HybridViewContainerComponent {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
-
-  ngOnInit(): void {}
 }

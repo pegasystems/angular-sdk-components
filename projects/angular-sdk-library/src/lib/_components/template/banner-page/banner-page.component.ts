@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef } from '@angular/core';
 
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { CommonModule } from '@angular/common';
@@ -19,7 +19,7 @@ interface BannerPageProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class BannerPageComponent {
+export class BannerPageComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: any;
 

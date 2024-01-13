@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -32,7 +32,7 @@ const options = { context: 'app' };
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class RootContainerComponent implements OnInit {
+export class RootContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() displayOnlyFA$: boolean;
   @Input() isMashup$: boolean;
@@ -227,7 +227,9 @@ export class RootContainerComponent implements OnInit {
           this.spinnerTimer = interval(500).subscribe(() => {
             try {
               this.spinnerTimer.unsubscribe();
-            } catch (ex) { /* empty */ }
+            } catch (ex) {
+              /* empty */
+            }
 
             this.ngZone.run(() => {
               this.bIsProgress$ = true;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -32,7 +32,7 @@ interface FlowContainerProps {
   standalone: true,
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FlowContainerComponent implements OnInit {
+export class FlowContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   // For interaction with AngularPConnect
@@ -377,7 +377,9 @@ export class FlowContainerComponent implements OnInit {
     try {
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
-    } catch (ex) { /* empty */ }
+    } catch (ex) {
+      /* empty */
+    }
 
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
@@ -500,7 +502,7 @@ export class FlowContainerComponent implements OnInit {
             const currentItem = currentItems[key];
             const rootView = currentItem.view;
             const { context, name: ViewName } = rootView.config;
-            const config:any = { meta: rootView };
+            const config: any = { meta: rootView };
 
             // Don't go ahead if View doesn't exist
             if (!ViewName) {

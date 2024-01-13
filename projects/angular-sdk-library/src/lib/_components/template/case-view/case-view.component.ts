@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -24,7 +24,7 @@ interface CaseViewProps {
   standalone: true,
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class CaseViewComponent implements OnInit {
+export class CaseViewComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
@@ -111,9 +111,8 @@ export class CaseViewComponent implements OnInit {
       // @ts-ignore - parameter “contextName” for getDataObject method should be optional
       this.currentCaseID = this.pConn$.getDataObject().caseInfo.ID;
       return true;
-    } 
-      return false;
-    
+    }
+    return false;
   }
 
   updateHeaderAndSummary() {

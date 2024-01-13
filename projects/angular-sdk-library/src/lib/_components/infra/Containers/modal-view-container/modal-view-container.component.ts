@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
@@ -20,7 +20,7 @@ import { getBanners } from '../../../../_helpers/case-utils';
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class ModalViewContainerComponent implements OnInit {
+export class ModalViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() displayOnlyFA$: boolean;
 
@@ -100,8 +100,6 @@ export class ModalViewContainerComponent implements OnInit {
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
   }
 
-  ngOnChanges(): void {}
-
   ngOnDestroy(): void {
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
@@ -142,7 +140,9 @@ export class ModalViewContainerComponent implements OnInit {
     try {
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
-    } catch (ex) {/* empty */}
+    } catch (ex) {
+      /* empty */
+    }
     // const configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.stateProps$ = this.pConn$.getStateProps();
     this.banners = this.getBanners();
@@ -168,7 +168,7 @@ export class ModalViewContainerComponent implements OnInit {
           const currentItem = currentItems[key];
           const rootView = currentItem.view;
           const { context } = rootView.config;
-          const config:any = { meta: rootView };
+          const config: any = { meta: rootView };
           config.options = {
             context: currentItem.context,
             hasForm: true,

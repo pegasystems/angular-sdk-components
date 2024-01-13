@@ -20,8 +20,6 @@ export class ListViewActionButtonsComponent {
   localeCategory = 'Data Object';
   isDisabled: boolean;
 
-  ngOnInit(): void {}
-
   onCancel() {
     // this.closeActionsDialog();
     this.closeActionsDialog.emit();

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -22,7 +22,7 @@ interface WssNavBarProps {
   standalone: true,
   imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
 })
-export class WssNavBarComponent {
+export class WssNavBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() appName$: string;
   @Input() pages$: any[];

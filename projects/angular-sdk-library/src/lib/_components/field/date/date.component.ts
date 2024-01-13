@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, Inject } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, Inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -55,7 +55,7 @@ class MyFormat {
   ],
   providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
 })
-export class DateComponent implements OnInit {
+export class DateComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

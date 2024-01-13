@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +28,7 @@ interface FieldGroupTemplateProps {
   standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FieldGroupTemplateComponent implements OnInit {
+export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges {
   @Input() configProps$: FieldGroupTemplateProps;
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;

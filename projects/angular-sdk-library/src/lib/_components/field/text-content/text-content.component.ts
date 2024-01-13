@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -17,7 +17,7 @@ interface TextContentProps extends PConnFieldProps {
   standalone: true,
   imports: [CommonModule]
 })
-export class TextContentComponent implements OnInit {
+export class TextContentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   // Used with AngularPConnect

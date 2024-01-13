@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-field-value-list',
@@ -8,10 +8,8 @@ import { Component, OnInit, Input } from '@angular/core';
   standalone: true,
   imports: [CommonModule]
 })
-export class FieldValueListComponent implements OnInit {
+export class FieldValueListComponent {
   @Input() label$: any;
   @Input() value$: any;
   @Input() displayMode$: any;
-
-  ngOnInit(): void {}
 }

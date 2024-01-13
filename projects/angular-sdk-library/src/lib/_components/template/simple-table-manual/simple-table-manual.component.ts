@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Component, OnInit, Input, ViewChild, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -75,7 +75,7 @@ class Group {
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class SimpleTableManualComponent implements OnInit {
+export class SimpleTableManualComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
 
   @Input() pConn$: typeof PConnect;

@@ -16,14 +16,11 @@ export class MaterialDetailsFieldsComponent {
   @Input() arFields$: any[];
   @Input() arHighlightedFields: any[];
 
-  ngOnInit(): void {}
-
   _getValue(configValue) {
     if (configValue && configValue != '') {
       return configValue;
-    } 
-      return '---';
-    
+    }
+    return '---';
   }
 
   _formatDate(dateValue: string, dateFormat: string): string {

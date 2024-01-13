@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -19,7 +19,7 @@ declare const window: any;
   standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
-export class FeedContainerComponent implements OnInit {
+export class FeedContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   // Used with AngularPConnect
@@ -542,7 +542,7 @@ export class FeedContainerComponent implements OnInit {
     }
 
     // clear out local copy
-    (document.getElementById('pulseMessage') as HTMLElement|any).value = '';
+    (document.getElementById('pulseMessage') as HTMLElement | any).value = '';
     this.pulseConversation = '';
   }
 

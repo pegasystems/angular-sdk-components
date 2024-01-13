@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -11,7 +11,7 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
   standalone: true,
   imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
-export class CancelAlertComponent implements OnInit {
+export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() bShowAlert$: boolean;
   @Output() onAlertState$: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -24,9 +24,6 @@ export class CancelAlertComponent implements OnInit {
   localeCategory = 'ModalContainer';
 
   constructor(private psService: ProgressSpinnerService) {}
-
-  ngOnInit(): void {}
-
   ngOnChanges() {
     if (this.bShowAlert$) {
       this.psService.sendMessage(false);
@@ -45,8 +42,6 @@ export class CancelAlertComponent implements OnInit {
       // this.onAlertState$.emit(true);
     }
   }
-
-  ngOnDestroy() {}
 
   dismissAlert() {
     this.bShowAlert$ = false;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -15,7 +15,7 @@ interface MultiReferenceReadOnlyProps {
   standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
-export class MultiReferenceReadonlyComponent implements OnInit {
+export class MultiReferenceReadonlyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

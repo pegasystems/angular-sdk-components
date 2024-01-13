@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -22,7 +22,7 @@ interface NavBarProps {
   standalone: true,
   imports: [CommonModule, MatListModule, MatMenuModule]
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() appName$: string;
   @Input() pages$: any[];

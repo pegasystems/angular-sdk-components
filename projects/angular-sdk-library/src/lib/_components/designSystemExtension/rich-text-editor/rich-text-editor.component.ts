@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -13,7 +13,7 @@ declare let tinymce: any;
   imports: [CommonModule, EditorModule, ReactiveFormsModule],
   providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
 })
-export class RichTextEditorComponent implements OnInit {
+export class RichTextEditorComponent implements OnChanges {
   @Input() placeholder;
   @Input() disabled;
   @Input() readonly;
@@ -28,8 +28,6 @@ export class RichTextEditorComponent implements OnInit {
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
   richText = new FormControl();
-
-  ngOnInit(): void {}
 
   ngOnChanges() {
     if (this.required) {

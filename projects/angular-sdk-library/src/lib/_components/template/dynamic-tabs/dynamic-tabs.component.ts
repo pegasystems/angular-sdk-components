@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ interface DynamicTabsProps {
   standalone: true,
   imports: [CommonModule, MatTabsModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DynamicTabsComponent {
+export class DynamicTabsComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

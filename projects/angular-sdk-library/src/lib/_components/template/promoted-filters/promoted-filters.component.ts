@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,7 +29,7 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class PromotedFiltersComponent implements OnInit {
+export class PromotedFiltersComponent implements OnInit, OnDestroy {
   @Input() viewName;
   @Input() filters;
   @Input() listViewProps;

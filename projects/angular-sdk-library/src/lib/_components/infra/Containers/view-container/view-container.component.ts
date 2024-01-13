@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
@@ -30,7 +30,7 @@ interface ViewContainerProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class ViewContainerComponent implements OnInit {
+export class ViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() displayOnlyFA$: boolean;
@@ -174,7 +174,9 @@ export class ViewContainerComponent implements OnInit {
       loadingInfo = this.pConn$.getLoadingStatus();
 
       this.psService.sendMessage(loadingInfo);
-    } catch (ex) { /* empty */ }
+    } catch (ex) {
+      /* empty */
+    }
 
     // const buildName = this.buildName();
     const { CREATE_DETAILS_VIEW_NAME } = PCore.getConstants();
@@ -190,7 +192,7 @@ export class ViewContainerComponent implements OnInit {
           const latestItem = items[key];
           const rootView = latestItem.view;
           const { context, name: viewName } = rootView.config;
-          const config:any = { meta: rootView };
+          const config: any = { meta: rootView };
           config.options = {
             context: latestItem.context,
             pageReference: context || this.pConn$.getPageReference(),
@@ -253,7 +255,7 @@ export class ViewContainerComponent implements OnInit {
               console.error(`ViewContainer has a newComp that is NOT a reference!`);
 
               this.createdViewPConn$ = newComp;
-              const newConfigProps:any = newComp.getConfigProps();
+              const newConfigProps: any = newComp.getConfigProps();
               this.templateName$ = newConfigProps.template || '';
               this.title$ = newConfigProps.title || '';
               // update children with new view's children

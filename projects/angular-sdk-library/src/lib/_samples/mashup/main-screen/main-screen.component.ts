@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
@@ -13,7 +13,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [CommonModule, BundleSwatchComponent, ComponentMapperComponent, ResolutionScreenComponent]
 })
-export class MainScreenComponent implements OnInit {
+export class MainScreenComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   firstConfig$: any;

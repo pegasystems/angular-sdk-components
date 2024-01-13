@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
@@ -23,7 +23,7 @@ interface ToDoProps {
   standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
-export class TodoComponent implements OnInit {
+export class TodoComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() caseInfoID$: string;
   @Input() datasource$: any;
@@ -159,11 +159,10 @@ export class TodoComponent implements OnInit {
     if (assignment.value) {
       const refKey = assignment.value;
       return refKey.substring(refKey.lastIndexOf(' ') + 1);
-    } 
-      const refKey = assignment.ID;
-      const arKeys = refKey.split('!')[0].split(' ');
-      return arKeys[2];
-    
+    }
+    const refKey = assignment.ID;
+    const arKeys = refKey.split('!')[0].split(' ');
+    return arKeys[2];
   }
 
   topThreeAssignments(assignmentsSource: any[]): any[] {
@@ -186,10 +185,9 @@ export class TodoComponent implements OnInit {
     if (this.assignmentsSource$) {
       this.assignmentCount$ = this.assignmentsSource$.length;
       return this.topThreeAssignments(this.assignmentsSource$);
-    } 
-      // turn off todolist
-      return [];
-    
+    }
+    // turn off todolist
+    return [];
   }
 
   getCaseInfoAssignment(assignmentsSource: any[], caseInfoID: string) {

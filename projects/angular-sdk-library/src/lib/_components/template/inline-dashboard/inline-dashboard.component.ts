@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -16,11 +16,9 @@ interface InlineDashboardProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class InlineDashboardComponent implements OnInit {
+export class InlineDashboardComponent {
   @Input() pConn$: typeof PConnect;
   @Input() filtersFormGroup$: FormGroup;
   @Input() inlineProps: InlineDashboardProps;
   @Input() children: any[];
-
-  ngOnInit() {}
 }

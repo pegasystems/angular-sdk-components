@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
@@ -18,7 +18,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DeferLoadComponent implements OnInit {
+export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() loadData$: any;
   @Input() name;

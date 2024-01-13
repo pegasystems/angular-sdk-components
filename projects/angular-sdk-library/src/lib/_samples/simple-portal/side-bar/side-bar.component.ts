@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,7 +18,7 @@ declare const window: any;
   standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
-export class SideBarComponent implements OnInit {
+export class SideBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
   arButtons$: any[] = [];
@@ -62,7 +62,7 @@ export class SideBarComponent implements OnInit {
               processID: myCase.startingProcesses[0].ID,
               caption: myCase.name
             };
-            
+
             this.arButtons$.push(oPayload);
           }
         }

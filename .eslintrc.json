@@ -3,8 +3,10 @@
   "extends": ["@pega"],
   "parserOptions": {
     "project": "tsconfig.json",
-    "ecmaVersion": 13,
-    "warnOnUnsupportedTypeScriptVersion": false
+    "ecmaVersion": 13
+  },
+  "globals": {
+    "PCore": "readonly"
   },
   "settings": {
     "import/resolver": {
@@ -14,7 +16,7 @@
       }
     }
   },
-  "ignorePatterns": ["node_modules", "!.storybook", ".storybook/public"],
+  "ignorePatterns": ["node_modules", "!.storybook", ".storybook/public", "**/**/*.json"],
   "rules": {
     // Prettier recommends running separately from a linter.
     // https://prettier.io/docs/en/integrating-with-linters.html#notes
@@ -38,28 +40,34 @@
     "import/no-unresolved": "off",
     "import/no-useless-path-segments": "off",
     "import/order": "off",
-    "import/prefer-default-export": "off",
-    "import/no-relative-packages": "off",
 
     "no-underscore-dangle": "off", // TODO : adhere to standard naming
+    "no-restricted-syntax": "warn", // TODO : fix for-in loops
 
-    "@typescript-eslint/ban-types": "off", // TODO - to be fixed
+    "jsx-a11y/alt-text": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
 
+    "class-methods-use-this": "off", // TODO ***
+    "@typescript-eslint/naming-convention": "off", // prefer warn but needs different parserOptions
+    "@typescript-eslint/ban-types": "off", // also, see override below
+
+    "import/no-relative-packages": "off", // arnab
+
+    // TODO: Need to be fixed
+    "guard-for-in": "off",
+    "eqeqeq": "off",
     "no-alert": "off",
     "no-console": "off",
-    "no-plusplus": "off",
-
-    "guard-for-in": "off", // TODO
-    "eqeqeq": "off", // TODO : to be fixed
-    "no-restricted-syntax": "off", // TODO
-
-    "class-methods-use-this": "off"
+    "no-plusplus": "off"
   },
   "overrides": [
     {
       "files": "*.@(ts|tsx)",
       "rules": {
-        "@typescript-eslint/method-signature-style": ["off", "property"],
+        "@typescript-eslint/method-signature-style": ["error", "property"],
         // "@typescript-eslint/ban-types": [
         //   "warn",
         //   {
@@ -97,6 +105,38 @@
       "rules": {
         "import/prefer-default-export": ["off"]
       }
+    },
+    // angular specific lint rules
+    {
+      "files": ["*.ts"],
+      "parserOptions": {
+        "project": ["tsconfig.json"],
+        "createDefaultProgram": true
+      },
+      "extends": ["plugin:@angular-eslint/recommended", "plugin:@angular-eslint/template/process-inline-templates"],
+      "rules": {
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/no-output-on-prefix": "off",
+        "import/prefer-default-export": "off"
+      }
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {}
     }
   ]
 }

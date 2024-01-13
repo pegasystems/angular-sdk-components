@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +21,7 @@ interface RepeatingStructuresProps {
   standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule]
 })
-export class RepeatingStructuresComponent implements OnInit {
+export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @Input() pConn$: typeof PConnect;
@@ -52,8 +52,6 @@ export class RepeatingStructuresComponent implements OnInit {
     this.displayedColumns$ = this.getDisplayColumns(this.fields$);
     this.repeatList$.paginator = this.paginator;
   }
-
-  ngOnDestroy() {}
 
   ngAfterViewInit() {
     // paginator has to exist for this to work,
