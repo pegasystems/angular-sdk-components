@@ -125,7 +125,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
-    [required, disabled] = [required, disabled].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));
+    [required, disabled] = [required, disabled].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
 
     this.att_categoryName = '';
     if (value && value.pyCategoryName) {
@@ -194,7 +194,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
             this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
             this.pConn$.getContextName()
           );
-          const index = currentAttachmentList.findIndex((element) => element.props.ID === this.fileTemp.props.ID);
+          const index = currentAttachmentList.findIndex(element => element.props.ID === this.fileTemp.props.ID);
           let tempFiles: any = [];
           if (index < 0) {
             tempFiles = [this.fileTemp];
@@ -234,11 +234,11 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     PCore.getAttachmentUtils()
       // @ts-ignore - 3rd parameter "responseEncoding" should be optional
       .downloadAttachment(fileObj.pzInsKey, this.pConn$.getContextName())
-      .then((content) => {
+      .then(content => {
         const extension = fileObj.pyAttachName.split('.').pop();
         this.fileDownload(content.data, fileObj.pyFileName, extension);
       })
-      .catch((e) => {
+      .catch(e => {
         console.log(e);
       });
   }
@@ -251,7 +251,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   getAttachmentKey = (name = '') => (name ? `attachmentsList.${name}` : 'attachmentsList');
 
   _removeFileFromList(item: any) {
-    const fileIndex = this.arFileList$.findIndex((element) => element?.id === item?.id);
+    const fileIndex = this.arFileList$.findIndex(element => element?.id === item?.id);
     if (PCore.getPCoreVersion()?.includes('8.7')) {
       if (this.value$) {
         // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
@@ -269,7 +269,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       const currentAttachmentList = this.getCurrentAttachmentsList(
         this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
         this.pConn$.getContextName()
-      ).filter((f) => f.label !== this.att_valueRef);
+      ).filter(f => f.label !== this.att_valueRef);
       if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0) {
         const deletedFile = {
           type: 'File',
@@ -312,7 +312,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   errorHandler(isFetchCanceled) {
-    return (error) => {
+    return error => {
       if (!isFetchCanceled(error)) {
         let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong', '', '');
         if (error.response && error.response.data && error.response.data.errorDetails) {
@@ -322,7 +322,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
         this.myFiles[0].meta = uploadFailMsg;
         this.myFiles[0].error = true;
         this.myFiles[0].fileName = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
-        this.arFileList$ = this.myFiles.map((att) => {
+        this.arFileList$ = this.myFiles.map(att => {
           return this.getNewListUtilityItemProps({
             att,
             downloadFile: null,
@@ -353,7 +353,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
       PCore.getAttachmentUtils()
         .uploadAttachment(this.myFiles[0], this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
-        .then((fileRes) => {
+        .then(fileRes => {
           this.att_id = fileRes.ID;
 
           let reqObj;
@@ -377,7 +377,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
             const currentAttachmentList = this.getCurrentAttachmentsList(
               this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
               this.pConn$.getContextName()
-            ).filter((f) => f.label !== this.att_valueRef);
+            ).filter(f => f.label !== this.att_valueRef);
             PCore.getStateUtils().updateState(
               this.pConn$.getContextName(),
               this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
@@ -402,7 +402,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           this.ngZone.run(() => {
             this.bShowSelector$ = false;
             this.myFiles[0].meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
-            this.arFileList$ = this.myFiles.map((att) => {
+            this.arFileList$ = this.myFiles.map(att => {
               return this.getNewListUtilityItemProps({
                 att,
                 downloadFile: null,
@@ -425,7 +425,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           this.bLoading$ = false;
           this.bShowSelector$ = false;
           this.myFiles[0].meta = 'File uploaded failed';
-          this.arFileList$ = this.myFiles.map((att) => {
+          this.arFileList$ = this.myFiles.map(att => {
             return this.getNewListUtilityItemProps({
               att,
               downloadFile: null,

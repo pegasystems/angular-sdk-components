@@ -43,7 +43,7 @@ class ComponentMap {
    * @returns Promise of config file fetch
    */
   async readSdkComponentMap(inLocalSdkComponentMap = {}) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       if (
         Object.keys(this.sdkComponentMap.localComponentMap).length === 0 &&
         Object.keys(this.sdkComponentMap.pegaProvidedComponentMap).length === 0
@@ -55,7 +55,7 @@ class ComponentMap {
           .then((/* results */) => {
             resolve(this.sdkComponentMap);
           })
-          .catch((error) => {
+          .catch(error => {
             console.error(`Error in readSdkComponentMap: ${error}`);
           });
       } else {
@@ -93,7 +93,7 @@ class ComponentMap {
     return this.sdkComponentMap.pegaProvidedComponentMap;
   };
 
-  setPegaProvidedComponentMap = (inPegaProvidedComponentMap) => {
+  setPegaProvidedComponentMap = inPegaProvidedComponentMap => {
     this.sdkComponentMap.pegaProvidedComponentMap = inPegaProvidedComponentMap;
     return this.sdkComponentMap.pegaProvidedComponentMap;
   };
@@ -110,11 +110,11 @@ async function createSdkComponentMap(inLocalComponentMap = {}) {
 
 // Initialize exported SdkComponentMap structure
 export async function getSdkComponentMap(inLocalComponentMap = {}) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let idNextCheck;
     if (!SdkComponentMap && !SdkComponentMapCreateInProgress) {
       SdkComponentMapCreateInProgress = true;
-      createSdkComponentMap(inLocalComponentMap).then((theComponentMap) => {
+      createSdkComponentMap(inLocalComponentMap).then(theComponentMap => {
         // debugger;
         // Key initialization of SdkComponentMap
         SdkComponentMap = theComponentMap;
@@ -139,9 +139,8 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
       if (SdkComponentMap) {
         // eslint-disable-next-line no-promise-executor-return
         return resolve(SdkComponentMap.sdkComponentMap);
-      } 
-        idNextCheck = setInterval(fnCheckForConfig, 500);
-      
+      }
+      idNextCheck = setInterval(fnCheckForConfig, 500);
     }
   });
 }

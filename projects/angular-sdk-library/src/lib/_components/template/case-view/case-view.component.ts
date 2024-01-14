@@ -162,7 +162,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     const caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
     this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];
-    this.editAction = this.arAvailableActions$.find((action) => action.ID === 'pyUpdateCaseDetails');
+    this.editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
     this.svgCase$ = this.utils.getImageSrc(this.configProps$.icon, this.utils.getSDKStaticContentUrl());
@@ -215,7 +215,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   }
 
   _editClick() {
-    const editAction = this.arAvailableActions$.find((action) => action.ID === 'pyUpdateCaseDetails');
+    const editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
     const actionsAPI = this.pConn$.getActionsApi();
     const openLocalAction = actionsAPI.openLocalAction.bind(actionsAPI);
 

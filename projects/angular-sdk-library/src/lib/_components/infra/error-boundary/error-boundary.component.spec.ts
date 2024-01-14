@@ -8,9 +8,8 @@ describe('ErrorBoundaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ErrorBoundaryComponent ]
-    })
-    .compileComponents();
+      declarations: [ErrorBoundaryComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorBoundaryComponent);
     component = fixture.componentInstance;

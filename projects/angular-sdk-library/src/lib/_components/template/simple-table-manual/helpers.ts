@@ -39,7 +39,7 @@ function getFiledWidth(field, label) {
   return width;
 }
 
-export const getContext = (thePConn) => {
+export const getContext = thePConn => {
   const contextName = thePConn.getContextName();
   const pageReference = thePConn.getPageReference();
   // 8.7 change = referenceList may now be in top-level of state props,
@@ -57,7 +57,7 @@ export const getContext = (thePConn) => {
   };
 };
 
-export const populateRowKey = (rawData) => {
+export const populateRowKey = rawData => {
   return rawData.map((row, index) => {
     return { ...row, index };
   });
@@ -66,7 +66,7 @@ export const populateRowKey = (rawData) => {
 export const getApiContext = (processedData, pConnect, reorderCB) => {
   return {
     fetchData: () => {
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         resolve({
           data: processedData,
           filteredRecordCount: processedData.length,

@@ -8,9 +8,8 @@ describe('FileUtilityComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ FileUtilityComponent ]
-    })
-    .compileComponents();
+      declarations: [FileUtilityComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

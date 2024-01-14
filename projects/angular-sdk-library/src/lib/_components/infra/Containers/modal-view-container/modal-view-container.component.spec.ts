@@ -8,9 +8,8 @@ describe('ModalViewContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModalViewContainerComponent ]
-    })
-    .compileComponents();
+      declarations: [ModalViewContainerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

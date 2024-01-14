@@ -58,7 +58,7 @@ export class DetailsOneColumnComponent implements OnInit, OnDestroy {
 
     if (this.showHighlightedData) {
       const highlightedData = rawMetaData?.highlightedData;
-      this.highlightedDataArr = highlightedData.map((field) => {
+      this.highlightedDataArr = highlightedData.map(field => {
         field.config.displayMode = 'STACKED_LARGE_VAL';
 
         if (field.config.value === '@P .pyStatusWork') {

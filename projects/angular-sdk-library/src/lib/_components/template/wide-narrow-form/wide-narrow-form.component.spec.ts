@@ -8,9 +8,8 @@ describe('WideNarrowFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WideNarrowFormComponent ]
-    })
-    .compileComponents();
+      declarations: [WideNarrowFormComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

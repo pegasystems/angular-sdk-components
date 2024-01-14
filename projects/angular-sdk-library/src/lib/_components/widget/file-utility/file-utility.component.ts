@@ -154,7 +154,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     for (const file of files) {
       attachmentUtils
         .uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
-        .then((fileResponse) => {
+        .then(fileResponse => {
           if (fileResponse.type === 'File') {
             (attachmentUtils.linkAttachmentsToCase(caseID, [fileResponse], 'File', this.pConn$.getContextName()) as Promise<any>)
               .then(() => {
@@ -186,7 +186,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       this.lu_bLoading$ = true;
     }
 
-    const linksToAttach = links.map((link) => ({
+    const linksToAttach = links.map(link => ({
       type: 'URL',
       category: 'URL',
       url: link.url,
@@ -203,7 +203,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   addAttachments(attsFromResp: any[] = []) {
     this.lu_bLoading$ = false;
 
-    attsFromResp = attsFromResp.map((respAtt) => {
+    attsFromResp = attsFromResp.map(respAtt => {
       const updatedAtt = {
         ...respAtt,
         meta: `${respAtt.category} . ${this.utils.generateDateTime(respAtt.createTime, 'DateTime-Since')}, ${respAtt.createdBy}`
@@ -497,7 +497,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     attachUtils
       // @ts-ignore - 3rd parameter "responseEncoding" is optional
       .downloadAttachment(ID, context)
-      .then((content) => {
+      .then(content => {
         if (type === 'FILE') {
           this.fileDownload(content.data, name, extension);
         } else if (type === 'URL') {
@@ -584,7 +584,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     // convert FileList to an array
     const myFiles = Array.from(this.arFiles$);
 
-    this.arFileList$ = myFiles.map((att) => {
+    this.arFileList$ = myFiles.map(att => {
       return this.getNewListUtilityItemProps({
         att,
         downloadFile: !att.progress ? () => this.downloadFile(att) : null,
@@ -690,12 +690,12 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
 
       this.lu_bLoading$ = true;
 
-      attPromise.then((resp) => {
+      attPromise.then(resp => {
         this.arFullListAttachments = this.addAttachments(resp);
         this.lu_count$ = this.arFullListAttachments.length;
         this.lu_arActions$ = this.addAttachmentsActions;
 
-        this.lu_arItems$ = this.arFullListAttachments.slice(0, 3).map((att) => {
+        this.lu_arItems$ = this.arFullListAttachments.slice(0, 3).map(att => {
           return this.getListUtilityItemProps({
             att,
             downloadFile: !att.progress ? () => this.downloadFile(att) : null,
@@ -705,7 +705,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
           });
         });
 
-        this.va_arItems$ = this.arFullListAttachments.map((att) => {
+        this.va_arItems$ = this.arFullListAttachments.map(att => {
           return this.getListUtilityItemProps({
             att,
             downloadFile: !att.progress ? () => this.downloadFile(att) : null,

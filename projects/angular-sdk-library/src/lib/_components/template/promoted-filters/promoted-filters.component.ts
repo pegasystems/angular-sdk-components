@@ -76,14 +76,14 @@ export class PromotedFiltersComponent implements OnInit, OnDestroy {
 
   updateSelf() {
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
-    this.filters.forEach((filter) => {
+    this.filters.forEach(filter => {
       this.filtersProperties[PCore.getAnnotationUtils().getPropertyName(filter.config.value)] = '';
     });
 
     const filtersWithClassID = { ...this.filtersProperties, classID: this.pageClass };
     this.transientItemID = (this.pConn$.getContainerManager() as any).addTransientItem({ id: this.viewName, data: filtersWithClassID });
     this.processedFilters = [];
-    this.filters.forEach((filter) => {
+    this.filters.forEach(filter => {
       const filterClone = { ...filter };
       // convert any field which is not supported to TextInput and delete the placeholder as it may contain placeholder specific to original type.
       if (!SUPPORTED_TYPES_IN_PROMOTED_FILTERS.includes(filterClone.type)) {
@@ -124,13 +124,13 @@ export class PromotedFiltersComponent implements OnInit, OnDestroy {
   }
 
   isValidInput(input) {
-    return Object.values(input).findIndex((v) => v) >= 0;
+    return Object.values(input).findIndex(v => v) >= 0;
   }
 
   getFilterData() {
     const changes = PCore.getFormUtils().getChanges(this.transientItemID);
     const formValues = {};
-    Object.keys(changes).forEach((key) => {
+    Object.keys(changes).forEach(key => {
       if (!['context_data', 'pageInstructions'].includes(key)) {
         formValues[key] = changes[key];
       }

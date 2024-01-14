@@ -1,10 +1,11 @@
 <div
   class="psdk-alert"
-  [ngClass]="{'psdk-alert-error': severity === 'error',
+  [ngClass]="{
+    'psdk-alert-error': severity === 'error',
     'psdk-grid-warning': severity === 'warning',
     'psdk-grid-success': severity === 'success',
-    'psdk-grid-info': severity === 'info',
-}"
+    'psdk-grid-info': severity === 'info'
+  }"
 >
   <div class="psdk-alert-icon">
     <mat-icon>{{ getMatIcon(severity) }}</mat-icon>

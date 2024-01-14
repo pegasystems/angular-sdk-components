@@ -110,7 +110,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
         // @ts-ignore - 2nd parameter "payload" and 3rd parameter "context" should be optional in getData method
         .getData(key) as Promise<any>
     )
-      .then((responseData) => {
+      .then(responseData => {
         const dataObject = {};
         dataObject[key] = {
           pxResults: responseData.data.data
@@ -119,7 +119,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
         this.pConn$.updateState(dataObject);
         this.updateToDo();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err?.stack);
       });
   }

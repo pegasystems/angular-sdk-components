@@ -180,7 +180,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
             const { PUB_SUB_EVENTS } = PCore.getConstants();
             PCore.getPubSubUtils().subscribe(
               PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT,
-              (payload) => {
+              payload => {
                 this.showAlert(payload);
               },
               PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT

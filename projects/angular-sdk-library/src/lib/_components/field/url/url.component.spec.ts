@@ -8,9 +8,8 @@ describe('UrlComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ UrlComponent ]
-    })
-    .compileComponents();
+      declarations: [UrlComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

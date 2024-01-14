@@ -8,9 +8,8 @@ describe('RichTextComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RichTextEditorComponent ]
-    })
-    .compileComponents();
+      declarations: [RichTextEditorComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

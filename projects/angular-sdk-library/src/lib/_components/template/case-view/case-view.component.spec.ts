@@ -8,9 +8,8 @@ describe('CaseViewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseViewComponent ]
-    })
-    .compileComponents();
+      declarations: [CaseViewComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

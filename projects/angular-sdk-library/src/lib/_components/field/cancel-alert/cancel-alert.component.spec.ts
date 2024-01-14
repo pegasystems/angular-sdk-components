@@ -8,9 +8,8 @@ describe('CancelAlertComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CancelAlertComponent ]
-    })
-    .compileComponents();
+      declarations: [CancelAlertComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,9 +8,8 @@ describe('CaseSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseSummaryComponent ]
-    })
-    .compileComponents();
+      declarations: [CaseSummaryComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

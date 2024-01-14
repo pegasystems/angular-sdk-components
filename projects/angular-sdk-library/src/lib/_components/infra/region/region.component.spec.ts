@@ -8,9 +8,8 @@ describe('RegionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RegionComponent ]
-    })
-    .compileComponents();
+      declarations: [RegionComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

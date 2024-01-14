@@ -82,7 +82,7 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
   }
 
   loadImage(src: string) {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       resolve(src);
     });
   }

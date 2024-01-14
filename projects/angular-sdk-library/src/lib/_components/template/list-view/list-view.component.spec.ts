@@ -8,9 +8,8 @@ describe('ListViewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ListViewComponent ]
-    })
-    .compileComponents();
+      declarations: [ListViewComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

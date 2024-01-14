@@ -60,7 +60,7 @@ export class TopAppMashupComponent implements OnInit, OnDestroy {
 
   initialize() {
     // handle showing and hiding the progress spinner
-    this.progressSpinnerSubscription = this.psservice.getMessage().subscribe((message) => {
+    this.progressSpinnerSubscription = this.psservice.getMessage().subscribe(message => {
       this.showHideProgress(message.show);
     });
 
@@ -91,7 +91,7 @@ export class TopAppMashupComponent implements OnInit, OnDestroy {
   }
 
   startPortal() {
-    PCore.onPCoreReady((renderObj) => {
+    PCore.onPCoreReady(renderObj => {
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
 
@@ -134,7 +134,7 @@ export class TopAppMashupComponent implements OnInit, OnDestroy {
 
     // Need to register the callback function for PCore.registerComponentCreator
     // This callback is invoked if/when you call a PConnect createComponent
-    PCore.registerComponentCreator((c11nEnv) => {
+    PCore.registerComponentCreator(c11nEnv => {
       // experiment with returning a PConnect that has deferenced the
       // referenced View if the c11n is a 'reference' component
       // const compType = c11nEnv.getPConnect().getComponentName();

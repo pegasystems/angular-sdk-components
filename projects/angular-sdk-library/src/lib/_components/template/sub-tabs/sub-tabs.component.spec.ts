@@ -8,9 +8,8 @@ describe('SubTabsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SubTabsComponent ]
-    })
-    .compileComponents();
+      declarations: [SubTabsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

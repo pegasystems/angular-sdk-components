@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class ErrorMessagesService {
-  private subject = new Subject<void|object>();
+  private subject = new Subject<void | object>();
 
   /**
    *

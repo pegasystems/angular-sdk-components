@@ -29,7 +29,7 @@ export class AppAnnouncementComponent implements OnInit {
     const { datasource } = this.configProps$;
 
     if (datasource?.source) {
-      this.details$ = datasource.source.map((item) => item.name);
+      this.details$ = datasource.source.map(item => item.name);
     }
   }
 }

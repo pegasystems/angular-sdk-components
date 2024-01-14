@@ -306,7 +306,7 @@ export class AngularPConnectService {
 
     const compID = inComp.bridgeComponentID !== undefined ? inComp.bridgeComponentID : inComp.angularPConnectData.compID;
 
-    const currentProps:any = this.componentPropsArr[compID];
+    const currentProps: any = this.componentPropsArr[compID];
     const currentPropsAsStr: string = JSON.stringify(currentProps);
 
     const incomingProps: any = this.getComponentProps(inComp);

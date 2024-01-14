@@ -19,7 +19,7 @@ function getMessagesGrouped(inputMessages) {
   const messages = {};
 
   if (inputMessages && inputMessages instanceof Array && inputMessages.length > 0) {
-    inputMessages.forEach((item) => {
+    inputMessages.forEach(item => {
       const { message, type } = item;
       messages[type] = [...(messages[type] || []), message];
     });
@@ -62,7 +62,7 @@ function getBanners(config) {
   const banners: any = [];
   const groupedPageMessages = getMessagesGrouped(pageMessages);
 
-  Object.keys(groupedPageMessages).forEach((type) => {
+  Object.keys(groupedPageMessages).forEach(type => {
     const messagesByType = groupedPageMessages[type];
     const variant = getVariant(type);
     const pageMessagesBannerID = `${target}_${PAGE}_${type}`.toLowerCase().replace('/', '_');

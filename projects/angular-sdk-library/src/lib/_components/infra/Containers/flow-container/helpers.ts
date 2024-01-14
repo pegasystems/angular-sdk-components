@@ -7,7 +7,7 @@ function isCaseWideLocalAction(pConnect) {
   const actionID = pConnect.getValue(CASE_INFO.ACTIVE_ACTION_ID);
   const caseActions = pConnect.getValue(CASE_INFO.CASE_INFO_ACTIONS);
   if (caseActions && actionID) {
-    const activeAction = caseActions.find((caseAction) => caseAction.ID === actionID);
+    const activeAction = caseActions.find(caseAction => caseAction.ID === actionID);
     return activeAction?.type === 'Case';
   }
   return false;
@@ -36,7 +36,7 @@ function hasAssignments(pConnect) {
   return assignments || childCasesAssignments || isCaseWideLocalAction(pConnect);
 }
 
-export const showBanner = (getPConnect) => {
+export const showBanner = getPConnect => {
   const pConnect = getPConnect;
   return hasNotificationMessages(pConnect) || !hasAssignments(pConnect);
 };
@@ -44,7 +44,7 @@ export const showBanner = (getPConnect) => {
 function getActiveCaseActionName(pConnect) {
   const caseActions = pConnect.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ACTIONS);
   const activeActionID = pConnect.getValue(PCore.getConstants().CASE_INFO.ACTIVE_ACTION_ID);
-  const activeAction = caseActions.find((action) => action.ID === activeActionID);
+  const activeAction = caseActions.find(action => action.ID === activeActionID);
   return activeAction?.name || '';
 }
 
@@ -60,7 +60,7 @@ export function getToDoAssignments(pConnect) {
   const childCasesAssignments = getChildCaseAssignments(pConnect) || [];
   let childCasesAssignmentsCopy = JSON.parse(JSON.stringify(childCasesAssignments));
 
-  childCasesAssignmentsCopy = childCasesAssignmentsCopy.map((assignment) => {
+  childCasesAssignmentsCopy = childCasesAssignmentsCopy.map(assignment => {
     assignment.isChild = true;
     return assignment;
   });
@@ -69,7 +69,7 @@ export function getToDoAssignments(pConnect) {
   let todoAssignmentsCopy = JSON.parse(JSON.stringify(todoAssignments));
 
   if (caseActions && !showTodo(pConnect)) {
-    todoAssignmentsCopy = todoAssignmentsCopy.map((assignment) => {
+    todoAssignmentsCopy = todoAssignmentsCopy.map(assignment => {
       assignment.name = getActiveCaseActionName(pConnect) || assignmentLabel;
       return assignment;
     });

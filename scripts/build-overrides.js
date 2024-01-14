@@ -18,8 +18,7 @@ const overridesLibDir = path.join(__dirname, '..', overridesPkgDir);
  * @returns {string} string that should replace importPath (with @pega/angular-sdk-library)
  */
 function modifyImportPath(match, importPath) {
-  const modifiedImport = match.replace(importPath, '@pega/angular-sdk-library');
-  return modifiedImport;
+  return match.replace(importPath, '@pega/angular-sdk-library');
 }
 
 /**
@@ -47,14 +46,14 @@ function processOverrideFile(filePath) {
     const newData = data.replace(importPattern, (match, importPath) => {
       if (importPath.includes('../')) {
         return modifyImportPath(match, importPath);
-      } else {
-        return match;
       }
+
+      return match;
     });
 
     // Write the modified content back to the file
-    fs.writeFile(filePath, newData, 'utf8', (err) => {
-      if (err) {
+    fs.writeFile(filePath, newData, 'utf8', writeErr => {
+      if (writeErr) {
         console.error(`Error writing file: ${filePath}`, err);
       }
     });
@@ -71,16 +70,14 @@ function processOverrideCssFile(filePath) {
     const importPattern = /@import\s+['"]([^'"]+)['"]/g;
     const newData = data.replace(importPattern, (match, importPath) => {
       if (importPath.includes('../')) {
-        const modifiedImport = match.replace(importPath, '@pega/angular-sdk-library/_shared/styles.scss');
-        return modifiedImport;
-      } else {
-        return match;
+        return match.replace(importPath, '@pega/angular-sdk-library/_shared/styles.scss');
       }
+      return match;
     });
 
     // Write the modified content back to the file
-    fs.writeFile(filePath, newData, 'utf8', (err) => {
-      if (err) {
+    fs.writeFile(filePath, newData, 'utf8', writeErr => {
+      if (writeErr) {
         console.error(`Error writing file: ${filePath}`, err);
       }
     });
@@ -96,12 +93,10 @@ function processSdkOverrides(directory) {
     const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
       processSdkOverrides(filePath);
-    } else {
-      if (filePath.endsWith('.ts')) {
-        processOverrideFile(filePath);
-      } else if (filePath.endsWith('.scss')) {
-        processOverrideCssFile(filePath);
-      }
+    } else if (filePath.endsWith('.ts')) {
+      processOverrideFile(filePath);
+    } else if (filePath.endsWith('.scss')) {
+      processOverrideCssFile(filePath);
     }
   }
 }

@@ -4,7 +4,7 @@ const extLibs = require('./packages/angular-sdk-components/src/ext-libs');
 
 // comment this code out, if you have an "ENOENT: no such file or directory" build error and re-build
 // to see the real Angular errors, then uncomment onces fixed
-module.exports = (config) => {
+module.exports = config => {
   config.plugins.push(
     new ExternalsManifest({
       externals: extLibs.extDefinition

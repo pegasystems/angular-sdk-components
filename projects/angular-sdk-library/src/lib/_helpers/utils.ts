@@ -56,7 +56,9 @@ export class Utils {
           this.consoleKidDump(kid.getPConnect(), level + 1, parseInt(index, 10) + 1);
         }
       }
-    } catch (ex) { /* empty */ }
+    } catch (ex) {
+      /* empty */
+    }
   }
 
   htmlDecode(sVal: string): string | null {
@@ -95,7 +97,7 @@ export class Utils {
             if (typeof dataPage === 'object' && !Array.isArray(listSourceItems)) {
               listSourceItems = dataPage.source ? dataPage.source : [];
             }
-            (listSourceItems || []).forEach((item) => {
+            (listSourceItems || []).forEach(item => {
               item.value = item.text ? item.text : item.value;
             });
             arReturn = listSourceItems || [];
@@ -335,8 +337,8 @@ export class Utils {
       icon = 'document-pdf';
     } else {
       const [, subtype] = fileType.split('/');
-      const foundMatch = (sources) => {
-        return sources.some((key) => subtype.includes(key));
+      const foundMatch = sources => {
+        return sources.some(key => subtype.includes(key));
       };
 
       if (foundMatch(['excel', 'spreadsheet'])) {
@@ -394,7 +396,7 @@ export class Utils {
     return count === 0;
   }
 
-  getUserId = (user) => {
+  getUserId = user => {
     let userId = '';
     if (typeof user === 'object' && user !== null && user.userId) {
       userId = user.userId;

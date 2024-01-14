@@ -45,7 +45,7 @@ export class RichTextEditorComponent implements OnChanges {
     }
   }
 
-  filePickerCallback = (cb) => {
+  filePickerCallback = cb => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');

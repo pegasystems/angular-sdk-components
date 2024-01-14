@@ -8,9 +8,8 @@ describe('DataReferenceComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataReferenceComponent ]
-    })
-    .compileComponents();
+      declarations: [DataReferenceComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

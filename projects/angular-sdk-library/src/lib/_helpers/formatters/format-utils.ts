@@ -64,14 +64,14 @@ function SymbolFormatter(value, { symbol = '$', suffix = true, locale = 'en-US' 
 }
 
 export const formatters = {
-    Currency: (value, options) => CurrencyFormatter(value, options),
-    'Currency-Code': (value, options) => CurrencyFormatter(value, { ...options, symbol: false }),
-    Decimal: (value, options) => NumberFormatter(value, options),
-    'Decimal-Auto': (value, options) =>
-      NumberFormatter(value, {
-        ...options,
-        decPlaces: Number.isInteger(value) ? 0 : 2
-      }),
-    Integer: (value, options) => NumberFormatter(value, { ...options, decPlaces: 0 }),
-    Percentage: (value, options) => SymbolFormatter(value, { ...options, symbol: '%' })
+  Currency: (value, options) => CurrencyFormatter(value, options),
+  'Currency-Code': (value, options) => CurrencyFormatter(value, { ...options, symbol: false }),
+  Decimal: (value, options) => NumberFormatter(value, options),
+  'Decimal-Auto': (value, options) =>
+    NumberFormatter(value, {
+      ...options,
+      decPlaces: Number.isInteger(value) ? 0 : 2
+    }),
+  Integer: (value, options) => NumberFormatter(value, { ...options, decPlaces: 0 }),
+  Percentage: (value, options) => SymbolFormatter(value, { ...options, symbol: '%' })
 };

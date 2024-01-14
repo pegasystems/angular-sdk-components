@@ -133,9 +133,9 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     this.placeholder = placeholder || '';
 
     const { readOnly, required } = props;
-    [this.bReadonly$, this.bRequired$] = [readOnly, required].map((prop) => prop === true || (typeof prop === 'string' && prop === 'true'));
+    [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
 
-    const isUserNameAvailable = (user) => {
+    const isUserNameAvailable = user => {
       return typeof user === 'object' && user !== null && user.userName;
     };
 
@@ -148,7 +148,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
         // if same user ref field is referred in view as editable & readonly formatted text
         // referenced users won't be available, so get user details from dx api
         const { getOperatorDetails } = PCore.getUserApi();
-        getOperatorDetails(this.userID$).then((resp) => {
+        getOperatorDetails(this.userID$).then(resp => {
           if (resp.data && resp.data.pyOperatorInfo && resp.data.pyOperatorInfo.pyUserName) {
             this.userName$ = resp.data.pyOperatorInfo.pyUserName;
           }
@@ -160,14 +160,14 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       };
       PCore.getRestClient()
         .invokeRestApi('getListData', { queryPayload } as any, '') // 3rd arg empty string until typedef marked correctly
-        .then((resp) => {
-          const ddDataSource = resp.data.data.map((listItem) => ({
+        .then(resp => {
+          const ddDataSource = resp.data.data.map(listItem => ({
             key: listItem.pyUserIdentifier,
             value: listItem.pyUserName
           }));
           this.options$ = ddDataSource;
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     }
@@ -183,7 +183,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   fieldOnBlur(event: any) {
     let key = '';
     if (event?.target?.value) {
-      const index = this.options$?.findIndex((element) => element.value === event.target.value);
+      const index = this.options$?.findIndex(element => element.value === event.target.value);
       key = index > -1 ? (key = this.options$[index].key) : event.target.value;
     }
 

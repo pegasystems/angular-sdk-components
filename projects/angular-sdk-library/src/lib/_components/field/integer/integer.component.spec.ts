@@ -8,9 +8,8 @@ describe('IntegerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ IntegerComponent ]
-    })
-    .compileComponents();
+      declarations: [IntegerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

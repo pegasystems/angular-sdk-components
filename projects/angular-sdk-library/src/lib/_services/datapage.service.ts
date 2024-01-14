@@ -45,7 +45,7 @@ export class DatapageService {
         .then((response: any) => {
           resolve(response.data.data);
         })
-        .catch((e) => {
+        .catch(e => {
           if (e) {
             // check specific error if 401, and wiped out if so stored token is stale.  Fetcch new tokens.
             reject(e);

@@ -2,12 +2,12 @@
   <div *ngIf="showConfirmView">
     <h2 id="confirm-label" class="confirm-label">{{ label }}</h2>
     <div *ngIf="showDetails">
-      <component-mapper name="Details" [props]="{pConn$}"></component-mapper>
+      <component-mapper name="Details" [props]="{ pConn$ }"></component-mapper>
     </div>
     <div *ngIf="showTasks && toDoList?.length > 0">
       <component-mapper
         name="Todo"
-        [props]="{pConn$, datasource$: { source: toDoList }, headerText$:'Open Tasks', type$: CONSTS.TODO, isConfirm: true }"
+        [props]="{ pConn$, datasource$: { source: toDoList }, headerText$: 'Open Tasks', type$: CONSTS.TODO, isConfirm: true }"
       ></component-mapper>
     </div>
     <div class="done-button">
@@ -17,7 +17,7 @@
   <div *ngIf="toDoList?.length > 0">
     <component-mapper
       name="Todo"
-      [props]="{pConn$, datasource$: { source: toDoList }, headerText$: 'Tasks', type$: CONSTS.TODO, isConfirm: true}"
+      [props]="{ pConn$, datasource$: { source: toDoList }, headerText$: 'Tasks', type$: CONSTS.TODO, isConfirm: true }"
     ></component-mapper>
   </div>
 </div>

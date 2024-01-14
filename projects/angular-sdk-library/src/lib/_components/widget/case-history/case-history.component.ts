@@ -99,7 +99,7 @@ export class CaseHistoryComponent implements OnInit {
   }
 
   getDisplayColumns(fields: any[] = []) {
-    return fields.map((field) => {
+    return fields.map(field => {
       return field.fieldName;
     });
   }

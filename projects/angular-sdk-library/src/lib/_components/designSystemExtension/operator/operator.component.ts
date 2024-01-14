@@ -28,7 +28,7 @@ export class OperatorComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.renderer.listen('window', 'click', (el) => {
+    this.renderer.listen('window', 'click', el => {
       const clickedInside = this.el.nativeElement.contains(el.target);
 
       if (!clickedInside) {
@@ -50,7 +50,7 @@ export class OperatorComponent implements OnInit, OnDestroy {
     const localeCategory = 'Operator';
     const fillerString = '---';
 
-    operatorPreviewPromise.then((res) => {
+    operatorPreviewPromise.then(res => {
       if (res.data && res.data.pyOperatorInfo && res.data.pyOperatorInfo.pyUserName) {
         this.fields$ = [
           {

@@ -142,7 +142,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
             skipSemanticUrl: true,
             isDeferLoaded: true
           })
-          .then((data) => {
+          .then(data => {
             this.onResponse(data);
           });
       } else {
@@ -153,14 +153,14 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
       this.pConn$
         .getActionsApi()
         .loadView(encodeURI(this.loadViewCaseID), this.name, this.getViewOptions())
-        .then((data) => {
+        .then(data => {
           this.onResponse(data);
         });
     } else {
       this.pConn$
         .getActionsApi()
         .refreshCaseView(encodeURI(this.loadViewCaseID), this.name, null)
-        .then((data) => {
+        .then(data => {
           this.onResponse(data.root);
         });
     }

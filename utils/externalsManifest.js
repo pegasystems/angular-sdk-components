@@ -1,17 +1,15 @@
+/* eslint-disable global-require */
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
-const fs = require('fs');
 const md5 = require('md5-file');
-const fse = require("fs-extra");
-const replace = require("replace-in-file");
-
+const fse = require('fs-extra');
 
 function CopyWebpackExternalsManifest(options) {
   this.externalsAssets = [];
   this.externals = {};
   this.chunksOrder = options.chunksOrder || ['manifest', 'vendor'];
   if (options.externals.length) {
-    options.externals.forEach((item) => {
+    options.externals.forEach(item => {
       // externals
       this.externals[item.module] = item.export;
 
@@ -29,14 +27,13 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
 
   // assign webpack config externals
   compiler.options.externals =
-    typeof compiler.options.externals === 'object'
-      ? Object.assign(compiler.options.externals, _this.externals)
-      : _this.externals;
+    typeof compiler.options.externals === 'object' ? Object.assign(compiler.options.externals, _this.externals) : _this.externals;
 
   const copyAssets = [];
+  // eslint-disable-next-line sonarjs/no-unused-collection
   const externalsManifest = [];
   if (_this.externalsAssets.length) {
-    _this.externalsAssets.forEach((item) => {
+    _this.externalsAssets.forEach(item => {
       const fromDir = `node_modules/${item.module}/`;
       const toDir = `${compiler.options.output.path}/externals/`;
       const externalsDir = `${compiler.options.output.publicPath}`;
@@ -50,26 +47,24 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
           to: toDir,
           transformPath() {
             return `${item.module}.${mdHash}.${fileExt}`;
-          },
+          }
         });
         externalsManifest.push(`${item.module}.${mdHash}.${fileExt}`);
       } else if (Array.isArray(item.entry)) {
-        item.entry.forEach((entry) => {
+        item.entry.forEach(entry => {
           copyAssets.push({
             from: fromDir + entry,
-            to: toDir + entry,
+            to: toDir + entry
           });
-          externalsManifest[
-            `${item.module}/${entry}`
-          ] = `${externalsDir}${entry}`;
+          externalsManifest[`${item.module}/${entry}`] = `${externalsDir}${entry}`;
         });
       }
 
       // copy assets
       if (Array.isArray(item.assets)) {
-        const subjectAssets = item.assets.map((entry) => ({
+        const subjectAssets = item.assets.map(entry => ({
           from: fromDir + entry,
-          to: toDir + entry,
+          to: toDir + entry
         }));
         copyAssets.push(...subjectAssets);
       }
@@ -80,49 +75,39 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
 
   // eslint-disable-next-line func-names
   compiler.hooks.done.tap('After Compilation', function (stats) {
-
-
     // check to see if you have errors in "stats", if so clip out other data
     // and show errors to console and don't continue
-    let myStats = stats.toString();
-    if (myStats.indexOf("ERROR") >= 0) {
-        let myClippedStats = myStats.substring(myStats.indexOf('ERROR'));
-        console.log("====> Errors");
-        console.log(myClippedStats);
-        return;
+    const myStats = stats.toString();
+    if (myStats.indexOf('ERROR') >= 0) {
+      const myClippedStats = myStats.substring(myStats.indexOf('ERROR'));
+      console.log('====> Errors');
+      console.log(myClippedStats);
+      return;
     }
 
     /* Start of compiler hooks */
     const distDir = `${compiler.options.output.path}`;
 
     const isDevMode = compiler.options.mode === 'development';
-    let assetsChunks = stats.toJson().assetsByChunkName;
-    const order = [
-      'runtime',
-      'polyfills',
-      'styles',
-      'vendor',
-      'main',
-    ];
+    const assetsChunks = stats.toJson().assetsByChunkName;
+    const order = ['runtime', 'polyfills', 'styles', 'vendor', 'main'];
 
     const entry = [];
-    order.forEach((chunkName, i) => {
+    order.forEach(chunkName => {
       if (isDevMode) {
         Array.prototype.push.apply(entry, assetsChunks[chunkName]);
-      } else {
-        if (assetsChunks[chunkName]) {
-          entry.push(assetsChunks[chunkName]);
-        }
+      } else if (assetsChunks[chunkName]) {
+        entry.push(assetsChunks[chunkName]);
       }
     });
 
     // for now, get the bootstrap-shell from src,
     // create a bootstrap-shell and bootstrap-shell-mashup
 
-    const bootDest = path.join(`${distDir}/constellation`, "bootstrap-shell.js");
-    const sdkDest = path.join(`${distDir}/constellation`, "sdk-config.json");
+    // const bootDest = path.join(`${distDir}/constellation`, 'bootstrap-shell.js');
+    const sdkDest = path.join(`${distDir}/constellation`, 'sdk-config.json');
 
-    //const bootMashupDest = path.join(`${distDir}`, "../bootstrap-shell-mashup.js");
+    // const bootMashupDest = path.join(`${distDir}`, "../bootstrap-shell-mashup.js");
 
     // fse
     //   .copy(
@@ -137,27 +122,15 @@ CopyWebpackExternalsManifest.prototype.apply = function (compiler) {
     //     console.error(err);
     //   });
 
-      fse
-      .copy(
-        path.join(`${__dirname}`, "../sdk-config.json"),
-        `${sdkDest}`
-      )
+    fse
+      .copy(path.join(`${__dirname}`, '../sdk-config.json'), `${sdkDest}`)
       .then(() => {
-        console.log("Successfully Added sdk-config");
-
+        console.log('Successfully Added sdk-config');
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
       });
-
-
   });
-
-
- 
-
-
-  
 };
 
 module.exports = CopyWebpackExternalsManifest;

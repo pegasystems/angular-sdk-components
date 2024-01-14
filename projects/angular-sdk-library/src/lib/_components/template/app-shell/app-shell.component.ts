@@ -85,7 +85,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
     this.portalTemplate = this.configProps$.portalTemplate;
 
     // handle showing and hiding the progress spinner
-    this.errorMessagesSubscription = this.erService.getMessage().subscribe((message) => {
+    this.errorMessagesSubscription = this.erService.getMessage().subscribe(message => {
       this.showDismissErrorMessages(message);
     });
 

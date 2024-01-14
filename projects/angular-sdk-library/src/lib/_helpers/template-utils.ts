@@ -4,8 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class TemplateUtils {
-
-    /**
+  /**
    * Determine if the current view is the view of the case step/assignment.
    * @param {Function} pConnect PConnect object for the component
    */
@@ -30,8 +29,7 @@ export class TemplateUtils {
    */
   getInstructions(pConnect, instructions = 'casestep') {
     const caseStepInstructions =
-      window.PCore.getConstants().CASE_INFO.INSTRUCTIONS &&
-      pConnect.getValue(window.PCore.getConstants().CASE_INFO.INSTRUCTIONS);
+      window.PCore.getConstants().CASE_INFO.INSTRUCTIONS && pConnect.getValue(window.PCore.getConstants().CASE_INFO.INSTRUCTIONS);
 
     // Determine if this view is the current assignment/step view
     const isCurrentAssignmentView = this.getIsAssignmentView(pConnect);

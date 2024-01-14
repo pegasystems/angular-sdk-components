@@ -34,7 +34,7 @@ export class SideBarComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.worklistSubscription = this.uwservice.getMessage().subscribe((message) => {
+    this.worklistSubscription = this.uwservice.getMessage().subscribe(message => {
       if (message.update) {
         this.updateWorkList();
       }
@@ -67,7 +67,7 @@ export class SideBarComponent implements OnInit, OnDestroy {
           }
         }
       },
-      (err) => {
+      err => {
         alert(`Errors from get casetypes:${err.errors}`);
         this.glsservice.sendMessage('LoggedOff');
       }
@@ -94,7 +94,7 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
         dsubscription.unsubscribe();
       },
-      (err) => {
+      err => {
         alert(`Error form worklist:${err.errors}`);
       }
     );

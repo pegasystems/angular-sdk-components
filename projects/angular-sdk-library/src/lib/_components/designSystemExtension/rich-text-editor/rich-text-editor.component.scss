@@ -1,20 +1,20 @@
 @import '../../../../../_shared/styles.scss';
 .rich-text-label {
-    margin: 5px;
-    font-size: 16px;
+  margin: 5px;
+  font-size: 16px;
 }
 
 .rich-text-editor {
-    margin: 10px 0px;
+  margin: 10px 0px;
 }
 
 .label-required::after {
-    display: inline;
-    content: " *";
-    vertical-align: top;
-    color: $app-neutral-dark-color;
+  display: inline;
+  content: ' *';
+  vertical-align: top;
+  color: $app-neutral-dark-color;
 }
 
 .text-editor-error {
-    color: $app-error-light-color;
+  color: $app-error-light-color;
 }

@@ -8,9 +8,8 @@ describe('DeferLoadComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeferLoadComponent ]
-    })
-    .compileComponents();
+      declarations: [DeferLoadComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

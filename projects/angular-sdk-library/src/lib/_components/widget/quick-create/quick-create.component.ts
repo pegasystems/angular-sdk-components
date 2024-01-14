@@ -34,7 +34,7 @@ export class QuickCreateComponent implements OnInit, OnChanges {
     this.pConn$
       .getActionsApi()
       .createWork(className, {} as any)
-      .catch((error) => {
+      .catch(error => {
         console.log('Error in case creation: ', error?.message);
       });
   }
@@ -53,10 +53,10 @@ export class QuickCreateComponent implements OnInit, OnChanges {
       envInfo.environmentInfoObject.pyCaseTypeList &&
       envInfo.environmentInfoObject.pyCaseTypeList.length > 0
     ) {
-      this.classFilter$.forEach((item) => {
+      this.classFilter$.forEach(item => {
         let icon = this.utils.getImageSrc('polaris-solid', this.utils.getSDKStaticContentUrl());
         let label = '';
-        envInfo.environmentInfoObject.pyCaseTypeList.forEach((casetype) => {
+        envInfo.environmentInfoObject.pyCaseTypeList.forEach(casetype => {
           if (casetype.pyWorkTypeImplementationClassName === item) {
             icon = casetype.pxIcon && this.utils.getImageSrc(casetype?.pxIcon, this.utils.getSDKStaticContentUrl());
             label = casetype.pyWorkTypeName ?? '';

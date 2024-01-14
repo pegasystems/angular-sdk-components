@@ -8,9 +8,8 @@ describe('HybridViewContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HybridViewContainerComponent ]
-    })
-    .compileComponents();
+      declarations: [HybridViewContainerComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

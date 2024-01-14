@@ -8,9 +8,8 @@ describe('CaseCreateStageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CaseCreateStageComponent ]
-    })
-    .compileComponents();
+      declarations: [CaseCreateStageComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

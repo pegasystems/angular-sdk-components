@@ -8,9 +8,8 @@ describe('RadioButtonsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ RadioButtonsComponent ]
-    })
-    .compileComponents();
+      declarations: [RadioButtonsComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

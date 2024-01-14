@@ -8,9 +8,8 @@ describe('ListViewActionButtonsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ListViewActionButtonsComponent ]
-    })
-    .compileComponents();
+      declarations: [ListViewActionButtonsComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ListViewActionButtonsComponent);
     component = fixture.componentInstance;

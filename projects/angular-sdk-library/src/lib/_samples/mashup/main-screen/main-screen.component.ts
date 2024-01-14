@@ -104,7 +104,7 @@ export class MainScreenComponent implements OnInit, OnDestroy {
     this.showTriplePlayOptions$ = false;
     this.showPega$ = true;
 
-    this.scservice.getSdkConfig().then((sdkConfig) => {
+    this.scservice.getSdkConfig().then(sdkConfig => {
       let mashupCaseType = sdkConfig.serverConfig.appMashupCaseType;
       if (!mashupCaseType) {
         const caseTypes = PCore.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;

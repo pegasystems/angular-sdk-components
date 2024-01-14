@@ -172,7 +172,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 
     this.fieldMetadata = this.configProps$.fieldMetadata;
-    const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter((field) => field?.classID === className)[0] : this.fieldMetadata;
+    const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter(field => field?.classID === className)[0] : this.fieldMetadata;
 
     let displayName = metaData?.datasource?.propertyForDisplayText;
     displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);

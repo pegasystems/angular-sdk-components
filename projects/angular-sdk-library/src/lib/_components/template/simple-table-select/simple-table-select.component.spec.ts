@@ -8,9 +8,8 @@ describe('SimpleTableSelectComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ SimpleTableSelectComponent ]
-    })
-    .compileComponents();
+      declarations: [SimpleTableSelectComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

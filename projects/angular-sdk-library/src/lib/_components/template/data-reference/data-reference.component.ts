@@ -58,15 +58,15 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
           ''
         ) as Promise<any>
       )
-        .then((res) => {
+        .then(res => {
           if (res.data.data !== null) {
             const ddDataSource = res.data.data
-              .map((listItem) => ({
+              .map(listItem => ({
                 key: listItem[key.split(' .', 2)[1]],
                 text: listItem[text.split(' .', 2)[1]],
                 value: listItem[value.split(' .', 2)[1]]
               }))
-              .filter((item) => item.key);
+              .filter(item => item.key);
             // Filtering out undefined entries that will break preview
             this.dropDownDataSource = ddDataSource;
             this.updateSelf();
@@ -181,12 +181,12 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     // AutoComplete sets value on event.id whereas Dropdown sets it on event.target.value
     const propValue = event?.id || event?.target?.value;
     if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
-      (PCore.getDataApiUtils().getCaseEditLock(caseKey, '') as Promise<any>).then((caseResponse) => {
+      (PCore.getDataApiUtils().getCaseEditLock(caseKey, '') as Promise<any>).then(caseResponse => {
         const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
         let curr = {};
         const commitData = curr;
 
-        pageTokens.forEach((el) => {
+        pageTokens.forEach(el => {
           if (el !== '') {
             curr[el] = {};
             curr = curr[el];
@@ -211,7 +211,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
             caseResponse.headers.etag,
             this.pConn$.getContextName()
           ) as Promise<any>
-        ).then((response) => {
+        ).then(response => {
           PCore.getContainerUtils().updateParentLastUpdateTime(this.pConn$.getContextName(), response.data.data.caseInfo.lastUpdateTime);
           PCore.getContainerUtils().updateRelatedContextEtag(this.pConn$.getContextName(), response.headers.etag);
         });

@@ -126,7 +126,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   startMashup() {
-    PCore.onPCoreReady((renderObj) => {
+    PCore.onPCoreReady(renderObj => {
       // Initialize the SdkComponentMap (local and pega-provided)
       getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
         console.log(`SdkComponentMap initialized`, theComponentMap);
@@ -145,7 +145,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
     // Need to register the callback function for PCore.registerComponentCreator
     //  This callback is invoked if/when you call a PConnect createComponent
-    PCore.registerComponentCreator((c11nEnv) => {
+    PCore.registerComponentCreator(c11nEnv => {
       // debugger;
 
       // experiment with returning a PConnect that has deferenced the

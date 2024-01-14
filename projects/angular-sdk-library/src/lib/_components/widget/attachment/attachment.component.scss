@@ -16,7 +16,7 @@
 
 .label-required::after {
   display: inline;
-  content: " *";
+  content: ' *';
   vertical-align: top;
   color: $app-neutral-dark-color;
 }
@@ -25,7 +25,7 @@
   color: $app-error-light-color;
 }
 
-.psdk-modal-file-selector-error{
+.psdk-modal-file-selector-error {
   border: 1px dashed $app-error-light-color;
   width: 100%;
   padding: 0.3rem;

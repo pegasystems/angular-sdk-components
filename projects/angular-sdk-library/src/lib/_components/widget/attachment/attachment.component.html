@@ -1,10 +1,12 @@
 <div class="psdk-label-infix-readonly">
   <span class="psdk-label-wrapper-readonly">
-    <label [ngClass]="{'psdk-label-readonly': true,
-  'label-required': bRequired$ === true}" [htmlFor]="att_valueRef">{{ label$ }}</label>
+    <label [ngClass]="{ 'psdk-label-readonly': true, 'label-required': bRequired$ === true }" [htmlFor]="att_valueRef">{{ label$ }}</label>
   </span>
-  <div [ngClass]="{'psdk-modal-file-selector': status !== 'error',
-  'psdk-modal-file-selector-error': status === 'error'}" id="attachment-container" *ngIf="bShowSelector$">
+  <div
+    [ngClass]="{ 'psdk-modal-file-selector': status !== 'error', 'psdk-modal-file-selector-error': status === 'error' }"
+    id="attachment-container"
+    *ngIf="bShowSelector$"
+  >
     <mat-spinner *ngIf="bLoading$" class="progress-spinner" diameter="40"></mat-spinner>
     <input hidden type="file" [required]="bRequired$" #uploader [id]="att_valueRef" (change)="uploadMyFiles($event)" />
 

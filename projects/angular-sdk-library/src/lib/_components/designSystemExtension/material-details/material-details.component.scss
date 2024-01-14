@@ -33,7 +33,7 @@
   grid-row-start: 1;
 }
 
-span.psdk-details-text-style-hf{
+span.psdk-details-text-style-hf {
   font-weight: 500;
   font-size: 1.25rem;
 }
@@ -82,7 +82,7 @@ span.psdk-details-status-style-hf {
 
 .psdk-grid-filter-1 {
   display: grid;
-  grid-template-columns: repeat(1,minmax(0,1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
@@ -90,7 +90,7 @@ span.psdk-details-status-style-hf {
 
 .psdk-grid-filter-2 {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
@@ -98,7 +98,7 @@ span.psdk-details-status-style-hf {
 
 .psdk-grid-filter-3 {
   display: grid;
-  grid-template-columns: repeat(3,minmax(0,1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;

@@ -254,7 +254,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
           this.ngZone.run(() => {
             // what comes back now in configObject is the children of the flowContainer
             this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
-            this.arNavigationSteps$.forEach((step) => {
+            this.arNavigationSteps$.forEach(step => {
               if (step.name) {
                 step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
               }
@@ -271,7 +271,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
   findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {
     let count = 0;
-    arStepperSteps.forEach((step) => {
+    arStepperSteps.forEach(step => {
       if (step.visited_status == 'current') {
         arIndicies[depth] = count;
 

@@ -8,9 +8,8 @@ describe('WssNavBarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WssNavBarComponent ]
-    })
-    .compileComponents();
+      declarations: [WssNavBarComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(WssNavBarComponent);
     component = fixture.componentInstance;

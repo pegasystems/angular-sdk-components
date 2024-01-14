@@ -304,7 +304,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     // Here, we use the "name" field in fieldDefs since that has the assoicated property
     //  (if one exists for the field). If no "name", use "cellRenderer" (typically get DELETE_ICON)
     //  for our columns.
-    this.displayedColumns = this.fieldDefs?.map((field) => {
+    this.displayedColumns = this.fieldDefs?.map(field => {
       return field.name ? field.name : field.cellRenderer;
     });
 
@@ -795,7 +795,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       return data;
     }
     const groups = this.uniqueBy(
-      data.map((row) => {
+      data.map(row => {
         const result = new Group();
         result.level = level + 1;
         result.parent = parent;
@@ -809,8 +809,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
     const currentColumn = groupByColumns[level];
     let subGroups: any = [];
-    groups.forEach((group) => {
-      const rowsInGroup = data.filter((row) => group[currentColumn] === row[currentColumn]);
+    groups.forEach(group => {
+      const rowsInGroup = data.filter(row => group[currentColumn] === row[currentColumn]);
       group.totalCounts = rowsInGroup.length;
       const subGroup = this.getSublevel(rowsInGroup, level + 1, groupByColumns, group);
       subGroup.unshift(group);
@@ -821,7 +821,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   uniqueBy(a, key) {
     const seen = {};
-    return a.filter((item) => {
+    return a.filter(item => {
       const k = key(item);
       // eslint-disable-next-line no-return-assign, no-prototype-builtins
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
@@ -845,12 +845,12 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   getDataRowVisible(data: any): boolean {
-    const groupRows = this.rowData.data.filter((row) => {
+    const groupRows = this.rowData.data.filter(row => {
       if (!(row instanceof Group)) {
         return false;
       }
       let match = true;
-      this.groupByColumns$.forEach((column) => {
+      this.groupByColumns$.forEach(column => {
         if (!row[column] || !data[column] || row[column] !== data[column]) {
           match = false;
         }
@@ -929,7 +929,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const context = this.pConn$.getContextName();
     // if dataPageName property value exists then make a datapage fetch call and get the list of data.
     if (dataPageName) {
-      this.dataPageService.getDataPageData(dataPageName, this.parameters, context).then((listData) => {
+      this.dataPageService.getDataPageData(dataPageName, this.parameters, context).then(listData => {
         const data = this.formatRowsData(listData);
         this.originalData = data;
         this.rowData = new MatTableDataSource(data);
@@ -945,7 +945,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   formatRowsData(data) {
-    return data?.map((item) => {
+    return data?.map(item => {
       return this.displayedColumns.reduce((dataForRow, colKey) => {
         dataForRow[colKey] = this.getRowValue(item, colKey);
         return dataForRow;
@@ -1000,7 +1000,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const eleData: any = [];
     this.referenceList.forEach((element, index) => {
       const data: any = [];
-      this.rawFields?.forEach((item) => {
+      this.rawFields?.forEach(item => {
         const referenceListData = getReferenceList(this.pConn$);
         const isDatapage = referenceListData.startsWith('D_');
         const pageReferenceValue = isDatapage

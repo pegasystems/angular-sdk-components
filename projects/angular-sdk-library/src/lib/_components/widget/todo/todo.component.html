@@ -15,7 +15,10 @@
           <div class="psdk-todo-assignment-title">{{ getAssignmentName(assignment) }}</div>
           <div class="psdk-todo-assignment-data">
             <div class="psdk-todo-assignment-task">
-              Task in <button class="psdk-todo-id" style="cursor: pointer;" (click)="clickGo(assignment)">{{ assignment.name }} {{ getID(assignment) }}</button>
+              Task in
+              <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)">
+                {{ assignment.name }} {{ getID(assignment) }}
+              </button>
               <span *ngIf="assignment.status != undefined">
                 &bull; <span class="psdk-todo-assignment-status">{{ assignment?.status }}</span>
               </span>

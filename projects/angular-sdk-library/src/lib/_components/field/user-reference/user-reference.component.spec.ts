@@ -8,9 +8,8 @@ describe('UserReferenceComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserReferenceComponent ]
-    })
-    .compileComponents();
+      declarations: [UserReferenceComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

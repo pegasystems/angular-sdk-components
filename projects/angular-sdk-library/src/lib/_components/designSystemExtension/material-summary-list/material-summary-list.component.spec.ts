@@ -8,9 +8,8 @@ describe('MaterialSummaryListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MaterialSummaryListComponent ]
-    })
-    .compileComponents();
+      declarations: [MaterialSummaryListComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

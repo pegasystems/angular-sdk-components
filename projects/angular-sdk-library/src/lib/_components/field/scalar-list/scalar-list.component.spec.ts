@@ -8,9 +8,8 @@ describe('ScalarListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ScalarListComponent ]
-    })
-    .compileComponents();
+      declarations: [ScalarListComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ScalarListComponent);
     component = fixture.componentInstance;

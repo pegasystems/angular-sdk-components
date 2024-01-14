@@ -95,7 +95,7 @@ export class ScalarListComponent implements OnInit, OnDestroy {
     this.displayMode$ = this.configProps$.displayMode;
     const restProps = this.configProps$.restProps;
     console.log('scalar values: ', scalarValues);
-    this.items = scalarValues?.map((scalarValue) => {
+    this.items = scalarValues?.map(scalarValue => {
       console.log('scalar value: ', scalarValue);
       return this.pConn$.createComponent(
         {

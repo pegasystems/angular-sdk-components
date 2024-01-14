@@ -8,9 +8,8 @@ describe('AngSdkLibComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AngSdkLibComponent ]
-    })
-    .compileComponents();
+      declarations: [AngSdkLibComponent]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AngSdkLibComponent);
     component = fixture.componentInstance;

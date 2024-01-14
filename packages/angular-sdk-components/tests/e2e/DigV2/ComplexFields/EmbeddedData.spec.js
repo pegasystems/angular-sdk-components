@@ -121,8 +121,8 @@ test.describe('E2E test', () => {
 
     /** Table Edit Modal tests */
     const editModeType = await page.locator('mat-select[data-test-id="80c1db3a7b228760228004b1a532c71e"]');
-      await editModeType.click();
-      await page.locator('mat-option > span:has-text("Modal")').click();
+    await editModeType.click();
+    await page.locator('mat-option > span:has-text("Modal")').click();
 
     await page.locator('button:has-text("+ Add")').click();
 

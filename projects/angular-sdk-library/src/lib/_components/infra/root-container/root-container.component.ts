@@ -65,7 +65,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     const myContext = 'app';
 
     const { containers } = PCore.getStore().getState();
-    const items = Object.keys(containers).filter((item) => item.includes('root'));
+    const items = Object.keys(containers).filter(item => item.includes('root'));
 
     (PCore.getContainerUtils().getContainerAPI() as any).addContainerItems(items);
 
@@ -106,7 +106,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     // handle showing and hiding the progress spinner
-    this.progressSpinnerSubscription = this.psService.getMessage().subscribe((message) => {
+    this.progressSpinnerSubscription = this.psService.getMessage().subscribe(message => {
       this.showHideProgress(message.show);
     });
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;

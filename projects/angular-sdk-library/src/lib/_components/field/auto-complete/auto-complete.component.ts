@@ -101,7 +101,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
     this.filteredOptions = this.fieldControl.valueChanges.pipe(
       startWith(''),
-      map((value) => this._filter(value || ''))
+      map(value => this._filter(value || ''))
     );
   }
 
@@ -117,7 +117,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
-    return this.options$?.filter((option) => option.value.toLowerCase().includes(filterValue));
+    return this.options$?.filter(option => option.value.toLowerCase().includes(filterValue));
   }
 
   // Callback passed when subscribing to store change
@@ -144,7 +144,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AutoCompleteProps;
 
     if (this.configProps$.value != undefined) {
-      const index = this.options$?.findIndex((element) => element.key === this.configProps$.value);
+      const index = this.options$?.findIndex(element => element.key === this.configProps$.value);
       this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
     }
 
@@ -241,7 +241,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   fillOptions(results: any) {
     const optionsData: any[] = [];
     const displayColumn = this.getDisplayFieldsMetaData(this.columns);
-    results?.forEach((element) => {
+    results?.forEach(element => {
       const obj = {
         key: element[displayColumn.key] || element.pyGUID,
         value: element[displayColumn.primary]?.toString()
@@ -253,7 +253,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
   flattenParameters(params = {}) {
     const flatParams = {};
-    Object.keys(params).forEach((key) => {
+    Object.keys(params).forEach(key => {
       const { name, value: theVal } = params[key];
       flatParams[name] = theVal;
     });
@@ -262,9 +262,9 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   }
 
   getDisplayFieldsMetaData(columnList) {
-    const displayColumns = columnList.filter((col) => col.display === 'true');
+    const displayColumns = columnList.filter(col => col.display === 'true');
     const metaDataObj: any = { key: '', primary: '', secondary: [] };
-    const keyCol = columnList.filter((col) => col.key === 'true');
+    const keyCol = columnList.filter(col => col.key === 'true');
     metaDataObj.key = keyCol.length > 0 ? keyCol[0].value : 'auto';
     for (let index = 0; index < displayColumns.length; index += 1) {
       if (displayColumns[index].primary === 'true') {
@@ -277,7 +277,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   }
 
   preProcessColumns(columnList) {
-    return columnList?.map((col) => {
+    return columnList?.map(col => {
       const tempColObj = { ...col };
       tempColObj.value = col.value && col.value.startsWith('.') ? col.value.substring(1) : col.value;
       return tempColObj;
@@ -304,7 +304,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     let key = '';
     const el = event?.target as HTMLInputElement;
     if (el?.value) {
-      const index = this.options$?.findIndex((element) => element.value === el.value);
+      const index = this.options$?.findIndex(element => element.value === el.value);
       key = index > -1 ? (key = this.options$[index].key) : el.value;
     }
 

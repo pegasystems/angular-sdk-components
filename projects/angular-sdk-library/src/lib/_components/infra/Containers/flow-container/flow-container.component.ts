@@ -174,7 +174,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   showPageMessages(completeProps: FlowContainerProps) {
     this.ngZone.run(() => {
       const pageMessages = completeProps.pageMessages;
-      this.banners = [{ messages: pageMessages?.map((msg) => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
+      this.banners = [{ messages: pageMessages?.map(msg => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
     });
   }
 
@@ -308,7 +308,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as any[];
     let bCaseWideAction = false;
     if (caseActions && actionID) {
-      const actionObj = caseActions.find((caseAction) => caseAction.ID === actionID);
+      const actionObj = caseActions.find(caseAction => caseAction.ID === actionID);
       if (actionObj) {
         bCaseWideAction = actionObj.type === 'Case';
       }
@@ -332,7 +332,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS) as any[];
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
-    const activeAction = caseActions?.find((action) => action.ID === activeActionID);
+    const activeAction = caseActions?.find(action => action.ID === activeActionID);
     if (activeAction) {
       activeActionLabel = activeAction.name;
     }
@@ -341,7 +341,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
 
   findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {
     let count = 0;
-    arStepperSteps.forEach((step) => {
+    arStepperSteps.forEach(step => {
       if (step.visited_status == 'current') {
         arIndicies[depth] = count;
 
@@ -573,14 +573,14 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   touchAll(): void {
-    Object.values(this.formGroup$.controls).forEach((control) => {
+    Object.values(this.formGroup$.controls).forEach(control => {
       control.markAsTouched();
     });
   }
 
   // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
-    Object.values(this.formGroup$.controls).forEach((control) => {
+    Object.values(this.formGroup$.controls).forEach(control => {
       control.markAsTouched();
     });
   }

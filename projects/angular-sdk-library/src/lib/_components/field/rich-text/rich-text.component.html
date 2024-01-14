@@ -2,11 +2,11 @@
   <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
-  <div *ngIf="!bReadonly$ else noEdit">
+  <div *ngIf="!bReadonly$; else noEdit">
     <div *ngIf="bVisible$">
       <component-mapper
         name="RichTextEditor"
-        [props]="{ placeholder, required: bRequired$, disabled: bDisabled$, label: label$, readonly: false, error, info, testId, value:value$ }"
+        [props]="{ placeholder, required: bRequired$, disabled: bDisabled$, label: label$, readonly: false, error, info, testId, value: value$ }"
         [parent]="this"
         [outputEvents]="{ onBlur: fieldOnBlur, onChange: fieldOnChange }"
       ></component-mapper>

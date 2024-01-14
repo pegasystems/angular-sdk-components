@@ -56,7 +56,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
     if (this.showHighlightedData) {
       const highlightedData = rawMetaData?.highlightedData;
-      this.highlightedDataArr = highlightedData.map((field) => {
+      this.highlightedDataArr = highlightedData.map(field => {
         field.config.displayMode = 'STACKED_LARGE_VAL';
 
         if (field.config.value === '@P .pyStatusWork') {
@@ -73,7 +73,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
       this.arFields$ = [];
       const pKid = kid.getPConnect();
       const fields = pKid.getChildren();
-      fields?.forEach((field) => {
+      fields?.forEach(field => {
         const thePConn = field.getPConnect();
         const theCompType = thePConn.getComponentName().toLowerCase();
         if (theCompType === 'reference') {

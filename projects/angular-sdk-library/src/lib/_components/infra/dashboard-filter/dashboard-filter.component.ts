@@ -35,7 +35,7 @@ export class DashboardFilterComponent implements OnInit {
   private filterChangeSubject = new Subject<string>();
 
   constructor() {
-    this.filterChangeSubject.pipe(debounceTime(500)).subscribe((val) => this.fireFilterChange(val));
+    this.filterChangeSubject.pipe(debounceTime(500)).subscribe(val => this.fireFilterChange(val));
   }
 
   ngOnInit() {

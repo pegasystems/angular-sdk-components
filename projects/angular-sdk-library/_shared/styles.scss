@@ -14,8 +14,7 @@ $app-form-color: white;
 
 // svg filter colors that match above, go here to generate https://codepen.io/sosuke/pen/Pjoqqp
 $app-primary-color-filter: invert(23%) sepia(23%) saturate(6785%) hue-rotate(250deg) brightness(93%) contrast(88%);
-$app-primary-dark-color-filter: invert(19%) sepia(20%) saturate(6809%) hue-rotate(242deg) brightness(100%)
-  contrast(106%);
+$app-primary-dark-color-filter: invert(19%) sepia(20%) saturate(6809%) hue-rotate(242deg) brightness(100%) contrast(106%);
 $app-secondary-color-filter: invert(83%) sepia(31%) saturate(4626%) hue-rotate(360deg) brightness(103%) contrast(104%);
 $app-neutral-color-filter: invert(55%) sepia(25%) saturate(0%) hue-rotate(269deg) brightness(87%) contrast(91%);
 $app-neutral-light-color-filter: invert(69%) sepia(74%) saturate(0%) hue-rotate(205deg) brightness(102%) contrast(103%);

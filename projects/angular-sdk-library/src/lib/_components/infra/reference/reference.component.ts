@@ -158,7 +158,7 @@ export class ReferenceComponent {
       return inPConnArray;
     }
 
-    return inPConnArray.map((child) => {
+    return inPConnArray.map(child => {
       return ReferenceComponent.normalizePConn(child);
     });
   }

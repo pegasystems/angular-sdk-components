@@ -8,9 +8,8 @@ describe('MaterialCaseSummaryComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MaterialCaseSummaryComponent ]
-    })
-    .compileComponents();
+      declarations: [MaterialCaseSummaryComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

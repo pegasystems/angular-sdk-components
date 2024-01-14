@@ -8,9 +8,8 @@ describe('MultiStepComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MultiStepComponent ]
-    })
-    .compileComponents();
+      declarations: [MultiStepComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

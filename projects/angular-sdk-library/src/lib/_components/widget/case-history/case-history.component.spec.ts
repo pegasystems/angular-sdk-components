@@ -8,9 +8,8 @@ describe('CaseHistoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CaseHistoryComponent ]
-    })
-    .compileComponents();
+      declarations: [CaseHistoryComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {

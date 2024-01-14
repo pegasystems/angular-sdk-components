@@ -8,9 +8,8 @@ describe('TwoColumnTabComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TwoColumnTabComponent ]
-    })
-    .compileComponents();
+      declarations: [TwoColumnTabComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

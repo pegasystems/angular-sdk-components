@@ -75,11 +75,11 @@ export class MCNavComponent implements OnInit, OnDestroy {
     sessionStorage.clear();
 
     // handle showing and hiding the progress spinner
-    this.progressSpinnerSubscription = this.psservice.getMessage().subscribe((message) => {
+    this.progressSpinnerSubscription = this.psservice.getMessage().subscribe(message => {
       this.showHideProgress(message.show);
     });
 
-    this.resetPConnectSubscription = this.rpcservice.getMessage().subscribe((message) => {
+    this.resetPConnectSubscription = this.rpcservice.getMessage().subscribe(message => {
       if (message.reset) {
         this.bPConnectLoaded$ = false;
 
@@ -135,7 +135,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
   }
 
   startMashup() {
-    PCore.onPCoreReady((renderObj) => {
+    PCore.onPCoreReady(renderObj => {
       console.log('PCore ready!');
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
@@ -158,7 +158,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
   initialRender(renderObj) {
     // Need to register the callback function for PCore.registerComponentCreator
     //  This callback is invoked if/when you call a PConnect createComponent
-    PCore.registerComponentCreator((c11nEnv) => {
+    PCore.registerComponentCreator(c11nEnv => {
       // debugger;
 
       // experiment with returning a PConnect that has deferenced the

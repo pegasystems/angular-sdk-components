@@ -16,7 +16,7 @@ console.log('\n compress files');
 // brotli compress all the assets in dist
 // all will end in ".br".  Don't change the names of the files in
 // lib-assets.json, server will pick the .br files if they exist
-readdirSync('dist/').forEach((file) => {
+readdirSync('dist/').forEach(file => {
   if (file.endsWith('.js') || file.endsWith('.css') || file.endsWith('.html')) {
     const result = brot.compress(readFileSync(`dist/${file}`), brotOptions);
     writeFileSync(`dist/${file}.br`, result);

@@ -181,7 +181,7 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
     setTimeout(() => {
       PCore.getPubSubUtils().subscribe(
         PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
-        (data) => {
+        data => {
           this.processFilterChange(data);
         },
         `dashboard-component-${'id'}`,
@@ -230,7 +230,7 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
     let field = this.getFieldFromFilter(filterExpression, isDateRange);
     const selectParam: any[] = [];
     // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-    this.displayedColumns$?.forEach((col) => {
+    this.displayedColumns$?.forEach(col => {
       selectParam.push({
         field: col
       });
@@ -344,7 +344,7 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
 
           const columns = this.getDisplayColumns(columnFields, fieldsMetaData.data.fields, this.fields$);
           this.fields$ = this.updateFields(this.fields$, fieldsMetaData.data.fields, columns);
-          this.displayedColumns$ = columns.map((col) => {
+          this.displayedColumns$ = columns.map(col => {
             return col.id;
           });
           this.response = tableDataResults;
@@ -443,9 +443,9 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
     const value = row[this.rowID];
     const reqObj = {};
     if (this.compositeKeys?.length > 1) {
-      const index = this.response.findIndex((element) => element[this.rowID] === value);
+      const index = this.response.findIndex(element => element[this.rowID] === value);
       const selectedRow = this.response[index];
-      this.compositeKeys.forEach((element) => {
+      this.compositeKeys.forEach(element => {
         reqObj[element] = selectedRow[element];
       });
     } else {
@@ -459,9 +459,9 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
     const checked = event?.checked;
     const reqObj: any = {};
     if (this.compositeKeys?.length > 1) {
-      const index = this.response.findIndex((element) => element[this.rowID] === value);
+      const index = this.response.findIndex(element => element[this.rowID] === value);
       const selectedRow = this.response[index];
-      this.compositeKeys.forEach((element) => {
+      this.compositeKeys.forEach(element => {
         reqObj[element] = selectedRow[element];
       });
       reqObj.$selected = checked;
@@ -1027,7 +1027,7 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
       return data;
     }
     const groups = this.uniqueBy(
-      data.map((row) => {
+      data.map(row => {
         const result = new Group();
         result.level = level + 1;
         result.parent = parent;
@@ -1041,8 +1041,8 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
 
     const currentColumn = groupByColumns[level];
     let subGroups: any[] = [];
-    groups.forEach((group) => {
-      const rowsInGroup = data.filter((row) => group[currentColumn] === row[currentColumn]);
+    groups.forEach(group => {
+      const rowsInGroup = data.filter(row => group[currentColumn] === row[currentColumn]);
       group.totalCounts = rowsInGroup.length;
       const subGroup = this.getSublevel(rowsInGroup, level + 1, groupByColumns, group);
       subGroup.unshift(group);
@@ -1053,7 +1053,7 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
 
   uniqueBy(a, key) {
     const seen = {};
-    return a.filter((item) => {
+    return a.filter(item => {
       const k = key(item);
       // eslint-disable-next-line no-return-assign, no-prototype-builtins
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
@@ -1077,12 +1077,12 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   getDataRowVisible(data: any): boolean {
-    const groupRows = this.repeatList$.data.filter((row) => {
+    const groupRows = this.repeatList$.data.filter(row => {
       if (!(row instanceof Group)) {
         return false;
       }
       let match = true;
-      this.groupByColumns$.forEach((column) => {
+      this.groupByColumns$.forEach(column => {
         if (!row[column] || !data[column] || row[column] !== data[column]) {
           match = false;
         }
@@ -1235,7 +1235,7 @@ export class ListViewComponent implements OnInit, OnDestroy, OnChanges {
       if (theField.indexOf('.') === 0) {
         theField = theField.substring(1);
       }
-      const colIndex = fields.findIndex((ele) => ele.fieldID === theField);
+      const colIndex = fields.findIndex(ele => ele.fieldID === theField);
       const displayAsLink = field.config.displayAsLink;
       const headerRow: any = {};
       headerRow.id = theField;

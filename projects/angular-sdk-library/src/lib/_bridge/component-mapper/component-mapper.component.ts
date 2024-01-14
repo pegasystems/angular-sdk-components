@@ -88,7 +88,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   bindOutputEvents() {
     try {
       for (const event in this.outputEvents) {
-        this.componentRef?.instance[event].subscribe((value) => {
+        this.componentRef?.instance[event].subscribe(value => {
           const callbackFn = this.outputEvents[event].bind(this.parent);
           callbackFn(value);
         });

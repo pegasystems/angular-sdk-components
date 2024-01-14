@@ -8,9 +8,8 @@ describe('PulseComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PulseComponent ]
-    })
-    .compileComponents();
+      declarations: [PulseComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
