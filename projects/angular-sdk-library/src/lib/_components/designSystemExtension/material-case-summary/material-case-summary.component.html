@@ -37,18 +37,7 @@
         "
         class="psdk-csf-secondary-field-data"
       >
-        <ng-container [ngSwitch]="field.config?.label?.toLowerCase()">
-          <component-mapper
-            *ngIf="field.config?.label?.toLowerCase() == 'create operator'"
-            name="Operator"
-            [props]="{ name$: field.config.createOperator.userName, date$: field.config.updateDateTime, id$: field.config.createOperator.userId }"
-          ></component-mapper>
-          <component-mapper
-            *ngIf="field.config?.label?.toLowerCase() == 'update operator'"
-            name="Operator"
-            [props]="{ name$: field.config.updateOperator.userName, date$: field.config.updateDateTime, id$: field.config.updateOperator.userId }"
-          ></component-mapper>
-        </ng-container>
+        <component-mapper name="Operator" [props]="{ pConn$: field?.kid }"></component-mapper>
       </dd>
       <ng-template #hasSecondaryValue>
         <dd class="psdk-csf-secondary-field-data">

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Input, Renderer2, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, Input, Renderer2, ChangeDetectorRef, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Utils } from '../../../_helpers/utils';
@@ -10,16 +10,15 @@ import { Utils } from '../../../_helpers/utils';
   standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
-export class OperatorComponent implements OnInit, OnDestroy {
-  @Input() date$: string;
-  @Input() name$: string;
-
-  @Input() label$: string;
-  @Input() id$: string;
+export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() pConn$: typeof PConnect;
 
   fields$: any[] = [];
   bShowPopover$: boolean;
-
+  date$: string;
+  name$: string;
+  label$: string;
+  id$: string;
   constructor(
     private el: ElementRef,
     private renderer: Renderer2,
@@ -36,8 +35,32 @@ export class OperatorComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.date$ = this.utils.generateDate(this.date$, 'DateTime-Since');
     this.bShowPopover$ = false;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const { pConn$ } = changes;
+    if (pConn$.previousValue !== pConn$.currentValue) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf(): void {
+    const configProps$ = this.pConn$.getConfigProps() as any;
+    if (configProps$?.label?.toLowerCase() == 'create operator') {
+      this.name$ = configProps$.createOperator.userName;
+      this.id$ = configProps$.createOperator.userId;
+    } else if (configProps$?.label?.toLowerCase() == 'update operator') {
+      this.name$ = configProps$.updateOperator.userName;
+      this.id$ = configProps$.updateOperator.userId;
+    } else if (configProps$?.label?.toLowerCase() == 'resolve operator') {
+      this.name$ = configProps$.resolveOperator.userName;
+      this.id$ = configProps$.resolveOperator.userId;
+    } else {
+      this.name$ = configProps$?.value.userName;
+      this.id$ = configProps$?.value.userId;
+    }
+    this.date$ = this.utils.generateDate(configProps$?.updateDateTime, 'DateTime-Since');
   }
 
   ngOnDestroy(): void {
