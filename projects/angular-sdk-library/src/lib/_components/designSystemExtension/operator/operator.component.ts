@@ -45,6 +45,10 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
+  ngOnDestroy(): void {
+    this.renderer.destroy();
+  }
+
   updateSelf(): void {
     const configProps$ = this.pConn$.getConfigProps() as any;
     if (configProps$?.label?.toLowerCase() == 'create operator') {
@@ -61,10 +65,6 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
       this.id$ = configProps$?.value.userId;
     }
     this.date$ = this.utils.generateDate(configProps$?.updateDateTime, 'DateTime-Since');
-  }
-
-  ngOnDestroy(): void {
-    this.renderer.destroy();
   }
 
   showOperator() {
