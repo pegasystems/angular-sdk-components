@@ -294,6 +294,10 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
     this.angularPConnectData.actions?.onChange(this, event);
+    this.filteredOptions = this.fieldControl.valueChanges.pipe(
+      startWith((event.target as HTMLInputElement)?.value),
+      map(value => this._filter(value || ''))
+    );
   }
 
   optionChanged(event: MatAutocompleteSelectedEvent) {
