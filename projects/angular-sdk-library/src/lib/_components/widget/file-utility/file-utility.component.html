@@ -8,7 +8,8 @@
       count$: lu_count$,
       arActions$: lu_arActions$,
       arItems$: lu_arItems$,
-      onViewAll$: lu_onViewAllFunction
+      onViewAll$: lu_onViewAllFunction,
+      menuIconOverrideAction$: removeFileFromList$
     }"
   ></component-mapper>
 </div>
@@ -93,7 +94,7 @@
       </div>
     </div>
     <div class="psdk-view-all-body">
-      <component-mapper name="SummaryList" [props]="{ arItems$: va_arItems$ }"></component-mapper>
+      <component-mapper name="SummaryList" [props]="{ arItems$: va_arItems$, menuIconOverrideAction$: removeLinksFromList$ }"></component-mapper>
     </div>
   </div>
 </div>

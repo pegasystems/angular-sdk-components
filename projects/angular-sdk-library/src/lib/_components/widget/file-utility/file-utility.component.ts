@@ -221,31 +221,32 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     this.bShowViewAllModal$ = true;
 
     // add clickAway listener
-    window.addEventListener('mouseup', this._clickAway.bind(this));
+    // window.addEventListener('mouseup', this._clickAway.bind(this));
   }
 
-  _clickAway(event: any) {
-    let bInPopUp = false;
+  // Below method is not needed, still having it commented in case we want in future
+  // _clickAway(event: any) {
+  //   let bInPopUp = false;
 
-    // run through list of elements in path, if menu not in th path, then want to
-    // hide (toggle) the menu
-    for (const i in event.path) {
-      if (event.path[i].className == 'psdk-modal-file-top' || event.path[i].tagName == 'BUTTON') {
-        bInPopUp = true;
-        break;
-      }
-    }
-    if (!bInPopUp) {
-      this.bShowViewAllModal$ = false;
+  //   // run through list of elements in path, if menu not in th path, then want to
+  //   // hide (toggle) the menu
+  //   for (const i in event.path) {
+  //     if (event.path[i].className == 'psdk-modal-file-top' || event.path[i].tagName == 'BUTTON') {
+  //       bInPopUp = true;
+  //       break;
+  //     }
+  //   }
+  //   if (!bInPopUp) {
+  //     this.bShowViewAllModal$ = false;
 
-      window.removeEventListener('mouseup', this._clickAway.bind(this));
-    }
-  }
+  //     window.removeEventListener('mouseup', this._clickAway.bind(this));
+  //   }
+  // }
 
   _closeViewAll() {
     this.bShowViewAllModal$ = false;
 
-    window.removeEventListener('mouseup', this._clickAway.bind(this));
+    // window.removeEventListener('mouseup', this._clickAway.bind(this));
   }
 
   removeFileFromList(item: any) {

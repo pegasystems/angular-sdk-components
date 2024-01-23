@@ -20,6 +20,7 @@ export class ListUtilityComponent implements OnInit {
   @Input() count$ = 0;
   @Input() arActions$: any[] = [];
   @Input() arItems$: any[] = [];
+  @Input() menuIconOverrideAction$: any[] = [];
 
   // function to all
   @Input() onViewAll$: any;
