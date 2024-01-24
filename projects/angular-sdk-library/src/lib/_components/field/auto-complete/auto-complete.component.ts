@@ -116,7 +116,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   }
 
   private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+    const filterValue = (value || this.value$).toLowerCase();
     return this.options$?.filter(option => option.value.toLowerCase().includes(filterValue));
   }
 
@@ -284,20 +284,14 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     });
   }
 
-  isSelected(buttonValue: string): boolean {
-    return this.value$ === buttonValue;
-  }
-
   fieldOnChange(event: Event) {
     // this works - this.pConn$.setValue( this.componentReference, `property: ${this.componentReference}`);
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
     this.angularPConnectData.actions?.onChange(this, event);
-    this.filteredOptions = this.fieldControl.valueChanges.pipe(
-      startWith((event.target as HTMLInputElement)?.value),
-      map(value => this._filter(value || ''))
-    );
+
+    this.value$ = (event.target as HTMLInputElement).value;
   }
 
   optionChanged(event: MatAutocompleteSelectedEvent) {
