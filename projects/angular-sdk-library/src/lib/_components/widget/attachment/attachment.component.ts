@@ -29,7 +29,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  PCoreVersion: string;
 
   label$ = '';
   value$: any;
@@ -68,7 +67,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.removeFileFromList$ = { onClick: this._removeFileFromList.bind(this) };
-    this.PCoreVersion = PCore.getPCoreVersion();
 
     this.caseID = PCore.getStoreValue('.pyID', 'caseInfo.content', this.pConn$.getContextName());
 
@@ -211,10 +209,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
             this.processFile(file, i);
           }
           if (file) {
-            const currentAttachmentList = this.getCurrentAttachmentsList(
-              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-              this.pConn$.getContextName()
-            );
+            const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
             const index = currentAttachmentList.findIndex(element => element.props.ID === file.props.ID);
             let tempFiles: any = [];
             if (index < 0) {
@@ -223,7 +218,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
             PCore.getStateUtils().updateState(
               this.pConn$.getContextName(),
-              this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+              this.getAttachmentKey(this.att_valueRef),
               [...currentAttachmentList, ...tempFiles],
               {
                 pageReference: 'context_data',
@@ -235,10 +230,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       });
     } else {
       // Get the attachments from the Redux
-      this.myFiles = this.getCurrentAttachmentsList(
-        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-        this.pConn$.getContextName()
-      );
+      this.myFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
 
       if (this.myFiles?.length && this.arFiles$.length === 0) {
         this.arFileList$ = this.myFiles.map(att => {
@@ -278,15 +270,10 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   resetAttachmentStoredState() {
-    PCore.getStateUtils().updateState(
-      this.pConn$.getContextName(),
-      this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-      undefined,
-      {
-        pageReference: 'context_data',
-        isArrayDeepMerge: false
-      }
-    );
+    PCore.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.att_valueRef), undefined, {
+      pageReference: 'context_data',
+      isArrayDeepMerge: false
+    });
   }
 
   _downloadFileFromList(fileObj: any) {
@@ -332,10 +319,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     const fileIndex = this.arFiles$.findIndex(element => element?.ID === item?.id);
 
     const attachmentsList = [];
-    let currentAttachmentList = this.getCurrentAttachmentsList(
-      this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-      this.pConn$.getContextName()
-    );
+    let currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
     if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0 && item.actions) {
       const updatedAttachments = currentAttachmentList.map(attachment => {
         if (attachment?.ID === this.arFileList$[fileListIndex].id || attachment?.props?.ID === this.arFileList$[fileListIndex].id) {
@@ -345,20 +329,15 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       });
 
       // updating the redux store to help form-handler in passing the data to delete the file from server
-      PCore.getStateUtils().updateState(
-        this.pConn$.getContextName(),
-        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-        updatedAttachments,
-        {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false
-        }
-      );
+      PCore.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.att_valueRef), updatedAttachments, {
+        pageReference: 'context_data',
+        isArrayDeepMerge: false
+      });
     } else {
       currentAttachmentList = currentAttachmentList.filter(f => f.ID !== item.id);
       PCore.getStateUtils().updateState(
         this.pConn$.getContextName(),
-        this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+        this.getAttachmentKey(this.att_valueRef),
         [...currentAttachmentList, ...attachmentsList],
         {
           pageReference: 'context_data',
@@ -489,13 +468,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
               newAttachments = [...newAttachments, reqObj];
             }
           });
-          const currentAttachmentList = this.getCurrentAttachmentsList(
-            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
-            this.pConn$.getContextName()
-          ).filter(f => f.label !== this.att_valueRef);
+          const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName()).filter(
+            f => f.label !== this.att_valueRef
+          );
           PCore.getStateUtils().updateState(
             this.pConn$.getContextName(),
-            this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
+            this.getAttachmentKey(this.att_valueRef),
             [...currentAttachmentList, ...newAttachments],
             {
               pageReference: 'context_data',

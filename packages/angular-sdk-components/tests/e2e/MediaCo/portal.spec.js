@@ -110,8 +110,6 @@ test.describe('E2E test', () => {
     const attachInputId = await page.locator('div[id="attachment-container"] >> input').getAttribute('id');
     await page.setInputFiles(`#${attachInputId}`, filePath);
 
-    const PCoreVersion = await page.evaluate(() => window.PCore.getPCoreVersion());
-
     await Promise.all([
       page.waitForResponse(
         `${endpoints.serverConfig.infinityRestServerUrl}${
@@ -126,7 +124,7 @@ test.describe('E2E test', () => {
       page.waitForResponse(
         `${endpoints.serverConfig.infinityRestServerUrl}${
           endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''
-        }/api/application/v2/cases/${currentCaseID}/attachments${PCoreVersion.includes('8.23') ? '?includeThumbnail=false' : ''}`
+        }/api/application/v2/cases/${currentCaseID}/attachments?includeThumbnail=false`
       )
     ]);
 
