@@ -1,3 +1,22 @@
+const { config } = require('./config');
+
+const launchPortal = async ({ page }) => {
+  await page.setViewportSize({ width: 1720, height: 1080 });
+  await page.goto(`${config.baseUrl}`, { waitUntil: 'networkidle' });
+};
+
+const launchEmbedded = async ({ page }) => {
+  await page.setViewportSize({ width: 1720, height: 1080 });
+  await page.goto(`${config.baseEmbedUrl}`, { waitUntil: 'networkidle' });
+};
+
+const launchSelfServicePortal = async ({ page }) => {
+  await page.setViewportSize({ width: 1720, height: 1080 });
+  await page.goto(`${config.baseUrl}?portal=DigV2SelfService`, {
+    waitUntil: 'networkidle'
+  });
+};
+
 const login = async (username, password, page) => {
   await page.locator('input[id="txtUserID"]').fill(username);
   await page.locator('input[id="txtPassword"]').fill(password);
@@ -27,6 +46,9 @@ const getFutureDate = () => {
 };
 
 module.exports = {
+  launchPortal,
+  launchEmbedded,
+  launchSelfServicePortal,
   login,
   getAttributes,
   getFutureDate,
