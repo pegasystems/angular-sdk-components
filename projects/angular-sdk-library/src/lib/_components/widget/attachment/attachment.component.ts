@@ -51,11 +51,11 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   fileTemp: any = {};
   caseID: any;
   allowMultiple$ = false;
-  extensions$: any = '';
+  extensions$ = '';
   status = '';
   validateMessage: string | undefined = '';
-  valueRef: any;
-  imagePath$: any;
+  valueRef: string;
+  imagePath$: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -100,6 +100,59 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.checkAndUpdate();
   }
 
+  updateAttachmentsInfo() {
+    // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
+    if (!this.pConn$.attachmentsInfo) {
+      // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
+      this.pConn$.attachmentsInfo = {
+        type: 'File',
+        attachmentFieldName: this.att_valueRef,
+        category: this.att_categoryName
+      };
+    }
+  }
+
+  processFile(file, i) {
+    file.props.type = file.responseProps.pyMimeFileExtension;
+    file.props.mimeType = file.responseProps.pyMimeFileExtension;
+    file.props.ID = file.responseProps.pzInsKey;
+
+    const arMenuList = [
+      {
+        icon: 'download',
+        text: this.pConn$.getLocalizedValue('Download', '', ''),
+        onClick: () => this._downloadFileFromList(this.value$.pxResults[i])
+      },
+      {
+        icon: 'trash',
+        text: this.pConn$.getLocalizedValue('Delete', '', ''),
+        onClick: () => this._removeFileFromList(this.arFileList$[i])
+      }
+    ];
+
+    const arFilesAttachmentIDs: any = [];
+    this.arFileList$.forEach(arFile => {
+      arFilesAttachmentIDs.push(arFile.id);
+    });
+
+    if (!arFilesAttachmentIDs.includes(file.props.ID)) {
+      this.arFileList$.push(
+        this.getNewListUtilityItemProps({
+          att: file.props,
+          downloadFile: null,
+          cancelFile: null,
+          deleteFile: null,
+          removeFile: null
+        })
+      );
+    }
+
+    this.arFileList$[i].actions = arMenuList;
+    this.arFileList$[i].noDeleteIcon = true;
+
+    this.bShowSelector$ = false;
+  }
+
   updateSelf() {
     const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
     const stateProps: any = this.pConn$.getStateProps();
@@ -133,7 +186,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.validateMessage = this.angularPConnectData.validateMessage;
     this.extensions$ = extensions;
     this.valueRef = (this.pConn$.getStateProps() as any).value;
-    this.valueRef = this.valueRef.indexOf('.') === 0 ? this.valueRef.substring(1) : this.valueRef;
+    this.valueRef = this.valueRef.startsWith('.') ? this.valueRef.substring(1) : this.valueRef;
 
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
@@ -147,65 +200,15 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.att_valueRef = (this.pConn$.getStateProps() as any).value;
     this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
 
-    if (value && value.pxResults && +value.pyCount > 0) {
-      this.fileTemp = value.pxResults.map(attach => this.buildFilePropsFromResponse(attach));
+    const attachmentsFromServer = this.value$ && this.value$.pxResults && +this.value$.pyCount > 0;
 
-      this.fileTemp.forEach((file, i) => {
+    if (attachmentsFromServer) {
+      this.value$.pxResults.forEach((attachment, i) => {
+        const file: any = this.buildFilePropsFromResponse(attachment);
         if (file.responseProps) {
-          // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-          if (!this.pConn$.attachmentsInfo) {
-            // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-            this.pConn$.attachmentsInfo = {
-              type: 'File',
-              attachmentFieldName: this.att_valueRef,
-              category: this.att_categoryName
-            };
-          }
-
+          this.updateAttachmentsInfo();
           if (file.responseProps.pzInsKey && !file.responseProps.pzInsKey.includes('temp')) {
-            file.props.type = file.responseProps.pyMimeFileExtension;
-            file.props.mimeType = file.responseProps.pyMimeFileExtension;
-            file.props.ID = file.responseProps.pzInsKey;
-
-            // create the actions for the "more" menu on the attachment
-            const arMenuList: any[] = [];
-            let oMenu: any = {};
-
-            oMenu.icon = 'download';
-            oMenu.text = this.pConn$.getLocalizedValue('Download', '', '');
-            oMenu.onClick = () => {
-              this._downloadFileFromList(this.value$.pxResults[i]);
-            };
-            arMenuList.push(oMenu);
-            oMenu = {};
-            oMenu.icon = 'trash';
-            oMenu.text = this.pConn$.getLocalizedValue('Delete', '', '');
-            oMenu.onClick = () => {
-              this._removeFileFromList(this.arFileList$[i]);
-            };
-            arMenuList.push(oMenu);
-
-            const arFilesAttachmentIDs: any = [];
-            this.arFileList$.forEach(arFile => {
-              arFilesAttachmentIDs.push(arFile.id);
-            });
-
-            if (!arFilesAttachmentIDs.includes(file.props.ID)) {
-              this.arFileList$.push(
-                this.getNewListUtilityItemProps({
-                  att: file.props,
-                  downloadFile: null,
-                  cancelFile: null,
-                  deleteFile: null,
-                  removeFile: null
-                })
-              );
-            }
-
-            this.arFileList$[i].actions = arMenuList;
-            this.arFileList$[i].noDeleteIcon = true;
-
-            this.bShowSelector$ = false;
+            this.processFile(file, i);
           }
           if (file) {
             const currentAttachmentList = this.getCurrentAttachmentsList(
@@ -231,6 +234,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
         }
       });
     } else {
+      // Get the attachments from the Redux
       this.myFiles = this.getCurrentAttachmentsList(
         this.getAttachmentKey(this.PCoreVersion?.includes('8.23') ? this.att_valueRef : ''),
         this.pConn$.getContextName()
