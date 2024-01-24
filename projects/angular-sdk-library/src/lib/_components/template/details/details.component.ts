@@ -94,7 +94,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
             },
             options
           };
-          const theViewCont = window.PCore.createPConnect(viewContConfig);
+          const theViewCont = PCore.createPConnect(viewContConfig);
           const data = {
             type: theCompType,
             pConn: theViewCont?.getPConnect()

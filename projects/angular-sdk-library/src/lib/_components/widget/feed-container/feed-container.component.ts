@@ -242,7 +242,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
 
     const postComment = ({ value: message, clear }) => {
       const attachmentIDs = [];
-      const attachmentUtils = window.PCore.getAttachmentUtils();
+      const attachmentUtils = PCore.getAttachmentUtils();
       if (attachments && !!attachments.length) {
         attachments
           .filter((file) => !file.error)

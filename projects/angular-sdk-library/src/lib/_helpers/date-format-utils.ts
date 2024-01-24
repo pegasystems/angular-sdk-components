@@ -8,7 +8,7 @@ export const dateFormatInfoDefault = {
 };
 
 export const getDateFormatInfo = () => {
-  const localizedVal = window.PCore?.getLocaleUtils().getLocaleValue;
+  const localizedVal = PCore?.getLocaleUtils().getLocaleValue;
   const localeCategory = 'CosmosFields';
   const theDateFormatInfo = dateFormatInfoDefault;
   const theLocale = getLocale();

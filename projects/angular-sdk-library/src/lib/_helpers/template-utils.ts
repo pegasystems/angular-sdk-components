@@ -11,8 +11,8 @@ export class TemplateUtils {
   getIsAssignmentView(pConnect) {
     // Get caseInfo content from the store which contains the view info about the current assignment/step
     // TODO To be replaced with pConnect.getCaseInfo().getCurrentAssignmentView when it's available
-    const assignmentViewClass = pConnect.getValue(window.PCore.getConstants().CASE_INFO.CASE_INFO_CLASSID);
-    const assignmentViewName = pConnect.getValue(window.PCore.getConstants().CASE_INFO.ASSIGNMENTACTION_ID);
+    const assignmentViewClass = pConnect.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_CLASSID);
+    const assignmentViewName = pConnect.getValue(PCore.getConstants().CASE_INFO.ASSIGNMENTACTION_ID);
 
     const assignmentViewId = `${assignmentViewName}!${assignmentViewClass}`;
 
@@ -28,8 +28,7 @@ export class TemplateUtils {
    * @param {string} [instructions="casestep"] 'casestep', 'none', or the html content of a Rule-UI-Paragraph rule (processed via core's paragraph annotation handler)
    */
   getInstructions(pConnect, instructions = 'casestep') {
-    const caseStepInstructions =
-      window.PCore.getConstants().CASE_INFO.INSTRUCTIONS && pConnect.getValue(window.PCore.getConstants().CASE_INFO.INSTRUCTIONS);
+    const caseStepInstructions = PCore.getConstants().CASE_INFO.INSTRUCTIONS && pConnect.getValue(PCore.getConstants().CASE_INFO.INSTRUCTIONS);
 
     // Determine if this view is the current assignment/step view
     const isCurrentAssignmentView = this.getIsAssignmentView(pConnect);

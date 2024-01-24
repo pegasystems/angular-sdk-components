@@ -35,7 +35,7 @@ function getMessagesGrouped(inputMessages) {
  * Eg: 'urgent'
  */
 function getVariant(type) {
-  const { BANNER_VARIANT_SUCCESS, BANNER_VARIANT_INFO, BANNER_VARIANT_URGENT, MESSAGES } = window.PCore.getConstants();
+  const { BANNER_VARIANT_SUCCESS, BANNER_VARIANT_INFO, BANNER_VARIANT_URGENT, MESSAGES } = PCore.getConstants();
   const { MESSAGES_TYPE_ERROR, MESSAGES_TYPE_INFO, MESSAGES_TYPE_SUCCESS } = MESSAGES;
 
   let variant;
@@ -57,8 +57,8 @@ function getVariant(type) {
 
 function getBanners(config) {
   const { target, pageMessages, httpMessages } = config;
-  const { PAGE } = window.PCore.getConstants();
-  // const { clearMessages } = window.PCore.getMessageManager();
+  const { PAGE } = PCore.getConstants();
+  // const { clearMessages } = PCore.getMessageManager();
   const banners: any = [];
   const groupedPageMessages = getMessagesGrouped(pageMessages);
 

@@ -9,8 +9,6 @@ import { UpdateWorklistService } from '../../../_messages/update-worklist.servic
 import { CaseService } from '../../../_services/case.service';
 import { DatapageService } from '../../../_services/datapage.service';
 
-declare const window: any;
-
 @Component({
   selector: 'app-side-bar',
   templateUrl: './side-bar.component.html',
@@ -112,7 +110,8 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
     this.psservice.sendMessage(true);
 
-    window.PCore.getPubSubUtils().publish('showWork');
+    // @ts-ignore - second parameter “payload” for publish method should be optional
+    PCore.getPubSubUtils().publish('showWork');
 
     createWork(oButtonData.caseTypeID, actionInfo);
   }
@@ -129,7 +128,8 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
     this.psservice.sendMessage(true);
 
-    window.PCore.getPubSubUtils().publish('showWork');
+    // @ts-ignore - second parameter “payload” for publish method should be optional
+    PCore.getPubSubUtils().publish('showWork');
 
     openAssignment(pzInsKey, pxRefObjectClass, options).then(() => {});
   }
