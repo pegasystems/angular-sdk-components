@@ -72,7 +72,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
         const propsKeys = Object.keys(this.props);
         const propsValues = Object.values(this.props);
         for (let i = 0; i < propsKeys.length; i++) {
-          if (propsKeys[i] !== undefined) {
+          if (propsValues[i] !== undefined) {
             // We'll set 'displayOnlyFA$' prop only to the components which really need it
             // Eventual plan is to get rid of this particular prop
             if (propsKeys[i] === 'displayOnlyFA$' && !componentsRequireDisplayOnlyFAProp.includes(this.name)) {
