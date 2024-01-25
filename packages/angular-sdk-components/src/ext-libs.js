@@ -2,7 +2,6 @@ const extDefinition = [];
 
 const extWebpack = extDefinition.forEach(lib => lib.export);
 
-// eslint-disable-next-line no-undef
 module.exports = { extDefinition, extWebpack };
 
 /* Example external libs */

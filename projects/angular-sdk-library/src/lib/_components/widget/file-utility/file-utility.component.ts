@@ -251,11 +251,14 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
 
   removeFileFromList(item: any) {
     if (item != null) {
-      for (const fileIndex in this.arFileList$) {
-        if (this.arFileList$[fileIndex].id == item.id) {
+      const arFileList = this.arFileList$;
+      const itemId = item.id;
+
+      for (let fileIndex = 0; fileIndex < arFileList.length; fileIndex++) {
+        if (arFileList[fileIndex].id == itemId) {
           // remove the file from the list and redraw
           this.ngZone.run(() => {
-            this.arFileList$.splice(parseInt(fileIndex, 10), 1);
+            arFileList.splice(fileIndex, 1);
           });
           break;
         }
@@ -267,11 +270,12 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     const localLinksList = this.arLinksList$.slice();
 
     if (item != null) {
-      for (const linkIndex in localLinksList) {
-        if (localLinksList[linkIndex].id == item.id) {
-          // remove the file from the list and redraw
+      const itemId = item.id;
 
-          localLinksList.splice(parseInt(linkIndex, 10), 1);
+      for (let linkIndex = 0; linkIndex < localLinksList.length; linkIndex++) {
+        if (localLinksList[linkIndex].id == itemId) {
+          // remove the file from the list and redraw
+          localLinksList.splice(linkIndex, 1);
 
           this.ngZone.run(() => {
             this.arLinksList$ = localLinksList.slice();
@@ -682,41 +686,64 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   }
 
   updateSelf() {
-    const attachmentUtils = PCore.getAttachmentUtils();
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
+    const caseID = this.getCaseID();
 
-    if (caseID && caseID != '') {
-      const attPromise = attachmentUtils.getCaseAttachments(caseID, this.pConn$.getContextName());
-
+    if (caseID) {
       this.lu_bLoading$ = true;
 
-      attPromise.then(resp => {
-        this.arFullListAttachments = this.addAttachments(resp);
-        this.lu_count$ = this.arFullListAttachments.length;
-        this.lu_arActions$ = this.addAttachmentsActions;
-
-        this.lu_arItems$ = this.arFullListAttachments.slice(0, 3).map(att => {
-          return this.getListUtilityItemProps({
-            att,
-            downloadFile: !att.progress ? () => this.downloadFile(att) : null,
-            cancelFile: att.progress ? () => this.cancelFile() : null,
-            deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-            removeFile: att.error ? () => this.removeFile() : null
-          });
-        });
-
-        this.va_arItems$ = this.arFullListAttachments.map(att => {
-          return this.getListUtilityItemProps({
-            att,
-            downloadFile: !att.progress ? () => this.downloadFile(att) : null,
-            cancelFile: att.progress ? () => this.cancelFile() : null,
-            deleteFile: !att.progress ? () => this.deleteFile(att) : null,
-            removeFile: att.error ? () => this.removeFile() : null
-          });
-        });
+      this.fetchCaseAttachments(caseID).then(resp => {
+        this.handleAttachmentsResponse(resp);
       });
     }
+  }
+
+  getCaseID() {
+    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    return this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID) || '';
+  }
+
+  fetchCaseAttachments(caseID) {
+    const attachmentUtils = PCore.getAttachmentUtils();
+    return attachmentUtils.getCaseAttachments(caseID, this.pConn$.getContextName());
+  }
+
+  handleAttachmentsResponse(resp) {
+    this.arFullListAttachments = this.addAttachments(resp);
+    this.lu_count$ = this.arFullListAttachments.length;
+    this.lu_arActions$ = this.addAttachmentsActions;
+
+    this.lu_arItems$ = this.getUtilityItems(this.arFullListAttachments.slice(0, 3));
+    this.va_arItems$ = this.getUtilityItems(this.arFullListAttachments);
+  }
+
+  getUtilityItems(attachments) {
+    return attachments.map(this.mapAttachmentToUtilityItem.bind(this));
+  }
+
+  mapAttachmentToUtilityItem(att) {
+    return this.getListUtilityItemProps({
+      att,
+      downloadFile: this.getDownloadFunction(att),
+      cancelFile: this.getCancelFunction(att),
+      deleteFile: this.getDeleteFunction(att),
+      removeFile: this.getRemoveFunction(att)
+    });
+  }
+
+  getDownloadFunction(att) {
+    return !att.progress ? () => this.downloadFile(att) : null;
+  }
+
+  getCancelFunction(att) {
+    return att.progress ? () => this.cancelFile() : null;
+  }
+
+  getDeleteFunction(att) {
+    return !att.progress ? () => this.deleteFile(att) : null;
+  }
+
+  getRemoveFunction(att) {
+    return att.error ? () => this.removeFile() : null;
   }
 
   caseHasChanged(): boolean {

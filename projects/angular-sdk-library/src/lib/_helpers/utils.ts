@@ -51,9 +51,12 @@ export class Utils {
       if (pConn.hasChildren() && pConn.getChildren() != null) {
         console.log(`${sDash}kidCount:${pConn.getChildren().length}`);
         const kids = pConn.getChildren();
-        for (const index in kids) {
-          const kid = kids[index];
-          this.consoleKidDump(kid.getPConnect(), level + 1, parseInt(index, 10) + 1);
+        const kidsKeys = Object.keys(kids);
+
+        for (let i = 0, len = kidsKeys.length; i < len; i++) {
+          const index = parseInt(kidsKeys[i], 10) + 1;
+          const kid = kids[kidsKeys[i]];
+          this.consoleKidDump(kid.getPConnect(), level + 1, index);
         }
       }
     } catch (ex) {
@@ -76,39 +79,52 @@ export class Utils {
 
   getOptionList(configProps: any, dataObject: any): any[] {
     const listType = configProps.listType;
-    let arReturn: any[] = [];
 
-    if (listType != null) {
-      switch (listType.toLowerCase()) {
-        case 'associated':
-          // data source should be an array
-          if (typeof configProps.datasource === 'object') {
-            arReturn = configProps.datasource;
-          }
-          break;
-        case 'datapage':
-          // get data page
-          // eslint-disable-next-line no-case-declarations
-          const dataPage = configProps.datasource;
-          if (dataObject[dataPage]) {
-            alert('need to handle data page');
-          } else {
-            let listSourceItems = configProps.listOutput;
-            if (typeof dataPage === 'object' && !Array.isArray(listSourceItems)) {
-              listSourceItems = dataPage.source ? dataPage.source : [];
-            }
-            (listSourceItems || []).forEach(item => {
-              item.value = item.text ? item.text : item.value;
-            });
-            arReturn = listSourceItems || [];
-          }
-          break;
-        default:
-          break;
-      }
+    if (listType == null) {
+      return [];
     }
 
-    return arReturn;
+    switch (listType.toLowerCase()) {
+      case 'associated':
+        return this.handleAssociatedList(configProps);
+      case 'datapage':
+        return this.handleDataPageList(configProps, dataObject);
+      default:
+        return [];
+    }
+  }
+
+  handleAssociatedList(configProps: any): any[] {
+    const dataSource = configProps.datasource;
+
+    if (Array.isArray(dataSource)) {
+      return dataSource;
+    }
+
+    return [];
+  }
+
+  handleDataPageList(configProps: any, dataObject: any): any[] {
+    const dataPage = configProps.datasource;
+
+    if (dataObject[dataPage]) {
+      alert('need to handle data page');
+      return [];
+    }
+
+    let listSourceItems = configProps.listOutput;
+
+    if (typeof dataPage === 'object' && !Array.isArray(listSourceItems)) {
+      listSourceItems = dataPage.source ? dataPage.source : [];
+    }
+
+    return this.transformListSourceItems(listSourceItems);
+  }
+
+  transformListSourceItems(listSourceItems: any[]): any[] {
+    return (listSourceItems || []).map(item => {
+      return { value: item.text || item.value };
+    });
   }
 
   getInitials(userName: string): string {

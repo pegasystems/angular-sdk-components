@@ -429,15 +429,15 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   convertToArray(messages: any[]): any[] {
     const arMessages: any[] = [];
 
-    for (const message in messages) {
-      arMessages.push(messages[message]);
+    for (let i = 0; i < messages.length; i++) {
+      arMessages.push(messages[i]);
     }
 
     return arMessages;
   }
 
   appendPulseMessage(messages: any[]): any[] {
-    for (const i in messages) {
+    for (let i = 0; i < messages.length; i++) {
       const message = messages[i];
       const postedTime = message.postedTime;
       const updatedTime = message.updatedTime;
@@ -456,12 +456,12 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
       message.displayPostedBy = message.postedByUser.name;
       message.displayPostedByInitials = this.utils.getInitials(message.postedByUser.name);
 
-      // if didn't break, the look at the replies
-      for (const iR in message.replies) {
-        const reply = message.replies[iR];
+      // if didn't break, then look at the replies
+      for (let j = 0; j < message.replies.length; j++) {
+        const reply = message.replies[j];
 
         const replyPostedTime = reply.postedTime;
-        reply.displayPostedTime = this.utils.generateDateTime(postedTime, 'DateTime-Since');
+        reply.displayPostedTime = this.utils.generateDateTime(replyPostedTime, 'DateTime-Since');
 
         // let oReplyUser = this.userData.get(reply.postedByUser);
         const oReplyUser = reply.postedByUser;
@@ -477,7 +477,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   }
 
   updateMessagesWithOperators() {
-    for (const i in this.pulseMessages$) {
+    for (let i = 0; i < this.pulseMessages$.length; i++) {
       const message = this.pulseMessages$[i];
 
       const postedTime = message.postedTime;
@@ -495,14 +495,15 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
         const oUserParams = {
           OperatorId: message.postedBy
         };
+        // Do something with oUserParams
       }
 
-      // if didn't break, the look at the replies
-      for (const iR in message.replies) {
-        const reply = message.replies[iR];
+      // if didn't break, then look at the replies
+      for (let j = 0; j < message.replies.length; j++) {
+        const reply = message.replies[j];
 
         const replyPostedTime = reply.postedTime;
-        reply.displayPostedTime = this.utils.generateDateTime(postedTime, 'DateTime-Since');
+        reply.displayPostedTime = this.utils.generateDateTime(replyPostedTime, 'DateTime-Since');
 
         // let oReplyUser = this.userData.get(reply.postedByUser);
         const oReplyUser = reply.postedByUser;
@@ -577,10 +578,10 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
 
   commentClick(messageID) {
     // iterator through messages, find match, turn on comment entry
-    for (const i in this.pulseMessages$) {
-      if (this.pulseMessages$[i].ID === messageID) {
-        this.showReplyComment$[this.pulseMessages$[i].ID] = true;
-      }
+    const foundMessage = this.pulseMessages$.find(message => message.ID === messageID);
+
+    if (foundMessage) {
+      this.showReplyComment$[foundMessage.ID] = true;
     }
 
     this.cdRef.detectChanges();
