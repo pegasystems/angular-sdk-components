@@ -273,8 +273,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     let index = 1;
     // Iterating over the current filters list to create filter data which will be POSTed
-    for (const filterExp in this.filters) {
-      const filter = this.filters[filterExp];
+    const filterKeys: any[] = Object.keys(this.filters);
+    const filterValues: any[] = Object.values(this.filters);
+    for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
+      const filter = filterValues[filterIndex];
       // If the filter is null then we can skip this iteration
       if (filter === null) {
         // eslint-disable-next-line no-continue
@@ -468,12 +470,11 @@ export class ListViewComponent implements OnInit, OnDestroy {
     moveItemInArray(this.displayedColumns$, event.previousIndex, event.currentIndex);
   }
 
-  updateFields(arFields, arColumns, fields): any[] {
+  updateFields(arFields: any[], arColumns, fields): any[] {
     const arReturn = arFields;
-    for (const i in arReturn) {
-      arReturn[i].config = { ...arReturn[i].config, ...fields[i], name: fields[i].id };
-    }
-
+    arReturn.forEach((field, i) => {
+      field.config = { ...field.config, ...fields[i], name: fields[i].id };
+    });
     return arReturn;
   }
 
@@ -551,13 +552,12 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   _getGroupName(fieldName) {
-    for (const i in this.fields$) {
-      const field = this.fields$[i];
+    for (let fieldIndex = 0; fieldIndex < this.fields$.length; fieldIndex++) {
+      const field = this.fields$[fieldIndex];
       if (field.config.name == fieldName) {
         return field.config.label;
       }
     }
-
     return '';
   }
 
@@ -779,12 +779,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
-    for (const i in event.path) {
+    const eventPath = event.path;
+    for (let pathIndex = 0; pathIndex < eventPath.length; pathIndex++) {
       if (
-        event.path[i].className == 'psdk-modal-file-top' ||
-        event.path[i].tagName == 'BUTTON' ||
-        event.path[i].tagName == 'MAT-OPTION' ||
-        event.path[i].tagName == 'MAT-INPUT'
+        eventPath[pathIndex].className == 'psdk-modal-file-top' ||
+        eventPath[pathIndex].tagName == 'BUTTON' ||
+        eventPath[pathIndex].tagName == 'MAT-OPTION' ||
+        eventPath[pathIndex].tagName == 'MAT-INPUT'
       ) {
         bInPopUp = true;
         break;
@@ -1179,18 +1180,18 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   updateData(listData: any[], fieldData: any[]): any[] {
     const returnList: any[] = new Array<any>();
-    for (const row in listData) {
+    listData.forEach(row => {
       // copy
-      const rowData = JSON.parse(JSON.stringify(listData[row]));
+      const rowData = JSON.parse(JSON.stringify(row));
 
-      for (const field in fieldData) {
-        const config = fieldData[field].config;
+      for (let fieldIndex = 0; fieldIndex < fieldData.length; fieldIndex++) {
+        const config = fieldData[fieldIndex].config;
         let fieldName;
         let formattedDate;
         let myFormat;
         let theCurrencyOptions;
 
-        switch (fieldData[field].type) {
+        switch (fieldData[fieldIndex].type) {
           case 'Date':
             fieldName = config.name;
             myFormat = config.formatter;
@@ -1229,9 +1230,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
             break;
         }
       }
-
       returnList.push(rowData);
-    }
+    });
 
     return returnList;
   }

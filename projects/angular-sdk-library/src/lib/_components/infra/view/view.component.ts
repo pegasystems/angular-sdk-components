@@ -41,8 +41,11 @@ function evaluateVisibility(pConnn) {
       };
     }, initialVal);
 
-    for (const property in oProperties) {
-      if (storeData[property] !== oProperties[property]) {
+    const propertyKeys = Object.keys(oProperties);
+    const propertyValues = Object.values(oProperties);
+
+    for (let propertyIndex = 0; propertyIndex < propertyKeys.length; propertyIndex++) {
+      if (storeData[propertyKeys[propertyIndex]] !== propertyValues[propertyIndex]) {
         bVisibility = false;
       }
     }

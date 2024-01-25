@@ -466,12 +466,13 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
     // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
-    for (const i in event.path) {
+    const eventPath = event.path;
+    for (let eventIndex = 0; eventIndex < eventPath.length; eventIndex++) {
       if (
-        event.path[i].className == 'psdk-modal-file-top' ||
-        event.path[i].tagName == 'BUTTON' ||
-        event.path[i].tagName == 'MAT-OPTION' ||
-        event.path[i].tagName == 'MAT-INPUT'
+        eventPath[eventIndex].className == 'psdk-modal-file-top' ||
+        eventPath[eventIndex].tagName == 'BUTTON' ||
+        eventPath[eventIndex].tagName == 'MAT-OPTION' ||
+        eventPath[eventIndex].tagName == 'MAT-INPUT'
       ) {
         bInPopUp = true;
         break;
@@ -774,13 +775,12 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   _getGroupName(fieldName) {
-    for (const i in this.fields$) {
-      const field = this.fields$[i];
+    for (let fieldIndex = 0; fieldIndex < this.fields$.length; fieldIndex++) {
+      const field = this.fields$[fieldIndex];
       if (field.config.name == fieldName) {
         return field.config.label;
       }
     }
-
     return '';
   }
 

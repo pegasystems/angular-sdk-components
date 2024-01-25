@@ -58,19 +58,19 @@ export class CaseHistoryComponent implements OnInit {
       this.waitingForData = false;
     });
   }
+  // This method isn't being used anywhere, keeping it as a reference for now
+  // updateFields(arFields, arColumns): any[] {
+  //   const arReturn = arFields;
+  //   for (const i in arReturn) {
+  //     arReturn[i].config.name = arColumns[i];
+  //   }
 
-  updateFields(arFields, arColumns): any[] {
-    const arReturn = arFields;
-    for (const i in arReturn) {
-      arReturn[i].config.name = arColumns[i];
-    }
-
-    return arReturn;
-  }
+  //   return arReturn;
+  // }
 
   updateData(listData: any[], fieldData: any[]): any[] {
     const returnList: any[] = new Array<any>();
-    for (const row in listData) {
+    listData.forEach(row => {
       // copy
       const rowData = JSON.parse(JSON.stringify(listData[row]));
 
@@ -91,10 +91,8 @@ export class CaseHistoryComponent implements OnInit {
             break;
         }
       }
-
       returnList.push(rowData);
-    }
-
+    });
     return returnList;
   }
 

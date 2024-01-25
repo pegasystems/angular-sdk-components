@@ -68,16 +68,19 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
 
   bindInputProps() {
     try {
-      for (const propName in this.props) {
-        if (this.props[propName] !== undefined) {
-          // We'll set 'displayOnlyFA$' prop only to the components which really need it
-          // Eventual plan is to get rid of this particular prop
-          if (propName === 'displayOnlyFA$' && !componentsRequireDisplayOnlyFAProp.includes(this.name)) {
-            // eslint-disable-next-line no-continue
-            continue;
+      if (this.props) {
+        const propsKeys = Object.keys(this.props);
+        const propsValues = Object.values(this.props);
+        for (let i = 0; i < propsKeys.length; i++) {
+          if (propsKeys[i] !== undefined) {
+            // We'll set 'displayOnlyFA$' prop only to the components which really need it
+            // Eventual plan is to get rid of this particular prop
+            if (propsKeys[i] === 'displayOnlyFA$' && !componentsRequireDisplayOnlyFAProp.includes(this.name)) {
+              // eslint-disable-next-line no-continue
+              continue;
+            }
+            this.componentRef?.setInput(propsKeys[i], propsValues[i]);
           }
-
-          this.componentRef?.setInput(propName, this.props[propName]);
         }
       }
     } catch (e) {
@@ -87,11 +90,15 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
 
   bindOutputEvents() {
     try {
-      for (const event in this.outputEvents) {
-        this.componentRef?.instance[event].subscribe(value => {
-          const callbackFn = this.outputEvents[event].bind(this.parent);
-          callbackFn(value);
-        });
+      if (this.outputEvents) {
+        const propsKeys = Object.keys(this.outputEvents);
+        const propsValues: any = Object.values(this.outputEvents);
+        for (let i = 0; i < propsKeys.length; i++) {
+          this.componentRef?.instance[propsKeys[i]].subscribe(value => {
+            const callbackFn = propsValues[i].bind(this.parent);
+            callbackFn(value);
+          });
+        }
       }
     } catch (e) {
       console.log(e);

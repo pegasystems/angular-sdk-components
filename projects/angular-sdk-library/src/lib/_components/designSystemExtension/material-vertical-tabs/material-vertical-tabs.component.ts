@@ -24,7 +24,7 @@ export class MaterialVerticalTabsComponent implements OnInit {
       this.selectedTabId$ = this.tabConfig$[0]?.id;
 
       // run through and see anything is selected
-      for (const i in this.tabConfig$) {
+      for (let i = 0; i < this.tabConfig$.length; ++i) {
         const aTab = this.tabConfig$[i];
         if (aTab?.selected) {
           this.selectedTabId$ = aTab.id;

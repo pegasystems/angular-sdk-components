@@ -114,9 +114,9 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
       // making a copy, so can add info
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
-      for (const page in this.navPages$) {
-        this.navPages$[page].iconName = this.utils.getImageSrc(this.navPages$[page].pxPageViewIcon, this.utils.getSDKStaticContentUrl());
-      }
+      this.navPages$.forEach(page => {
+        page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
+      });
 
       this.actionsAPI = this.pConn$.getActionsApi();
       this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);

@@ -83,13 +83,13 @@ export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
 
   updateData(listData: any[], fieldData: any[]): any[] {
     const returnList: any[] = new Array<any>();
-    for (const row in listData) {
+    listData.forEach(row => {
       // copy
       const rowData = JSON.parse(JSON.stringify(listData[row]));
 
-      for (const field in fieldData) {
-        if (fieldData[field].type == 'date') {
-          const fieldName = fieldData[field].name;
+      for (let fieldIndex = 0; fieldIndex < fieldData.length; fieldIndex++) {
+        if (fieldData[fieldIndex].type == 'date') {
+          const fieldName = fieldData[fieldIndex].name;
           const formattedDate = rowData[fieldName];
 
           // format date
@@ -100,10 +100,8 @@ export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
           rowData[fieldName] = formattedDate;
         }
       }
-
       returnList.push(rowData);
-    }
-
+    });
     return returnList;
   }
 
