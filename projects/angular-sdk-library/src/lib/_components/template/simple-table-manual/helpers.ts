@@ -85,7 +85,7 @@ export const getApiContext = (processedData, pConnect, reorderCB) => {
   };
 };
 
-export const buildMetaForListView = (fieldMetadata, fields, type, ruleClass, name, propertyLabel, parameters) => {
+export const buildMetaForListView = (fieldMetadata, fields, type, ruleClass, name, propertyLabel, isDataObject, parameters) => {
   return {
     name,
     config: {
@@ -93,10 +93,12 @@ export const buildMetaForListView = (fieldMetadata, fields, type, ruleClass, nam
       referenceList: fieldMetadata.datasource.name,
       parameters: parameters ?? fieldMetadata.datasource.parameters,
       personalization: false,
+      isDataObject,
       grouping: true,
       globalSearch: true,
       reorderFields: true,
       toggleFieldVisibility: true,
+      title: propertyLabel,
       personalizationId: '' /* TODO */,
       template: 'ListView',
       presets: [

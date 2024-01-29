@@ -1,7 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const config = require('../../../config');
 const common = require('../../../common');
-const endpoints = require('../../../../../../sdk-config.json');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1720, height: 1080 });
@@ -45,12 +44,6 @@ test.describe('E2E test', () => {
     const inlineDashboard = page.locator('mat-list-item > span:has-text("Inline Dashboard")');
     await inlineDashboard.click();
 
-    const complexFieldsListApiUrl = `${endpoints.serverConfig.infinityRestServerUrl}${
-      endpoints.serverConfig.appAlias ? `/app/${endpoints.serverConfig.appAlias}` : ''
-    }/api/application/v2/data_views/D_ComplexFieldsList`;
-
-    await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
-
     const inlineDashboardTitle = page.locator('h4:has-text("Inline Dashboard")');
     inlineDashboardTitle.click();
     await expect(inlineDashboardTitle).toBeVisible();
@@ -63,15 +56,15 @@ test.describe('E2E test', () => {
     const myworkList = page.locator('span:has-text("My Work List")');
     await expect(myworkList).toBeVisible();
 
+    await expect(page.getByRole('button', { name: ' Case ID ' })).toBeVisible();
+
     /* Testing the filters */
     const filters = await page.locator('div[id="filters"]');
     const caseIdInput = filters.getByLabel('Case ID');
     await caseIdInput.click();
-    await caseIdInput.fill(caseID);
+    await caseIdInput.pressSequentially(caseID, { delay: 100 });
 
-    await Promise.all([page.waitForResponse(complexFieldsListApiUrl)]);
-
-    await expect(page.locator(`td >> text=${caseID} >> nth=1`)).toBeVisible();
+    await expect(page.locator(`td >> text=${caseID}`)).toBeVisible();
     await expect(page.locator('td >> text="Complex  Fields" >> nth=1')).toBeVisible();
     await expect(page.locator('td >> text="User DigV2"')).toBeVisible();
     await expect(page.locator('td >> text="New" >> nth=1')).toBeVisible();
@@ -87,13 +80,15 @@ test.describe('E2E test', () => {
     await dateFilterInput.click();
     await dateFilterInput.pressSequentially(`${nextDay}`);
 
-    await Promise.all([page.waitForResponse(complexFieldsListApiUrl), complexFieldsList.click()]);
+    await expect(page.locator(`td:has-text("${new Date().getDate()}")`)).toBeVisible();
 
-    await expect(page.locator(`td:has-text("${new Date().getDate()}") >> nth=1`)).toBeVisible();
+    const pagination = page.locator('mat-paginator[id="pagination"]');
+    await expect(pagination.getByText('1 – 1 of 1')).toBeVisible();
 
     await filters.locator('button:has-text("Clear All")').click();
 
     await expect(await caseIdInput.inputValue()).toEqual('');
+    await expect(pagination.getByText('1 – 1 of 1')).toBeHidden();
   }, 10000);
 });
 

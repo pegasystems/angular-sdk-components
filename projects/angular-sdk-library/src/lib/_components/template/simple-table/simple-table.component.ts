@@ -4,12 +4,24 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { buildMetaForListView, getContext } from '../simple-table-manual/helpers';
 
 interface SimpleTableProps {
   // If any, enter additional props that only exist on this component
   multiRecordDisplayAs: string;
   contextClass: any;
   visibility: boolean;
+  label: string;
+  propertyLabel: string;
+  displayMode: string;
+  fieldMetadata: any;
+  hideLabel: boolean;
+  parameters: any;
+  isDataObject: boolean;
+  type: string;
+  ruleClass: string;
+  authorContext: string;
+  name: string;
 }
 
 @Component({
@@ -28,6 +40,8 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
   bVisible$ = true;
   configProps$: SimpleTableProps;
   fieldGroupProps: any;
+  listViewProps: any;
+  refToPConnect: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -81,6 +95,72 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     }
     if (multiRecordDisplayAs === 'fieldGroup') {
       this.fieldGroupProps = { ...this.configProps$, contextClass };
+    }
+
+    const {
+      label: labelProp,
+      propertyLabel,
+      displayMode,
+      fieldMetadata,
+      hideLabel,
+      parameters,
+      isDataObject,
+      type,
+      ruleClass,
+      authorContext,
+      name
+    } = this.configProps$;
+
+    const label = labelProp || propertyLabel;
+
+    const propsToUse = { label, ...this.pConn$.getInheritedProps() };
+    const isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
+
+    if (fieldMetadata && fieldMetadata.type === 'Page List' && fieldMetadata.dataRetrievalType === 'refer') {
+      const {
+        children: [{ children: rawFields }],
+        parameters: rawParams
+      } = (this.pConn$.getRawMetadata() as any).config;
+      // const rawMetaData: any = this.pConn$.resolveConfigProps((this.pConn$.getRawMetadata() as any).config);
+      if (isDisplayModeEnabled && hideLabel) {
+        propsToUse.label = '';
+      }
+
+      const metaForListView = buildMetaForListView(
+        fieldMetadata,
+        rawFields,
+        type,
+        ruleClass,
+        name,
+        propsToUse.label,
+        isDataObject,
+        parameters // resolved params
+      );
+
+      const metaForPConnect = JSON.parse(JSON.stringify(metaForListView));
+      // @ts-ignore - PCore.getMetadataUtils().getPropertyMetadata - An argument for 'currentClassID' was not provided.
+      metaForPConnect.config.parameters = rawParams ?? PCore.getMetadataUtils().getPropertyMetadata(name)?.datasource?.parameters;
+
+      const { referenceListStr: referenceList } = getContext(this.pConn$);
+      let requiredContextForQueryInDisplayMode = {};
+      if (isDisplayModeEnabled) {
+        requiredContextForQueryInDisplayMode = {
+          referenceList
+        };
+      }
+      const options = {
+        context: this.pConn$.getContextName(),
+        pageReference: this.pConn$.getPageReference(),
+        ...requiredContextForQueryInDisplayMode
+      };
+
+      this.refToPConnect = PCore.createPConnect({ meta: metaForPConnect, options }).getPConnect();
+
+      this.listViewProps = {
+        ...metaForListView.config,
+        displayMode,
+        fieldName: authorContext
+      };
     }
   }
 
