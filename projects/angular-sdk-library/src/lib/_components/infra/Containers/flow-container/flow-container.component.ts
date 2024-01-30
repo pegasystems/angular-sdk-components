@@ -364,77 +364,18 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   // Called when bridge shouldComponentUpdate indicates that this component
-  //  should update itself (re-render)
+  // should update itself (re-render)
   updateSelf() {
     // for now
     // const { getPConnect } = this.arChildren$[0].getPConnect();
     const localPConn = this.arChildren$[0].getPConnect();
 
-    // routingInfo was added as component prop in populateAdditionalProps
-    const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
-
-    let loadingInfo: any;
-    try {
-      // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
-      loadingInfo = this.pConn$.getLoadingStatus();
-    } catch (ex) {
-      /* empty */
-    }
-
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
-    const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
     this.bShowBanner = showBanner(this.pConn$);
 
     if (caseViewMode && caseViewMode == 'review') {
-      setTimeout(() => {
-        this.ngZone.run(() => {
-          /*
-*** renove this commmented out code when React/WC is updated
-*** this code is replace with the call to "getToDoAssigments" function below
-
-          const assignmentsList = localPConn.getValue(
-            CASE_CONSTS.D_CASE_ASSIGNMENTS_RESULTS
-          );
-                  // add status
-          const status = localPConn.getValue("caseInfo.status");
-
-          let localAssignment = JSON.parse(JSON.stringify(assignmentsList[0]));
-          localAssignment.status = status;
-          let locaAssignmentsList: Array<any> = [];
-          locaAssignmentsList.push(localAssignment);
-
-          const caseActions = localPConn.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
-*/
-
-          const todoAssignments = getToDoAssignments(this.pConn$);
-
-          if (todoAssignments && todoAssignments.length > 0) {
-            // @ts-ignore - second parameter pageReference for getValue method should be optional
-            this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
-            this.todo_datasource$ = { source: todoAssignments };
-          }
-
-          /* remove this commented out code when update React/WC */
-          // let kid = this.pConn$.getChildren()[0];
-
-          // kid.getPConnect() can be a Reference component. So normalize it just in case
-          //        let todoKid = ReferenceComponent.normalizePConn(kid.getPConnect()).getChildren()[0];
-
-          //        this.todo_pConn$ = todoKid.getPConnect();
-
-          /* code change here to note for React/WC  */
-          // todo now needs pConn to open the work item on click "go"
-          this.todo_pConn$ = this.pConn$;
-
-          // still needs the context of the original work item
-          this.todo_context$ = localPConn.getContextName();
-
-          this.todo_showTodo$ = true;
-
-          this.psService.sendMessage(false);
-        });
-      });
+      this.loadReviewPage(localPConn);
 
       // in Nebula/Constellation, when cancel is called, somehow the constructor for flowContainer is called which
       // does init/add of containers.  This mimics that
@@ -452,6 +393,65 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     }
 
     // if have caseMessage show message and end
+    this.showCaseMessages();
+
+    this.updateFlowContainerChildren();
+  }
+
+  loadReviewPage(localPConn) {
+    const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
+
+    setTimeout(() => {
+      this.ngZone.run(() => {
+        /*
+          *** renove this commmented out code when React/WC is updated
+          *** this code is replace with the call to "getToDoAssigments" function below
+
+          const assignmentsList = localPConn.getValue(
+            CASE_CONSTS.D_CASE_ASSIGNMENTS_RESULTS
+          );
+                  // add status
+          const status = localPConn.getValue("caseInfo.status");
+
+          let localAssignment = JSON.parse(JSON.stringify(assignmentsList[0]));
+          localAssignment.status = status;
+          let locaAssignmentsList: Array<any> = [];
+          locaAssignmentsList.push(localAssignment);
+
+          const caseActions = localPConn.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
+          */
+
+        const todoAssignments = getToDoAssignments(this.pConn$);
+
+        if (todoAssignments && todoAssignments.length > 0) {
+          // @ts-ignore - second parameter pageReference for getValue method should be optional
+          this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
+          this.todo_datasource$ = { source: todoAssignments };
+        }
+
+        /* remove this commented out code when update React/WC */
+        // let kid = this.pConn$.getChildren()[0];
+
+        // kid.getPConnect() can be a Reference component. So normalize it just in case
+        //        let todoKid = ReferenceComponent.normalizePConn(kid.getPConnect()).getChildren()[0];
+
+        //        this.todo_pConn$ = todoKid.getPConnect();
+
+        /* code change here to note for React/WC  */
+        // todo now needs pConn to open the work item on click "go"
+        this.todo_pConn$ = this.pConn$;
+
+        // still needs the context of the original work item
+        this.todo_context$ = localPConn.getContextName();
+
+        this.todo_showTodo$ = true;
+
+        this.psService.sendMessage(false);
+      });
+    });
+  }
+
+  showCaseMessages() {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
     if (this.caseMessages$ || !this.hasAssignments()) {
@@ -472,6 +472,19 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     } else if (this.bHasCaseMessages$) {
       this.bHasCaseMessages$ = false;
       this.bShowConfirm = false;
+    }
+  }
+
+  updateFlowContainerChildren() {
+    // routingInfo was added as component prop in populateAdditionalProps
+    const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
+
+    let loadingInfo: any;
+    try {
+      // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
+      loadingInfo = this.pConn$.getLoadingStatus();
+    } catch (ex) {
+      /* empty */
     }
 
     // this check in routingInfo, mimic Nebula/Constellation (React) to check and get the internals of the
@@ -499,63 +512,64 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
             // when we get here, it it because the flow action data has changed
             // from the server, and need to add to pConnect and update children
 
-            const currentItem = currentItems[key];
-            const rootView = currentItem.view;
-            const { context, name: ViewName } = rootView.config;
-            const config: any = { meta: rootView };
-
-            // Don't go ahead if View doesn't exist
-            if (!ViewName) {
-              return;
-            }
-
-            this.todo_context$ = currentItem.context;
-
-            config.options = {
-              context: currentItem.context,
-              pageReference: context || localPConn.getPageReference(),
-              hasForm: true,
-              isFlowContainer: true,
-              containerName: localPConn.getContainerName(),
-              containerItemName: key,
-              parentPageReference: localPConn.getPageReference()
-            };
-
-            const configObject = PCore.createPConnect(config);
-            this.confirm_pconn = configObject.getPConnect();
-            // 8.7 - config might be a Reference component so, need to normalize it to get
-            //  the View if it is a Reference component. And need to pass in the getPConnect
-            //  to have normalize do a c11Env createComponent (that makes sure options.hasForm
-            //  is passed along to all the component's children)
-            const normalizedConfigObject = ReferenceComponent.normalizePConn(configObject.getPConnect());
-            // We want the children to be the PConnect itself, not the result of calling getPConnect(),
-            //  So need to get the PConnect of the normalized component we just created...
-            const normalizedConfigObjectAsPConnect = normalizedConfigObject.getComponent();
-
-            // makes sure Angular tracks these changes
-            this.ngZone.run(() => {
-              this.buildName$ = this.getBuildName();
-              // what comes back now in configObject is the children of the flowContainer
-
-              this.arChildren$ = [];
-              this.arChildren$.push(normalizedConfigObjectAsPConnect);
-
-              this.psService.sendMessage(false);
-
-              const oWorkItem = configObject.getPConnect();
-              // @ts-ignore - parameter “contextName” for getDataObject method should be optional
-              const oWorkData: any = oWorkItem.getDataObject();
-
-              this.containerName$ = this.localizedVal(
-                this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name,
-                undefined,
-                this.localeReference
-              );
-            });
+            this.addPConnectAndUpdateChildren(currentItems[key], key);
           }
         }
       }
     }
+  }
+
+  addPConnectAndUpdateChildren(currentItem, key) {
+    const localPConn = this.arChildren$[0].getPConnect();
+
+    const rootView = currentItem.view;
+    const { context, name: ViewName } = rootView.config;
+    const config: any = { meta: rootView };
+
+    // Don't go ahead if View doesn't exist
+    if (!ViewName) {
+      return;
+    }
+
+    this.todo_context$ = currentItem.context;
+
+    config.options = {
+      context: currentItem.context,
+      pageReference: context || localPConn.getPageReference(),
+      hasForm: true,
+      isFlowContainer: true,
+      containerName: localPConn.getContainerName(),
+      containerItemName: key,
+      parentPageReference: localPConn.getPageReference()
+    };
+
+    const configObject = PCore.createPConnect(config);
+    this.confirm_pconn = configObject.getPConnect();
+    // 8.7 - config might be a Reference component so, need to normalize it to get
+    //  the View if it is a Reference component. And need to pass in the getPConnect
+    //  to have normalize do a c11Env createComponent (that makes sure options.hasForm
+    //  is passed along to all the component's children)
+    const normalizedConfigObject = ReferenceComponent.normalizePConn(configObject.getPConnect());
+    // We want the children to be the PConnect itself, not the result of calling getPConnect(),
+    //  So need to get the PConnect of the normalized component we just created...
+    const normalizedConfigObjectAsPConnect = normalizedConfigObject.getComponent();
+
+    // makes sure Angular tracks these changes
+    this.ngZone.run(() => {
+      this.buildName$ = this.getBuildName();
+      // what comes back now in configObject is the children of the flowContainer
+
+      this.arChildren$ = [];
+      this.arChildren$.push(normalizedConfigObjectAsPConnect);
+
+      this.psService.sendMessage(false);
+
+      const oWorkItem = configObject.getPConnect();
+      // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+      const oWorkData: any = oWorkItem.getDataObject();
+
+      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
+    });
   }
 
   getBuildName(): string {

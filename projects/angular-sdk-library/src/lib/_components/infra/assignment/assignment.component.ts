@@ -236,37 +236,38 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         if (oCaseInfo.navigation != null) {
-          this.bHasNavigation$ = true;
-
-          if (
-            (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'standard') ||
-            oCaseInfo?.navigation?.steps?.length === 1
-          ) {
-            this.bHasNavigation$ = false;
-          } else if (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'vertical') {
-            this.bIsVertical$ = true;
-          } else {
-            this.bIsVertical$ = false;
-          }
-
-          // iterate through steps to find current one(s)
-          // immutable, so we want to change the local copy, so need to make a copy
-          this.ngZone.run(() => {
-            // what comes back now in configObject is the children of the flowContainer
-            this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
-            this.arNavigationSteps$.forEach(step => {
-              if (step.name) {
-                step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
-              }
-            });
-            this.arCurrentStepIndicies$ = [];
-            this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
-          });
+          this.createButtonsForMultiStepForm(oCaseInfo);
         } else {
           this.bHasNavigation$ = false;
         }
       }
     }
+  }
+
+  createButtonsForMultiStepForm(oCaseInfo) {
+    this.bHasNavigation$ = true;
+
+    if ((oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'standard') || oCaseInfo?.navigation?.steps?.length === 1) {
+      this.bHasNavigation$ = false;
+    } else if (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'vertical') {
+      this.bIsVertical$ = true;
+    } else {
+      this.bIsVertical$ = false;
+    }
+
+    // iterate through steps to find current one(s)
+    // immutable, so we want to change the local copy, so need to make a copy
+    this.ngZone.run(() => {
+      // what comes back now in configObject is the children of the flowContainer
+      this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
+      this.arNavigationSteps$.forEach(step => {
+        if (step.name) {
+          step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
+        }
+      });
+      this.arCurrentStepIndicies$ = [];
+      this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
+    });
   }
 
   findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {

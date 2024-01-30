@@ -1,9 +1,11 @@
+import { getSeconds } from '../../../_helpers/common';
+
 export const TABLE_CELL = 'SdkRenderer';
 export const DELETE_ICON = 'DeleteIcon';
 
 // BUG-615253: Workaround for autosize in table with lazy loading components
 /* istanbul ignore next */
-function getFiledWidth(field, label) {
+function getFieldWidth(field, label) {
   let width;
   switch (field.type) {
     case 'Time':
@@ -138,7 +140,7 @@ export const buildFieldsForTable = (configFields, fields, showDeleteButton) => {
         ...field
       },
       // BUG-615253: Workaround for autosize in table with lazy loading components
-      width: getFiledWidth(field, fields[index].config.label)
+      width: getFieldWidth(field, fields[index].config.label)
     };
   });
 
@@ -184,6 +186,82 @@ export const createMetaForTable = (fields, renderMode) => {
     editing: false,
     timezone: PCore.getEnvironmentInfo().getTimeZone()
   };
+};
+
+export const filterDataByDate = (item, filterObj) => {
+  let bKeep;
+  let value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
+  let filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
+
+  switch (filterObj.containsFilter) {
+    case 'notequal':
+      // becasue filterValue is in minutes, need to have a range of less than 60 secons
+
+      if (value != null && filterValue != null) {
+        // get rid of millisecons
+        value /= 1000;
+        filterValue /= 1000;
+
+        const diff = value - filterValue;
+        if (diff >= 0 && diff < 60) {
+          bKeep = false;
+        }
+      }
+
+      break;
+    case 'after':
+      if (value < filterValue) {
+        bKeep = false;
+      }
+      break;
+    case 'before':
+      if (value > filterValue) {
+        bKeep = false;
+      }
+      break;
+    case 'null':
+      if (value != null) {
+        bKeep = false;
+      }
+      break;
+    case 'notnull':
+      if (value == null) {
+        bKeep = false;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return bKeep;
+};
+
+export const filterDataByCommonFields = (item, filterObj) => {
+  let bKeep;
+  const value = item[filterObj.ref].toLowerCase();
+  const filterValue = filterObj.containsFilterValue.toLowerCase();
+
+  switch (filterObj.containsFilter) {
+    case 'contains':
+      if (value.indexOf(filterValue) < 0) {
+        bKeep = false;
+      }
+      break;
+    case 'equals':
+      if (value != filterValue) {
+        bKeep = false;
+      }
+      break;
+    case 'startswith':
+      if (value.indexOf(filterValue) != 0) {
+        bKeep = false;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return bKeep;
 };
 
 /**

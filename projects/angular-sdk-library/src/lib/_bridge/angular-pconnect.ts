@@ -147,7 +147,7 @@ export class AngularPConnectService {
    * @param inComp The component whose property is being requested.
    */
   public getComponentID(inComp): string {
-    return inComp.angularPConnectData.compID;
+    return inComp.bridgeComponentID || inComp.angularPConnectData.compID;
   }
 
   /**
@@ -304,7 +304,7 @@ export class AngularPConnectService {
       console.error(`AngularPConnect: bad call to shouldComponentUpdate: ${inComp.constructor.name} does not have a validateMessage property.`);
     }
 
-    const compID = inComp.bridgeComponentID !== undefined ? inComp.bridgeComponentID : inComp.angularPConnectData.compID;
+    const compID = this.getComponentID(inComp);
 
     const currentProps: any = this.componentPropsArr[compID];
     const currentPropsAsStr: string = JSON.stringify(currentProps);
@@ -313,7 +313,7 @@ export class AngularPConnectService {
 
     // if have pageMessages, and it is blank, remove it.  This causes issues of making it appear
     // that a will cause an update, when there is no change
-    if (incomingProps.pageMessages && incomingProps.pageMessages.length == 0) {
+    if (this.isPageMessagesEmpty(incomingProps)) {
       inComp.angularPConnectData.pageMessages = incomingProps.pageMessages;
       delete incomingProps.pageMessages;
     }
@@ -325,13 +325,7 @@ export class AngularPConnectService {
 
     const incomingPropsAsStr: string = JSON.stringify(incomingProps);
 
-    // fast-deep-equal version
-    if (isEqual !== undefined) {
-      bRet = !isEqual(currentProps, incomingProps);
-    } else if (currentPropsAsStr != incomingPropsAsStr) {
-      // stringify compare version
-      bRet = true;
-    }
+    bRet = isEqual ? !isEqual(currentProps, incomingProps) : currentPropsAsStr != incomingPropsAsStr;
 
     // Below piece of code is needed to re-render the component since we wanna evaluate the Visibility expression within View component in such cases
     if (inComp.pConn$.meta.config.context?.length > 0 && inComp.pConn$.getPageReference().length > 'caseInfo.content'.length) {
@@ -341,10 +335,10 @@ export class AngularPConnectService {
     // Now update the entry in componentPropsArr with the incoming value so
     //  we can compare against that next time...
     this.componentPropsArr[compID] = incomingProps;
+    const validatemessage = incomingProps.validatemessage === undefined ? '' : this.utils.htmlDecode(incomingProps.validatemessage);
     // and update the component's validation message (if undefined, it should be set to "")
     if (undefined !== inComp.angularPConnectData) {
-      inComp.angularPConnectData.validateMessage =
-        incomingProps.validatemessage === undefined ? '' : this.utils.htmlDecode(incomingProps.validatemessage);
+      inComp.angularPConnectData.validateMessage = validatemessage;
 
       if (inComp.angularPConnectData.validateMessage != '') {
         // if have a validate message, turn off spinner
@@ -359,7 +353,7 @@ export class AngularPConnectService {
         this.erService.sendMessage('update', sErrorMessage);
       }
     } else {
-      inComp.validateMessage = incomingProps.validatemessage === undefined ? '' : this.utils.htmlDecode(incomingProps.validatemessage);
+      inComp.validateMessage = validatemessage;
     }
 
     if (bRet && compID === undefined) {
@@ -388,6 +382,10 @@ export class AngularPConnectService {
     // console.log(`    ${inComp.constructor.name}: shouldComponentUpdate returning: ${bRet}`);
 
     return bRet;
+  }
+
+  isPageMessagesEmpty(incomingProps) {
+    return incomingProps.pageMessages && incomingProps.pageMessages.length === 0;
   }
 
   /**

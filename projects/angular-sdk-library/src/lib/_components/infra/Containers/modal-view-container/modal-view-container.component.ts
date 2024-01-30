@@ -189,75 +189,78 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
 
           // let configObject = PCore.createPConnect(config);
 
-          const configObject = this.getConfigObject(currentItem, this.pConn$);
-
           // THIS is where the ViewContainer creates a View
-          //    The config has meta.config.type = "view"
-          const newComp = configObject?.getPConnect();
-          // const newCompName = newComp.getComponentName();
-          // @ts-ignore - parameter “contextName” for getDataObject method should be optional
-          const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
-          // The metadata for pyDetails changed such that the "template": "CaseView"
-          //  is no longer a child of the created View but is in the created View's
-          //  config. So, we DON'T want to replace this.pConn$ since the created
-          //  component is a View (and not a ViewContainer). We now look for the
-          //  "template" type directly in the created component (newComp) and NOT
-          //  as a child of the newly created component.
-          // console.log(`---> ModalViewContainer created new ${newCompName}`);
-
-          // Use the newly created component (View) info but DO NOT replace
-          //  this ModalViewContainer's pConn$, etc.
-          //  Note that we're now using the newly created View's PConnect in the
-          //  ViewContainer HTML template to guide what's rendered similar to what
-          //  the Nebula/Constellation return of React.Fragment does
-
-          // right now need to check caseInfo for changes, to trigger redraw, not getting
-          // changes from angularPconnect except for first draw
-          if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
-            this.psService.sendMessage(false);
-
-            this.ngZone.run(() => {
-              this.createdViewPConn$ = newComp;
-              const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = 'template' in newConfigProps ? (newConfigProps.template as string) : '';
-
-              const { actionName } = latestItem;
-              const theNewCaseInfo = newComp.getCaseInfo();
-              // const caseName = theNewCaseInfo.getName();
-              const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
-
-              const caseTypeName = theNewCaseInfo.getCaseTypeName();
-              const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
-              const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
-              this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
-              this.context$ = latestItem.context;
-              this.title$ =
-                isDataObject || this.isMultiRecord
-                  ? this.getModalHeading(dataObjectAction)
-                  : this.determineModalHeaderByAction(
-                      actionName,
-                      caseTypeName,
-                      ID,
-                      `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
-                    );
-              // // update children with new view's children
-              this.arChildren$ = newComp.getChildren() as any[];
-              this.bShowModal$ = true;
-
-              // for when non modal
-              this.modalVisibleChange.emit(this.bShowModal$);
-
-              // save off itemKey to be used for finishAssignment, etc.
-              this.itemKey$ = key;
-
-              // cause a change for assignment
-              this.updateToken$ = new Date().getTime();
-            });
-          }
+          // The config has meta.config.type = "view"
+          this.createView(routingInfo, currentItem, latestItem, key);
         }
       } else {
         this.hideModal();
       }
+    }
+  }
+
+  createView(routingInfo, currentItem, latestItem, key) {
+    const configObject = this.getConfigObject(currentItem, this.pConn$);
+    const newComp = configObject?.getPConnect();
+    // const newCompName = newComp.getComponentName();
+    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
+    const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
+    // The metadata for pyDetails changed such that the "template": "CaseView"
+    //  is no longer a child of the created View but is in the created View's
+    //  config. So, we DON'T want to replace this.pConn$ since the created
+    //  component is a View (and not a ViewContainer). We now look for the
+    //  "template" type directly in the created component (newComp) and NOT
+    //  as a child of the newly created component.
+    // console.log(`---> ModalViewContainer created new ${newCompName}`);
+
+    // Use the newly created component (View) info but DO NOT replace
+    //  this ModalViewContainer's pConn$, etc.
+    //  Note that we're now using the newly created View's PConnect in the
+    //  ViewContainer HTML template to guide what's rendered similar to what
+    //  the Nebula/Constellation return of React.Fragment does
+
+    // right now need to check caseInfo for changes, to trigger redraw, not getting
+    // changes from angularPconnect except for first draw
+    if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
+      this.psService.sendMessage(false);
+
+      this.ngZone.run(() => {
+        this.createdViewPConn$ = newComp;
+        const newConfigProps = newComp.getConfigProps();
+        this.templateName$ = 'template' in newConfigProps ? (newConfigProps.template as string) : '';
+
+        const { actionName } = latestItem;
+        const theNewCaseInfo = newComp.getCaseInfo();
+        // const caseName = theNewCaseInfo.getName();
+        const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
+
+        const caseTypeName = theNewCaseInfo.getCaseTypeName();
+        const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
+        const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
+        this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
+        this.context$ = latestItem.context;
+        this.title$ =
+          isDataObject || this.isMultiRecord
+            ? this.getModalHeading(dataObjectAction)
+            : this.determineModalHeaderByAction(
+                actionName,
+                caseTypeName,
+                ID,
+                `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
+              );
+        // // update children with new view's children
+        this.arChildren$ = newComp.getChildren() as any[];
+        this.bShowModal$ = true;
+
+        // for when non modal
+        this.modalVisibleChange.emit(this.bShowModal$);
+
+        // save off itemKey to be used for finishAssignment, etc.
+        this.itemKey$ = key;
+
+        // cause a change for assignment
+        this.updateToken$ = new Date().getTime();
+      });
     }
   }
 

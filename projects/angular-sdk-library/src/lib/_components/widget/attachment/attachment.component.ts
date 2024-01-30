@@ -198,36 +198,14 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.att_valueRef = (this.pConn$.getStateProps() as any).value;
     this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
 
+    this.updateAttachments();
+  }
+
+  updateAttachments() {
     const attachmentsFromServer = this.value$ && this.value$.pxResults && +this.value$.pyCount > 0;
 
     if (attachmentsFromServer) {
-      this.value$.pxResults.forEach((attachment, i) => {
-        const file: any = this.buildFilePropsFromResponse(attachment);
-        if (file.responseProps) {
-          this.updateAttachmentsInfo();
-          if (file.responseProps.pzInsKey && !file.responseProps.pzInsKey.includes('temp')) {
-            this.processFile(file, i);
-          }
-          if (file) {
-            const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
-            const index = currentAttachmentList.findIndex(element => element.props.ID === file.props.ID);
-            let tempFiles: any = [];
-            if (index < 0) {
-              tempFiles = [file];
-            }
-
-            PCore.getStateUtils().updateState(
-              this.pConn$.getContextName(),
-              this.getAttachmentKey(this.att_valueRef),
-              [...currentAttachmentList, ...tempFiles],
-              {
-                pageReference: 'context_data',
-                isArrayDeepMerge: false
-              }
-            );
-          }
-        }
-      });
+      this.updateAttachmentsFromServer();
     } else {
       // Get the attachments from the Redux
       this.myFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
@@ -267,6 +245,36 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       this.resetAttachmentStoredState.bind(this),
       this.caseID
     );
+  }
+
+  updateAttachmentsFromServer() {
+    this.value$.pxResults.forEach((attachment, i) => {
+      const file: any = this.buildFilePropsFromResponse(attachment);
+      if (file.responseProps) {
+        this.updateAttachmentsInfo();
+        if (file.responseProps.pzInsKey && !file.responseProps.pzInsKey.includes('temp')) {
+          this.processFile(file, i);
+        }
+        if (file) {
+          const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
+          const index = currentAttachmentList.findIndex(element => element.props.ID === file.props.ID);
+          let tempFiles: any = [];
+          if (index < 0) {
+            tempFiles = [file];
+          }
+
+          PCore.getStateUtils().updateState(
+            this.pConn$.getContextName(),
+            this.getAttachmentKey(this.att_valueRef),
+            [...currentAttachmentList, ...tempFiles],
+            {
+              pageReference: 'context_data',
+              isArrayDeepMerge: false
+            }
+          );
+        }
+      }
+    });
   }
 
   resetAttachmentStoredState() {
@@ -449,78 +457,59 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
     Promise.allSettled(filesToBeUploaded)
       .then((fileResponses: any) => {
-        fileResponses = fileResponses.filter(fr => fr.status !== 'rejected'); // in case of deleting an in progress file, promise gets cancelled but still enters then block
-        let reqObj;
-        if (fileResponses.length > 0) {
-          const tempFilesUploaded = [...this.arFiles$.filter(file => !file.id)];
-          let newAttachments: any = [];
-          tempFilesUploaded.forEach(fileRes => {
-            const index = fileResponses.findIndex((fr: any) => fr.value.clientFileID === fileRes.ID);
-            if (index >= 0) {
-              reqObj = {
-                type: 'File',
-                label: this.att_valueRef,
-                category: this.att_categoryName,
-                handle: fileResponses[index].value.ID,
-                ID: fileRes.ID,
-                name: fileRes.name
-              };
-              newAttachments = [...newAttachments, reqObj];
-            }
-          });
-          const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName()).filter(
-            f => f.label !== this.att_valueRef
-          );
-          PCore.getStateUtils().updateState(
-            this.pConn$.getContextName(),
-            this.getAttachmentKey(this.att_valueRef),
-            [...currentAttachmentList, ...newAttachments],
-            {
-              pageReference: 'context_data',
-              isArrayDeepMerge: false
-            }
-          );
-          this.arFiles$ = tempFilesUploaded;
-
-          this.ngZone.run(() => {
-            this.bShowSelector$ = this.allowMultiple$;
-            this.arFiles$.forEach(file => {
-              if (!file.error) {
-                file.meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
-              }
-            });
-            this.arFileList$ = this.myFiles.map(att => {
-              if (att.id) {
-                return att;
-              }
-              return this.getNewListUtilityItemProps({
-                att,
-                downloadFile: null,
-                cancelFile: null,
-                deleteFile: null,
-                removeFile: null
-              });
-            });
-
-            this.CheckForInvalidAttachment();
-
-            this.bShowJustDelete$ = true;
-            this.bLoading$ = false;
-          });
-        }
+        this.handleFileUploadSuccess(fileResponses);
       })
       .catch(error => {
         console.log(error);
-        this.bShowJustDelete$ = true;
-        this.bLoading$ = false;
+        this.handleFileUploadFailure();
+      });
+  }
+
+  handleFileUploadSuccess(fileResponses) {
+    const successFileResponses = fileResponses.filter(fr => fr.status !== 'rejected'); // in case of deleting an in progress file, promise gets cancelled but still enters then block
+    let reqObj;
+    if (successFileResponses.length > 0) {
+      const tempFilesUploaded = [...this.arFiles$.filter(file => !file.id)];
+      let newAttachments: any = [];
+      tempFilesUploaded.forEach(fileRes => {
+        const index = successFileResponses.findIndex((fr: any) => fr.value.clientFileID === fileRes.ID);
+        if (index >= 0) {
+          reqObj = {
+            type: 'File',
+            label: this.att_valueRef,
+            category: this.att_categoryName,
+            handle: successFileResponses[index].value.ID,
+            ID: fileRes.ID,
+            name: fileRes.name
+          };
+          newAttachments = [...newAttachments, reqObj];
+        }
+      });
+      const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName()).filter(
+        f => f.label !== this.att_valueRef
+      );
+      PCore.getStateUtils().updateState(
+        this.pConn$.getContextName(),
+        this.getAttachmentKey(this.att_valueRef),
+        [...currentAttachmentList, ...newAttachments],
+        {
+          pageReference: 'context_data',
+          isArrayDeepMerge: false
+        }
+      );
+      this.arFiles$ = tempFilesUploaded;
+
+      this.ngZone.run(() => {
         this.bShowSelector$ = this.allowMultiple$;
-        this.myFiles.forEach(file => {
-          if (file?.secondary?.error) {
-            file.meta = 'File uploaded failed';
+        this.arFiles$.forEach(file => {
+          if (!file.error) {
+            file.meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
           }
         });
-
         this.arFileList$ = this.myFiles.map(att => {
+          if (att.id) {
+            return att;
+          }
           return this.getNewListUtilityItemProps({
             att,
             downloadFile: null,
@@ -530,9 +519,36 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           });
         });
 
+        this.CheckForInvalidAttachment();
+
         this.bShowJustDelete$ = true;
         this.bLoading$ = false;
       });
+    }
+  }
+
+  handleFileUploadFailure() {
+    this.bShowJustDelete$ = true;
+    this.bLoading$ = false;
+    this.bShowSelector$ = this.allowMultiple$;
+    this.myFiles.forEach(file => {
+      if (file?.secondary?.error) {
+        file.meta = 'File uploaded failed';
+      }
+    });
+
+    this.arFileList$ = this.myFiles.map(att => {
+      return this.getNewListUtilityItemProps({
+        att,
+        downloadFile: null,
+        cancelFile: null,
+        deleteFile: null,
+        removeFile: null
+      });
+    });
+
+    this.bShowJustDelete$ = true;
+    this.bLoading$ = false;
   }
 
   getNewListUtilityItemProps = ({ att, cancelFile, downloadFile, deleteFile, removeFile }) => {

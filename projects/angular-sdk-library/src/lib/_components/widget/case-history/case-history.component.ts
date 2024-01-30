@@ -72,7 +72,7 @@ export class CaseHistoryComponent implements OnInit {
     const returnList: any[] = new Array<any>();
     listData.forEach(row => {
       // copy
-      const rowData = JSON.parse(JSON.stringify(listData[row]));
+      const rowData = JSON.parse(JSON.stringify(row));
 
       for (const field of fieldData) {
         const fieldName = field.fieldName;

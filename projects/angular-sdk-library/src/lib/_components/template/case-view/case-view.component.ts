@@ -178,31 +178,35 @@ export class CaseViewComponent implements OnInit, OnDestroy {
         }
       }
 
-      this.mainTabs
-        .getPConnect()
-        .getChildren()
-        ?.forEach((child, i) => {
-          const config = child.getPConnect().resolveConfigProps(child.getPConnect().getRawMetadata()).config;
-          let { label } = config;
-          const { inheritedProps, visibility } = config;
-          // For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps
-          if (!label) {
-            inheritedProps.forEach((inheritedProp: any) => {
-              if (inheritedProp.prop === 'label') {
-                label = inheritedProp.value;
-              }
-            });
-          }
-          // We'll display the tabs when either visibility property doesn't exist or is true(if exists)
-          if (visibility === undefined || visibility === true) {
-            this.caseTabs$.push({ name: label, id: i });
-            // To make first visible tab display at the beginning
-            if (!this.tabData$) {
-              this.tabData$ = { type: 'DeferLoad', config: child.getPConnect().getRawMetadata().config };
-            }
-          }
-        });
+      this.generateTabsData();
     }
+  }
+
+  generateTabsData() {
+    this.mainTabs
+      .getPConnect()
+      .getChildren()
+      ?.forEach((child, i) => {
+        const config = child.getPConnect().resolveConfigProps(child.getPConnect().getRawMetadata()).config;
+        let { label } = config;
+        const { inheritedProps, visibility } = config;
+        // For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps
+        if (!label) {
+          inheritedProps.forEach((inheritedProp: any) => {
+            if (inheritedProp.prop === 'label') {
+              label = inheritedProp.value;
+            }
+          });
+        }
+        // We'll display the tabs when either visibility property doesn't exist or is true(if exists)
+        if (visibility === undefined || visibility === true) {
+          this.caseTabs$.push({ name: label, id: i });
+          // To make first visible tab display at the beginning
+          if (!this.tabData$) {
+            this.tabData$ = { type: 'DeferLoad', config: child.getPConnect().getRawMetadata().config };
+          }
+        }
+      });
   }
 
   updateSelf() {

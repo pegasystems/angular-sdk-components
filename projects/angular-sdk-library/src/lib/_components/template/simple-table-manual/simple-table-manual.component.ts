@@ -17,8 +17,9 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { getReferenceList } from '../../../_helpers/field-group-utils';
-import { buildFieldsForTable, getContext } from './helpers';
+import { buildFieldsForTable, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
 import { Utils } from '../../../_helpers/utils';
+import { getSeconds } from '../../../_helpers/common';
 
 declare const window: any;
 
@@ -357,55 +358,50 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     let bValue = b[this.compareRef];
 
     if (this.compareType == 'Date' || this.compareType == 'DateTime') {
-      aValue = this.utils.getSeconds(aValue);
-      bValue = this.utils.getSeconds(bValue);
+      aValue = getSeconds(aValue);
+      bValue = getSeconds(bValue);
     }
 
     if (this.compareRef == 'pxRefObjectInsName') {
-      const prefixX = aValue.split('-');
-      const prefixY = bValue.split('-');
-      switch (this.arrowDirection) {
-        case 'up':
-          if (prefixX[0] !== prefixY[0]) {
-            if (prefixX[0] < prefixY[0]) return -1;
-            if (prefixX[0] > prefixY[0]) return 1;
-            return 0;
-          }
-          return prefixX[1] - prefixY[1];
-        case 'down':
-          if (prefixX[0] !== prefixY[0]) {
-            if (prefixX[0] > prefixY[0]) return -1;
-            if (prefixX[0] < prefixY[0]) return 1;
-            return 0;
-          }
-          return prefixY[1] - prefixX[1];
-        default:
-          break;
+      const result = this.compareByColumnPxRefObjectInsName(aValue, bValue);
+      if (result !== undefined) {
+        return result;
       }
     }
 
+    if (aValue === bValue) {
+      return 0;
+    }
+
+    if (this.arrowDirection === 'up') return aValue - bValue;
+    if (this.arrowDirection === 'down') return bValue - aValue;
+
+    return 0;
+  }
+
+  compareByColumnPxRefObjectInsName(aValue, bValue) {
+    const prefixX = aValue.split('-');
+    const prefixY = bValue.split('-');
     switch (this.arrowDirection) {
       case 'up':
-        if (aValue < bValue) {
-          return -1;
+        if (prefixX[0] !== prefixY[0]) {
+          if (prefixX[0] < prefixY[0]) return -1;
+          if (prefixX[0] > prefixY[0]) return 1;
+          return 0;
         }
-        if (aValue > bValue) {
-          return 1;
-        }
-        break;
+        return prefixX[1] - prefixY[1];
       case 'down':
-        if (aValue > bValue) {
-          return -1;
+        if (prefixX[0] !== prefixY[0]) {
+          if (prefixX[0] > prefixY[0]) return -1;
+          if (prefixX[0] < prefixY[0]) return 1;
+          return 0;
         }
-        if (aValue < bValue) {
-          return 1;
-        }
-        break;
+        return prefixY[1] - prefixX[1];
       default:
         break;
     }
 
-    return 0;
+    return undefined;
   }
 
   updateFilterDisplay(type) {
@@ -600,85 +596,14 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     let bKeep = true;
     for (const filterObj of this.filterByColumns) {
       if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
-        let value: any;
-        let filterValue: any;
-
         switch (filterObj.type) {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? this.utils.getSeconds(item[filterObj.ref]) : null;
-            filterValue =
-              filterObj.containsFilterValue != null && filterObj.containsFilterValue != ''
-                ? this.utils.getSeconds(filterObj.containsFilterValue)
-                : null;
-
-            // eslint-disable-next-line sonarjs/no-nested-switch
-            switch (filterObj.containsFilter) {
-              case 'notequal':
-                // becasue filterValue is in minutes, need to have a range of less than 60 secons
-
-                if (value != null && filterValue != null) {
-                  // get rid of millisecons
-                  value /= 1000;
-                  filterValue /= 1000;
-
-                  const diff = value - filterValue;
-                  if (diff >= 0 && diff < 60) {
-                    bKeep = false;
-                  }
-                }
-
-                break;
-              case 'after':
-                if (value < filterValue) {
-                  bKeep = false;
-                }
-                break;
-              case 'before':
-                if (value > filterValue) {
-                  bKeep = false;
-                }
-                break;
-              case 'null':
-                if (value != null) {
-                  bKeep = false;
-                }
-                break;
-              case 'notnull':
-                if (value == null) {
-                  bKeep = false;
-                }
-                break;
-              default:
-                break;
-            }
+            bKeep = filterDataByDate(item, filterObj);
             break;
           default:
-            value = item[filterObj.ref].toLowerCase();
-            filterValue = filterObj.containsFilterValue.toLowerCase();
-
-            // eslint-disable-next-line sonarjs/no-nested-switch
-            switch (filterObj.containsFilter) {
-              case 'contains':
-                if (value.indexOf(filterValue) < 0) {
-                  bKeep = false;
-                }
-                break;
-              case 'equals':
-                if (value != filterValue) {
-                  bKeep = false;
-                }
-                break;
-              case 'startswith':
-                if (value.indexOf(filterValue) != 0) {
-                  bKeep = false;
-                }
-                break;
-              default:
-                break;
-            }
-
+            bKeep = filterDataByCommonFields(item, filterObj);
             break;
         }
       }

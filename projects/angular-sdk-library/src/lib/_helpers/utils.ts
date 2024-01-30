@@ -123,7 +123,7 @@ export class Utils {
 
   transformListSourceItems(listSourceItems: any[]): any[] {
     return (listSourceItems || []).map(item => {
-      return { value: item.text || item.value };
+      return { ...item, value: item.text || item.value };
     });
   }
 
@@ -334,10 +334,6 @@ export class Utils {
     }
 
     return sReturnDate;
-  }
-
-  getSeconds(sTime): any {
-    return dayjs(sTime).valueOf();
   }
 
   getIconFromFileType(fileType): string {

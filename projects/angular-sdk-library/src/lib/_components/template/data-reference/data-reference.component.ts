@@ -104,25 +104,15 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   updateSelf() {
     // Update properties based on configProps
     const theConfigProps: any = this.pConn$.getConfigProps();
-    const label = theConfigProps.label;
-    const showLabel = theConfigProps.showLabel;
-    const displayMode = theConfigProps.displayMode;
-    const allowAndPersistChangesInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode;
-    this.referenceType = theConfigProps.referenceType;
-    this.selectionMode = theConfigProps.selectionMode;
-    const displayAs = theConfigProps.displayAs;
-    this.parameters = theConfigProps.parameters;
-    this.hideLabel = theConfigProps.hideLabel;
+    this.updatePropertiesFromProps(theConfigProps);
 
-    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
-    if (this.propsToUse.showLabel === false) {
-      this.propsToUse.label = '';
-    }
+    const displayAs = theConfigProps.displayAs;
+    const displayMode = theConfigProps.displayMode;
     this.rawViewMetadata = this.pConn$.getRawMetadata();
     this.viewName = this.rawViewMetadata.name;
     this.firstChildMeta = this.rawViewMetadata.children[0];
     this.refList = this.rawViewMetadata.config.referenceList;
-    this.canBeChangedInReviewMode = allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
+    this.canBeChangedInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
     // this.childrenToRender = this.children;
     this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL'].includes(displayMode);
 
@@ -155,13 +145,31 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
         this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.value);
       }
 
-      const theRecreatedFirstChild = this.recreatedFirstChild();
-      const viewsRegion = this.rawViewMetadata.children[1];
-      if (viewsRegion?.name === 'Views' && viewsRegion.children.length) {
-        this.childrenToRender = [theRecreatedFirstChild, ...this.children.slice(1)];
-      } else {
-        this.childrenToRender = [theRecreatedFirstChild];
-      }
+      this.generateChildrenToRender();
+    }
+  }
+
+  updatePropertiesFromProps(theConfigProps) {
+    const label = theConfigProps.label;
+    const showLabel = theConfigProps.showLabel;
+    this.referenceType = theConfigProps.referenceType;
+    this.selectionMode = theConfigProps.selectionMode;
+    this.parameters = theConfigProps.parameters;
+    this.hideLabel = theConfigProps.hideLabel;
+
+    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
+    if (this.propsToUse.showLabel === false) {
+      this.propsToUse.label = '';
+    }
+  }
+
+  generateChildrenToRender() {
+    const theRecreatedFirstChild = this.recreatedFirstChild();
+    const viewsRegion = this.rawViewMetadata.children[1];
+    if (viewsRegion?.name === 'Views' && viewsRegion.children.length) {
+      this.childrenToRender = [theRecreatedFirstChild, ...this.children.slice(1)];
+    } else {
+      this.childrenToRender = [theRecreatedFirstChild];
     }
   }
 

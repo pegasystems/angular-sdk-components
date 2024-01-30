@@ -183,37 +183,39 @@ export class RootContainerComponent implements OnInit, OnDestroy {
       }
     } else if (renderingMode === noPortalMode) {
       // console.log(`RootContainer: renderingMode === noPortalMode: ${noPortalMode}`);
-
-      // bootstrap loadMashup resolves to here
-
-      const arChildren = this.pConn$.getChildren() as any[];
-      if (arChildren && arChildren.length == 1) {
-        // have to have a quick timeout or get an "expressions changed" angular error
-        setTimeout(() => {
-          this.ngZone.run(() => {
-            const localPConn = arChildren[0].getPConnect();
-
-            this.componentName$ = localPConn.getComponentName();
-            if (this.componentName$ === 'ViewContainer') {
-              const configProps: any = this.pConn$.getConfigProps();
-              const viewContConfig = {
-                meta: {
-                  type: 'ViewContainer',
-                  config: configProps
-                },
-                options
-              };
-
-              this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
-            }
-            this.bShowRoot$ = true;
-          });
-        });
-      }
+      this.generateViewContainerForNoPortal();
     } else if (children && children.length > 0) {
       // haven't resolved to here
     } else if (skeleton !== undefined) {
       // TODO: need to update once skeletons are available;
+    }
+  }
+
+  generateViewContainerForNoPortal() {
+    // bootstrap loadMashup resolves to here
+    const arChildren = this.pConn$.getChildren() as any[];
+    if (arChildren && arChildren.length == 1) {
+      // have to have a quick timeout or get an "expressions changed" angular error
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          const localPConn = arChildren[0].getPConnect();
+
+          this.componentName$ = localPConn.getComponentName();
+          if (this.componentName$ === 'ViewContainer') {
+            const configProps: any = this.pConn$.getConfigProps();
+            const viewContConfig = {
+              meta: {
+                type: 'ViewContainer',
+                config: configProps
+              },
+              options
+            };
+
+            this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
+          }
+          this.bShowRoot$ = true;
+        });
+      });
     }
   }
 

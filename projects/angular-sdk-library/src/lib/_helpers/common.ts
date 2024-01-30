@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export function getLocale(locale = ''): string | undefined {
   // use locale if specified
   if (locale) return locale;
@@ -10,4 +12,8 @@ export function getLocale(locale = ''): string | undefined {
 export function getCurrentTimezone(timezone = 'America/New_York') {
   if (timezone) return timezone;
   return PCore?.getLocaleUtils?.().getTimeZoneInUse?.();
+}
+
+export function getSeconds(sTime): any {
+  return dayjs(sTime).valueOf();
 }
