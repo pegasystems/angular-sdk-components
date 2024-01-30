@@ -149,45 +149,11 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
     }
 
-    this.testId = this.configProps$.testId;
-    this.label$ = this.configProps$.label;
-    this.placeholder = this.configProps$.placeholder || '';
-    this.displayMode$ = this.configProps$.displayMode;
-    this.listType = this.configProps$.listType;
-    let datasource = this.configProps$.datasource;
-    let columns = this.configProps$.columns;
-    this.hideLabel = this.configProps$.hideLabel;
-    // const { deferDatasource, datasourceMetadata } = this.configProps$;
-    const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
-    this.helperText = this.configProps$.helperText;
-    this.parameters = this.configProps$?.parameters;
+    this.setPropertyValuesFromProps();
+
     const context = this.pConn$.getContextName();
-    // convert associated to datapage listtype and transform props
-    // Process deferDatasource when datapage name is present. WHhen tableType is promptList / localList
-    if (deferDatasource && datasourceMetadata?.datasource?.name) {
-      this.listType = 'datapage';
-      datasource = datasourceMetadata.datasource.name;
-      this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
-      const displayProp = datasourceMetadata.datasource.propertyForDisplayText?.startsWith('@P')
-        ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
-        : datasourceMetadata.datasource.propertyForDisplayText;
-      const valueProp = datasourceMetadata.datasource.propertyForValue?.startsWith('@P')
-        ? datasourceMetadata.datasource.propertyForValue.substring(3)
-        : datasourceMetadata.datasource.propertyForValue;
-      columns = [
-        {
-          key: 'true',
-          setProperty: 'Associated property',
-          value: valueProp
-        },
-        {
-          display: 'true',
-          primary: 'true',
-          useForSearch: true,
-          value: displayProp
-        }
-      ];
-    }
+    const { columns, datasource } = this.generateColumnsAndDataSource();
+
     if (columns) {
       this.columns = this.preProcessColumns(columns);
     }
@@ -237,6 +203,52 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
         timer.unsubscribe();
       });
     }
+  }
+
+  setPropertyValuesFromProps() {
+    this.testId = this.configProps$.testId;
+    this.label$ = this.configProps$.label;
+    this.placeholder = this.configProps$.placeholder || '';
+    this.displayMode$ = this.configProps$.displayMode;
+    this.listType = this.configProps$.listType;
+    this.hideLabel = this.configProps$.hideLabel;
+    this.helperText = this.configProps$.helperText;
+    this.parameters = this.configProps$?.parameters;
+  }
+
+  generateColumnsAndDataSource() {
+    let datasource = this.configProps$.datasource;
+    let columns = this.configProps$.columns;
+    // const { deferDatasource, datasourceMetadata } = this.configProps$;
+    const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
+    // convert associated to datapage listtype and transform props
+    // Process deferDatasource when datapage name is present. WHhen tableType is promptList / localList
+    if (deferDatasource && datasourceMetadata?.datasource?.name) {
+      this.listType = 'datapage';
+      datasource = datasourceMetadata.datasource.name;
+      this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
+      const displayProp = datasourceMetadata.datasource.propertyForDisplayText?.startsWith('@P')
+        ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
+        : datasourceMetadata.datasource.propertyForDisplayText;
+      const valueProp = datasourceMetadata.datasource.propertyForValue?.startsWith('@P')
+        ? datasourceMetadata.datasource.propertyForValue.substring(3)
+        : datasourceMetadata.datasource.propertyForValue;
+      columns = [
+        {
+          key: 'true',
+          setProperty: 'Associated property',
+          value: valueProp
+        },
+        {
+          display: 'true',
+          primary: 'true',
+          useForSearch: true,
+          value: displayProp
+        }
+      ];
+    }
+
+    return { columns, datasource };
   }
 
   fillOptions(results: any) {
