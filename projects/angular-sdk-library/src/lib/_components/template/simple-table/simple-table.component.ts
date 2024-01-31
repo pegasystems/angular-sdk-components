@@ -121,7 +121,7 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
         children: [{ children: rawFields }],
         parameters: rawParams
       } = (this.pConn$.getRawMetadata() as any).config;
-      // const rawMetaData: any = this.pConn$.resolveConfigProps((this.pConn$.getRawMetadata() as any).config);
+
       if (isDisplayModeEnabled && hideLabel) {
         propsToUse.label = '';
       }

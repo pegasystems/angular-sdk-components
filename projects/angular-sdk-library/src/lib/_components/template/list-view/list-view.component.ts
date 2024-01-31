@@ -147,7 +147,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   showDynamicFields: any;
   filters: any = {};
   selectParam: any[] = [];
-  filterPayload: any = {};
+  filterPayload: any;
   ref: any = {};
   cosmosTableRef: any;
   listContext: any = {};
@@ -330,12 +330,12 @@ export class ListViewComponent implements OnInit, OnDestroy {
     if (!validFilter) {
       dashboardFilterPayload = undefined;
     }
-    this.filterPayload.current = dashboardFilterPayload;
+    this.filterPayload = dashboardFilterPayload;
     this.getListData();
   }
 
   processFilterClear() {
-    this.filterPayload.current = undefined;
+    this.filterPayload = undefined;
     this.getListData();
   }
 
@@ -421,16 +421,16 @@ export class ListViewComponent implements OnInit, OnDestroy {
     if (this.payload.query) {
       this.query = this.payload.query;
     } else if (listFields?.length && this.listContext.meta.isQueryable) {
-      if (this.filterPayload?.current) {
+      if (this.filterPayload) {
         this.query = {
           select: listFields,
-          filter: this.filterPayload.current?.query?.filter
+          filter: this.filterPayload?.query?.filter
         };
       } else {
         this.query = { select: listFields };
       }
     } else if (this.filterPayload?.current) {
-      this.query = this.filterPayload.current?.query;
+      this.query = this.filterPayload?.query;
     }
   }
   // ngOnChanges(changes) {
