@@ -429,7 +429,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
       } else {
         this.query = { select: listFields };
       }
-    } else if (this.filterPayload?.current) {
+    } else if (this.filterPayload) {
       this.query = this.filterPayload?.query;
     }
   }
