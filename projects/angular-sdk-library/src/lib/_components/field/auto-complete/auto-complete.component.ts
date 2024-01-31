@@ -226,13 +226,10 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     if (deferDatasource && datasourceMetadata?.datasource?.name) {
       this.listType = 'datapage';
       datasource = datasourceMetadata.datasource.name;
-      this.parameters = this.flattenParameters(datasourceMetadata?.datasource?.parameters);
-      const displayProp = datasourceMetadata.datasource.propertyForDisplayText?.startsWith('@P')
-        ? datasourceMetadata.datasource.propertyForDisplayText.substring(3)
-        : datasourceMetadata.datasource.propertyForDisplayText;
-      const valueProp = datasourceMetadata.datasource.propertyForValue?.startsWith('@P')
-        ? datasourceMetadata.datasource.propertyForValue.substring(3)
-        : datasourceMetadata.datasource.propertyForValue;
+      const { parameters, propertyForDisplayText, propertyForValue } = datasourceMetadata.datasource;
+      this.parameters = this.flattenParameters(parameters);
+      const displayProp = propertyForDisplayText?.startsWith('@P') ? propertyForDisplayText.substring(3) : propertyForDisplayText;
+      const valueProp = propertyForValue?.startsWith('@P') ? propertyForValue.substring(3) : propertyForValue;
       columns = [
         {
           key: 'true',
