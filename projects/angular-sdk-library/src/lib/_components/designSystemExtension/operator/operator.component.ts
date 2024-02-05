@@ -54,15 +54,19 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
     if (configProps$?.label?.toLowerCase() == 'create operator') {
       this.name$ = configProps$.createOperator.userName;
       this.id$ = configProps$.createOperator.userId;
+      this.label$ = configProps$.createLabel;
     } else if (configProps$?.label?.toLowerCase() == 'update operator') {
       this.name$ = configProps$.updateOperator.userName;
       this.id$ = configProps$.updateOperator.userId;
+      this.label$ = configProps$.updateLabel;
     } else if (configProps$?.label?.toLowerCase() == 'resolve operator') {
       this.name$ = configProps$.resolveOperator.userName;
       this.id$ = configProps$.resolveOperator.userId;
+      this.label$ = configProps$.resolveLabel;
     } else {
       this.name$ = configProps$?.value.userName;
       this.id$ = configProps$?.value.userId;
+      this.label$ = configProps$.label;
     }
     this.date$ = this.utils.generateDate(configProps$?.updateDateTime, 'DateTime-Since');
   }

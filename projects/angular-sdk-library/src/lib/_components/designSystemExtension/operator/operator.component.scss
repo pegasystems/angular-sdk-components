@@ -5,6 +5,7 @@
   flex-direction: row;
   font-size: 0.8rem;
   color: $app-neutral-color;
+  align-items: center;
 }
 
 .psdk-operator-popover {
@@ -35,7 +36,8 @@
 }
 
 .psdk-double {
-  flex: 2;
+  column-gap: 1rem;
+  text-align: center;
 }
 
 .psdk-top-pad {
@@ -71,4 +73,11 @@ dd {
 .mat-mdc-outlined-button.mat-primary {
   padding: 0px;
   line-height: unset;
+}
+
+.psdk-label {
+  word-break: break-word;
+  grid-column-start: 1;
+  max-width: max-content;
+  color: rgba(0, 0, 0, 0.8);
 }

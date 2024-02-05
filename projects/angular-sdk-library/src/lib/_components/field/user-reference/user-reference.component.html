@@ -1,6 +1,5 @@
 <div class="psdk-user-reference">
   <div *ngIf="type === 'operator'">
-    {{ label$ }}
     <component-mapper name="Operator" [props]="{ pConn$ }"></component-mapper>
   </div>
   <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
