@@ -80,7 +80,7 @@ test.describe('E2E test', () => {
     await dateFilterInput.click();
     await dateFilterInput.pressSequentially(`${nextDay}`);
 
-    await expect(page.locator(`td:has-text("${new Date().getDate()}")`)).toBeVisible();
+    await expect(page.locator(`td:has-text("${new Date().getDate()}") >> nth=0`)).toBeVisible();
 
     const pagination = page.locator('mat-paginator[id="pagination"]');
     await expect(pagination.getByText('1 – 1 of 1')).toBeVisible();
