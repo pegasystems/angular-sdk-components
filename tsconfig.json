@@ -3,7 +3,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "angular-sdk-library": ["dist/angular-sdk-library"]
+      "angular-sdk-components": ["dist/angular-sdk-components"]
     },
     "typeRoots": ["node_modules/@types", "node_modules/@pega"],
     "types": ["pcore-pconnect-typedefs", "jasmine"],

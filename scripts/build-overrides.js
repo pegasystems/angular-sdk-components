@@ -15,10 +15,10 @@ const overridesLibDir = path.join(__dirname, '..', overridesPkgDir);
  *
  * @param {*} match - should be a line starting with import
  * @param {*} importPath - import Path to be updates
- * @returns {string} string that should replace importPath (with @pega/angular-sdk-library)
+ * @returns {string} string that should replace importPath (with @pega/angular-sdk-components)
  */
 function modifyImportPath(match, importPath) {
-  return match.replace(importPath, '@pega/angular-sdk-library');
+  return match.replace(importPath, '@pega/angular-sdk-components');
 }
 
 /**
@@ -28,10 +28,10 @@ function modifyImportPath(match, importPath) {
  *
  * This function processes the given file which is expected to be a file in the angular-sdk-overrides/lib
  * directory. It finds relative paths of import statements to other components/files in the
- * angular-sdk-library package and updates those relative paths
+ * angular-sdk-components package and updates those relative paths
  * (ex: import FieldValueList from '../../designSystemExtension/FieldValueList';)
  * and updates those to the appropriate @pega/react-sdk-components path
- * (ex: import FieldValueList from '@pega/angular-sdk-library';)
+ * (ex: import FieldValueList from '@pega/angular-sdk-components';)
  */
 function processOverrideFile(filePath) {
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -70,7 +70,7 @@ function processOverrideCssFile(filePath) {
     const importPattern = /@import\s+['"]([^'"]+)['"]/g;
     const newData = data.replace(importPattern, (match, importPath) => {
       if (importPath.includes('../')) {
-        return match.replace(importPath, '@pega/angular-sdk-library/_shared/styles.scss');
+        return match.replace(importPath, '@pega/angular-sdk-components/_shared/styles.scss');
       }
       return match;
     });
