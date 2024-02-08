@@ -148,11 +148,7 @@
             "polyfills": "packages/test-app/src/polyfills.ts",
             "tsConfig": "packages/test-app/tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "packages/test-app/src/favicon.ico",
-              "packages/test-app/src/assets",
-              "packages/test-app/src/assets/mdi.svg"
-            ],
+            "assets": ["packages/test-app/src/favicon.ico", "packages/test-app/src/assets", "packages/test-app/src/assets/mdi.svg"],
             "styles": ["./node_modules/intl-tel-input/build/css/intlTelInput.css", "packages/test-app/src/styles.scss"],
             "scripts": []
           }
