@@ -96,6 +96,7 @@ export * from './lib/_components/template/two-column-tab/two-column-tab.componen
 export * from './lib/_components/template/wide-narrow-form/wide-narrow-form.component';
 export * from './lib/_components/template/wide-narrow-page/wide-narrow-page.component';
 export * from './lib/_components/template/utils';
+export * from './lib/_components/template/simple-table-manual/helpers';
 
 export * from './lib/_components/widget/app-announcement/app-announcement.component';
 export * from './lib/_components/widget/attachment/attachment.component';
