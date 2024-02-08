@@ -12,7 +12,7 @@ const { devices } = require('@playwright/test');
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
 const config = {
-  testDir: 'packages/angular-sdk-components/tests',
+  testDir: 'packages/test-app/tests',
   /* Maximum time one test can run for. */
   timeout: 120 * 1000,
   expect: {

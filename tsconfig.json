@@ -8,7 +8,7 @@
     "typeRoots": ["node_modules/@types", "node_modules/@pega"],
     "types": ["pcore-pconnect-typedefs", "jasmine"],
     "baseUrl": "./",
-    "outDir": "./packages/angular-sdk-components/lib",
+    "outDir": "./packages/test-app/lib",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": false,
