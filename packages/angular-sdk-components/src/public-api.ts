@@ -149,16 +149,6 @@ export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/reset-pconnect.service';
 export * from './lib/_messages/update-worklist.service';
 
-export * from './lib/_samples/full-portal/top-app-mashup/top-app-mashup.component';
-export * from './lib/_samples/mashup/bundle-swatch/bundle-swatch.component';
-export * from './lib/_samples/mashup/main-screen/main-screen.component';
-export * from './lib/_samples/mashup/mc-main-content/mc-main-content.component';
-export * from './lib/_samples/mashup/mc-nav/mc-nav.component';
-export * from './lib/_samples/mashup/resolution-screen/resolution-screen.component';
-export * from './lib/_samples/simple-portal/main-content/main-content.component';
-export * from './lib/_samples/simple-portal/navigation/navigation.component';
-export * from './lib/_samples/simple-portal/side-bar/side-bar.component';
-
 export * from './lib/_types/PConnProps.interface';
 
 export * from './sdk-local-component-map';

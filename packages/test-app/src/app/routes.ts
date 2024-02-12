@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { TopAppMashupComponent } from '../../../../packages/angular-sdk-components/src/lib/_samples/full-portal/top-app-mashup/top-app-mashup.component';
-import { NavigationComponent } from '../../../../packages/angular-sdk-components/src/lib/_samples/simple-portal/navigation/navigation.component';
-import { MCNavComponent } from '../../../../packages/angular-sdk-components/src/lib/_samples/mashup/mc-nav/mc-nav.component';
+import { TopAppMashupComponent } from './_samples/full-portal/top-app-mashup/top-app-mashup.component';
+import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
+import { MCNavComponent } from './_samples/mashup/mc-nav/mc-nav.component';
 import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
 
 // Adding path to remove "Cannot match routes" error at launch

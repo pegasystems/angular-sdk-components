@@ -7,15 +7,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 
-import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
+import { UpdateWorklistService } from '../../../../../../angular-sdk-components/src/lib/_messages/update-worklist.service';
 import { loginIfNecessary, logout } from '@pega/auth/lib/sdk-auth-manager';
-import { ServerConfigService } from '../../../_services/server-config.service';
-import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
+import { ServerConfigService } from '../../../../../../angular-sdk-components/src/lib/_services/server-config.service';
+import { compareSdkPCoreVersions } from '../../../../../../angular-sdk-components/src/lib/_helpers/versionHelpers';
 import { MainContentComponent } from '../main-content/main-content.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 
-import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../sdk-local-component-map';
+import { getSdkComponentMap } from '../../../../../../angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from '../../../../../../angular-sdk-components/src/sdk-local-component-map';
 
 declare global {
   interface Window {

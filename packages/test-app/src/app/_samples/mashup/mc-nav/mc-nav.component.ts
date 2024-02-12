@@ -7,18 +7,18 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription, interval } from 'rxjs';
 
-import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ResetPConnectService } from '../../../_messages/reset-pconnect.service';
-import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
+import { ProgressSpinnerService } from '../../../../../../angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { ResetPConnectService } from '../../../../../../angular-sdk-components/src/lib/_messages/reset-pconnect.service';
+import { UpdateWorklistService } from '../../../../../../angular-sdk-components/src/lib/_messages/update-worklist.service';
 import { loginIfNecessary, logout, sdkSetAuthHeader } from '@pega/auth/lib/sdk-auth-manager';
-import { endpoints } from '../../../_services/endpoints';
-import { ServerConfigService } from '../../../_services/server-config.service';
-import { Utils } from '../../../_helpers/utils';
-import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
+import { endpoints } from '../../../../../../angular-sdk-components/src/lib/_services/endpoints';
+import { ServerConfigService } from '../../../../../../angular-sdk-components/src/lib/_services/server-config.service';
+import { Utils } from '../../../../../../angular-sdk-components/src/lib/_helpers/utils';
+import { compareSdkPCoreVersions } from '../../../../../../angular-sdk-components/src/lib/_helpers/versionHelpers';
 import { MainScreenComponent } from '../main-screen/main-screen.component';
 
-import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../sdk-local-component-map';
+import { getSdkComponentMap } from '../../../../../../angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from '../../../../../../angular-sdk-components/src/sdk-local-component-map';
 
 declare global {
   interface Window {

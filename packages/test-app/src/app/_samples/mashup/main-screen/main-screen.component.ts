@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { ProgressSpinnerService } from '../../../../../../angular-sdk-components/src/lib/_messages/progress-spinner.service';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
 import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component';
-import { ServerConfigService } from '../../../_services/server-config.service';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ServerConfigService } from '../../../../../../angular-sdk-components/src/lib/_services/server-config.service';
+import { ComponentMapperComponent } from '../../../../../../angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-main-screen',

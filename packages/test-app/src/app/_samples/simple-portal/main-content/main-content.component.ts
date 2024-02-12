@@ -1,15 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ComponentMapperComponent } from '../../../../../../angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'app-mc-main-content',
-  templateUrl: './mc-main-content.component.html',
-  styleUrls: ['./mc-main-content.component.scss'],
+  selector: 'app-main-content',
+  templateUrl: './main-content.component.html',
+  styleUrls: ['./main-content.component.scss'],
   standalone: true,
   imports: [CommonModule, ComponentMapperComponent]
 })
-export class MCMainContentComponent implements OnInit {
+export class MainContentComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
   sComponentName$: string;

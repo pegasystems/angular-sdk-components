@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
-import { GetLoginStatusService } from '../../../_messages/get-login-status.service';
-import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { UpdateWorklistService } from '../../../_messages/update-worklist.service';
-import { CaseService } from '../../../_services/case.service';
-import { DatapageService } from '../../../_services/datapage.service';
+import { GetLoginStatusService } from '../../../../../../angular-sdk-components/src/lib/_messages/get-login-status.service';
+import { ProgressSpinnerService } from '../../../../../../angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { UpdateWorklistService } from '../../../../../../angular-sdk-components/src/lib/_messages/update-worklist.service';
+import { CaseService } from '../../../../../../angular-sdk-components/src/lib/_services/case.service';
+import { DatapageService } from '../../../../../../angular-sdk-components/src/lib/_services/datapage.service';
 
 @Component({
   selector: 'app-side-bar',

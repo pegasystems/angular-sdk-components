@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { loginIfNecessary, logout, getAvailablePortals } from '@pega/auth/lib/sdk-auth-manager';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
-import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ServerConfigService } from '../../../_services/server-config.service';
-import { compareSdkPCoreVersions } from '../../../_helpers/versionHelpers';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ProgressSpinnerService } from '../../../../../../angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { ServerConfigService } from '../../../../../../angular-sdk-components/src/lib/_services/server-config.service';
+import { compareSdkPCoreVersions } from '../../../../../../angular-sdk-components/src/lib/_helpers/versionHelpers';
+import { ComponentMapperComponent } from '../../../../../../angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 
-import { getSdkComponentMap } from '../../../_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../sdk-local-component-map';
+import { getSdkComponentMap } from '../../../../../../angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from '../../../../../../angular-sdk-components/src/sdk-local-component-map';
 
 declare global {
   interface Window {
