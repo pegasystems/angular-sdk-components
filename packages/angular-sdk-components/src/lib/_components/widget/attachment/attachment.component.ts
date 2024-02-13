@@ -288,7 +288,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     PCore.getAttachmentUtils()
       // @ts-ignore - 3rd parameter "responseEncoding" should be optional
       .downloadAttachment(fileObj.pzInsKey, this.pConn$.getContextName())
-      .then(content => {
+      .then((content: any) => {
         const extension = fileObj.pyAttachName.split('.').pop();
         this.fileDownload(content.data, fileObj.pyFileName, extension);
       })

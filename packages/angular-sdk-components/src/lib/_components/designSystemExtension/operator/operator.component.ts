@@ -77,7 +77,7 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
     const localeCategory = 'Operator';
     const fillerString = '---';
 
-    operatorPreviewPromise.then(res => {
+    operatorPreviewPromise.then((res: any) => {
       if (res.data && res.data.pyOperatorInfo && res.data.pyOperatorInfo.pyUserName) {
         this.fields$ = [
           {

@@ -148,7 +148,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
         // if same user ref field is referred in view as editable & readonly formatted text
         // referenced users won't be available, so get user details from dx api
         const { getOperatorDetails } = PCore.getUserApi();
-        getOperatorDetails(this.userID$).then(resp => {
+        getOperatorDetails(this.userID$).then((resp: any) => {
           if (resp.data && resp.data.pyOperatorInfo && resp.data.pyOperatorInfo.pyUserName) {
             this.userName$ = resp.data.pyOperatorInfo.pyUserName;
           }
@@ -160,7 +160,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       };
       PCore.getRestClient()
         .invokeRestApi('getListData', { queryPayload } as any, '') // 3rd arg empty string until typedef marked correctly
-        .then(resp => {
+        .then((resp: any) => {
           const ddDataSource = resp.data.data.map(listItem => ({
             key: listItem.pyUserIdentifier,
             value: listItem.pyUserName

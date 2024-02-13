@@ -154,7 +154,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     for (const file of files) {
       attachmentUtils
         .uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
-        .then(fileResponse => {
+        .then((fileResponse: any) => {
           if (fileResponse.type === 'File') {
             (attachmentUtils.linkAttachmentsToCase(caseID, [fileResponse], 'File', this.pConn$.getContextName()) as Promise<any>)
               .then(() => {
@@ -502,7 +502,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     attachUtils
       // @ts-ignore - 3rd parameter "responseEncoding" is optional
       .downloadAttachment(ID, context)
-      .then(content => {
+      .then((content: any) => {
         if (type === 'FILE') {
           this.fileDownload(content.data, name, extension);
         } else if (type === 'URL') {

@@ -140,6 +140,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
           .showData(this.name, dataContext, dataContextParameters, {
             // @ts-ignore - skipSemanticUrl should be boolean type
             skipSemanticUrl: true,
+            // @ts-ignore
             isDeferLoaded: true
           })
           .then(data => {
