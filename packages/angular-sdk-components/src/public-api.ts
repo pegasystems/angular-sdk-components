@@ -4,10 +4,6 @@
  * Public API Surface of angular-sdk-components
  */
 
-export * from './lib/angular-sdk-components.service';
-export * from './lib/angular-sdk-components.component';
-export * from './lib/angular-sdk-components.module';
-
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
