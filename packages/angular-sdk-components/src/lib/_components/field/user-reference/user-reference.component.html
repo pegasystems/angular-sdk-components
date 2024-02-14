@@ -7,7 +7,7 @@
       <mat-select
         [value]="value$"
         [required]="bRequired$"
-        [formControlName]="controlName$"
+        [formControl]="fieldControl"
         [attr.data-test-id]="testId"
         (selectionChange)="fieldOnChange($event)"
       >
@@ -27,7 +27,7 @@
       <input
         matInput
         [placeholder]="placeholder"
-        [formControlName]="controlName$"
+        [formControl]="fieldControl"
         [value]="value$"
         [required]="bRequired$"
         [matAutocomplete]="auto"

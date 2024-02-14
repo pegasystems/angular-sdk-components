@@ -15,7 +15,7 @@
           type="text"
           [value]="value$"
           [required]="bRequired$"
-          [formControlName]="controlName$"
+          [formControl]="fieldControl"
           (dateChange)="fieldOnDateChange($event)"
           (blur)="fieldOnBlur($event)"
         />

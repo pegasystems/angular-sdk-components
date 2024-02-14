@@ -15,7 +15,7 @@
             [placeholder]="placeholder"
             [value]="value$ | number: '1.2-2'"
             [required]="bRequired$"
-            [formControlName]="controlName$"
+            [formControl]="fieldControl"
             [attr.data-test-id]="testId"
             (change)="fieldOnChange($event)"
             (blur)="fieldOnBlur($event)"

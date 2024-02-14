@@ -4,11 +4,10 @@
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
     <div #f="ngForm" [formGroup]="formGroup$" *ngIf="bVisible$">
-      <!-- <div class="psdk-full-width"> -->
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <ngx-mat-intl-tel-input
           [attr.data-test-id]="testId"
-          [formControlName]="controlName$"
+          [formControl]="fieldControl"
           [preferredCountries]="['us']"
           [enablePlaceholder]="true"
           [enableSearch]="true"
@@ -19,7 +18,6 @@
         <mat-label>{{ label$ }}</mat-label>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
-      <!-- </div> -->
     </div>
   </div>
 </ng-template>

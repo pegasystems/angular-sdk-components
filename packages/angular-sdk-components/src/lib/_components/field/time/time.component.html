@@ -12,7 +12,7 @@
           type="time"
           [value]="value$"
           [required]="bRequired$"
-          [formControlName]="controlName$"
+          [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
         />

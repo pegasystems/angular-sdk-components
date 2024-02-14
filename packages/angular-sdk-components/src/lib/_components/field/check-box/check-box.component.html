@@ -13,6 +13,7 @@
           [checked]="isChecked$"
           [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
+          [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
           >{{ caption$ }}</mat-checkbox
@@ -24,6 +25,7 @@
           [checked]="isChecked$"
           [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
+          [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
           >{{ caption$ }}</mat-checkbox

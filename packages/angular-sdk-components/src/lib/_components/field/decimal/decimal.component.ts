@@ -73,7 +73,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
     // this.updateSelf();
     this.checkAndUpdate();
 
-    if (this.formGroup$ != null) {
+    if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       this.fieldControl.setValue(this.value$);
@@ -85,7 +85,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.formGroup$ != null) {
+    if (this.formGroup$) {
       this.formGroup$.removeControl(this.controlName$);
     }
 
