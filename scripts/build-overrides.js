@@ -60,30 +60,6 @@ function processOverrideFile(filePath) {
   });
 }
 
-function processOverrideCssFile(filePath) {
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error(`Error reading file: ${filePath}`, err);
-      return;
-    }
-
-    const importPattern = /@import\s+['"]([^'"]+)['"]/g;
-    const newData = data.replace(importPattern, (match, importPath) => {
-      if (importPath.includes('../')) {
-        return match.replace(importPath, '@pega/angular-sdk-components/_shared/styles.scss');
-      }
-      return match;
-    });
-
-    // Write the modified content back to the file
-    fs.writeFile(filePath, newData, 'utf8', writeErr => {
-      if (writeErr) {
-        console.error(`Error writing file: ${filePath}`, err);
-      }
-    });
-  });
-}
-
 // Function to recursively traverse a directory and process each file
 function processSdkOverrides(directory) {
   const files = fs.readdirSync(directory);
@@ -95,9 +71,10 @@ function processSdkOverrides(directory) {
       processSdkOverrides(filePath);
     } else if (filePath.endsWith('.ts')) {
       processOverrideFile(filePath);
-    } else if (filePath.endsWith('.scss')) {
-      processOverrideCssFile(filePath);
     }
+    // else if (filePath.endsWith('.scss')) {
+    //   processOverrideCssFile(filePath);
+    // }
   }
 }
 

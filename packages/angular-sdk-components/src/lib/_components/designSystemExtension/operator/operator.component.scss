@@ -1,10 +1,8 @@
-@import '../../../../../_shared/styles.scss';
-
 .psdk-operator {
   display: flex;
   flex-direction: row;
   font-size: 0.8rem;
-  color: $app-neutral-color;
+  color: var(--app-neutral-color);
   align-items: center;
 }
 
@@ -12,22 +10,22 @@
   display: table;
   margin: auto;
   min-width: 100px;
-  background-color: white;
-  border: 1px solid black;
+  background-color: var(--app-form-color);
+  border: 1px solid var(--app-black-color);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px #777;
+  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
   position: absolute;
   z-index: 99;
 }
 
 .psdk-operator-name {
-  color: $app-neutral-color;
+  color: var(--app-neutral-color);
 }
 
 .psdk-operator-value {
   padding-left: 5px;
-  color: $app-neutral-dark-color;
+  color: var(--app-neutral-dark-color);
   margin: 0px;
 }
 
@@ -79,5 +77,5 @@ dd {
   word-break: break-word;
   grid-column-start: 1;
   max-width: max-content;
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--app-field-header-color);
 }

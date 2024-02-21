@@ -1,15 +1,13 @@
-@import '../../../../../_shared/styles.scss';
-
 .psdk-display-divider {
-  border-bottom: 0.0625rem solid $app-neutral-light-color;
+  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
 }
 
 .psdk-todo {
   padding: 1rem;
-  background-color: white;
+  background-color: var(--app-form-color);
   border-radius: 0.6125rem;
   border-left: 6px solid;
-  border-left-color: #7986cb;
+  border-left-color: var(--app-primary-color);
 }
 
 .psdk-todo-header {
@@ -23,14 +21,14 @@
 }
 
 .psdk-assignment-count {
-  background-color: $app-primary-light-color;
+  background-color: var(--app-primary-light-color);
   margin: 0.5rem;
   border-radius: 45%;
   padding: 0.15rem 0.4rem;
 }
 
 .psdk-todo-id {
-  color: $app-primary-color;
+  color: var(--app-primary-color);
   padding: 0;
   cursor: pointer;
   border: 0;
@@ -50,8 +48,8 @@
   align-items: center;
   text-align: center;
   display: flex;
-  background: $app-primary-color;
-  color: white;
+  background: var(--app-primary-color);
+  color: var(--app-form-color);
   font-weight: bold;
   font-size: 1.25rem;
 }
@@ -67,9 +65,9 @@
 }
 
 .psdk-todo-assignment-status {
-  background-color: $app-neutral-light-color;
+  background-color: var(--app-neutral-light-color);
   border-radius: 0.125rem;
-  color: darkslategray;
+  color: var(--app-assignment-status-color);
   font-size: 0.75rem;
   font-weight: bold;
   line-height: calc(0.5rem * 2.5);
@@ -79,7 +77,7 @@
 }
 
 .psdk-todo-assignment-task {
-  color: $app-neutral-color;
+  color: var(--app-neutral-color);
 }
 
 .psdk-todo-assignment-action {

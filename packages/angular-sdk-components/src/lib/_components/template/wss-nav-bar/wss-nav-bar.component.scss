@@ -1,5 +1,3 @@
-@import '../../../../../_shared/styles.scss';
-
 // // Things related to movement
 // $transition-slow: 0.5s !default;
 // $transition-medium: 0.3s !default;
@@ -7,7 +5,7 @@
 // $natural-ease: cubic-bezier(0.4, 0.6, 0.1, 1) !default;
 
 .psdk-nav-divider {
-  border-bottom: 0.0625rem solid invert($app-nav-bg, 15%);
+  border-bottom: 0.0625rem solid var(--app-divider-color);
   width: 100%;
   align-items: center;
 }
@@ -18,7 +16,7 @@
   cursor: pointer;
   padding-right: 1rem;
   &:hover {
-    background-color: grey;
+    background-color: var(--app-neutral-color);
   }
   align-items: center;
 }
@@ -30,7 +28,7 @@
 }
 
 .psdk-nav-svg-icon {
-  filter: $app-white-color-filter;
+  filter: var(--app-white-color-filter);
   width: 1.6rem;
   padding-right: 0.625rem;
 }
@@ -41,7 +39,7 @@
 
 .psdk-nav-portal-app {
   font-size: 1.5rem;
-  color: #d9d9d9;
+  color: var(--app-nav-color);
 }
 
 .psdk-appshell-nav {
@@ -50,10 +48,10 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: $app-nav-bg;
-  width: $app-nav-width;
+  background: var(--app-nav-bg);
+  width: var(--app-nav-width);
   height: 100%;
-  color: invert($app-nav-bg, 100%);
+  color: var(--app-nav-color);
   overflow-y: auto;
   overflow-x: hidden;
   white-space: nowrap;
@@ -61,17 +59,17 @@
 }
 
 .psdk-appshell-nav:hover {
-  width: $app-nav-width-expanded;
+  width: var(--app-nav-width-expanded);
 }
 
 .psdk-appshell-topnav {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  background: $app-nav-bg;
-  width: $app-nav-width;
+  background: var(--app-nav-bg);
+  width: var(--app-nav-width);
   height: 15%;
-  color: invert($app-nav-bg, 100%);
+  color: var(--app-nav-color);
   overflow: hidden;
   white-space: nowrap;
   will-change: width;
@@ -81,10 +79,10 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: $app-nav-bg;
-  width: $app-nav-width;
+  background: var(--app-nav-bg);
+  width: var(--app-nav-width);
   height: 50%;
-  color: invert($app-nav-bg, 100%);
+  color: var(--app-nav-color);
   overflow: hidden;
   white-space: nowrap;
   //   transition: width $transition-medium $natural-ease;
@@ -110,10 +108,10 @@
 
 .psdk-nav-button-span {
   padding: 0 1rem;
-  color: invert($app-nav-bg, 100%);
+  color: var(--app-nav-color);
 
   &:hover {
-    background-color: grey;
+    background-color: var(--app-neutral-color);
   }
 }
 
@@ -129,8 +127,8 @@
   align-items: center;
   text-align: center;
   display: inline-flex;
-  background: $app-neutral-color;
-  color: white;
+  background: var(--app-neutral-color);
+  color: var(--app-form-color);
   font-weight: normal;
   font-size: 1rem;
 }

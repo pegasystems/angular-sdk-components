@@ -1,7 +1,5 @@
-@import '../../../../../_shared/styles.scss';
-
 .psdk-pulse-divider {
-  border-bottom: 0.0625rem solid $app-neutral-light-color;
+  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
 }
 
 .psdk-full-width {
@@ -19,7 +17,7 @@
   padding: 0rem 0.125rem;
   min-width: unset;
   display: inline-block;
-  color: $app-primary-color;
+  color: var(--app-primary-color);
 }
 
 .psdk-send-svg-icon {
@@ -39,7 +37,7 @@
 .psdk-liked-by-me-svg-icon {
   width: 1.4rem;
   padding: 0rem 0.3215rem;
-  filter: $app-primary-color-filter;
+  filter: var(--app-primary-color-filter);
 }
 
 .psdk-avatar {
@@ -54,8 +52,8 @@
   align-items: center;
   text-align: center;
   display: flex;
-  background: $app-primary-color;
-  color: white;
+  background: var(--app-primary-color);
+  color: var(--app-form-color);
   font-weight: bold;
   font-size: 1.25rem;
 }
@@ -72,8 +70,8 @@
   align-items: center;
   text-align: center;
   display: flex;
-  background: $app-primary-color;
-  color: white;
+  background: var(--app-primary-color);
+  color: var(--app-form-color);
   font-weight: bold;
   font-size: 1.5625rem;
 }
@@ -97,7 +95,7 @@
 }
 
 .psdk-pulse-message-time {
-  color: #aaaaaa;
+  color: var(--app-pulse-message-color);
 }
 
 .psdk-pulse-message-text {
@@ -143,7 +141,7 @@
 }
 
 .psdk-pulse-reply-message {
-  background-color: #dddddd;
+  background-color: var(--app-pulse-message-background-color);
   border-radius: 0.625rem;
   padding: 0rem 1.25rem;
   white-space: pre-line;
@@ -172,7 +170,7 @@
 }
 
 .psdk-pulse-reply-time {
-  color: #aaaaaa;
+  color: var(--app-pulse-message-color);
   padding-left: 0.625rem;
 }
 

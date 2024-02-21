@@ -1,5 +1,3 @@
-@import '../../../../../_shared/styles.scss';
-
 h1 {
   font-size: 1.1rem;
   line-height: 1.3rem;
@@ -29,14 +27,14 @@ h1 {
 }
 
 .psdk-case-icon-div {
-  background-color: $app-primary-dark-color;
+  background-color: var(--app-primary-dark-color);
   border-radius: 1rem;
   padding: 0.5rem 0.3rem 0.3rem 0.3rem;
 }
 .psdk-case-svg-icon {
   width: 2rem;
   padding: 0rem 0.3125rem;
-  filter: $app-white-color-filter;
+  filter: var(--app-white-color-filter);
 }
 
 .psdk-case-view-info-box {
@@ -51,7 +49,7 @@ h1 {
   float: left;
   padding: 0rem 0.3125rem 0rem 0rem;
   height: 100%; /* Should be removed. Only for demonstration */
-  background-color: $app-form-color;
+  background-color: var(--app-form-color);
 }
 
 .psdk-case-view-main {
@@ -91,13 +89,13 @@ h1 {
 }
 
 .psdk-case-view-divider {
-  border-bottom: 0.0625rem solid $app-neutral-light-color;
+  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
 }
 
 .psdk-status {
   padding: 0.3125rem 0.3125rem;
-  background-color: $app-primary-color;
-  color: white;
+  background-color: var(--app-primary-color);
+  color: var(--app-form-color);
   width: fit-content;
   margin: 0.625rem;
 }

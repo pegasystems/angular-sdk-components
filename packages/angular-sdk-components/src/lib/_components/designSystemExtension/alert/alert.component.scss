@@ -14,34 +14,34 @@
 }
 
 .psdk-alert-error {
-  color: rgb(82, 21, 8);
-  border: 1px solid rgb(207, 53, 22);
+  color: var(--app-alert-error-color);
+  border: 1px solid var(--app-alert-error-border-color);
   .mat-icon {
-    color: rgb(207, 53, 22);
+    color: var(--app-alert-error-border-color);
   }
 }
 
 .psdk-grid-warning {
-  color: rgb(102, 60, 0);
-  border: 1px solid #ff9800;
+  color: var(--app-alert-warning-color);
+  border: 1px solid var(--app-alert-warning-border-color);
   .mat-icon {
-    color: #ff9800;
+    color: var(--app-alert-warning-border-color);
   }
 }
 
 .psdk-grid-success {
-  color: rgb(2, 46, 9);
-  border: 1px solid rgb(6, 116, 23);
+  color: var(--app-alert-success-color);
+  border: 1px solid var(--app-alert-success-border-color);
   .mat-icon {
-    color: rgb(6, 116, 23);
+    color: var(--app-alert-success-border-color);
   }
 }
 
 .psdk-grid-info {
-  color: rgb(13, 60, 97);
-  border: 1px solid #2196f3;
+  color: var(--app-alert-info-color);
+  border: 1px solid var(--app-alert-info-border-color);
   .mat-icon {
-    color: #2196f3;
+    color: var(--app-alert-info-border-color);
   }
 }
 

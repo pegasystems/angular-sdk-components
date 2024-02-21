@@ -1,5 +1,3 @@
-@import '../../../../../_shared/styles.scss';
-
 mat-button-toggle-group {
   width: 100%;
   border-width: 0.0625rem 0rem;
@@ -11,7 +9,7 @@ mat-button-toggle-group ::ng-deep .mat-button-toggle-appearance-standard {
 
 mat-button-toggle-group ::ng-deep .mat-button-toggle.mat-button-toggle-checked.mat-button-toggle-appearance-standard {
   background-color: transparent;
-  border-right: 0.1875rem solid $app-primary-color;
+  border-right: 0.1875rem solid var(--app-primary-color);
 }
 
 mat-button-toggle-group ::ng-deep .mat-button-toggle.mat-focus-indicator.mat-button-toggle-appearance-standard {

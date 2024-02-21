@@ -1,16 +1,14 @@
-@import '../../../../../_shared/styles.scss';
-
 .appshell-top {
-  background-color: $app-background-color;
+  background-color: var(--app-background-color);
 }
 
 .appshell-top-wss {
-  background-color: $app-background-color;
+  background-color: var(--app-background-color);
 }
 
 .appshell-main {
   position: relative;
-  margin-left: $app-nav-width;
+  margin-left: var(--app-nav-width);
   min-height: 100vh;
   display: block;
 }
@@ -34,7 +32,7 @@
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color: whitesmoke;
+  background-color: var(--app-background-color);
   position: fixed;
   z-index: 999;
   top: 0rem;

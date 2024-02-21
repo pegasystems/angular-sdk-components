@@ -3,6 +3,5 @@
   "dest": "../../dist/angular-sdk-components",
   "lib": {
     "entryFile": "src/public-api.ts"
-  },
-  "assets": ["./_shared/*.*"]
+  }
 }

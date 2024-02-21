@@ -1,5 +1,3 @@
-@import '../../../../../_shared/styles.scss';
-
 .progress-spinner {
   text-align: center;
   position: absolute;
@@ -7,7 +5,7 @@
 }
 
 .psdk-modal-file-selector {
-  border: 1px dashed $app-neutral-dark-color;
+  border: 1px dashed var(--app-neutral-dark-color);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
@@ -18,15 +16,15 @@
   display: inline;
   content: ' *';
   vertical-align: top;
-  color: $app-neutral-dark-color;
+  color: var(--app-neutral-dark-color);
 }
 
 .file-error {
-  color: $app-error-light-color;
+  color: var(--app-error-light-color);
 }
 
 .psdk-modal-file-selector-error {
-  border: 1px dashed $app-error-light-color;
+  border: 1px dashed var(--app-error-light-color);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
@@ -49,7 +47,7 @@
 }
 
 .psdk-attachment-list {
-  border: 1px solid $app-neutral-color;
+  border: 1px solid var(--app-neutral-color);
 }
 
 ::ng-deep .mat-mdc-form-field-infix {

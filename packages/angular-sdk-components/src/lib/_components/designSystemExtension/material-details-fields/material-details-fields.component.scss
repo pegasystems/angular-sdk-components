@@ -1,5 +1,5 @@
 .psdk-details-fields-label {
-  color: rgba(0, 0, 0, 0.54);
+  color: var(--app-label-color);
   margin: 8px 0px;
 }
 
@@ -8,9 +8,9 @@ span.psdk-details-text-style-hf {
 }
 
 span.psdk-details-status-style-hf {
-  background-color: #e9eef3;
+  background-color: var(--app-details-status-background);
   border-radius: calc(0.25 * 0.5rem);
-  color: #4c5a67;
+  color: var(--app-details-status-color);
   display: inline-block;
   font-size: 0.75rem;
   font-weight: bold;

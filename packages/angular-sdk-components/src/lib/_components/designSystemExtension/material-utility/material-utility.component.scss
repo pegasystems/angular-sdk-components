@@ -1,12 +1,10 @@
-@import '../../../../../_shared/styles.scss';
-
 .psdk-icon {
   padding: 0rem 0.125rem;
   min-width: unset;
 }
 
 .psdk-case-view-divider {
-  border-bottom: 0.0625rem solid $app-neutral-light-color;
+  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
 }
 
 .psdk-utility .header-text {
@@ -26,7 +24,7 @@
   height: 6.25rem;
   padding: 0.625rem 0rem;
   text-align: left;
-  background-color: $app-form-color;
+  background-color: var(--app-form-color);
   border-radius: 0.6125rem;
   margin: 0.3125rem 0rem;
 }
@@ -44,7 +42,7 @@
 .psdk-settings-svg-icon {
   width: 1.4rem;
   display: inline-block;
-  filter: $app-primary-color-filter;
+  filter: var(--app-primary-color-filter);
 }
 
 .psdk-utility .message {

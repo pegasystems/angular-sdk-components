@@ -1,5 +1,3 @@
-@import '../../../../../_shared/styles.scss';
-
 .psdk-dialog-background {
   display: flex;
   flex-direction: column;
@@ -7,7 +5,7 @@
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color: rgba(100, 100, 100, 0.4);
+  background-color: var(--app-dialog-background-color);
   position: fixed;
   z-index: 999;
   top: 0px;
@@ -18,26 +16,26 @@
   display: table;
   margin: auto;
   min-width: 650px;
-  background-color: white;
-  border: 1px solid black;
+  background-color: var(--app-form-color);
+  border: 1px solid var(--app-black-color);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px #777;
+  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
 }
 
 .psdk-modal-link-top {
   display: table;
   margin: auto;
   min-width: 650px;
-  background-color: white;
-  border: 1px solid black;
+  background-color: var(--app-form-color);
+  border: 1px solid var(--app-black-color);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px #777;
+  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
 }
 
 .psdk-modal-file-selector {
-  border: 1px dashed $app-neutral-dark-color;
+  border: 1px dashed var(--app-neutral-dark-color);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
