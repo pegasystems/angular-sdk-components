@@ -1,9 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 // @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 /*@import "@angular/material/prebuilt-themes/pink-bluegrey.css";*/
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
 @import '@angular/material/theming';
 @import './containerStyles.scss';
-.theme {
+
+html,
+body {
   @import './theme.scss';
   @include angular-material-theme($my-theme);
   @include generate-theme-vars($my-theme);
@@ -72,4 +75,8 @@ a.mat-mdc-menu-item > mat-icon {
 }
 .psdk-value {
   margin: 8px 0px;
+}
+
+.mdc-button {
+  line-height: inherit !important;
 }
