@@ -691,9 +691,15 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     if (caseID) {
       this.lu_bLoading$ = true;
 
-      this.fetchCaseAttachments(caseID).then(resp => {
-        this.handleAttachmentsResponse(resp);
-      });
+      this.fetchCaseAttachments(caseID)
+        .then(resp => {
+          this.handleAttachmentsResponse(resp);
+          this.lu_bLoading$ = false;
+        })
+        .catch(err => {
+          console.log(err);
+          this.lu_bLoading$ = false;
+        });
     }
   }
 
@@ -702,9 +708,11 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     return this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID) || '';
   }
 
-  fetchCaseAttachments(caseID) {
+  async fetchCaseAttachments(caseID) {
     const attachmentUtils = PCore.getAttachmentUtils();
-    return attachmentUtils.getCaseAttachments(caseID, this.pConn$.getContextName());
+    // eslint-disable-next-line sonarjs/prefer-immediate-return
+    const attachments = await attachmentUtils.getCaseAttachments(caseID, this.pConn$.getContextName());
+    return attachments;
   }
 
   handleAttachmentsResponse(resp) {
