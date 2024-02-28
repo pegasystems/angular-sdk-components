@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const copySecurityAndLicense = require('./copy-security-license.js');
 
 // overridesPkgDir is path where the files in the package are
 const overridesPkgDir = 'packages/angular-sdk-overrides/lib';
@@ -80,3 +81,6 @@ function processSdkOverrides(directory) {
 
 // Start processing the specified folder
 processSdkOverrides(overridesLibDir);
+
+// Copy Security.md and License files from root to angular-sdk-overrides package
+copySecurityAndLicense('./packages/angular-sdk-overrides');
