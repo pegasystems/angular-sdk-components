@@ -160,7 +160,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     // @ts-ignore - parameter “contextName” for getDataObject method should be optional
-    const optionsList = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
+    const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
     optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
     this.options$ = optionsList;
     if (this.value$ === '' && !this.bReadonly$) {

@@ -691,9 +691,16 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     if (caseID) {
       this.lu_bLoading$ = true;
 
-      this.fetchCaseAttachments(caseID).then(resp => {
-        this.handleAttachmentsResponse(resp);
-      });
+      this.fetchCaseAttachments(caseID)
+        .then(resp => {
+          this.handleAttachmentsResponse(resp);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+        .finally(() => {
+          this.lu_bLoading$ = false;
+        });
     }
   }
 

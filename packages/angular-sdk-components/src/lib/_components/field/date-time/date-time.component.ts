@@ -67,7 +67,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   configProps$: DateTimeProps;
 
   label$ = '';
-  value$: string;
+  value$: any;
   bRequired$ = false;
   bReadonly$ = false;
   bDisabled$ = false;
@@ -152,7 +152,8 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     this.displayMode$ = this.configProps$.displayMode;
     this.testId = this.configProps$.testId;
     this.helperText = this.configProps$.helperText;
-
+    this.value$ = this.configProps$?.value;
+    this.fieldControl.setValue(this.value$);
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
