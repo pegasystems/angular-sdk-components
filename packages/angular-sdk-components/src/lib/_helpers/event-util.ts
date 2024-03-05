@@ -16,5 +16,3 @@ export function handleEvent(actions, eventType, propName, value) {
       break;
   }
 }
-
-export default handleEvent;
