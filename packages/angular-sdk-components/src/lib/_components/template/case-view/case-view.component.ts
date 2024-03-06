@@ -223,7 +223,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     const actionsAPI = this.pConn$.getActionsApi();
     const openLocalAction = actionsAPI.openLocalAction.bind(actionsAPI);
 
-    openLocalAction(editAction.ID, { ...editAction });
+    openLocalAction(editAction.ID, { ...editAction, containerName: 'modal', type: 'express' });
   }
 
   _menuActionClick(data) {
