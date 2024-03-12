@@ -76,7 +76,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
       fields?.forEach(field => {
         const thePConn = field.getPConnect();
         const theCompType = thePConn.getComponentName().toLowerCase();
-        if (theCompType === 'reference') {
+        if (theCompType === 'reference' || theCompType === 'group') {
           const configProps = thePConn.getConfigProps();
           configProps.readOnly = true;
           configProps.displayMode = 'LABELS_LEFT';
@@ -89,6 +89,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
           };
           const viewContConfig = {
             meta: {
+              ...thePConn.getMetadata(),
               type: theCompType,
               config: configProps
             },

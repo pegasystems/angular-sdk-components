@@ -1,0 +1,21 @@
+<div class="field-group-container">
+  <div *ngIf="name" class="field-group-heading">
+    <span *ngIf="collapsible; else no_collapse" id="field-group-header" class="field-group-header" (click)="headerClickHandler()">
+      <mat-icon *ngIf="collapsed; else down_arrow" aria-hidden="false" aria-label="Arrow Right" fontIcon="keyboard_arrow_right"></mat-icon>
+      <ng-template #down_arrow>
+        <mat-icon aria-hidden="false" aria-label="Arrow Down" fontIcon="keyboard_arrow_down"></mat-icon>
+      </ng-template>
+      <b>{{ name }}</b>
+    </span>
+    <ng-template #no_collapse>
+      <span>{{ name }}</span>
+    </ng-template>
+  </div>
+
+  <div *ngIf="instructions && instructions !== 'none'" class="field-group-instructions">
+    <div key="instructions" id="instruction-text" [innerHTML]="instructions"></div>
+  </div>
+  <div *ngIf="!collapsed" class="field-group-content">
+    <ng-container [ngTemplateOutlet]="childrenTemplate"></ng-container>
+  </div>
+</div>

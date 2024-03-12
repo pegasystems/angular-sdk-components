@@ -1,8 +1,14 @@
 <div id="details-fields-list">
   <div *ngFor="let field of arFields$">
-    <div *ngIf="field.type === 'reference'; else showDetails">
-      <component-mapper name="View" [props]="{ pConn$: field.pConn }"></component-mapper>
+    <div *ngIf="field.type === 'group'; else noGroup">
+      <component-mapper name="Group" [props]="{ pConn$: field.pConn }"></component-mapper>
     </div>
+    <ng-template #noGroup>
+      <div *ngIf="field.type === 'reference'; else showDetails">
+        <component-mapper name="View" [props]="{ pConn$: field.pConn }"></component-mapper>
+      </div>
+    </ng-template>
+
     <ng-template #showDetails>
       <div class="psdk-grid-filter" *ngIf="field.config.label">
         <div class="psdk-details-fields-label">

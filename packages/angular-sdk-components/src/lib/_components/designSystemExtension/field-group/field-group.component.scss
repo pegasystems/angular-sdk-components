@@ -1,0 +1,18 @@
+.field-group-container {
+  .field-group-heading {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-weight: bold;
+
+    .field-group-header {
+      gap: 5px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+
+  .field-group-instructions {
+    padding: 5px 0;
+  }
+}
