@@ -132,6 +132,7 @@ export * from './lib/_helpers/event-util';
 export * from './lib/_helpers/field-group-utils';
 export * from './lib/_helpers/formatters/format-utils';
 export * from './lib/_helpers/formatters/currency-map';
+export * from './lib/_helpers/formatters';
 export * from './lib/_helpers/tab-utils';
 export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
