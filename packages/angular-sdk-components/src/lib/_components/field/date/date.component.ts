@@ -14,6 +14,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { format } from '../../../_helpers/formatters';
 
 interface DateProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Date here
@@ -241,5 +242,11 @@ export class DateComponent implements OnInit, OnDestroy {
       errMessage = `${this.fieldControl.errors['matDatepickerParse'].text} is not a valid date value`;
     }
     return errMessage;
+  }
+
+  getFormattedValue() {
+    return format(this.value$, 'date', {
+      format: this.theDateFormat.dateFormatString
+    });
   }
 }
