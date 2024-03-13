@@ -25,6 +25,10 @@ test.describe('E2E test', () => {
     const formFieldsCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
     await formFieldsCase.click();
 
+    const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
+    await selectedCategory.click();
+    await page.getByRole('option', { name: 'TextInput' }).click();
+
     const actions = page.locator('button:has-text("Actions...")');
     await actions.click();
 
@@ -41,8 +45,6 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Submit")').click();
 
     await page.locator('button:has-text("Go")').click();
-
-    const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
     await selectedCategory.click();
   }, 10000);
 });

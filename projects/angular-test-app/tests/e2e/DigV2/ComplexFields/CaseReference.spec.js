@@ -39,6 +39,7 @@ test.describe('E2E test', () => {
     await modal.locator('input').fill(name);
     await modal.locator('button:has-text("submit")').click();
 
+    await expect(page.getByRole('row', { name: ' Product Name ' })).toBeVisible();
     // /** Storing case-id of the newly created Query case-type(s), will be used later */
     const caseID = [];
 
