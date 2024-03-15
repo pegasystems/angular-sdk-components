@@ -58,6 +58,9 @@ test.describe('E2E test', () => {
 
     await expect(page.getByRole('button', { name: ' Case ID ' })).toBeVisible();
 
+    const table = await page.locator('table[id="list-view"] >> nth=0');
+    const numOfRows = await table.locator('tbody >> tr').count();
+
     const responsePromise = page.waitForResponse('**/data_views/D_ComplexFieldsList');
     /* Testing the filters */
     const filters = await page.locator('div[id="filters"]');
@@ -66,8 +69,6 @@ test.describe('E2E test', () => {
     await caseIdInput.pressSequentially(caseID, { delay: 100 });
 
     await responsePromise;
-
-    const table = await page.locator('table[id="list-view"] >> nth=0');
 
     await expect(table.locator(`td >> text=${caseID}`)).toBeVisible();
     await expect(table.locator('td >> text="Complex  Fields"')).toBeVisible();
@@ -91,13 +92,14 @@ test.describe('E2E test', () => {
     const pagination = page.locator('mat-paginator[id="pagination"]');
     await expect(pagination.getByText('1 – 1 of 1')).toBeVisible();
 
-    const clearRespPromise = page.waitForResponse('**/data_views/D_pyMyWorkList');
     await filters.locator('button:has-text("Clear All")').click();
 
-    await clearRespPromise;
+    await responsePromise;
 
     await expect(await caseIdInput.inputValue()).toEqual('');
-    await expect(pagination.getByText('1 – 1 of 1')).toBeHidden();
+    await expect(await dateFilterInput.inputValue()).toEqual('');
+
+    await expect(await table.locator('tbody >> tr')).toHaveCount(numOfRows);
   }, 10000);
 });
 
