@@ -680,10 +680,12 @@ export const readContextResponse = async (context, params) => {
     const dataViewName = PCore.getDataTypeUtils().getSavableDataPage(classID);
     const dataPageKeys = PCore.getDataTypeUtils().getDataPageKeys(dataViewName);
     dataPageKeys?.forEach(item => (item.isAlternateKeyStorage ? compositeKeys.push(item.linkedField) : compositeKeys.push(item.keyName)));
-    if (compositeKeys.length) {
+    if (compositeKeys.length && otherContext) {
       otherContext.setCompositeKeys(compositeKeys);
     }
-    otherContext.fetchRowActionDetails = null;
+    if (otherContext) {
+      otherContext.fetchRowActionDetails = null;
+    }
   }
 
   const presetArray = [];
