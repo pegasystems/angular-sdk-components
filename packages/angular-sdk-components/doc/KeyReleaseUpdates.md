@@ -27,7 +27,7 @@ The following npm packages are supported as part of this:
   [@pega/dx-component-builder-sdk](https://www.npmjs.com/package/@pega/dx-component-builder-sdk): v23.1.12
   [@pega/angular-sdk-overrides](https://www.npmjs.com/package/@pega/angular-sdk-overrides): v23.1.10
 * Added the use of **TypeScript typedefs** (from @pega/pcore-pconnect-typedefs) to SDK components. For more information, see [Using type definitions - update link when published](https://pega-dev.zoominsoftware.io/bundle/constellation-sdk/page/constellation-sdks/sdks/type-definitions-constellation-sdks.html)
-* Added additional functionality including RichTextEditor and Dynamic Tabs components, many-to-many data reference support, Confirmation template, Sub Tabs template, Save For Later, and WSS portal.
+* Added additional functionality including RichTextEditor and Dynamic Tabs components, many-to-many data reference support, Confirmation template, Sub Tabs template, and WSS portal.
 * Added Constellation design system support for cosmos 4 (for custom Constellation components).
 * Enhanced security including token storage and item obfuscation support.
 * Bug fixes.
