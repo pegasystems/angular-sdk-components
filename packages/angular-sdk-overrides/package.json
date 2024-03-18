@@ -2,10 +2,6 @@
   "name": "@pega/angular-sdk-overrides",
   "version": "23.1.10",
   "description": "Angular SDK - Code for overriding components",
-  "_filesComment": "During packing, npm ignores everything NOT in the files list",
-  "files": [
-    "lib"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

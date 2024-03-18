@@ -98,10 +98,12 @@ test.describe('E2E test', () => {
     const editableEmail = page.locator('input[data-test-id="c75f8a926bb5e08fd8342f7fe45dc344"]');
     await editableEmail.fill('Johndoe.com');
     await editableEmail.blur();
-    await expect(page.locator('mat-error:has-text("Invalid Email")')).toBeVisible();
+    await page.waitForResponse('**/actions/SelectTest/refresh');
+    const validMsg = "Invalid value specified for EmailEditable. Value doesn\\'t adhere to the Validate: ValidEmailAddress";
+    await expect(page.locator(`mat-error:has-text("${validMsg}")`)).toBeVisible();
     editableEmail.fill('John@doe.com');
     await editableEmail.blur();
-    await expect(page.locator('mat-error:has-text("Invalid Email")')).toBeHidden();
+    await expect(page.locator(`mat-error:has-text("${validMsg}")`)).toBeHidden();
 
     attributes = await common.getAttributes(editableEmail);
     await expect(attributes.includes('readonly')).toBeFalsy();

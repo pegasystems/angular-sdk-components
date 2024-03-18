@@ -58,16 +58,6 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               {
-                "glob": "authDone.{html,js}",
-                "input": "./node_modules/@pega/auth/lib/oauth-client",
-                "output": "./"
-              },
-              {
-                "glob": "mdi.svg",
-                "input": "./node_modules/@mdi/angular-material",
-                "output": "./assets"
-              },
-              {
                 "glob": "sdk-config.json",
                 "input": "./",
                 "output": "./"
@@ -120,7 +110,7 @@
             "customWebpackConfig": {
               "path": "./scripts/extra-webpack.config.js"
             },
-            "allowedCommonJsDependencies": ["downloadjs", "rxjs/internal/observable/interval"]
+            "allowedCommonJsDependencies": ["downloadjs", "dayjs", "fast-deep-equal", "moment"]
           },
           "configurations": {
             "production": {

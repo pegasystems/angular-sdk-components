@@ -149,24 +149,30 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       this.lu_bLoading$ = true;
     }
 
-    // const uploadedFiles = [];
+    const arFiles: any = Array.from(files);
 
-    for (const file of files) {
-      attachmentUtils
-        .uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.pConn$.getContextName())
-        .then((fileResponse: any) => {
-          if (fileResponse.type === 'File') {
-            (attachmentUtils.linkAttachmentsToCase(caseID, [fileResponse], 'File', this.pConn$.getContextName()) as Promise<any>)
-              .then(() => {
-                this.refreshAttachments();
-              })
-              .catch(console.error);
+    Promise.allSettled(
+      arFiles.map(file => attachmentUtils.uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.pConn$.getContextName()))
+    )
+      .then((fileResponses: any) => {
+        const uploadedFiles: any = [];
+        fileResponses.forEach(fileResponse => {
+          if (fileResponse.status === 'fulfilled') {
+            uploadedFiles.push(fileResponse.value);
           }
-        })
-        .catch(console.error);
-    }
+        });
+        if (uploadedFiles.length > 0) {
+          (attachmentUtils.linkAttachmentsToCase(caseID, uploadedFiles, 'File', this.pConn$.getContextName()) as Promise<any>)
+            .then(() => {
+              this.refreshAttachments();
+            })
+            .catch();
+        }
+      })
+      .catch();
 
     this.arFileList$ = [];
+    this.lu_bLoading$ = false;
   }
 
   refreshAttachments() {

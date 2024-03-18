@@ -58,16 +58,22 @@ test.describe('E2E test', () => {
 
     await expect(page.getByRole('button', { name: ' Case ID ' })).toBeVisible();
 
+    const table = await page.locator('table[id="list-view"] >> nth=0');
+    const numOfRows = await table.locator('tbody >> tr').count();
+
+    const responsePromise = page.waitForResponse('**/data_views/D_ComplexFieldsList');
     /* Testing the filters */
     const filters = await page.locator('div[id="filters"]');
     const caseIdInput = filters.getByLabel('Case ID');
     await caseIdInput.click();
     await caseIdInput.pressSequentially(caseID, { delay: 100 });
 
-    await expect(page.locator(`td >> text=${caseID}`)).toBeVisible();
-    await expect(page.locator('td >> text="Complex  Fields" >> nth=1')).toBeVisible();
-    await expect(page.locator('td >> text="User DigV2"')).toBeVisible();
-    await expect(page.locator('td >> text="New" >> nth=1')).toBeVisible();
+    await responsePromise;
+
+    await expect(table.locator(`td >> text=${caseID}`)).toBeVisible();
+    await expect(table.locator('td >> text="Complex  Fields"')).toBeVisible();
+    await expect(table.locator('td >> text="User DigV2"')).toBeVisible();
+    await expect(table.locator('td >> text="New"')).toBeVisible();
 
     const today = new Date();
     const day = common.getFormattedDate(today);
@@ -80,15 +86,20 @@ test.describe('E2E test', () => {
     await dateFilterInput.click();
     await dateFilterInput.pressSequentially(`${nextDay}`);
 
-    await expect(page.locator(`td:has-text("${new Date().getDate()}") >> nth=0`)).toBeVisible();
+    const dateCol = await table.locator('td >> nth=2');
+    await expect(dateCol.getByText(`${new Date().getDate()}`)).toBeVisible();
 
     const pagination = page.locator('mat-paginator[id="pagination"]');
     await expect(pagination.getByText('1 – 1 of 1')).toBeVisible();
 
     await filters.locator('button:has-text("Clear All")').click();
 
+    await responsePromise;
+
     await expect(await caseIdInput.inputValue()).toEqual('');
-    await expect(pagination.getByText('1 – 1 of 1')).toBeHidden();
+    await expect(await dateFilterInput.inputValue()).toEqual('');
+
+    await expect(await table.locator('tbody >> tr')).toHaveCount(numOfRows);
   }, 10000);
 });
 

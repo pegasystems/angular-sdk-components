@@ -13,6 +13,8 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   // Everything from PConnFieldProps except value and change type of value to boolean
   value: boolean;
   caption?: string;
+  trueLabel?: string;
+  falseLabel?: string;
 }
 
 @Component({
@@ -45,6 +47,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   bHasForm$ = true;
   componentReference = '';
   helperText: string;
+  trueLabel$?: string;
+  falseLabel$?: string;
 
   fieldControl = new FormControl('', null);
 
@@ -116,6 +120,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
     this.caption$ = this.configProps$.caption;
     this.helperText = this.configProps$.helperText;
+    this.trueLabel$ = this.configProps$.trueLabel;
+    this.falseLabel$ = this.configProps$.falseLabel;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

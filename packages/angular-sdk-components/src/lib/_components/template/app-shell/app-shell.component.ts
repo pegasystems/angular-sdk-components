@@ -143,7 +143,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
 
           if (this.bOkDisplayError) {
-            const config = { panelClass: ['snackbar-newline'] };
+            const config = { panelClass: ['snackbar-newline'], duration: 5000 };
             this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
           }
         }
@@ -159,7 +159,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
         this.bOkDisplayError = true;
 
         if (this.bOkDisplayError) {
-          const config = { panelClass: ['snackbar-newline'] };
+          const config = { panelClass: ['snackbar-newline'], duration: 5000 };
           this.snackBarRef = this.snackBar.open(this.sErrorMessages, 'Ok', config);
         }
         // this.snackBarRef.afterDismissed().subscribe( info => {

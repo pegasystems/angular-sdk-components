@@ -1,0 +1,25 @@
+<ng-container *ngIf="visibility$">
+  <component-mapper
+    name="FieldGroup"
+    [props]="{
+      name: showHeading$ ? heading$ : undefined,
+      collapsible: collapsible$,
+      instructions: instructions$,
+      childrenTemplate: childrenTemplate
+    }"
+  >
+  </component-mapper>
+
+  <ng-template #childrenTemplate>
+    <div *ngFor="let kid of arChildren$">
+      <component-mapper
+        [name]="kid.getPConnect().getComponentName()"
+        [props]="{
+          pConn$: kid.getPConnect(),
+          formGroup$: formGroup$
+        }"
+        errorMsg="Field Group wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
+      ></component-mapper>
+    </div>
+  </ng-template>
+</ng-container>

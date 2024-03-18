@@ -26,6 +26,7 @@ test.describe('E2E test', () => {
     const viewTemplatesCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("View Templates")');
     await viewTemplatesCase.click();
 
+    await page.locator('h2:has-text("Select Test")').click();
     /** Extract caseID from CaseView */
     const caseID = await page.locator('div[id="caseId"]').textContent();
 
