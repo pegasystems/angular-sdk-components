@@ -1,4 +1,4 @@
-### Angular SDK - Release Announcement - v23.1.10 (15 March 2024)
+### Angular SDK - Release Announcement - v23.1.10 (20 March 2024)
 
 This release - **SDK-A v23.1.10** - is **only compatible with Pega Infinity 23**. This release is related to the [**release/23.1.10** branch of the Angular SDK repository](https://github.com/pegasystems/angular-sdk/tree/release/23.1.10).
 <br>
