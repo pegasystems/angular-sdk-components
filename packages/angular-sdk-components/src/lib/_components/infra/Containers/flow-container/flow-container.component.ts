@@ -183,11 +183,14 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
     if (caseViewMode && caseViewMode === 'review') {
       const kid = this.pConn$.getChildren()[0];
-      const todoKid = kid.getPConnect().getChildren()[0];
+      if (kid.getPConnect().getChildren()) {
+        const todoKid = kid.getPConnect().getChildren()[0];
+        this.todo_pConn$ = todoKid.getPConnect();
 
-      this.todo_pConn$ = todoKid.getPConnect();
+        return true;
+      }
 
-      return true;
+      return false;
     }
 
     return !(caseViewMode && caseViewMode === 'perform');

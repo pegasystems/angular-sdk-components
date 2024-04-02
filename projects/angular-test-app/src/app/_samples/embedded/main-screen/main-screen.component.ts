@@ -5,13 +5,26 @@ import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component'
 import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
 import { ServerConfigService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/server-config.service';
 import { ComponentMapperComponent } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-main-screen',
   templateUrl: './main-screen.component.html',
   styleUrls: ['./main-screen.component.scss'],
   standalone: true,
-  imports: [CommonModule, BundleSwatchComponent, ComponentMapperComponent, ResolutionScreenComponent]
+  imports: [
+    CommonModule,
+    BundleSwatchComponent,
+    ComponentMapperComponent,
+    ResolutionScreenComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    FormsModule
+  ]
 })
 export class MainScreenComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -22,6 +35,8 @@ export class MainScreenComponent implements OnInit, OnDestroy {
   showTriplePlayOptions$ = true;
   showPega$ = false;
   showResolution$ = false;
+
+  caseID = 'DIXL-MEDIACO-WORK%20N-128038';
 
   constructor(
     private psservice: ProgressSpinnerService,
@@ -124,6 +139,22 @@ export class MainScreenComponent implements OnInit, OnDestroy {
         console.log('createCase rendering is complete');
       });
     });
+  }
+
+  openCase() {
+    this.showTriplePlayOptions$ = false;
+    this.showPega$ = true;
+    // DIXL-MediaCo-Sdktest-Work-Dictu
+    const options: any = {
+      pageName: 'pyEmbedAssignment',
+      startingFields: {}
+    };
+    PCore.getMashupApi()
+      .openCase(this.caseID, PCore.getConstants().APP.APP, options)
+      .then(() => {
+        console.log('openCase rendering is complete');
+      })
+      .catch(error => console.log('error:', error));
   }
 
   onShopNow(sLevel: string) {

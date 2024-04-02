@@ -1,5 +1,15 @@
 <div class="mc-main-div">
   <div class="mc-main-screen" *ngIf="showTriplePlayOptions$">
+    <div class="open-case-container">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
+        <mat-label>Case ID</mat-label>
+        <input matInput placeholder="Please enter CASE ID" type="text" [(ngModel)]="caseID" />
+      </mat-form-field>
+
+      <button mat-raised-button variant="contained" color="primary" (click)="openCase()">Open Case</button>
+    </div>
+
+    <hr />
     <div class="mc-banner">Combine TV, Internet, and Voice for the best deal</div>
 
     <div style="display: flex; justify-content: space-evenly">

@@ -130,7 +130,7 @@ export class ReferenceComponent {
         // debugger;
         let theRefViewPConn = this.createFullReferencedViewFromRef(inPConn.getPConnect());
         // now return its PConnect
-        theRefViewPConn = theRefViewPConn.getComponent();
+        theRefViewPConn = theRefViewPConn?.getComponent();
 
         // const theFullReference = theRefViewPConn.getPConnect().getFullReference();
         // console.log(`theFullReference: ${theFullReference}`);

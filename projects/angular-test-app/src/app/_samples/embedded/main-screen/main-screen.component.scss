@@ -64,3 +64,11 @@
   margin: 20px;
   border-radius: 10px;
 }
+
+.open-case-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2em 30%;
+  gap: 1em;
+}
