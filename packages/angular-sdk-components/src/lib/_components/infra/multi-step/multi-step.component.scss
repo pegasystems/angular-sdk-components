@@ -163,6 +163,7 @@ mat-horizontal-stepper {
 .psdk-horizontal-stepper-header-container {
   white-space: nowrap;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   text-align: left;
 }

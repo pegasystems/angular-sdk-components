@@ -69,6 +69,10 @@ export class GroupComponent implements OnInit {
     this.instructions$ = this.configProps$.instructions;
     this.collapsible$ = this.configProps$.collapsible;
 
+    if (this.configProps$.visibility === undefined) {
+      this.visibility$ = this.pConn$.getComputedVisibility();
+    }
+
     if (this.configProps$.displayMode === 'LABELS_LEFT') {
       if (this.configProps$.visibility === undefined) this.visibility$ = true;
 
