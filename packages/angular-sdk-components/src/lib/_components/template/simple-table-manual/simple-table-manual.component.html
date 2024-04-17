@@ -27,7 +27,7 @@
             </mat-menu>
           </div>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element[dCol.config.name] }}</td>
+        <td mat-cell *matCellDef="let element">{{ element[dCol.config.name] || '---' }}</td>
       </ng-container>
       <ng-container matColumnDef="DeleteIcon">
         <div *ngIf="allowEditingInModal">

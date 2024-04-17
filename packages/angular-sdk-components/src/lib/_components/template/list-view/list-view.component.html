@@ -50,7 +50,7 @@
                   color="primary"
                   (click)="_listViewClick(dCol.config, element)"
                 >
-                  {{ element[dCol.config.name] }}
+                  {{ element[dCol.config.name] || '---' }}
                 </button>
                 <ng-template #regular>
                   {{ element[dCol.config.name] || '---' }}
@@ -114,10 +114,10 @@
                   color="primary"
                   (click)="_listViewClick(dCol.config, element)"
                 >
-                  {{ element[dCol.config.name] }}
+                  {{ element[dCol.config.name] || '---' }}
                 </button>
                 <ng-template #regular>
-                  {{ element[dCol.config.name] }}
+                  {{ element[dCol.config.name] || '---' }}
                 </ng-template>
               </td>
             </ng-container>
@@ -163,7 +163,7 @@
               <th mat-header-cell *matHeaderCellDef mat-sort-header (click)="_headerSortClick($event, dCol)" arrowPosition="before">
                 {{ dCol.config.label }}
               </th>
-              <td mat-cell *matCellDef="let element">{{ element[dCol.config.name] }}</td>
+              <td mat-cell *matCellDef="let element">{{ element[dCol.config.name] || '---' }}</td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns$"></tr>
