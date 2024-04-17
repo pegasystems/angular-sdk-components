@@ -118,7 +118,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
   private _filter(value: string): string[] {
     const filterVal = (value || this.filterValue).toLowerCase();
-    return this.options$?.filter(option => option.value.toLowerCase().includes(filterVal));
+    return this.options$?.filter(option => option.value?.toLowerCase().includes(filterVal));
   }
 
   // Callback passed when subscribing to store change

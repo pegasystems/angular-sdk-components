@@ -385,12 +385,27 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (aValue === bValue) {
-      return 0;
+    //
+    switch (this.arrowDirection) {
+      case 'up':
+        if (!aValue || aValue < bValue) {
+          return -1;
+        }
+        if (!bValue || aValue > bValue) {
+          return 1;
+        }
+        break;
+      case 'down':
+        if (!bValue || aValue > bValue) {
+          return -1;
+        }
+        if (!aValue || aValue < bValue) {
+          return 1;
+        }
+        break;
+      default:
+        break;
     }
-
-    if (this.arrowDirection === 'up') return aValue - bValue;
-    if (this.arrowDirection === 'down') return bValue - aValue;
 
     return 0;
   }
