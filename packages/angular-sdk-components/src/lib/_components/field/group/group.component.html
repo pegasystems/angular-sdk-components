@@ -1,4 +1,4 @@
-<ng-container *ngIf="visibility$">
+<ng-container *ngIf="visibility$ && arChildren$.length">
   <component-mapper
     name="FieldGroup"
     [props]="{

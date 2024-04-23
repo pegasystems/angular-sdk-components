@@ -157,6 +157,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   editView: any;
   settingsSvgIcon$: string;
 
+  isInitialized = false;
+
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,
@@ -164,6 +166,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isInitialized = true;
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.configProps$ = this.pConn$.getConfigProps() as SimpleTableManualProps;
@@ -299,6 +302,19 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  unchanged config info. For now, much of the info here is carried over from
     //  Nebula and we may not end up using it all.
     this.fieldDefs = buildFieldsForTable(rawFields, resolvedFields, showDeleteButton);
+
+    if (this.isInitialized) {
+      this.isInitialized = false;
+      if (this.allowEditingInModal) {
+        this.pConn$.getListActions().initDefaultPageInstructions(
+          this.pConn$.getReferenceList(),
+          this.fieldDefs.filter(item => item.name).map(item => item.name)
+        );
+      } else {
+        // @ts-ignore - An argument for 'fields' was not provided
+        this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
+      }
+    }
 
     // end of from Nebula
 
@@ -889,12 +905,14 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
           this.referenceList.length,
           PCore.getConstants().RESOURCE_STATUS.CREATE
         );
-    } else if (PCore.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
     } else {
       // @ts-ignore - second parameter "pageRef" is optional for insert method
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }
+
+    this.pConn$.clearErrorMessages({
+      property: (this.pConn$.getStateProps() as any)?.referenceList?.substring(1)
+    } as any);
   }
 
   editRecord(data, index) {
