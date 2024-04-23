@@ -619,10 +619,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  compare(a: number | string, b: number | string, isAsc: boolean) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-  }
-
   _headerSortClick(event, columnData) {
     // images 0 - filter, 1 - arrow, 2 - more
 
@@ -655,21 +651,22 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.filterSortGroupBy();
   }
 
-  clearOutArrows(event, columnData) {
-    const arImages = event.srcElement.parentElement.getElementsByTagName('img');
+  // Commenting below method, since the code which is using it, is already commented
+  // clearOutArrows(event, columnData) {
+  //   const arImages = event.srcElement.parentElement.getElementsByTagName('img');
 
-    for (const theImage of arImages) {
-      // let theImage = arImages[i]
-      const arrow = theImage.getAttribute('arrow');
-      if (arrow) {
-        const arrowId = theImage.getAttribute('arrowid');
-        if (arrow != 'none' && arrowId != columnData.config.name) {
-          theImage.setAttribute('arrow', 'none');
-          theImage.src = '';
-        }
-      }
-    }
-  }
+  //   for (const theImage of arImages) {
+  //     // let theImage = arImages[i]
+  //     const arrow = theImage.getAttribute('arrow');
+  //     if (arrow) {
+  //       const arrowId = theImage.getAttribute('arrowid');
+  //       if (arrow != 'none' && arrowId != columnData.config.name) {
+  //         theImage.setAttribute('arrow', 'none');
+  //         theImage.src = '';
+  //       }
+  //     }
+  //   }
+  // }
 
   sortCompare(a, b): number {
     let aValue = a[this.compareRef];
@@ -689,18 +686,18 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     switch (this.arrowDirection) {
       case 'up':
-        if (aValue < bValue) {
+        if (!aValue || aValue < bValue) {
           return -1;
         }
-        if (aValue > bValue) {
+        if (!bValue || aValue > bValue) {
           return 1;
         }
         break;
       case 'down':
-        if (aValue > bValue) {
+        if (!bValue || aValue > bValue) {
           return -1;
         }
-        if (aValue < bValue) {
+        if (!aValue || aValue < bValue) {
           return 1;
         }
         break;
