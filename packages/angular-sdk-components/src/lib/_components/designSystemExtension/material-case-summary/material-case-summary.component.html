@@ -28,11 +28,14 @@
   <dl *ngFor="let field of secondaryFields$" class="psdk-case-summary-fields-secondary">
     <div
       *ngIf="
-        field.config?.label?.toLowerCase() == 'create operator' || field.config?.label?.toLowerCase() == 'update operator';
+        field.config?.label?.toLowerCase() == 'create operator' ||
+          field.displayLabel.toLowerCase() == 'create operator' ||
+          field.config?.label?.toLowerCase() == 'update operator' ||
+          field.displayLabel.toLowerCase() == 'update operator';
         else hasSecondaryValue
       "
     >
-      <component-mapper name="Operator" [props]="{ pConn$: field?.kid }"></component-mapper>
+      <component-mapper name="Operator" [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel }"></component-mapper>
     </div>
     <ng-template #hasSecondaryValue>
       <div class="psdk-csf-secondary-field">

@@ -19,7 +19,8 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
   primaryFieldsWithStatus$: any[];
 
   constructor(private utils: Utils) {}
-
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeCategory = 'ModalContainer';
   ngOnInit(): void {
     this.updatePrimaryWithStatus();
     this.updateLabelAndDate(this.primaryFieldsWithStatus$);
@@ -63,6 +64,7 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
   updatePrimaryWithStatus() {
     this.primaryFieldsWithStatus$ = [];
     for (const prim of this.primaryFields$) {
+      prim.config.value = this.localizedVal(prim.config.value, this.localeCategory);
       this.primaryFieldsWithStatus$.push(prim);
     }
 

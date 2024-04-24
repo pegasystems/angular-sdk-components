@@ -11,7 +11,15 @@
     <input hidden type="file" [required]="bRequired$" #uploader [id]="att_valueRef" [multiple]="allowMultiple$" (change)="uploadMyFiles($event)" />
 
     <button mat-stroked-button color="primary" [disabled]="bDisabled$" (click)="uploader.click()">
-      {{ allowMultiple$ ? 'Upload files' : 'Upload file' }}
+      {{
+        allowMultiple$
+          ? uploadMultipleFilesLabel === 'file_upload_text_multiple'
+            ? 'Choose files'
+            : uploadMultipleFilesLabel
+          : uploadSingleFileLabel === 'file_upload_text_one'
+            ? 'Choose a file'
+            : uploadSingleFileLabel
+      }}
     </button>
   </div>
   <span *ngIf="validateMessage" class="file-error">{{ validateMessage }}</span>

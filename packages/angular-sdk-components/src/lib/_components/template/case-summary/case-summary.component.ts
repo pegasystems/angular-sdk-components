@@ -92,9 +92,43 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
       this.primaryFields$.push(kid.resolveConfigProps(kid.getRawMetadata()));
     }
 
-    for (const oField of this.arChildren$[1].getPConnect().getChildren()) {
+    const secondarySummaryFields = this.prepareCaseSummaryData(this.arChildren$[1].getPConnect());
+    const secondaryChildren = this.arChildren$[1].getPConnect().getChildren();
+    secondaryChildren.forEach((oField, index) => {
       const kid = oField.getPConnect();
-      this.secondaryFields$.push({ ...kid.resolveConfigProps(kid.getRawMetadata()), kid });
-    }
+      const displayLabel = secondarySummaryFields[index].value.getPConnect().getConfigProps().label;
+      this.secondaryFields$.push({ ...kid.resolveConfigProps(kid.getRawMetadata()), kid, displayLabel });
+    });
+  }
+
+  prepareComponentInCaseSummary(pConnectMeta, getPConnect) {
+    const { config, children } = pConnectMeta;
+    const pConnect = getPConnect();
+
+    const caseSummaryComponentObject: any = {};
+
+    const { type } = pConnectMeta;
+    const createdComponent = pConnect.createComponent({
+      type,
+      children: children ? [...children] : [],
+      config: {
+        ...config
+      }
+    });
+
+    caseSummaryComponentObject.value = createdComponent;
+    return caseSummaryComponentObject;
+  }
+
+  prepareCaseSummaryData(summaryFieldChildren) {
+    const convertChildrenToSummaryData = kid => {
+      return kid?.map((childItem, index) => {
+        const childMeta = childItem.getPConnect().meta;
+        const caseSummaryComponentObject = this.prepareComponentInCaseSummary(childMeta, childItem.getPConnect);
+        caseSummaryComponentObject.id = index + 1;
+        return caseSummaryComponentObject;
+      });
+    };
+    return summaryFieldChildren ? convertChildrenToSummaryData(summaryFieldChildren?.getChildren()) : undefined;
   }
 }

@@ -51,7 +51,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
   navIcon$: string;
   localizedVal: any;
   localeCategory = 'AppShell';
-
+  localeUtils = PCore.getLocaleUtils();
+  localeReference: any;
   constructor(
     private angularPConnect: AngularPConnectService,
     private chRef: ChangeDetectorRef,
@@ -119,7 +120,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.navPages$.forEach(page => {
         page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
       });
-
+      // @ts-ignore - second parameter pageReference for getValue method should be optional
+      this.localeReference = this.pConn$.getValue('.pyLocaleReference');
       this.actionsAPI = this.pConn$.getActionsApi();
       this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
       this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);

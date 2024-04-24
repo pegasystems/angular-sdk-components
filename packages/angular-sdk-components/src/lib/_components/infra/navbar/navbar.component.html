@@ -22,7 +22,7 @@
           *ngFor="let caseType of caseTypes$"
           (click)="navPanelCreateCaseType(caseType.pyClassName, caseType.pyFlowType)"
         >
-          <span class="psdk-nav-button-span">{{ caseType.pyLabel }}</span>
+          <span class="psdk-nav-button-span">{{ localeUtils.getLocaleValue(caseType.pyLabel, '', localeReference) }}</span>
         </mat-list-item>
       </mat-list>
     </mat-list>
@@ -32,7 +32,7 @@
       <mat-list-item (click)="navPanelButtonClick(page)">
         <div class="flex-box">
           <img class="psdk-nav-svg-icon" src="{{ page.iconName }}" />
-          <span class="psdk-nav-button-span">{{ localizedVal(page.pyLabel, localeCategory) }}</span>
+          <span class="psdk-nav-button-span">{{ localeUtils.getLocaleValue(page.pyLabel, '', localeReference) }}</span>
         </div>
       </mat-list-item>
     </mat-list>
@@ -48,7 +48,7 @@
       </mat-list-item>
       <mat-menu #menu="matMenu">
         <button mat-menu-item>Profile</button>
-        <button mat-menu-item (click)="navPanelLogoutClick()">{{ localizedVal('Logoff', localeCategory) }}</button>
+        <button mat-menu-item (click)="navPanelLogoutClick()">{{ localizedVal('Log off', localeCategory) }}</button>
       </mat-menu>
     </mat-list>
   </div>

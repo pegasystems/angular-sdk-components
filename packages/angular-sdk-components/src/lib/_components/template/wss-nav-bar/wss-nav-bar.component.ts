@@ -50,7 +50,8 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
   logout: any;
 
   navIcon$: string;
-
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeCategory = 'AppShell';
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,

@@ -12,7 +12,7 @@ import { Utils } from '../../../_helpers/utils';
 })
 export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() pConn$: typeof PConnect;
-
+  @Input() displayLabel;
   fields$: any[] = [];
   bShowPopover$: boolean;
   date$: string;
@@ -51,15 +51,17 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
 
   updateSelf(): void {
     const configProps$ = this.pConn$.getConfigProps() as any;
-    if (configProps$?.label?.toLowerCase() == 'create operator') {
+    this.displayLabel = this.displayLabel?.toLowerCase();
+    const label = configProps$?.label?.toLowerCase();
+    if (label === 'create operator' || this.displayLabel === 'create operator') {
       this.name$ = configProps$.createOperator.userName;
       this.id$ = configProps$.createOperator.userId;
       this.label$ = configProps$.createLabel;
-    } else if (configProps$?.label?.toLowerCase() == 'update operator') {
+    } else if (label === 'update operator' || this.displayLabel === 'update operator') {
       this.name$ = configProps$.updateOperator.userName;
       this.id$ = configProps$.updateOperator.userId;
       this.label$ = configProps$.updateLabel;
-    } else if (configProps$?.label?.toLowerCase() == 'resolve operator') {
+    } else if (label === 'resolve operator' || this.displayLabel === 'resolve operator') {
       this.name$ = configProps$.resolveOperator.userName;
       this.id$ = configProps$.resolveOperator.userId;
       this.label$ = configProps$.resolveLabel;

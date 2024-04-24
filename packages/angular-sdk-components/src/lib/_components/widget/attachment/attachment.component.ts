@@ -55,7 +55,10 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   validateMessage: string | undefined = '';
   valueRef: string;
   imagePath$: string;
-
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeCategory = 'CosmosFields';
+  uploadMultipleFilesLabel = this.localizedVal('file_upload_text_multiple', this.localeCategory);
+  uploadSingleFileLabel = this.localizedVal('file_upload_text_one', this.localeCategory);
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,

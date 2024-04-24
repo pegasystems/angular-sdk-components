@@ -87,21 +87,21 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Single' }).click();
 
     const singleAttachment = page.locator('div[id="attachment-container"]');
-    await expect(singleAttachment.locator('button:has-text("Upload file")')).toBeVisible();
+    await expect(singleAttachment.locator('button:has-text("Choose a file")')).toBeVisible();
     await page.setInputFiles(`#Attachment`, cableChatFilePath);
     await expect(page.locator('div >> text="cablechat.png"')).toBeVisible();
-    await expect(page.locator('span:has-text("Upload file")')).toBeHidden();
+    await expect(page.locator('span:has-text("Choose a file")')).toBeHidden();
 
     await page.locator('button[id="delete-attachment"]').click();
 
-    await expect(singleAttachment.locator('button:has-text("Upload file")')).toBeVisible();
+    await expect(singleAttachment.locator('button:has-text("Choose a file")')).toBeVisible();
 
     /** Testing Multiple mode attachments */
     await selectedSubCategory.click();
     await page.getByRole('option', { name: 'Multiple' }).click();
 
     const multipleAttachment = page.locator('div[id="attachment-container"]');
-    await expect(singleAttachment.locator('button:has-text("Upload files")')).toBeVisible();
+    await expect(singleAttachment.locator('button:has-text("Choose files")')).toBeVisible();
     await page.setInputFiles(`#AttachmentList`, [cableChatFilePath, cableInfoFilePath]);
 
     await Promise.all([
@@ -115,7 +115,7 @@ test.describe('E2E test', () => {
     await expect(page.locator('div >> text="cableinfo.png"')).toBeVisible();
     await expect(page.locator('div >> text="cablechat.png"')).toBeVisible();
 
-    await expect(multipleAttachment.locator('button:has-text("Upload files")')).toBeVisible();
+    await expect(multipleAttachment.locator('button:has-text("Choose files")')).toBeVisible();
 
     /** Testing invalid attachment case by uploading an empty file */
     await page.setInputFiles(`#AttachmentList`, [zeroBytesFilePath]);
