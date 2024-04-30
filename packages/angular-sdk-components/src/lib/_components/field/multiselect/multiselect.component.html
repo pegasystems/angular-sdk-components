@@ -1,6 +1,5 @@
 <div [formGroup]="formGroup$">
   <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
-    <!-- <div class="chip"> -->
     <mat-label>{{ label$ }}</mat-label>
     <mat-chip-grid #chipGrid>
       <ng-container *ngFor="let select of selectedItems">
@@ -30,7 +29,6 @@
         </mat-checkbox>
       </mat-option>
     </mat-autocomplete>
-    <!-- </div> -->
     <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
   </mat-form-field>
 </div>
