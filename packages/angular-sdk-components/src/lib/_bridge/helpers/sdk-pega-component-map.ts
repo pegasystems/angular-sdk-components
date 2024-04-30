@@ -68,6 +68,7 @@ import { InlineDashboardPageComponent } from '../../_components/template/inline-
 import { ListPageComponent } from '../../_components/template/list-page/list-page.component';
 import { ListViewComponent } from '../../_components/template/list-view/list-view.component';
 import { MultiReferenceReadonlyComponent } from '../../_components/template/multi-reference-readonly/multi-reference-readonly.component';
+import { MultiselectComponent } from '../../_components/field/multiselect/multiselect.component';
 import { NarrowWideFormComponent } from '../../_components/template/narrow-wide-form/narrow-wide-form.component';
 import { OneColumnComponent } from '../../_components/template/one-column/one-column.component';
 import { OneColumnPageComponent } from '../../_components/template/one-column-page/one-column-page.component';
@@ -185,6 +186,7 @@ const pegaSdkComponentMap = {
   MaterialUtility: MaterialUtilityComponent,
   ModalViewContainer: ModalViewContainerComponent,
   MultiReferenceReadOnly: MultiReferenceReadonlyComponent,
+  Multiselect: MultiselectComponent,
   MultiStep: MultiStepComponent,
   //   'NarrowWide': NarrowWideFormComponent,
   NarrowWideDetails: DetailsNarrowWideComponent,

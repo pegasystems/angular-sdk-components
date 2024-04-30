@@ -197,6 +197,51 @@ test.describe('E2E test', () => {
 
     await page.locator('button:has-text("Previous")').click();
 
+    /** MultiSelect mode type test */
+    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
+    await selectedSubCategory.click();
+    await page.getByRole('option', { name: 'Mode' }).click();
+
+    selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
+    await selectedTestName.click();
+    await page.getByRole('option', { name: 'MultiSelect' }).click();
+
+    /** Combo-Box mode type test */
+    const displayAs = page.locator('mat-select[data-test-id="4aa668349e0970901aa6b11528f95223"]');
+    await displayAs.click();
+    await page.getByRole('option', { name: 'Combo-Box' }).click();
+
+    const selectProducts = page.locator('div >> label:has-text("Select Products")');
+    await selectProducts.click();
+    await page.getByRole('option', { name: 'Mobile' }).click();
+    await selectProducts.click();
+    await page.getByRole('option', { name: 'Telivision' }).click();
+    await expect(selectProducts).toBeVisible();
+
+    await page.locator('button:has-text("Next")').click();
+
+    assignment = page.locator('app-default-form');
+
+    await expect(assignment.locator('td >> text="Mobile"')).toBeVisible();
+    await expect(assignment.locator('td >> text="Telivision"')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    await expect(page.locator('mat-chip-row:has-text("Mobile")')).toBeVisible();
+    await expect(page.locator('mat-chip-row:has-text("Telivision")')).toBeVisible();
+
+    let deleteProduct = await page.locator('mat-chip-row:has-text("Mobile")');
+    await deleteProduct.locator('button:has-text("cancel")').click();
+
+    await page.locator('button:has-text("Next")').click();
+
+    await expect(assignment.locator('td >> text="Mobile"')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    deleteProduct = await page.locator('mat-chip-row:has-text("Telivision")');
+    await deleteProduct.locator('button:has-text("cancel")').click();
+
     /** Readonly mode type test */
     selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
     await selectedSubCategory.click();
