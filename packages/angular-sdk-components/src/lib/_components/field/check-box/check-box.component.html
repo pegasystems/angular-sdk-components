@@ -6,36 +6,37 @@
   ></component-mapper>
 </div>
 <ng-template #noDisplayMode>
-  <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
+  <div *ngIf="bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
       <div class="mat-form-field-infix" *ngIf="showLabel$">
         <span>
           <label class="mat-form-field-label psdk-label-readonly">{{ label$ }}</label>
         </span>
+      </div>
+      <div *ngIf="selectionMode === 'multi'; else single">
+        <mat-option *ngFor="let item of listOfCheckboxes" (click)="handleChangeMultiMode($event, item)">
+          <mat-checkbox
+            [labelPosition]="'after'"
+            [checked]="item.selected"
+            [attr.data-test-id]="testId + ':' + item.value"
+            (change)="handleChangeMultiMode($event, item)"
+            (blur)="fieldOnBlur($event)"
+            >{{ item.text ?? item.value }}
+          </mat-checkbox>
+        </mat-option>
+      </div>
+      <ng-template #single>
         <mat-checkbox
           [labelPosition]="'after'"
           [checked]="isChecked$"
-          [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
           [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
           >{{ caption$ }}</mat-checkbox
         >
-      </div>
-      <div class="mat-form-field-infix" *ngIf="!bReadonly$ && !showLabel$">
-        <mat-checkbox
-          [labelPosition]="'after'"
-          [checked]="isChecked$"
-          [disabled]="bDisabled$"
-          [attr.data-test-id]="testId"
-          [formControl]="fieldControl"
-          (change)="fieldOnChange($event)"
-          (blur)="fieldOnBlur($event)"
-          >{{ caption$ }}</mat-checkbox
-        >
-      </div>
-      <mat-hint *ngIf="helperText">{{ helperText }}</mat-hint>
+        <p *ngIf="helperText">{{ helperText }}</p>
+      </ng-template>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
     </div>
   </div>
