@@ -12,4 +12,5 @@ export class FieldValueListComponent {
   @Input() label$: any;
   @Input() value$: any;
   @Input() displayMode$: any;
+  @Input() isHtml$ = false;
 }
