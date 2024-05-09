@@ -1,7 +1,7 @@
 <div *ngIf="displayMode$ === 'LABELS_LEFT'; else STACKED_LARGE_VAL" class="psdk-container-labels-left">
   <div class="psdk-grid-label">{{ label$ }}</div>
   <div class="psdk-val-labels-left">
-    {{ value$ || '---' }}
+    <ng-container *ngTemplateOutlet="valueTemplate"></ng-container>
   </div>
 </div>
 
@@ -9,7 +9,12 @@
   <div *ngIf="displayMode$ === 'STACKED_LARGE_VAL'" class="psdk-container-stacked-large-val">
     <div class="psdk-grid-label">{{ label$ }}</div>
     <div class="psdk-val-stacked">
-      {{ value$ || '---' }}
+      <ng-container *ngTemplateOutlet="valueTemplate"></ng-container>
     </div>
   </div>
+</ng-template>
+
+<ng-template #valueTemplate>
+  <div *ngIf="isHtml$; else valueOnly" id="instruction-text" [innerHTML]="value$ || '---'"></div>
+  <ng-template #valueOnly>{{ value$ || '---' }}</ng-template>
 </ng-template>
