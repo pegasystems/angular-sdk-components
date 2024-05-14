@@ -4,12 +4,12 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
+import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
-import { interval } from 'rxjs';
 import { handleEvent } from '../../../_helpers/event-util';
 
 interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
