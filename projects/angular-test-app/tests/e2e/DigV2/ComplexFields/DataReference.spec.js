@@ -248,12 +248,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Checkbox group' }).click();
 
     const checkbox = page.locator('app-check-box');
-    await checkbox.getByRole('option', { name: 'Washin Machine' }).click();
+    await checkbox.getByRole('option', { name: 'Washing Machine' }).click();
     await checkbox.getByRole('option', { name: 'Mobile' }).click();
 
     await page.locator('button:has-text("Next")').click();
 
-    await expect(assignment.locator('td >> text="Washin Machine"')).toBeVisible();
+    await expect(assignment.locator('td >> text="Washing Machine"')).toBeVisible();
     await expect(assignment.locator('td >> text="Mobile"')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
