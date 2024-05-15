@@ -207,7 +207,7 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'MultiSelect' }).click();
 
     /** Combo-Box mode type test */
-    const displayAs = page.locator('mat-select[data-test-id="4aa668349e0970901aa6b11528f95223"]');
+    let displayAs = page.locator('mat-select[data-test-id="4aa668349e0970901aa6b11528f95223"]');
     await displayAs.click();
     await page.getByRole('option', { name: 'Combo-Box' }).click();
 
@@ -241,6 +241,22 @@ test.describe('E2E test', () => {
 
     deleteProduct = await page.locator('mat-chip-row:has-text("Telivision")');
     await deleteProduct.locator('button:has-text("cancel")').click();
+
+    /** Checkbox group mode type test */
+    displayAs = page.locator('mat-select[data-test-id="4aa668349e0970901aa6b11528f95223"]');
+    await displayAs.click();
+    await page.getByRole('option', { name: 'Checkbox group' }).click();
+
+    const checkbox = page.locator('app-check-box');
+    await checkbox.getByRole('option', { name: 'Washing Machine' }).click();
+    await checkbox.getByRole('option', { name: 'Mobile' }).click();
+
+    await page.locator('button:has-text("Next")').click();
+
+    await expect(assignment.locator('td >> text="Washing Machine"')).toBeVisible();
+    await expect(assignment.locator('td >> text="Mobile"')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
 
     /** Readonly mode type test */
     selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
