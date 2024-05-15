@@ -303,18 +303,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  Nebula and we may not end up using it all.
     this.fieldDefs = buildFieldsForTable(rawFields, resolvedFields, showDeleteButton);
 
-    if (this.isInitialized) {
-      this.isInitialized = false;
-      if (this.allowEditingInModal) {
-        this.pConn$.getListActions().initDefaultPageInstructions(
-          this.pConn$.getReferenceList(),
-          this.fieldDefs.filter(item => item.name).map(item => item.name)
-        );
-      } else {
-        // @ts-ignore - An argument for 'fields' was not provided
-        this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
-      }
-    }
+    this.initializeDefaultPageInstructions();
 
     // end of from Nebula
 
@@ -362,6 +351,21 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //
     //  Note that the "property" shown in the column ("FirstName" in the above examples) is what
     //  ties the 3 data structures together.
+  }
+
+  initializeDefaultPageInstructions() {
+    if (this.isInitialized) {
+      this.isInitialized = false;
+      if (this.allowEditingInModal) {
+        this.pConn$.getListActions().initDefaultPageInstructions(
+          this.pConn$.getReferenceList(),
+          this.fieldDefs.filter(item => item.name).map(item => item.name)
+        );
+      } else {
+        // @ts-ignore - An argument for 'fields' was not provided
+        this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
+      }
+    }
   }
 
   getResultsText() {
