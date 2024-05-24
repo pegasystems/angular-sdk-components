@@ -118,11 +118,14 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
         /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
         PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
       }
+
+      // const { visible } = this.state;
+      // if (visible) containerMgr.addContainerItem(this.dispatchObject);
     }
 
     if (sessionStorage.getItem('hasViewContainer') == 'false') {
       // @ts-ignore - Property 'getMetadata' is private and only accessible within class
-      if (this.pConn$.getMetadata().children) {
+      if (visible) {
         containerMgr.addContainerItem(this.dispatchObject);
       }
 

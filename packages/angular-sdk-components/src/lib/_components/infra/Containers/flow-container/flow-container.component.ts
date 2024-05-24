@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
-import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { getToDoAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { FlowContainerBaseComponent } from '../flow-container-base/flow-container-base.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -32,11 +32,9 @@ interface FlowContainerProps {
   standalone: true,
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FlowContainerComponent implements OnInit, OnDestroy {
+export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
-  // For interaction with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   pCoreConstants: typeof publicConstants;
   configProps$: FlowContainerProps;
 
@@ -53,8 +51,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   todo_datasource$: any;
   todo_headerText$ = 'To do';
   todo_type$: string;
-  todo_context$: string;
-  todo_pConn$: typeof PConnect;
 
   bHasCancel = false;
 
@@ -72,14 +68,17 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   banners: any[];
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
+  pConnectOfActiveContainerItem;
+
   constructor(
-    private angularPConnect: AngularPConnectService,
+    injector: Injector,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private fb: FormBuilder,
     private ngZone: NgZone,
     private utils: Utils
   ) {
+    super(injector);
     // create the formGroup
     this.formGroup$ = this.fb.group({ hideRequired: false });
   }
@@ -148,10 +147,14 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // Should always check the bridge to see if the component should update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
+    const pConn = this.pConnectOfActiveContainerItem || this.pConn$;
+    const caseViewModeFromProps = this.angularPConnect.getComponentProp(this, 'caseViewMode');
+    const caseViewModeFromRedux = pConn.getValue('context_data.caseViewMode', '');
+
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
-    if (bUpdateSelf) {
+    if (bUpdateSelf || caseViewModeFromProps !== caseViewModeFromRedux) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
       const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
@@ -182,11 +185,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
     if (caseViewMode && caseViewMode === 'review') {
-      const kid = this.pConn$.getChildren()[0];
-      const todoKid = kid.getPConnect().getChildren()[0];
-
-      this.todo_pConn$ = todoKid.getPConnect();
-
       return true;
     }
 
@@ -368,14 +366,16 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   updateSelf() {
     // for now
     // const { getPConnect } = this.arChildren$[0].getPConnect();
-    const localPConn = this.arChildren$[0].getPConnect();
+    // const localPConn = this.arChildren$[0].getPConnect();
+
+    this.pConnectOfActiveContainerItem = this.getPConnectOfActiveContainerItem(this.pConn$) || this.pConn$;
 
     // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
+    const caseViewMode = this.pConnectOfActiveContainerItem.getValue('context_data.caseViewMode');
     this.bShowBanner = showBanner(this.pConn$);
 
     if (caseViewMode && caseViewMode == 'review') {
-      this.loadReviewPage(localPConn);
+      this.loadReviewPage();
 
       // in Nebula/Constellation, when cancel is called, somehow the constructor for flowContainer is called which
       // does init/add of containers.  This mimics that
@@ -398,7 +398,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     this.updateFlowContainerChildren();
   }
 
-  loadReviewPage(localPConn) {
+  loadReviewPage() {
     const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
 
     setTimeout(() => {
@@ -428,21 +428,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
           this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
           this.todo_datasource$ = { source: todoAssignments };
         }
-
-        /* remove this commented out code when update React/WC */
-        // let kid = this.pConn$.getChildren()[0];
-
-        // kid.getPConnect() can be a Reference component. So normalize it just in case
-        //        let todoKid = ReferenceComponent.normalizePConn(kid.getPConnect()).getChildren()[0];
-
-        //        this.todo_pConn$ = todoKid.getPConnect();
-
-        /* code change here to note for React/WC  */
-        // todo now needs pConn to open the work item on click "go"
-        this.todo_pConn$ = this.pConn$;
-
-        // still needs the context of the original work item
-        this.todo_context$ = localPConn.getContextName();
 
         this.todo_showTodo$ = true;
 
@@ -530,8 +515,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     if (!ViewName) {
       return;
     }
-
-    this.todo_context$ = currentItem.context;
 
     config.options = {
       context: currentItem.context,
