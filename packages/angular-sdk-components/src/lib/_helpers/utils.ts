@@ -107,7 +107,7 @@ export class Utils {
   handleDataPageList(configProps: any, dataObject: any): any[] {
     const dataPage = configProps.datasource;
 
-    if (dataObject[dataPage]) {
+    if (dataObject && dataObject[dataPage]) {
       alert('need to handle data page');
       return [];
     }
