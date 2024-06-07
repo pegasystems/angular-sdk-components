@@ -36,6 +36,7 @@ export class TimeComponent implements OnInit, OnDestroy {
   bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
+  testId = '';
   bHasForm$ = true;
   componentReference = '';
   helperText: string;
@@ -100,6 +101,7 @@ export class TimeComponent implements OnInit, OnDestroy {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TimeProps;
 
+    this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
 
