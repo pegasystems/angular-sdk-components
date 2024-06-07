@@ -36,6 +36,7 @@ export class UrlComponent implements OnInit, OnDestroy {
   bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
+  testId = '';
   bHasForm$ = true;
   componentReference = '';
   helperText: string;
@@ -106,6 +107,7 @@ export class UrlComponent implements OnInit, OnDestroy {
       this.value$ = this.configProps$.value;
     }
 
+    this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
     this.helperText = this.configProps$.helperText;
