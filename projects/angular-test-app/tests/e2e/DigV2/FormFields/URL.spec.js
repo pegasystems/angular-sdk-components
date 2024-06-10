@@ -45,11 +45,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Required' }).click();
 
     /** Required tests */
-    const requiredURL = page.locator('input[id="mat-input-2"]');
+    const requiredURL = page.locator('input[data-test-id="20815fd8b2e59e25b75185515b126212"]');
     attributes = await common.getAttributes(requiredURL);
     await expect(attributes.includes('required')).toBeTruthy();
 
-    const notRequiredURL = page.locator('input[id="mat-input-1"]');
+    const notRequiredURL = page.locator('input[data-test-id="d50c2aa9fe6df301d0d3d5a667daeda2"]');
     attributes = await common.getAttributes(notRequiredURL);
     await expect(attributes.includes('required')).toBeFalsy();
 
@@ -59,11 +59,11 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Disable' }).click();
 
     // /** Disable tests */
-    const alwaysDisabledURL = page.locator('input[id="mat-input-3"]');
+    const alwaysDisabledURL = page.locator('input[data-test-id="922758766489b064688aba17552c566d"]');
     attributes = await common.getAttributes(alwaysDisabledURL);
     await expect(attributes.includes('disabled')).toBeTruthy();
 
-    const conditionallyDisabledURL = page.locator('input[id="mat-input-4"]');
+    const conditionallyDisabledURL = page.locator('input[data-test-id="ae2e04faf34d58c5bff6be9b4fc9b0d9"]');
     attributes = await common.getAttributes(conditionallyDisabledURL);
     if (isDisabled) {
       await expect(attributes.includes('disabled')).toBeTruthy();
@@ -71,7 +71,7 @@ test.describe('E2E test', () => {
       await expect(attributes.includes('disabled')).toBeFalsy();
     }
 
-    const neverDisabledURL = page.locator('input[id="mat-input-5"]');
+    const neverDisabledURL = page.locator('input[data-test-id="cd5da1117b7b64256f2749d1664866bc"]');
     attributes = await common.getAttributes(neverDisabledURL);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
@@ -85,7 +85,7 @@ test.describe('E2E test', () => {
     // attributes = await common.getAttributes(readonlyURL);
     // await expect(attributes.includes('readonly')).toBeTruthy();
 
-    const EditableURL = page.locator('input[id="mat-input-6"]');
+    const EditableURL = page.locator('input[data-test-id="79504c0d99166c4c0a0749bef59b5e0f"]');
     attributes = await common.getAttributes(EditableURL);
     await expect(attributes.includes('readonly')).toBeFalsy();
 
@@ -104,12 +104,12 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Visibility' }).click();
 
     /** Visibility tests */
-    await expect(page.locator('input[id="mat-input-7"]')).toBeVisible();
+    await expect(page.locator('input[data-test-id="c239893d906b22bc8de9c7f3d0c1e219"]')).toBeVisible();
 
     const neverVisibleURL = await page.locator('input[data-test-id="01cec81e2fe61acf1b0480187998d1ee"]');
     await expect(neverVisibleURL).not.toBeVisible();
 
-    const conditionallyVisibleURL = await page.locator('input[id="mat-input-8"]');
+    const conditionallyVisibleURL = await page.locator('input[data-test-id="c7a204d92fc6300c68859901de172f8b"]');
 
     if (isVisible) {
       await expect(conditionallyVisibleURL).toBeVisible();

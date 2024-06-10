@@ -12,6 +12,7 @@
           type="url"
           [value]="value$"
           [required]="bRequired$"
+          [attr.data-test-id]="testId"
           [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
