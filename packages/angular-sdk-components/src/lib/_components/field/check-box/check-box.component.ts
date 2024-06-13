@@ -3,10 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatOptionModule } from '@angular/material/core';
+import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
+import { handleEvent } from '../../../_helpers/event-util';
 
 interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on Checkbox here
@@ -15,6 +19,13 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   caption?: string;
   trueLabel?: string;
   falseLabel?: string;
+  selectionMode?: string;
+  datasource?: any;
+  selectionKey?: string;
+  selectionList?: any;
+  primaryField: string;
+  readonlyContextList: any;
+  referenceList: string;
 }
 
 @Component({
@@ -22,7 +33,7 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -50,6 +61,17 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   trueLabel$?: string;
   falseLabel$?: string;
 
+  selectionMode?: string;
+  datasource?: any;
+  selectionKey?: string;
+  selectionList?: any;
+  primaryField: string;
+  selectedvalues: any;
+  referenceList: string;
+  listOfCheckboxes: any[] = [];
+  actionsApi: any;
+  propName: any;
+
   fieldControl = new FormControl('', null);
 
   constructor(
@@ -68,6 +90,11 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     // call updateSelf when initializing
     // this.updateSelf();
     this.checkAndUpdate();
+
+    if (this.selectionMode === 'multi' && this.referenceList?.length > 0) {
+      this.pConn$.setReferenceList(this.selectionList);
+      updateNewInstructions(this.pConn$, this.selectionList);
+    }
 
     if (this.formGroup$) {
       // add control to formGroup
@@ -111,68 +138,124 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CheckboxProps;
 
-    if (this.configProps$.value != undefined) {
-      this.value$ = this.configProps$.value;
-    }
     this.testId = this.configProps$.testId;
-    this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
-
-    this.caption$ = this.configProps$.caption;
-    this.helperText = this.configProps$.helperText;
-    this.trueLabel$ = this.configProps$.trueLabel;
-    this.falseLabel$ = this.configProps$.falseLabel;
-
-    // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => {
-      if (this.configProps$.required != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-      }
-      this.cdRef.detectChanges();
-    });
-
-    if (this.configProps$.visibility != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    }
-
-    // disabled
-    if (this.configProps$.disabled != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    }
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
-    }
-
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
-
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
-
+    this.label$ = this.configProps$.label;
     if (this.label$ != '') {
       this.showLabel$ = true;
     }
 
-    // eslint-disable-next-line sonarjs/no-redundant-boolean
-    if (this.value$ === 'true' || this.value$ == true) {
-      this.isChecked$ = true;
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = (this.pConn$.getStateProps() as any).value;
+
+    // multi case
+    this.selectionMode = this.configProps$.selectionMode;
+    if (this.selectionMode === 'multi') {
+      this.referenceList = this.configProps$.referenceList;
+      this.selectionList = this.configProps$.selectionList;
+      this.selectedvalues = this.configProps$.readonlyContextList;
+      this.primaryField = this.configProps$.primaryField;
+
+      this.datasource = this.configProps$.datasource;
+      this.selectionKey = this.configProps$.selectionKey;
+      const listSourceItems = this.datasource?.source ?? [];
+      const dataField: any = this.selectionKey?.split?.('.')[1];
+      const listToDisplay: any[] = [];
+      listSourceItems.forEach(element => {
+        element.selected = this.selectedvalues?.some?.(data => data[dataField] === element.key);
+        listToDisplay.push(element);
+      });
+      this.listOfCheckboxes = listToDisplay;
     } else {
-      this.isChecked$ = false;
+      if (this.configProps$.value != undefined) {
+        this.value$ = this.configProps$.value;
+      }
+
+      this.caption$ = this.configProps$.caption;
+      this.helperText = this.configProps$.helperText;
+      this.trueLabel$ = this.configProps$.trueLabel;
+      this.falseLabel$ = this.configProps$.falseLabel;
+
+      // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
+      setTimeout(() => {
+        if (this.configProps$.required != null) {
+          this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
+        }
+        this.cdRef.detectChanges();
+      });
+
+      if (this.configProps$.visibility != null) {
+        this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
+      }
+
+      // disabled
+      if (this.configProps$.disabled != undefined) {
+        this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
+      }
+
+      if (this.bDisabled$) {
+        this.fieldControl.disable();
+      } else {
+        this.fieldControl.enable();
+      }
+
+      if (this.configProps$.readOnly != null) {
+        this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
+        this.fieldControl.disable();
+      }
+
+      this.componentReference = (this.pConn$.getStateProps() as any).value;
+
+      // eslint-disable-next-line sonarjs/no-redundant-boolean
+      if (this.value$ === 'true' || this.value$ == true) {
+        this.isChecked$ = true;
+      } else {
+        this.isChecked$ = false;
+      }
+      // trigger display of error message with field control
+      if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
+        const timer = interval(100).subscribe(() => {
+          this.fieldControl.setErrors({ message: true });
+          this.fieldControl.markAsTouched();
+
+          timer.unsubscribe();
+        });
+      }
     }
   }
 
   fieldOnChange(event: any) {
     event.value = event.checked;
 
-    this.angularPConnectData.actions?.onChange(this, event);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.checked);
   }
 
   fieldOnBlur(event: any) {
-    event.value = event.checked;
-    this.angularPConnectData.actions?.onBlur(this, event);
+    if (this.selectionMode === 'multi') {
+      this.pConn$.getValidationApi().validate(this.selectedvalues, this.selectionList);
+    } else {
+      event.value = event.checked;
+      this.angularPConnectData.actions?.onBlur(this, event);
+    }
+  }
+
+  handleChangeMultiMode(event, element) {
+    if (!element.selected) {
+      insertInstruction(this.pConn$, this.selectionList, this.selectionKey, this.primaryField, {
+        id: element.key,
+        primary: element.text ?? element.value
+      });
+    } else {
+      deleteInstruction(this.pConn$, this.selectionList, this.selectionKey, {
+        id: element.key,
+        primary: element.text ?? element.value
+      });
+    }
+    this.pConn$.clearErrorMessages({
+      property: this.selectionList,
+      category: '',
+      context: ''
+    });
   }
 
   getErrorMessage() {
