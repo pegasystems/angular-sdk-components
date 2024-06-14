@@ -57,6 +57,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   testId: string;
   helperText: string;
   placeholder: string;
+  displayMode$?: string;
 
   fieldControl = new FormControl('', null);
 
@@ -124,13 +125,14 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     const props = this.pConn$.getConfigProps() as UserReferenceProps;
     this.testId = props.testId;
 
-    const { label, displayAs, value, showAsFormattedText, helperText, placeholder } = props;
+    const { label, displayAs, value, showAsFormattedText, helperText, placeholder, displayMode } = props;
 
     this.label$ = label;
     this.showAsFormattedText$ = showAsFormattedText;
     this.displayAs$ = displayAs;
     this.helperText = helperText;
     this.placeholder = placeholder || '';
+    this.displayMode$ = displayMode;
 
     const { readOnly, required } = props;
     [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
