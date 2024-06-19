@@ -46,7 +46,7 @@ export class CaseHistoryComponent implements OnInit {
       this.fields$ = [
         { label: this.pConn$.getLocalizedValue('Date', '', ''), type: 'DateTime', fieldName: 'pxTimeCreated' },
         { label: this.pConn$.getLocalizedValue('Description', '', ''), type: 'TextInput', fieldName: 'pyMessageKey' },
-        { label: this.pConn$.getLocalizedValue('User', '', ''), type: 'TextInput', fieldName: 'pyPerformer' }
+        { label: this.pConn$.getLocalizedValue('Performed by', '', ''), type: 'TextInput', fieldName: 'pyPerformer' }
       ];
 
       const tableDataResults = this.updateData(historyJSON.data.data, this.fields$);

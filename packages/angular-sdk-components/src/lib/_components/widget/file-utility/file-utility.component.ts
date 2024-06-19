@@ -64,18 +64,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
 
   currentCaseID = '';
 
-  addAttachmentsActions: any[] = [
-    {
-      text: 'Add files',
-      id: 'addNewFiles',
-      onClick: () => this.createModal('addLocalFile')
-    },
-    {
-      text: 'Add links',
-      id: 'addNewLinks',
-      onClick: () => this.createModal('addLocalLink')
-    }
-  ];
+  addAttachmentsActions: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -93,7 +82,18 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     this.lu_icon$ = 'paper-clip';
 
     this.closeSvgIcon$ = this.utils.getImageSrc('times', this.utils.getSDKStaticContentUrl());
-
+    this.addAttachmentsActions = [
+      {
+        text: this.pConn$.getLocalizedValue('Add files', '', ''),
+        id: 'addNewFiles',
+        onClick: () => this.createModal('addLocalFile')
+      },
+      {
+        text: this.pConn$.getLocalizedValue('Add links', '', ''),
+        id: 'addNewLinks',
+        onClick: () => this.createModal('addLocalLink')
+      }
+    ];
     // const onViewAllCallback = () => this.onViewAll(this.arFullListAttachments);
 
     this.lu_onViewAllFunction = { onClick: this.onViewAll.bind(this) };

@@ -15,7 +15,7 @@
           <div class="psdk-todo-assignment-title">{{ getAssignmentName(assignment) }}</div>
           <div class="psdk-todo-assignment-data">
             <div class="psdk-todo-assignment-task">
-              Task in
+              {{ localizedVal('Task in', localeCategory) }}
               <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)">
                 {{ assignment.name }} {{ getID(assignment) }}
               </button>
@@ -37,11 +37,11 @@
 
 <div *ngIf="assignmentCount$ > 3">
   <div *ngIf="bShowMore$; else showLess" class="psdk-todo-show-more">
-    <button mat-stroked-button (click)="_showMore()">Show more</button>
+    <button mat-stroked-button (click)="_showMore()">{{ showMoreLocalizedValue === 'show_more' ? 'Show more' : showMoreLocalizedValue }}</button>
   </div>
   <ng-template #showLess>
     <div class="psdk-todo-show-more">
-      <button mat-stroked-button (click)="_showLess()">Show less</button>
+      <button mat-stroked-button (click)="_showLess()">{{ showlessLocalizedValue === 'show_less' ? 'Show less' : showlessLocalizedValue }}</button>
     </div>
   </ng-template>
 </div>
