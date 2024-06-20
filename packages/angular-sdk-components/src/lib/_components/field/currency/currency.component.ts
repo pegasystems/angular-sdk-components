@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
@@ -20,7 +21,14 @@ interface CurrrencyProps extends PConnFieldProps {
   templateUrl: './currency.component.html',
   styleUrls: ['./currency.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ThousandSeparatorDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
