@@ -5,15 +5,27 @@ import { Directive, ElementRef, HostListener } from '@angular/core';
   standalone: true
 })
 export class ThousandSeparatorDirective {
-  constructor(private el: ElementRef) {}
+  constructor(private _inputEl: ElementRef) {}
 
   @HostListener('input', ['$event'])
-  onInput(event) {
-    const input = this.el.nativeElement as HTMLInputElement;
-    let value: any = input.value.replace(/,/g, ''); // Remove existing commas
-    if (event?.data !== '.') {
-      value = Number(value).toLocaleString(); // Add thousands separator
-      input.value = value;
+  onInput() {
+    if (this._inputEl.nativeElement.value === '-') return;
+    const commasRemoved = this._inputEl.nativeElement.value.replace(/,/g, '');
+    let toInt: number;
+    let toLocale: string;
+    if (commasRemoved.split('.').length > 1) {
+      // eslint-disable-next-line no-restricted-globals
+      const decimal = isNaN(parseInt(commasRemoved.split('.')[1], 10)) ? '' : parseInt(commasRemoved.split('.')[1], 10);
+      toInt = parseInt(commasRemoved, 10);
+      toLocale = `${toInt.toLocaleString('en-US')}.${decimal}`;
+    } else {
+      toInt = parseInt(commasRemoved, 10);
+      toLocale = toInt.toLocaleString('en-US');
+    }
+    if (toLocale === 'NaN') {
+      this._inputEl.nativeElement.value = '';
+    } else {
+      this._inputEl.nativeElement.value = toLocale;
     }
   }
 }
