@@ -1,0 +1,34 @@
+<div [formGroup]="formGroup$">
+  <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
+    <mat-label>{{ label$ }}</mat-label>
+    <mat-chip-grid #chipGrid>
+      <ng-container *ngFor="let select of selectedItems">
+        <mat-chip-row (removed)="removeChip(select)">
+          {{ select.primary }}
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </ng-container>
+    </mat-chip-grid>
+    <input
+      matInput
+      [placeholder]="placeholder"
+      [formControl]="fieldControl"
+      [value]="value$"
+      [required]="bRequired$"
+      [matAutocomplete]="auto"
+      (input)="fieldOnChange($event)"
+      [matChipInputFor]="chipGrid"
+      #trigger="matAutocompleteTrigger"
+    />
+    <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let item of itemsTree" [value]="item.primary" (click)="optionClicked($event, item, trigger)">
+        <mat-checkbox [checked]="item.selected" (click)="optionClicked($event, item, trigger)">
+          <span>{{ item.primary }}</span>
+        </mat-checkbox>
+      </mat-option>
+    </mat-autocomplete>
+    <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
+  </mat-form-field>
+</div>
