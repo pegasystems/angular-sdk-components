@@ -10,7 +10,7 @@
           type="text"
           matInput
           currencyMask
-          [options]="{ prefix: '', suffix: '%', thousands: '', decimal: '', align: 'left', nullable: true }"
+          [options]="{ prefix: '', suffix: '%', thousands: currSep, decimal: currDec, align: 'left', nullable: true }"
           [placeholder]="placeholder"
           step=".01"
           [formControlName]="controlName$"

@@ -4,14 +4,17 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
+import { NgxCurrencyDirective } from 'ngx-currency';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
-import { NgxCurrencyDirective } from 'ngx-currency';
+import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface PercentageProps extends PConnFieldProps {
+  showGroupSeparators?: string;
+  decimalPrecision?: number;
   // If any, enter additional props that only exist on Percentage here
 }
 
@@ -43,7 +46,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
   testId: string;
   helperText: string;
   placeholder: string;
-
+  currDec: string;
+  currSep: string;
   fieldControl = new FormControl<number | null>(null, null);
 
   constructor(
@@ -115,6 +119,11 @@ export class PercentageComponent implements OnInit, OnDestroy {
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
+    const showGroupSeparators = this.configProps$.showGroupSeparators;
+
+    const theSymbols = getCurrencyCharacters('');
+    this.currDec = theSymbols.theDecimalIndicator || '2';
+    this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -164,6 +173,12 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const propName = (this.pConn$?.getStateProps() as any).value;
     let value = event?.target?.value;
     value = value?.replace('%', '');
+    if (this.currSep === ',') {
+      value = value.replace(/,/g, '');
+    } else {
+      value = value?.replace(/\./g, '');
+      value = value?.replace(/,/g, '.');
+    }
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 

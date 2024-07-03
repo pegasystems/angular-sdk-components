@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgxCurrencyDirective } from 'ngx-currency';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
-import { NgxCurrencyDirective } from 'ngx-currency';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DecimalProps extends PConnFieldProps {
