@@ -7,17 +7,17 @@
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
         <div class="psdk-currency-input">
-          <span>{{ symbol }}</span>
           <input
             style="margin-left: 5px"
-            type="float"
+            type="text"
             matInput
+            currencyMask
+            [options]="{ prefix: currSym, thousands: currSep, decimal: currDec, align: 'left', nullable: true }"
             [placeholder]="placeholder"
-            [value]="value$ | number: '1.2-2'"
+            [formControlName]="controlName$"
             [required]="bRequired$"
             [formControl]="fieldControl"
             [attr.data-test-id]="testId"
-            (change)="fieldOnChange($event)"
             (blur)="fieldOnBlur($event)"
           />
         </div>

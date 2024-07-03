@@ -7,7 +7,9 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
 import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
+import { NgxCurrencyDirective } from 'ngx-currency';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface CurrrencyProps extends PConnFieldProps {
@@ -20,7 +22,7 @@ interface CurrrencyProps extends PConnFieldProps {
   templateUrl: './currency.component.html',
   styleUrls: ['./currency.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -31,7 +33,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   configProps$: CurrrencyProps;
 
   label$ = '';
-  value$: number | null;
+  value$: any;
   bRequired$ = false;
   bReadonly$ = false;
   bDisabled$ = false;
@@ -47,9 +49,9 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   currencyOptions: Object = {};
 
   fieldControl = new FormControl<number | null>(null, { updateOn: 'blur' });
-  symbol: string;
-  thousandsSep: string;
-  decimalSep: string;
+  currSym: string;
+  currSep: string;
+  currDec: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -114,10 +116,21 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
-    const nValue: any = this.configProps$.value;
-    this.value$ = nValue && typeof nValue === 'string' ? parseFloat(nValue) : nValue;
+    let nValue: any = this.configProps$.value;
+    if (nValue) {
+      if (typeof nValue === 'string') {
+        nValue = parseFloat(nValue);
+      }
+      this.value$ = nValue;
+    }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
+    const currencyISOCode: any = this.configProps$?.currencyISOCode;
+
+    const theSymbols = getCurrencyCharacters(currencyISOCode);
+    this.currSym = theSymbols.theCurrencySymbol;
+    this.currSep = theSymbols.theDigitGroupSeparator;
+    this.currDec = theSymbols.theDecimalIndicator;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -150,11 +163,6 @@ export class CurrencyComponent implements OnInit, OnDestroy {
       this.currencyISOCode = this.configProps$.currencyISOCode;
     }
 
-    const theSymbols = getCurrencyCharacters(this.currencyISOCode);
-    this.symbol = theSymbols.theCurrencySymbol;
-    this.thousandsSep = theSymbols.theDigitGroupSeparator;
-    this.decimalSep = theSymbols.theDecimalIndicator;
-
     this.componentReference = (this.pConn$.getStateProps() as any).value;
 
     // trigger display of error message with field control
@@ -168,14 +176,18 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
-  }
-
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    let value = event?.target?.value;
+    value = value?.substring(1);
+    if (this.currSep === ',') {
+      value = value.replace(/,/g, '');
+    } else {
+      value = value?.replace(/\./g, '');
+      value = value?.replace(/,/g, '.');
+    }
+    handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 
   getErrorMessage() {

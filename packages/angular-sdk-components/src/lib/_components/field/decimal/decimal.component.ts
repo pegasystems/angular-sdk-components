@@ -7,7 +7,8 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
-import { ThousandSeparatorDirective } from '../../../_directives/thousand-seperator.directive';
+import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
+import { NgxCurrencyDirective } from 'ngx-currency';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DecimalProps extends PConnFieldProps {
@@ -15,6 +16,7 @@ interface DecimalProps extends PConnFieldProps {
   currencyISOCode?: string;
   decimalPrecision?: number;
   showGroupSeparators?: string;
+  formatter?: string;
 }
 
 @Component({
@@ -28,7 +30,7 @@ interface DecimalProps extends PConnFieldProps {
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    ThousandSeparatorDirective,
+    NgxCurrencyDirective,
     forwardRef(() => ComponentMapperComponent)
   ]
 })
@@ -41,7 +43,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
   configProps$: DecimalProps;
 
   label$ = '';
-  value$: number;
+  value$: any;
   bRequired$ = false;
   bReadonly$ = false;
   bDisabled$ = false;
@@ -55,7 +57,9 @@ export class DecimalComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
-
+  currDec: string;
+  currSep: string;
+  decimalPrecision: number | undefined;
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
@@ -128,6 +132,12 @@ export class DecimalComponent implements OnInit, OnDestroy {
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
+    const showGroupSeparators = this.configProps$.showGroupSeparators;
+    const currencyISOCode: any = this.configProps$?.currencyISOCode;
+
+    const theSymbols = getCurrencyCharacters(currencyISOCode);
+    this.currDec = theSymbols.theDecimalIndicator;
+    this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -163,8 +173,12 @@ export class DecimalComponent implements OnInit, OnDestroy {
     const actionsApi = this.pConn$?.getActionsApi();
     const propName = (this.pConn$?.getStateProps() as any).value;
     let value = event?.target?.value;
-    value = value.replace(/,/g, '');
-    value = value !== '' ? Number(value) : value;
+    if (this.currSep === ',') {
+      value = value.replace(/,/g, '');
+    } else {
+      value = value?.replace(/\./g, '');
+      value = value?.replace(/,/g, '.');
+    }
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 

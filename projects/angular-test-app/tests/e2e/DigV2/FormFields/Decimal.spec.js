@@ -52,7 +52,7 @@ test.describe('E2E test', () => {
     const requiredDecimal = page.locator('input[data-test-id="9de2a78c2dd0d4dfff4a9bf33349197d"]');
     requiredDecimal.click();
     await requiredDecimal.clear();
-    await requiredDecimal.fill('12345');
+    await requiredDecimal.pressSequentially('12345');
     requiredDecimal.blur();
     await expect(page.locator('mat-error')).toBeHidden();
 

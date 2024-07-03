@@ -7,6 +7,8 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
+import { NgxCurrencyDirective } from 'ngx-currency';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface PercentageProps extends PConnFieldProps {
@@ -18,7 +20,7 @@ interface PercentageProps extends PConnFieldProps {
   templateUrl: './percentage.component.html',
   styleUrls: ['./percentage.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class PercentageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -158,9 +160,11 @@ export class PercentageComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    let value = event?.target?.value;
+    value = value?.replace('%', '');
+    handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 
   getErrorMessage() {

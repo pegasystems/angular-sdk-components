@@ -6,13 +6,14 @@
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
-        <!-- <span matPrefix>% &nbsp;</span> -->
         <input
+          type="text"
           matInput
+          currencyMask
+          [options]="{ prefix: '', suffix: '%', thousands: '', decimal: '', align: 'left', nullable: true }"
           [placeholder]="placeholder"
-          type="number"
           step=".01"
-          [value]="value$"
+          [formControlName]="controlName$"
           [required]="bRequired$"
           [formControl]="fieldControl"
           [attr.data-test-id]="testId"

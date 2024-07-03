@@ -9,10 +9,11 @@
         <input
           type="text"
           matInput
-          appThousandSeparator
+          currencyMask
+          [options]="{ prefix: '', thousands: currSep, decimal: currDec, align: 'left', nullable: true }"
           [placeholder]="placeholder"
           step="0.01"
-          [value]="value$"
+          [formControlName]="controlName$"
           [required]="bRequired$"
           [formControl]="fieldControl"
           [attr.data-test-id]="testId"
