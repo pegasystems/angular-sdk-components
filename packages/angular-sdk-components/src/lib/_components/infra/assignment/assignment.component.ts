@@ -60,6 +60,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   cancelAssignment: any;
   cancelCreateStageAssignment: any;
   showPage: any;
+  approveCase: any;
+  rejectCase: any;
 
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
@@ -205,6 +207,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     this.showPage = actionsAPI.showPage.bind(actionsAPI);
 
     this.cancelCreateStageAssignment = actionsAPI.cancelCreateStageAssignment.bind(actionsAPI);
+    this.approveCase = actionsAPI.approveCase?.bind(actionsAPI);
+    this.rejectCase = actionsAPI.rejectCase?.bind(actionsAPI);
 
     this.createButtons();
   }
@@ -411,11 +415,23 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
           }
           break;
 
+        case 'rejectCase': {
+          const rejectPromise = this.rejectCase(this.itemKey$);
+
+          rejectPromise
+            .then(() => {})
+            .catch(() => {
+              this.psService.sendMessage(false);
+              this.snackBar.open(`${this.localizedVal('Rejection failed!', this.localeCategory)}`, 'Ok');
+            });
+
+          break;
+        }
+
         default:
           break;
       }
     } else if (sButtonType == 'primary') {
-      // eslint-disable-next-line sonarjs/no-small-switch
       switch (sAction) {
         case 'finishAssignment':
           this.erService.sendMessage('publish', '');
@@ -437,6 +453,19 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
             this.erService.sendMessage('show', this.localizedVal('Please fix errors on form.', this.localeCategory));
           }
           break;
+
+        case 'approveCase': {
+          const approvePromise = this.approveCase(this.itemKey$);
+
+          approvePromise
+            .then(() => {})
+            .catch(() => {
+              this.psService.sendMessage(false);
+              this.snackBar.open(`${this.localizedVal('Approve failed!', this.localeCategory)}`, 'Ok');
+            });
+
+          break;
+        }
         default:
           break;
       }

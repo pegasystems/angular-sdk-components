@@ -165,7 +165,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
       containerName: 'primary',
       flowType: sFlowType || 'pyStartCase'
     };
-    this.createWork(sCaseType, actionInfo);
+    this.createWork(sCaseType, actionInfo).then(() => {
+      console.log('createWork completed');
+    });
   }
 
   navPanelLogoutClick() {

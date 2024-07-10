@@ -274,22 +274,28 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   hasAssignments() {
     let hasAssignments = false;
     // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
-    const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
+    const assignmentsList: any[] = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
+    // const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
     // 8.7 includes assignments in Assignments List that may be assigned to
     //  a different operator. So, see if there are any assignments for
     //  the current operator
+    const isEmbedded = window.location.href.includes('embedded');
     let bAssignmentsForThisOperator = false;
+
+    if (isEmbedded) {
+      const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
+      for (const assignment of assignmentsList) {
+        if (assignment.assigneeInfo.ID === thisOperator) {
+          bAssignmentsForThisOperator = true;
+        }
+      }
+    } else {
+      bAssignmentsForThisOperator = true;
+    }
 
     // Bail if there is no assignmentsList
     if (!assignmentsList) {
       return hasAssignments;
-    }
-
-    for (const assignment of assignmentsList) {
-      if ((assignment as any).assigneeInfo.ID === thisOperator) {
-        bAssignmentsForThisOperator = true;
-      }
     }
 
     const hasChildCaseAssignments = this.hasChildCaseAssignments();
@@ -469,7 +475,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
       PCore.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
-    } else if (this.bHasCaseMessages$) {
+    } else {
       this.bHasCaseMessages$ = false;
       this.bShowConfirm = false;
     }
