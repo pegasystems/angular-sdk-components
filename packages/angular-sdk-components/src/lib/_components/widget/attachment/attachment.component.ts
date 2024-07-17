@@ -40,7 +40,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   bVisible$ = true;
   bLoading$ = false;
   bShowSelector$ = true;
-  att_valueRef: any;
   att_categoryName: string;
   fileTemp: any = {};
   caseID: any;
@@ -137,10 +136,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     }
 
     this.files = value?.pxResults && +value.pyCount > 0 ? value.pxResults.map(f => this.buildFilePropsFromResponse(f)) : [];
-
-    this.att_valueRef = (this.pConn$.getStateProps() as any).value;
-    this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
-
     this.updateAttachments();
   }
 
@@ -160,20 +155,18 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   updateAttachments() {
     let tempUploadedFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
     tempUploadedFiles = tempUploadedFiles.filter(f => f.label === this.valueRef && f.delete !== true);
-    this.files = [
-      ...this.files?.map(f => {
-        return f.responseProps.pzInsKey && !f.responseProps.pzInsKey.includes('temp')
-          ? {
-              ...f,
-              props: {
-                ...f.props,
-                onDelete: () => this.deleteFile(f)
-              }
+    this.files?.map(f => {
+      return f.responseProps.pzInsKey && !f.responseProps.pzInsKey.includes('temp')
+        ? {
+            ...f,
+            props: {
+              ...f.props,
+              onDelete: () => this.deleteFile(f)
             }
-          : { ...f };
-      }),
-      ...tempUploadedFiles
-    ];
+          }
+        : { ...f };
+    });
+    this.files = [...this.files, ...tempUploadedFiles];
 
     if (this.files.length > 0 && this.displayMode !== 'DISPLAY_ONLY') {
       const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
@@ -194,7 +187,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   resetAttachmentStoredState() {
-    PCore.getStateUtils().updateState(this.pConn$?.getContextName(), this.getAttachmentKey(this.att_valueRef), undefined, {
+    PCore.getStateUtils().updateState(this.pConn$?.getContextName(), this.getAttachmentKey(this.valueRef), undefined, {
       pageReference: 'context_data',
       isArrayDeepMerge: false
     });
@@ -249,7 +242,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   deleteFile(file) {
-    let attachmentsList: any[] = [];
+    const attachmentsList: any[] = [];
     let currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
 
     // If file to be deleted is the one added in previous stage i.e. for which a file instance is created in server
