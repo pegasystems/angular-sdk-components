@@ -119,10 +119,9 @@ test.describe('E2E test', () => {
 
     /** Testing invalid attachment case by uploading an empty file */
     await page.setInputFiles(`#AttachmentList`, [zeroBytesFilePath]);
-    await expect(page.locator('div >> text="Error with one or more files"')).toBeVisible();
     await expect(page.locator(`div >> text="Empty file can't be uploaded."`)).toBeVisible();
 
-    await page.locator('app-material-summary-item').filter({ hasText: 'Unable to upload file' }).locator('#delete-attachment').click();
+    await page.locator('div[class="psdk-attachment-card"]').filter({ hasText: 'Unable to upload file' }).locator('#delete-attachment').click();
 
     await page.locator('button:has-text("submit")').click();
 
