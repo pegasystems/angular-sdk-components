@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
+  @ViewChild('uploader', { static: false }) fileInput: ElementRef;
 
   label$ = '';
   value$: any;
@@ -55,11 +56,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   uploadSingleFileLabel = this.localizedVal('file_upload_text_one', this.localeCategory);
   allowMultiple: any;
   filesWithError: any = [];
-  files: any;
+  files: any = [];
   categoryName: string;
   displayMode: string | undefined;
   srcImg: any;
   deleteIcon: string;
+  tempFilesToBeUploaded: any[];
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,
@@ -73,6 +75,32 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.srcImg = this.utils.getImageSrc('document-doc', this.utils.getSDKStaticContentUrl());
     this.deleteIcon = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
     this.checkAndUpdate();
+    this.getAttachments();
+  }
+
+  getAttachments() {
+    let tempUploadedFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
+    tempUploadedFiles = tempUploadedFiles.filter(f => f.label === this.valueRef && f.delete !== true);
+    this.files?.map(f => {
+      return f.responseProps?.pzInsKey && !f.responseProps.pzInsKey.includes('temp')
+        ? {
+            ...f,
+            props: {
+              ...f.props,
+              onDelete: () => this.deleteFile(f)
+            }
+          }
+        : { ...f };
+    });
+    this.files = [...this.files, ...tempUploadedFiles];
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
+      this.resetAttachmentStoredState.bind(this),
+      this.caseID
+    );
+    return () => {
+      PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
+    };
   }
 
   checkAndUpdate() {
@@ -135,7 +163,10 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       this.categoryName = value.pyCategoryName;
     }
 
-    this.files = value?.pxResults && +value.pyCount > 0 ? value.pxResults.map(f => this.buildFilePropsFromResponse(f)) : [];
+    if (value?.pxResults && +value.pyCount > 0) {
+      this.files = value.pxResults.map(f => this.buildFilePropsFromResponse(f));
+    }
+
     this.updateAttachments();
   }
 
@@ -153,21 +184,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   updateAttachments() {
-    let tempUploadedFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
-    tempUploadedFiles = tempUploadedFiles.filter(f => f.label === this.valueRef && f.delete !== true);
-    this.files?.map(f => {
-      return f.responseProps.pzInsKey && !f.responseProps.pzInsKey.includes('temp')
-        ? {
-            ...f,
-            props: {
-              ...f.props,
-              onDelete: () => this.deleteFile(f)
-            }
-          }
-        : { ...f };
-    });
-    this.files = [...this.files, ...tempUploadedFiles];
-
     if (this.files.length > 0 && this.displayMode !== 'DISPLAY_ONLY') {
       const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
       // block duplicate files to redux store when added 1 after another to prevent multiple duplicates being added to the case on submit
@@ -175,15 +191,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       const updatedAttList = [...currentAttachmentList, ...tempFiles];
       this.updateAttachmentState(this.pConn$, this.getAttachmentKey(this.valueRef), updatedAttList);
     }
-
-    PCore.getPubSubUtils().subscribe(
-      PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
-      this.resetAttachmentStoredState.bind(this),
-      this.caseID
-    );
-    return () => {
-      PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
-    };
   }
 
   resetAttachmentStoredState() {
@@ -277,13 +284,17 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     }
 
     this.filesWithError = this.filesWithError?.filter(f => f.ID !== file.ID);
+    if (this.filesWithError.length === 0) {
+      this.clearFieldErrorMessages();
+    }
+    this.fileInput && this.fileInput.nativeElement.value ? null : '';
   }
 
   onFileAdded(event) {
     let addedFiles = Array.from(event.target.files);
     addedFiles = this.allowMultiple === 'true' ? addedFiles : [addedFiles[0]];
     const maxAttachmentSize = PCore.getEnvironmentInfo().getMaxAttachmentSize() || '5';
-    const tempFilesToBeUploaded = [
+    this.tempFilesToBeUploaded = [
       ...addedFiles.map((f: any, index) => {
         f.ID = `${new Date().getTime()}I${index}`;
         f.inProgress = true;
@@ -326,14 +337,14 @@ export class AttachmentComponent implements OnInit, OnDestroy {
         return f;
       })
     ];
-    const tempFilesWithError = tempFilesToBeUploaded.filter(f => f.props.error);
+    const tempFilesWithError = this.tempFilesToBeUploaded.filter(f => f.props.error);
     if (tempFilesWithError.length > 0) {
       this.filesWithError = tempFilesWithError;
     }
     if (this.allowMultiple !== 'true') {
-      this.files = [...tempFilesToBeUploaded];
+      this.files = [...this.tempFilesToBeUploaded];
     } else {
-      this.files = [...this.files, ...tempFilesToBeUploaded];
+      this.files = [...this.files, ...this.tempFilesToBeUploaded];
     }
     this.uploadFiles();
   }

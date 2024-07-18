@@ -1,7 +1,11 @@
-<div class="file-upload-container">
+<div class="file-upload-container" *ngIf="bVisible$">
   <span class="attachment-label" [ngClass]="{ 'file-label': bRequired$ }">{{ label$ }}</span>
   <div *ngIf="(files.length === 0 && allowMultiple !== 'true') || allowMultiple === 'true'">
-    <div style="margin-bottom: 10px" [ngClass]="validateMessage ? 'psdk-modal-file-selector-error' : 'psdk-modal-file-selector'">
+    <div
+      style="margin-bottom: 10px"
+      id="attachment-container"
+      [ngClass]="validateMessage ? 'psdk-modal-file-selector-error' : 'psdk-modal-file-selector'"
+    >
       <div [hidden]="true" id="attachment-ID">
         {{ valueRef }}
       </div>
@@ -33,7 +37,7 @@
             <div *ngIf="file.props.meta" [ngStyle]="{ color: file.props.error ? 'red' : null }">{{ file.props.meta }}</div>
           </div>
           <div class="psdk-attachment-action">
-            <button *ngIf="file.ID" class="psdk-utility-button" (click)="deleteFile(file)">
+            <button id="delete-attachment" *ngIf="file.ID" class="psdk-utility-button" (click)="deleteFile(file)">
               <img class="psdk-utility-card-action-svg-icon" src="{{ deleteIcon }}" />
             </button>
             <div *ngIf="!file.ID">
