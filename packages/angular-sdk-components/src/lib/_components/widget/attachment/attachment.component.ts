@@ -287,6 +287,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     if (this.filesWithError.length === 0) {
       this.clearFieldErrorMessages();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.fileInput && this.fileInput.nativeElement.value ? null : '';
   }
 
