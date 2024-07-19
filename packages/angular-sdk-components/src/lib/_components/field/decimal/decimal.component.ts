@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxCurrencyDirective } from 'ngx-currency';
+import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
-import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
+import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { format } from '../../../_helpers/formatters';
 
 interface DecimalProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Decimal here
@@ -59,7 +60,12 @@ export class DecimalComponent implements OnInit, OnDestroy {
   fieldControl = new FormControl<number | null>(null, null);
   currDec: string;
   currSep: string;
+  currSym: string;
   decimalPrecision: number | undefined;
+  formatter;
+  formattedValue: any;
+  inputMode: any;
+
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
@@ -123,6 +129,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
+    this.inputMode = NgxCurrencyInputMode.Natural;
     let nValue: any = this.configProps$.value;
     if (nValue) {
       if (typeof nValue === 'string') {
@@ -138,6 +145,15 @@ export class DecimalComponent implements OnInit, OnDestroy {
     const theSymbols = getCurrencyCharacters(currencyISOCode);
     this.currDec = theSymbols.theDecimalIndicator;
     this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
+
+    const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
+    this.formatter = this.configProps$.formatter;
+
+    if (this.formatter === 'Currency') {
+      this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
+    } else {
+      this.formattedValue = format(this.value$, this.pConn$.getComponentName().toLowerCase(), theCurrencyOptions);
+    }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -164,6 +180,12 @@ export class DecimalComponent implements OnInit, OnDestroy {
       this.fieldControl.disable();
     } else {
       this.fieldControl.enable();
+    }
+
+    if (this.bReadonly$ && this.formatter === 'Currency') {
+      this.currSym = theSymbols.theCurrencySymbol;
+    } else {
+      this.currSym = '';
     }
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;

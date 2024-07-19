@@ -1,8 +1,8 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$: formattedValue, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
-  <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
+  <div *ngIf="bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <mat-label>{{ label$ }}</mat-label>
@@ -10,7 +10,14 @@
           type="text"
           matInput
           currencyMask
-          [options]="{ prefix: '', thousands: currSep, decimal: currDec, align: 'left', nullable: true }"
+          [options]="{
+            prefix: bReadonly$ && formatter === 'Currency' ? currSym : '',
+            thousands: currSep,
+            decimal: currDec,
+            align: 'left',
+            nullable: true,
+            inputMode: inputMode
+          }"
           [placeholder]="placeholder"
           step="0.01"
           [formControlName]="controlName$"
@@ -18,6 +25,7 @@
           [formControl]="fieldControl"
           [attr.data-test-id]="testId"
           (blur)="fieldOnBlur($event)"
+          [readonly]="bReadonly$"
         />
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
@@ -27,3 +35,6 @@
 <ng-template #noEdit>
   <component-mapper *ngIf="bVisible$ !== false" name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
 </ng-template>
+
+<!-- ,
+          precision: decimalPrecision -->
