@@ -121,7 +121,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   updateSelf() {
     const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
     const stateProps: any = this.pConn$.getStateProps();
-    const { value, label, extensions, allowMultiple, displayMode } = configProps;
+    const { value, label, extensions, displayMode } = configProps;
 
     if (configProps.required != null) {
       this.bRequired$ = this.utils.getBooleanValue(configProps.required);
