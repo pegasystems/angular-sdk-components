@@ -173,13 +173,17 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       const queryPayload = {
         dataViewName: OPERATORS_DP
       };
-      const resp: any = await PCore.getRestClient().invokeRestApi('getListData', { queryPayload } as any, ''); // 3rd arg empty string until typedef marked correctly
-      if (resp?.data) {
-        const ddDataSource = resp.data.data.map(listItem => ({
-          key: listItem.pyUserIdentifier,
-          value: listItem.pyUserName
-        }));
-        this.options$ = ddDataSource;
+      try {
+        const resp: any = await PCore.getRestClient().invokeRestApi('getListData', { queryPayload } as any, ''); // 3rd arg empty string until typedef marked correctly
+        if (resp?.data) {
+          const ddDataSource = resp.data.data.map(listItem => ({
+            key: listItem.pyUserIdentifier,
+            value: listItem.pyUserName
+          }));
+          this.options$ = ddDataSource;
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   }
