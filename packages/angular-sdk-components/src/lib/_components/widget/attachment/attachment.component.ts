@@ -54,7 +54,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   localeCategory = 'CosmosFields';
   uploadMultipleFilesLabel = this.localizedVal('file_upload_text_multiple', this.localeCategory);
   uploadSingleFileLabel = this.localizedVal('file_upload_text_one', this.localeCategory);
-  allowMultiple: any;
   filesWithError: any = [];
   files: any = [];
   categoryName: string;
@@ -150,7 +149,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
     this.validateMessage = this.angularPConnectData.validateMessage;
     this.extensions$ = extensions;
-    this.allowMultiple = allowMultiple;
     this.valueRef = (this.pConn$.getStateProps() as any).value;
     this.valueRef = this.valueRef.startsWith('.') ? this.valueRef.substring(1) : this.valueRef;
     this.displayMode = displayMode;
@@ -293,7 +291,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   onFileAdded(event) {
     let addedFiles = Array.from(event.target.files);
-    addedFiles = this.allowMultiple === 'true' ? addedFiles : [addedFiles[0]];
+    addedFiles = this.allowMultiple$ ? addedFiles : [addedFiles[0]];
     const maxAttachmentSize = PCore.getEnvironmentInfo().getMaxAttachmentSize() || '5';
     this.tempFilesToBeUploaded = [
       ...addedFiles.map((f: any, index) => {
@@ -342,7 +340,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     if (tempFilesWithError.length > 0) {
       this.filesWithError = tempFilesWithError;
     }
-    if (this.allowMultiple !== 'true') {
+    if (!this.allowMultiple$) {
       this.files = [...this.tempFilesToBeUploaded];
     } else {
       this.files = [...this.files, ...this.tempFilesToBeUploaded];
