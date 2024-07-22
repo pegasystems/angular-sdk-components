@@ -54,9 +54,12 @@ test.describe('E2E test', () => {
     const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
       .getDate()
       .toString()
-      .padStart(2, '0')}/${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()} AM`;
+      .padStart(2, '0')}/${date.getFullYear()}, ${(date.getHours() % 12).toString().padStart(2, '0')}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, '0')} AM`;
     await requiredDateTime.click();
-    await requiredDateTime.fill(formattedDate);
+    await requiredDateTime.pressSequentially(formattedDate);
 
     await expect(page.locator('mat-error')).toBeHidden();
 

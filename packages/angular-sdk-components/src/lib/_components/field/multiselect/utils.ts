@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash.clonedeep';
 
 export function setVisibilityForList(c11nEnv, visibility) {
   const { selectionMode, selectionList, renderMode, referenceList } = c11nEnv.getComponentConfig();

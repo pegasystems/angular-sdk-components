@@ -142,15 +142,15 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "angular-test-app:build:development",
+            "buildTarget": "angular-test-app:build:development",
             "port": 3500
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-test-app:build:production"
+              "buildTarget": "angular-test-app:build:production"
             },
             "development": {
-              "browserTarget": "angular-test-app:build:development"
+              "buildTarget": "angular-test-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -158,7 +158,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-test-app:build"
+            "buildTarget": "angular-test-app:build"
           }
         },
         "test": {

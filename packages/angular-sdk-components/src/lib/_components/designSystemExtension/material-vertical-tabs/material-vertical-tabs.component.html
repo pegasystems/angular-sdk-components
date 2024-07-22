@@ -1,5 +1,5 @@
 <div>
-  <mat-button-toggle-group vertical (change)="onChange($event.value)" [value]="selectedTabId$" aria-label="Tabs">
+  <mat-button-toggle-group vertical hideSingleSelectionIndicator (change)="onChange($event.value)" [value]="selectedTabId$" aria-label="Tabs">
     <mat-button-toggle *ngFor="let tab of tabConfig$" [value]="tab.id" style="text-align: left">
       <div style="display: flex">
         <div style="flex-grow: 10">{{ tab.name }}</div>

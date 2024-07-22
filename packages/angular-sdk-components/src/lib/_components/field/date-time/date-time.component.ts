@@ -1,42 +1,19 @@
-/* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
-import { MomentDateModule } from '@angular/material-moment-adapter';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
-import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here
-}
-
-class MyFormat {
-  theDateFormat: any = getDateFormatInfo();
-
-  get display() {
-    return {
-      dateInput: `${this.theDateFormat.dateFormatString}, LT`,
-      monthYearLabel: 'MMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY'
-    };
-  }
-
-  get parse() {
-    return {
-      dateInput: `${this.theDateFormat.dateFormatString}, LT`
-    };
-  }
 }
 
 @Component({
@@ -50,13 +27,10 @@ class MyFormat {
     MatFormFieldModule,
     MatInputModule,
     MatDatepickerModule,
-    NgxMatMomentModule,
-    NgxMatDatetimePickerModule,
-    NgxMatTimepickerModule,
-    MomentDateModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
     forwardRef(() => ComponentMapperComponent)
-  ],
-  providers: [{ provide: NGX_MAT_DATE_FORMATS, useClass: MyFormat }]
+  ]
 })
 export class DateTimeComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -194,16 +168,20 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange(event: any) {
-    const value = event.value && event.value.isValid() ? event.value : null;
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
-    handleEvent(actionsApi, 'changeNblur', propName, value?.toISOString());
-  }
+  // fieldOnChange(event: any) {
+  //   if (typeof event.value === 'object') {
+  //     // convert date to pega "date" format
+  //     event.value = event.value?.toISOString();
+  //   }
+
+  //   this.angularPConnectData.actions?.onChange(this, { value: event.value });
+  // }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    if (event.target.value) event.value = event.target.value;
+    if (typeof event.value === 'object') {
+      // convert date to pega "date" format
+      event.value = event.value?.toISOString();
+    }
 
     this.angularPConnectData.actions?.onBlur(this, event);
   }

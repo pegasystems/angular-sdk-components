@@ -8,18 +8,18 @@
         <mat-label>{{ label$ }}</mat-label>
         <input
           matInput
+          [owlDateTime]="dtPicker"
           [attr.data-test-id]="testId"
-          [ngxMatDatetimePicker]="picker"
           [placeholder]="placeholder"
           [formControl]="fieldControl"
-          (dateChange)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
+          (dateTimeChange)="fieldOnBlur($event)"
           [value]="value$"
           [required]="bRequired$"
         />
-        <mat-datepicker-toggle matSuffix [for]="$any(picker)"></mat-datepicker-toggle>
-        <ngx-mat-datetime-picker #picker [stepHour]="stepHour" [stepMinute]="stepMinute" [stepSecond]="stepSecond"> </ngx-mat-datetime-picker>
-        <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
+        <mat-datepicker-toggle matSuffix [for]="$any(dtPicker)" [owlDateTimeTrigger]="dtPicker"></mat-datepicker-toggle>
+        <owl-date-time #dtPicker></owl-date-time>
+        <mat-error *ngIf="fieldControl?.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
   </div>
