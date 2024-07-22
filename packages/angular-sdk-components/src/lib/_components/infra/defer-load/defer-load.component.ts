@@ -44,7 +44,8 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.loadActiveTab();
+    // The below call is causing an error while creating/opening a case, hence commenting it out
+    // this.loadActiveTab();
   }
 
   ngOnDestroy(): void {
@@ -160,7 +161,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.pConn$
         .getActionsApi()
-        .refreshCaseView(encodeURI(this.loadViewCaseID), this.name, null)
+        .refreshCaseView(encodeURI(this.loadViewCaseID), this.name, '')
         .then(data => {
           this.onResponse(data.root);
         });
