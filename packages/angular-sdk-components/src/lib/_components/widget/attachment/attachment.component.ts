@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -21,7 +23,7 @@ interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
   templateUrl: './attachment.component.html',
   styleUrls: ['./attachment.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatProgressSpinnerModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatProgressSpinnerModule, MatMenuModule, MatIconModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AttachmentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -29,6 +31,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
+  @ViewChild('uploader', { static: false }) fileInput: ElementRef;
 
   label$ = '';
   value$: any;
@@ -37,16 +40,8 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   bDisabled$ = false;
   bVisible$ = true;
   bLoading$ = false;
-  arFiles$: any[] = [];
-  arFileList$: any[] = [];
-  removeFileFromList$: any;
-  arMenuList$: any[] = [];
   bShowSelector$ = true;
-  bShowJustDelete$ = false;
-  att_valueRef: any;
   att_categoryName: string;
-  att_id: string;
-  myFiles: any;
   fileTemp: any = {};
   caseID: any;
   allowMultiple$ = false;
@@ -59,6 +54,13 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   localeCategory = 'CosmosFields';
   uploadMultipleFilesLabel = this.localizedVal('file_upload_text_multiple', this.localeCategory);
   uploadSingleFileLabel = this.localizedVal('file_upload_text_one', this.localeCategory);
+  filesWithError: any = [];
+  files: any = [];
+  categoryName: string;
+  displayMode: string | undefined;
+  srcImg: any;
+  deleteIcon: string;
+  tempFilesToBeUploaded: any[];
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,
@@ -68,13 +70,36 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-
-    this.removeFileFromList$ = { onClick: this._removeFileFromList.bind(this) };
-
     this.caseID = PCore.getStoreValue('.pyID', 'caseInfo.content', this.pConn$.getContextName());
-
-    // let configProps: any = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.srcImg = this.utils.getImageSrc('document-doc', this.utils.getSDKStaticContentUrl());
+    this.deleteIcon = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
     this.checkAndUpdate();
+    this.getAttachments();
+  }
+
+  getAttachments() {
+    let tempUploadedFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
+    tempUploadedFiles = tempUploadedFiles.filter(f => f.label === this.valueRef && f.delete !== true);
+    this.files?.map(f => {
+      return f.responseProps?.pzInsKey && !f.responseProps.pzInsKey.includes('temp')
+        ? {
+            ...f,
+            props: {
+              ...f.props,
+              onDelete: () => this.deleteFile(f)
+            }
+          }
+        : { ...f };
+    });
+    this.files = [...this.files, ...tempUploadedFiles];
+    PCore.getPubSubUtils().subscribe(
+      PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
+      this.resetAttachmentStoredState.bind(this),
+      this.caseID
+    );
+    return () => {
+      PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
+    };
   }
 
   checkAndUpdate() {
@@ -88,77 +113,15 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-
-    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
-  }
-
   // Callback passed when subscribing to store change
   onStateChange() {
     this.checkAndUpdate();
   }
 
-  updateAttachmentsInfo() {
-    // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-    if (!this.pConn$.attachmentsInfo) {
-      // @ts-ignore - Property 'attachmentsInfo' does not exist on type 'C11nEnv'
-      this.pConn$.attachmentsInfo = {
-        type: 'File',
-        attachmentFieldName: this.att_valueRef,
-        category: this.att_categoryName
-      };
-    }
-  }
-
-  processFile(file, i) {
-    file.props.type = file.responseProps.pyMimeFileExtension;
-    file.props.mimeType = file.responseProps.pyMimeFileExtension;
-    file.props.ID = file.responseProps.pzInsKey;
-
-    const arMenuList = [
-      {
-        icon: 'download',
-        text: this.pConn$.getLocalizedValue('Download', '', ''),
-        onClick: () => this._downloadFileFromList(this.value$.pxResults[i])
-      },
-      {
-        icon: 'trash',
-        text: this.pConn$.getLocalizedValue('Delete', '', ''),
-        onClick: () => this._removeFileFromList(this.arFileList$[i])
-      }
-    ];
-
-    const arFilesAttachmentIDs: any = [];
-    this.arFileList$.forEach(arFile => {
-      arFilesAttachmentIDs.push(arFile.id);
-    });
-
-    if (!arFilesAttachmentIDs.includes(file.props.ID)) {
-      this.arFileList$.push(
-        this.getNewListUtilityItemProps({
-          att: file.props,
-          downloadFile: null,
-          cancelFile: null,
-          deleteFile: null,
-          removeFile: null
-        })
-      );
-    }
-
-    this.arFileList$[i].actions = arMenuList;
-    this.arFileList$[i].noDeleteIcon = true;
-
-    this.bShowSelector$ = false;
-  }
-
   updateSelf() {
     const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
     const stateProps: any = this.pConn$.getStateProps();
-
-    const { value, label, extensions } = configProps;
+    const { value, label, extensions, displayMode } = configProps;
 
     if (configProps.required != null) {
       this.bRequired$ = this.utils.getBooleanValue(configProps.required);
@@ -180,114 +143,62 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       this.allowMultiple$ = this.utils.getBooleanValue(configProps.allowMultiple);
     }
 
-    this.bShowJustDelete$ = true;
     this.label$ = label;
     this.value$ = value;
     this.status = stateProps.status;
+
     this.validateMessage = this.angularPConnectData.validateMessage;
     this.extensions$ = extensions;
     this.valueRef = (this.pConn$.getStateProps() as any).value;
     this.valueRef = this.valueRef.startsWith('.') ? this.valueRef.substring(1) : this.valueRef;
-
+    this.displayMode = displayMode;
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
     let { required, disabled } = configProps;
     [required, disabled] = [required, disabled].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
 
-    this.att_categoryName = '';
+    this.categoryName = '';
     if (value && value.pyCategoryName) {
-      this.att_categoryName = value.pyCategoryName;
+      this.categoryName = value.pyCategoryName;
     }
 
-    this.att_valueRef = (this.pConn$.getStateProps() as any).value;
-    this.att_valueRef = this.att_valueRef.indexOf('.') === 0 ? this.att_valueRef.substring(1) : this.att_valueRef;
+    if (value?.pxResults && +value.pyCount > 0) {
+      this.files = value.pxResults.map(f => this.buildFilePropsFromResponse(f));
+    }
 
     this.updateAttachments();
   }
 
-  updateAttachments() {
-    const attachmentsFromServer = this.value$ && this.value$.pxResults && +this.value$.pyCount > 0;
-
-    if (attachmentsFromServer) {
-      this.updateAttachmentsFromServer();
-    } else {
-      // Get the attachments from the Redux
-      this.myFiles = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
-
-      if (this.myFiles?.length && this.arFiles$.length === 0) {
-        this.arFileList$ = this.myFiles.map(att => {
-          return this.getNewListUtilityItemProps({
-            att,
-            downloadFile: null,
-            cancelFile: null,
-            deleteFile: null,
-            removeFile: null
-          });
-        });
+  buildFilePropsFromResponse(respObj) {
+    return {
+      props: {
+        meta: `${respObj.pyCategoryName}, ${respObj.pxCreateOperator}`,
+        name: respObj.pyAttachName,
+        icon: this.utils.getIconFromFileType(respObj.pyMimeFileExtension)
+      },
+      responseProps: {
+        ...respObj
       }
-
-      const myFilesAttachmentIDs: any = [];
-      this.myFiles.forEach(myFile => {
-        myFilesAttachmentIDs.push(myFile.ID);
-      });
-
-      this.arFiles$.forEach(arFile => {
-        if (!myFilesAttachmentIDs.includes(arFile.ID)) {
-          this.myFiles = [...this.myFiles, arFile];
-        }
-      });
-    }
-
-    this.bShowJustDelete$ = true;
-    this.bShowSelector$ = !(this.arFileList$?.length > 0) || this.allowMultiple$;
-
-    if (this.arFileList$.length > 0) {
-      this.CheckForInvalidAttachment();
-    }
-    PCore.getPubSubUtils().subscribe(
-      PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
-      this.resetAttachmentStoredState.bind(this),
-      this.caseID
-    );
+    };
   }
 
-  updateAttachmentsFromServer() {
-    this.value$.pxResults.forEach((attachment, i) => {
-      const file: any = this.buildFilePropsFromResponse(attachment);
-      if (file.responseProps) {
-        this.updateAttachmentsInfo();
-        if (file.responseProps.pzInsKey && !file.responseProps.pzInsKey.includes('temp')) {
-          this.processFile(file, i);
-        }
-        if (file) {
-          const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
-          const index = currentAttachmentList.findIndex(element => element.props.ID === file.props.ID);
-          let tempFiles: any = [];
-          if (index < 0) {
-            tempFiles = [file];
-          }
-
-          PCore.getStateUtils().updateState(
-            this.pConn$.getContextName(),
-            this.getAttachmentKey(this.att_valueRef),
-            [...currentAttachmentList, ...tempFiles],
-            {
-              pageReference: 'context_data',
-              isArrayDeepMerge: false
-            }
-          );
-        }
-      }
-    });
+  updateAttachments() {
+    if (this.files.length > 0 && this.displayMode !== 'DISPLAY_ONLY') {
+      const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
+      // block duplicate files to redux store when added 1 after another to prevent multiple duplicates being added to the case on submit
+      const tempFiles = this.files.filter(f => currentAttachmentList.findIndex(fr => fr.ID === f.ID) === -1 && !f.inProgress && f.responseProps);
+      const updatedAttList = [...currentAttachmentList, ...tempFiles];
+      this.updateAttachmentState(this.pConn$, this.getAttachmentKey(this.valueRef), updatedAttList);
+    }
   }
 
   resetAttachmentStoredState() {
-    PCore.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.att_valueRef), undefined, {
+    PCore.getStateUtils().updateState(this.pConn$?.getContextName(), this.getAttachmentKey(this.valueRef), undefined, {
       pageReference: 'context_data',
       isArrayDeepMerge: false
     });
   }
 
-  _downloadFileFromList(fileObj: any) {
+  downloadFile(fileObj: any) {
     PCore.getAttachmentUtils()
       // @ts-ignore - 3rd parameter "responseEncoding" should be optional
       .downloadAttachment(fileObj.pzInsKey, this.pConn$.getContextName())
@@ -307,373 +218,8 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   getAttachmentKey = (name = '') => (name ? `attachmentsList.${name}` : 'attachmentsList');
 
-  CheckForInvalidAttachment() {
-    let isValid = true;
-    this.arFileList$.forEach(file => {
-      if (file.secondary.error) {
-        isValid = false;
-      }
-    });
-    if (isValid) {
-      // @ts-ignore
-      PCore.getMessageManager().clearMessages({
-        type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
-        property: (this.pConn$.getStateProps() as any).value,
-        pageReference: this.pConn$.getPageReference(),
-        context: this.pConn$.getContextName()
-      });
-    }
-  }
-
-  _removeFileFromList(item: any) {
-    const fileListIndex = this.arFileList$.findIndex(element => element?.id === item?.id);
-    const fileIndex = this.arFiles$.findIndex(element => element?.ID === item?.id);
-
-    const attachmentsList = [];
-    let currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName());
-    if (this.value$ && this.value$.pxResults && +this.value$.pyCount > 0 && item.actions) {
-      const updatedAttachments = currentAttachmentList.map(attachment => {
-        if (attachment?.ID === this.arFileList$[fileListIndex].id || attachment?.props?.ID === this.arFileList$[fileListIndex].id) {
-          return { ...attachment, delete: true, label: this.valueRef };
-        }
-        return attachment;
-      });
-
-      // updating the redux store to help form-handler in passing the data to delete the file from server
-      PCore.getStateUtils().updateState(this.pConn$.getContextName(), this.getAttachmentKey(this.att_valueRef), updatedAttachments, {
-        pageReference: 'context_data',
-        isArrayDeepMerge: false
-      });
-    } else {
-      currentAttachmentList = currentAttachmentList.filter(f => f.ID !== item.id);
-      PCore.getStateUtils().updateState(
-        this.pConn$.getContextName(),
-        this.getAttachmentKey(this.att_valueRef),
-        [...currentAttachmentList, ...attachmentsList],
-        {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false
-        }
-      );
-    }
-
-    if (fileListIndex > -1) {
-      this.arFileList$.splice(fileListIndex, 1);
-    }
-    if (fileIndex > -1) {
-      this.arFiles$.splice(fileIndex, 1);
-    }
-
-    this.CheckForInvalidAttachment();
-
-    this.bShowSelector$ = !(this.arFileList$?.length > 0) || this.allowMultiple$;
-  }
-
   getCurrentAttachmentsList(key, context) {
     return PCore.getStoreValue(`.${key}`, 'context_data', context) || [];
-  }
-
-  errorHandler(isFetchCanceled, file) {
-    return error => {
-      if (!isFetchCanceled(error)) {
-        let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong', '', '');
-        if (error.response && error.response.data && error.response.data.errorDetails) {
-          uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue, '', '');
-        }
-        for (const myFile of this.myFiles) {
-          if (myFile.ID === file.ID) {
-            myFile.meta = uploadFailMsg;
-            myFile.error = true;
-            myFile.fileName = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
-          }
-        }
-        this.bShowSelector$ = false;
-        this.arFileList$ = this.myFiles.map(att => {
-          if (att.id) {
-            return att;
-          }
-          return this.getNewListUtilityItemProps({
-            att,
-            downloadFile: null,
-            cancelFile: null,
-            deleteFile: null,
-            removeFile: null
-          });
-        });
-
-        PCore.getMessageManager().addMessages({
-          // @ts-ignore
-          messages: [
-            {
-              type: 'error',
-              message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
-            }
-          ],
-          property: (this.pConn$.getStateProps() as any).value,
-          pageReference: this.pConn$.getPageReference(),
-          context: this.pConn$.getContextName()
-        });
-
-        this.bShowJustDelete$ = true;
-        this.bLoading$ = false;
-      }
-      throw error;
-    };
-  }
-
-  uploadMyFiles(event: any) {
-    let arrAttachmentFiles: any = [];
-    if (this.arFiles$.length) {
-      arrAttachmentFiles = this.arFiles$;
-    } else {
-      arrAttachmentFiles = this.arFileList$;
-    }
-    this.arFiles$ = [...arrAttachmentFiles, ...this.getFiles(event.target.files)];
-
-    // convert FileList to an array
-    this.myFiles = Array.from(this.arFiles$);
-
-    this.bLoading$ = true;
-
-    const filesToBeUploaded = this.myFiles
-      .filter(e => {
-        if (e.id) {
-          return false;
-        }
-        const isFileUploaded = e && e.progress === 100;
-        const fileHasError = e && e.error;
-        const isFileUploadedinLastStep = e.responseProps && e.responseProps.pzInsKey;
-        return !isFileUploaded && !fileHasError && !isFileUploadedinLastStep;
-      })
-      .map(f =>
-        PCore.getAttachmentUtils().uploadAttachment(
-          f,
-          () => {
-            this.onUploadProgress();
-          },
-          isFetchCanceled => {
-            return this.errorHandler(isFetchCanceled, f);
-          },
-          this.pConn$.getContextName()
-        )
-      );
-
-    Promise.allSettled(filesToBeUploaded)
-      .then((fileResponses: any) => {
-        this.handleFileUploadSuccess(fileResponses);
-      })
-      .catch(error => {
-        console.log(error);
-        this.handleFileUploadFailure();
-      });
-  }
-
-  handleFileUploadSuccess(fileResponses) {
-    const successFileResponses = fileResponses.filter(fr => fr.status !== 'rejected'); // in case of deleting an in progress file, promise gets cancelled but still enters then block
-    let reqObj;
-    if (successFileResponses.length > 0) {
-      const tempFilesUploaded = [...this.arFiles$.filter(file => !file.id)];
-      let newAttachments: any = [];
-      tempFilesUploaded.forEach(fileRes => {
-        const index = successFileResponses.findIndex((fr: any) => fr.value.clientFileID === fileRes.ID);
-        if (index >= 0) {
-          reqObj = {
-            type: 'File',
-            label: this.att_valueRef,
-            category: this.att_categoryName,
-            handle: successFileResponses[index].value.ID,
-            ID: fileRes.ID,
-            name: fileRes.name
-          };
-          newAttachments = [...newAttachments, reqObj];
-        }
-      });
-      const currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.att_valueRef), this.pConn$.getContextName()).filter(
-        f => f.label !== this.att_valueRef
-      );
-      PCore.getStateUtils().updateState(
-        this.pConn$.getContextName(),
-        this.getAttachmentKey(this.att_valueRef),
-        [...currentAttachmentList, ...newAttachments],
-        {
-          pageReference: 'context_data',
-          isArrayDeepMerge: false
-        }
-      );
-      this.arFiles$ = tempFilesUploaded;
-
-      this.ngZone.run(() => {
-        this.bShowSelector$ = this.allowMultiple$;
-        this.arFiles$.forEach(file => {
-          if (!file.error) {
-            file.meta = this.pConn$.getLocalizedValue('File uploaded successfully', '', '');
-          }
-        });
-        this.arFileList$ = this.myFiles.map(att => {
-          if (att.id) {
-            return att;
-          }
-          return this.getNewListUtilityItemProps({
-            att,
-            downloadFile: null,
-            cancelFile: null,
-            deleteFile: null,
-            removeFile: null
-          });
-        });
-
-        this.CheckForInvalidAttachment();
-
-        this.bShowJustDelete$ = true;
-        this.bLoading$ = false;
-      });
-    }
-  }
-
-  handleFileUploadFailure() {
-    this.bShowJustDelete$ = true;
-    this.bLoading$ = false;
-    this.bShowSelector$ = this.allowMultiple$;
-    this.myFiles.forEach(file => {
-      if (file?.secondary?.error) {
-        file.meta = 'File uploaded failed';
-      }
-    });
-
-    this.arFileList$ = this.myFiles.map(att => {
-      return this.getNewListUtilityItemProps({
-        att,
-        downloadFile: null,
-        cancelFile: null,
-        deleteFile: null,
-        removeFile: null
-      });
-    });
-
-    this.bShowJustDelete$ = true;
-    this.bLoading$ = false;
-  }
-
-  getNewListUtilityItemProps = ({ att, cancelFile, downloadFile, deleteFile, removeFile }) => {
-    let actions;
-    let isDownloadable = false;
-
-    if (att.progress && att.progress !== 100) {
-      actions = [
-        {
-          id: `Cancel-${att.ID}`,
-          text: this.pConn$.getLocalizedValue('Cancel', '', ''),
-          icon: 'times',
-          onClick: cancelFile
-        }
-      ];
-    } else if (att.links) {
-      const isFile = att.type === 'FILE';
-      const ID = att.ID.replace(/\s/gi, '');
-      const actionsMap = new Map([
-        [
-          'download',
-          {
-            id: `download-${ID}`,
-            text: isFile ? this.pConn$.getLocalizedValue('Download', '', '') : this.pConn$.getLocalizedValue('Open', '', ''),
-            icon: isFile ? 'download' : 'open',
-            onClick: downloadFile
-          }
-        ],
-        [
-          'delete',
-          {
-            id: `Delete-${ID}`,
-            text: this.pConn$.getLocalizedValue('Delete', '', ''),
-            icon: 'trash',
-            onClick: deleteFile
-          }
-        ]
-      ]);
-      actions = [];
-      actionsMap.forEach((action, actionKey) => {
-        if (att.links[actionKey]) {
-          actions.push(action);
-        }
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      isDownloadable = att.links.download;
-    } else if (att.error) {
-      actions = [
-        {
-          id: `Remove-${att.ID}`,
-          text: this.pConn$.getLocalizedValue('Remove', '', ''),
-          icon: 'trash',
-          onClick: removeFile
-        }
-      ];
-    }
-
-    return {
-      id: att.ID,
-      visual: {
-        icon: this.utils.getIconForAttachment(att),
-        progress: att.progress == 100 ? undefined : att.progress
-      },
-      primary: {
-        type: att.type,
-        name: att.error ? att.fileName : att.name,
-        icon: 'trash',
-        click: removeFile
-      },
-      secondary: {
-        text: att.meta,
-        error: att.error
-      },
-      actions
-    };
-  };
-
-  onUploadProgress() {}
-
-  getFiles(arFiles: any[]): any[] {
-    const files = this.allowMultiple$ ? arFiles : [arFiles[0]];
-    return this.setNewFiles(files);
-  }
-
-  setNewFiles(arFiles) {
-    let index = 0;
-    const maxAttachmentSize = PCore.getEnvironmentInfo().getMaxAttachmentSize() || 5;
-    for (const file of arFiles) {
-      file.mimeType = file.type;
-      file.icon = this.utils.getIconFromFileType(file.type);
-      file.ID = `${new Date().getTime()}I${index}`;
-
-      if (!this.validateMaxSize(file, maxAttachmentSize)) {
-        file.error = true;
-        file.meta = this.pConn$.getLocalizedValue('File is too big. Max allowed size is 5MB.', '', '');
-      } else if (!this.validateFileExtension(file, this.extensions$)) {
-        file.error = true;
-        file.meta = `${this.pConn$.getLocalizedValue('File has invalid extension. Allowed extensions are:', '', '')} ${this.extensions$.replaceAll(
-          '.',
-          ''
-        )}`;
-      }
-      if (file.error) {
-        const fieldName = (this.pConn$.getStateProps() as any).value;
-        const context = this.pConn$.getContextName();
-        PCore.getMessageManager().addMessages({
-          // @ts-ignore
-          messages: [
-            {
-              type: 'error',
-              message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
-            }
-          ],
-          property: fieldName,
-          pageReference: this.pConn$.getPageReference(),
-          context
-        });
-      }
-      index++;
-    }
-
-    return [...arFiles];
   }
 
   validateMaxSize(fileObj, maxSizeInMB): boolean {
@@ -693,16 +239,226 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     return allowedExtensionList.includes(extension);
   };
 
-  buildFilePropsFromResponse(respObj) {
-    return {
-      props: {
-        meta: `${respObj.pyCategoryName}, ${respObj.pxCreateOperator}`,
-        name: respObj.pyAttachName,
-        icon: this.utils.getIconFromFileType(respObj.pyMimeFileExtension)
-      },
-      responseProps: {
-        ...respObj
+  updateAttachmentState(pConn, key, attachments) {
+    PCore.getStateUtils().updateState(this.pConn$.getContextName(), key, attachments, {
+      pageReference: 'context_data',
+      isArrayDeepMerge: false
+    });
+  }
+
+  deleteFile(file) {
+    const attachmentsList: any[] = [];
+    let currentAttachmentList = this.getCurrentAttachmentsList(this.getAttachmentKey(this.valueRef), this.pConn$.getContextName());
+
+    // If file to be deleted is the one added in previous stage i.e. for which a file instance is created in server
+    // no need to filter currentAttachmentList as we will get another entry of file in redux with delete & label
+    // eslint-disable-next-line no-unsafe-optional-chaining
+    if (this.value$ && this.value$?.pxResults && +this.value$?.pyCount > 0 && file.responseProps && file?.responseProps?.pzInsKey !== 'temp') {
+      const updatedAttachments = this.files.map(f => {
+        if (f.responseProps && f.responseProps.pzInsKey === file.responseProps.pzInsKey) {
+          return { ...f, delete: true, label: this.valueRef };
+        }
+        return f;
+      });
+
+      // updating the redux store to help form-handler in passing the data to delete the file from server
+      this.updateAttachmentState(this.pConn$, this.getAttachmentKey(this.valueRef), [...updatedAttachments]);
+      const newlyAddedFiles = this.files.filter(f => !!f.ID);
+      const filesPostDelete = this.files.filter(
+        f => f.responseProps?.pzInsKey !== 'temp' && f.responseProps?.pzInsKey !== file.responseProps?.pzInsKey
+      );
+      this.files = [...filesPostDelete, ...newlyAddedFiles];
+    } //  if the file being deleted is the added in this stage  i.e. whose data is not yet created in server
+    else {
+      // filter newly added files in this stage, later the updated current stage files will be added to redux once files state is updated
+      currentAttachmentList = currentAttachmentList.filter(f => f.ID !== file.ID);
+      this.files = this.files.filter(f => f.ID !== file.ID);
+
+      this.updateAttachmentState(this.pConn$, this.getAttachmentKey(this.valueRef), [...currentAttachmentList, ...attachmentsList]);
+      if (file.inProgress) {
+        // @ts-ignore - 3rd parameter "responseEncoding" should be optional
+        PCore.getAttachmentUtils().cancelRequest(file.ID, pConn.getContextName());
       }
+    }
+
+    this.filesWithError = this.filesWithError?.filter(f => f.ID !== file.ID);
+    if (this.filesWithError.length === 0) {
+      this.clearFieldErrorMessages();
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    this.fileInput && this.fileInput.nativeElement.value ? null : '';
+  }
+
+  onFileAdded(event) {
+    let addedFiles = Array.from(event.target.files);
+    addedFiles = this.allowMultiple$ ? addedFiles : [addedFiles[0]];
+    const maxAttachmentSize = PCore.getEnvironmentInfo().getMaxAttachmentSize() || '5';
+    this.tempFilesToBeUploaded = [
+      ...addedFiles.map((f: any, index) => {
+        f.ID = `${new Date().getTime()}I${index}`;
+        f.inProgress = true;
+        f.props = {
+          type: f.type,
+          name: f.name,
+          icon: this.utils.getIconFromFileType(f.type),
+          onDelete: () => this.deleteFile(f)
+        };
+        if (!this.validateMaxSize(f, maxAttachmentSize)) {
+          f.props.error = true;
+          f.inProgress = false;
+          f.props.meta = this.pConn$.getLocalizedValue(`File is too big. Max allowed size is ${maxAttachmentSize}MB.`, '', '');
+        } else if (!this.validateFileExtension(f, this.extensions$)) {
+          f.props.error = true;
+          f.inProgress = false;
+          f.props.meta = `${this.pConn$.getLocalizedValue(
+            'File has invalid extension. Allowed extensions are:',
+            '',
+            ''
+          )} ${this.extensions$.replaceAll('.', '')}`;
+        }
+        if (f.props.error) {
+          const fieldName = (this.pConn$.getStateProps() as any).value;
+          const context = this.pConn$.getContextName();
+          PCore.getMessageManager().addMessages({
+            // @ts-ignore
+            messages: [
+              {
+                type: 'error',
+                // @ts-ignore - Type '{ type: string; message: string; }' is not assignable to type 'MessagesConfigObject'.
+                message: pConn.getLocalizedValue('Error with one or more files', '', '')
+              }
+            ],
+            property: fieldName,
+            pageReference: this.pConn$.getPageReference(),
+            context
+          });
+        }
+        return f;
+      })
+    ];
+    const tempFilesWithError = this.tempFilesToBeUploaded.filter(f => f.props.error);
+    if (tempFilesWithError.length > 0) {
+      this.filesWithError = tempFilesWithError;
+    }
+    if (!this.allowMultiple$) {
+      this.files = [...this.tempFilesToBeUploaded];
+    } else {
+      this.files = [...this.files, ...this.tempFilesToBeUploaded];
+    }
+    this.uploadFiles();
+  }
+
+  clearFieldErrorMessages() {
+    const fieldName = (this.pConn$.getStateProps() as any).value;
+    const context = this.pConn$.getContextName();
+    // @ts-ignore
+    PCore.getMessageManager().clearMessages({
+      type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
+      property: fieldName,
+      pageReference: this.pConn$.getPageReference(),
+      context
+    });
+  }
+
+  onUploadProgress() {}
+
+  errorHandler(isFetchCanceled, attachedFile) {
+    return error => {
+      if (!isFetchCanceled(error)) {
+        let uploadFailMsg = this.pConn$.getLocalizedValue('Something went wrong', '', '');
+        if (error.response && error.response.data && error.response.data.errorDetails) {
+          uploadFailMsg = this.pConn$.getLocalizedValue(error.response.data.errorDetails[0].localizedValue, '', '');
+        }
+
+        this.files.map(f => {
+          if (f.ID === attachedFile.ID) {
+            f.props.meta = uploadFailMsg;
+            f.props.error = true;
+            f.props.onDelete = () => this.deleteFile(f);
+            f.props.icon = this.utils.getIconFromFileType(f.type);
+            f.props.name = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
+            f.inProgress = false;
+            const fieldName = (this.pConn$.getStateProps() as any).value;
+            const context = this.pConn$.getContextName();
+            // set errors to property to block submit even on errors in file upload
+            PCore.getMessageManager().addMessages({
+              // @ts-ignore
+              messages: [
+                {
+                  type: 'error',
+                  // @ts-ignore - Type '{ type: string; message: string; }' is not assignable to type 'MessagesConfigObject'.
+                  message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
+                }
+              ],
+              property: fieldName,
+              pageReference: this.pConn$.getPageReference(),
+              context
+            });
+            delete f.props.progress;
+          }
+          return f;
+        });
+      }
+      throw error;
     };
+  }
+
+  uploadFiles() {
+    const filesToBeUploaded = this.files
+      .filter(e => {
+        const isFileUploaded = e.props && e.props.progress === 100;
+        const fileHasError = e.props && e.props.error;
+        const isFileUploadedinLastStep = e.responseProps && e.responseProps.pzInsKey;
+        return !isFileUploaded && !fileHasError && !isFileUploadedinLastStep;
+      })
+      .map(f =>
+        window.PCore.getAttachmentUtils().uploadAttachment(
+          f,
+          () => {
+            this.onUploadProgress();
+          },
+          isFetchCanceled => {
+            return this.errorHandler(isFetchCanceled, f);
+          },
+          this.pConn$.getContextName()
+        )
+      );
+    Promise.allSettled(filesToBeUploaded)
+      .then((fileResponses: any) => {
+        fileResponses = fileResponses.filter(fr => fr.status !== 'rejected'); // in case of deleting an in progress file, promise gets cancelled but still enters then block
+        if (fileResponses.length > 0) {
+          this.files.forEach(f => {
+            const index = fileResponses.findIndex((fr: any) => fr.value.clientFileID === f.ID);
+            if (index >= 0) {
+              f.props.meta = this.pConn$.getLocalizedValue('Uploaded successfully', '', '');
+              f.props.progress = 100;
+              f.inProgress = false;
+              f.handle = fileResponses[index].value.ID;
+              f.label = this.valueRef;
+              f.category = this.categoryName;
+              f.responseProps = {
+                pzInsKey: 'temp',
+                pyAttachName: f.props.name
+              };
+            }
+          });
+          this.updateAttachments();
+          if (this.filesWithError?.length === 0) {
+            this.clearFieldErrorMessages();
+          }
+        }
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
+    }
+
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION, this.caseID);
   }
 }
