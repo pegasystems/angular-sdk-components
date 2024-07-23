@@ -10,6 +10,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { map, Observable, startWith } from 'rxjs';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
@@ -58,6 +59,8 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   helperText: string;
   placeholder: string;
   displayMode$?: string;
+  filteredOptions: Observable<any[]>;
+  filterValue = '';
 
   fieldControl = new FormControl('', null);
 
@@ -66,19 +69,24 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     private utils: Utils
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.controlName$ = this.angularPConnect.getComponentID(this);
 
-    this.checkAndUpdate();
+    await this.checkAndUpdate();
 
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       this.fieldControl.setValue(this.value$);
     }
+
+    this.filteredOptions = this.fieldControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value || ''))
+    );
   }
 
   ngOnDestroy() {
@@ -106,22 +114,27 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   }
 
   // Callback passed when subscribing to store change
-  onStateChange() {
-    this.checkAndUpdate();
+  async onStateChange() {
+    await this.checkAndUpdate();
   }
 
-  checkAndUpdate() {
+  private _filter(value: string): string[] {
+    const filterVal = (value || this.filterValue).toLowerCase();
+    return this.options$?.filter(option => option.value?.toLowerCase().includes(filterVal));
+  }
+
+  async checkAndUpdate() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
     // ONLY call updateSelf when the component should update
     if (bUpdateSelf) {
-      this.updateSelf();
+      await this.updateSelf();
     }
   }
 
-  updateSelf() {
+  async updateSelf() {
     const props = this.pConn$.getConfigProps() as UserReferenceProps;
     this.testId = props.testId;
 
@@ -160,24 +173,27 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       const queryPayload = {
         dataViewName: OPERATORS_DP
       };
-      PCore.getRestClient()
-        .invokeRestApi('getListData', { queryPayload } as any, '') // 3rd arg empty string until typedef marked correctly
-        .then((resp: any) => {
+      try {
+        const resp: any = await PCore.getRestClient().invokeRestApi('getListData', { queryPayload } as any, ''); // 3rd arg empty string until typedef marked correctly
+        if (resp?.data) {
           const ddDataSource = resp.data.data.map(listItem => ({
             key: listItem.pyUserIdentifier,
             value: listItem.pyUserName
           }));
           this.options$ = ddDataSource;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 
   fieldOnChange(event: any) {
     if (event?.value === 'Select') {
       event.value = '';
+    }
+    if (event?.target) {
+      this.filterValue = (event.target as HTMLInputElement).value;
     }
     this.angularPConnectData.actions?.onChange(this, event);
   }

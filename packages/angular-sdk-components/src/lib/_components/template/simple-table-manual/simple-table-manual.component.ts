@@ -370,7 +370,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   getResultsText() {
     const recordsCount = this.readOnlyMode ? this.rowData?.data.length : this.referenceList?.length;
-    return `${recordsCount} result${recordsCount > 1 ? 's' : ''}`;
+    return `${recordsCount || 0} result${recordsCount > 1 ? 's' : ''}`;
   }
 
   sortCompare(a, b): number {
