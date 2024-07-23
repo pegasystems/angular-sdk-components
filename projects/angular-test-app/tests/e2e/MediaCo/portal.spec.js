@@ -131,9 +131,6 @@ test.describe('E2E test', () => {
 
     const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
     await expect(Number(attachmentCount)).toBeGreaterThan(0);
-
-    //  Click text=Thank you! The next step in this case has been routed appropriately.
-    await page.locator('text=Thank you! The next step in this case has been routed appropriately.').click();
   }, 10000);
 
   test('should enter a discount value($) and send to tech', async ({ page }) => {
@@ -153,8 +150,6 @@ test.describe('E2E test', () => {
     await mgrDiscountInput.fill('20');
 
     await page.locator('button:has-text("submit")').click();
-
-    await page.locator('text=Thank you! The next step in this case has been routed appropriately.').click();
   }, 10000);
 
   test('should modify(if required) the actual services/packages to be installed and resolve the case', async ({ page }) => {
