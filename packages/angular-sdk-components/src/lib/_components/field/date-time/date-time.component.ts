@@ -168,15 +168,6 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  // fieldOnChange(event: any) {
-  //   if (typeof event.value === 'object') {
-  //     // convert date to pega "date" format
-  //     event.value = event.value?.toISOString();
-  //   }
-
-  //   this.angularPConnectData.actions?.onChange(this, { value: event.value });
-  // }
-
   fieldOnBlur(event: any) {
     if (typeof event.value === 'object') {
       // convert date to pega "date" format
