@@ -138,6 +138,7 @@ export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
 export * from './lib/_helpers/versionHelpers';
 export * from './lib/_helpers/filter-utils';
+export * from './lib/_helpers/instructions-utils';
 
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/get-login-status.service';
