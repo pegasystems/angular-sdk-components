@@ -142,7 +142,6 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
 
   onAttachFiles(files) {
     const attachmentUtils = PCore.getAttachmentUtils();
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
 
     if (files.length > 0) {
@@ -185,7 +184,6 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
 
   onAttachLinks(links) {
     const attachmentUtils = PCore.getAttachmentUtils();
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
 
     if (links.length > 0) {
@@ -711,7 +709,6 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   }
 
   getCaseID() {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     return this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID) || '';
   }
 
@@ -760,7 +757,6 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   }
 
   caseHasChanged(): boolean {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
     if (this.currentCaseID !== caseID) {
       this.currentCaseID = caseID;

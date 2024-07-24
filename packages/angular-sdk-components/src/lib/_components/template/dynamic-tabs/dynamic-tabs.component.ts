@@ -56,7 +56,6 @@ export class DynamicTabsComponent implements OnInit, OnDestroy {
   updateSelf() {
     const { referenceList } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DynamicTabsProps;
 
-    // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
     const { tablabel } = this.pConn$.getComponentConfig();
     const tablabelProp = PCore.getAnnotationUtils().getPropertyName(tablabel);
 

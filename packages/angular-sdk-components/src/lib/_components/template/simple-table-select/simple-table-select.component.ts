@@ -85,10 +85,8 @@ export class SimpleTableSelectComponent implements OnInit, OnDestroy {
         contextPageReference = pageReference.concat('.').concat(referenceProp);
       }
       const metadata = isMultiSelectMode
-        ? // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
-          this.pConn$.getFieldMetadata(`@P .${referenceProp}`)
-        : // @ts-ignore - Property 'getCurrentPageFieldMetadata' is private and only accessible within class 'C11nEnv'
-          this.pConn$.getCurrentPageFieldMetadata(contextPageReference);
+        ? this.pConn$.getFieldMetadata(`@P .${referenceProp}`)
+        : this.pConn$.getCurrentPageFieldMetadata(contextPageReference);
 
       const { datasource: { parameters: fieldParameters = {} } = {}, pageClass } = metadata;
 

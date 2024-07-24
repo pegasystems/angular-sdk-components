@@ -47,7 +47,6 @@ export class DashboardFilterComponent implements OnInit {
 
   clearFilters() {
     this.filtersFormGroup$.reset();
-    // @ts-ignore - second parameter “payload” for publish method should be optional
     PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CLEAR_ALL);
   }
 

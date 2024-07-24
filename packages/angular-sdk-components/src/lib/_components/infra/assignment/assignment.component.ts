@@ -357,8 +357,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
           savePromise
             .then(() => {
+              // @ts-ignore - Property 'c11nEnv' is private and only accessible within class 'CaseInfo'.
               const caseType = this.pConn$.getCaseInfo().c11nEnv.getValue(PCore.getConstants().CASE_INFO.CASE_TYPE_ID);
-              // @ts-ignore - second parameter “payload” for publish method should be optional
               PCore.getPubSubUtils().publish('cancelPressed');
               this.onSaveActionSuccess({ caseType, caseID, assignmentID });
             })
@@ -373,12 +373,9 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
         case 'cancelAssignment':
           this.bReInit = true;
           this.erService.sendMessage('dismiss', '');
-          // @ts-ignore - Property 'isAssignmentInCreateStage' is private and only accessible within class 'CaseInfo'
           const isAssignmentInCreateStage = this.pConn$.getCaseInfo().isAssignmentInCreateStage();
           const isLocalAction =
-            // @ts-ignore - Property 'isLocalAction' is private and only accessible within class 'CaseInfo'.
             this.pConn$.getCaseInfo().isLocalAction() ||
-            // @ts-ignore - second parameter pageReference for getValue method should be optional
             (PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION && this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION));
           // check if create stage (modal)
           if (isAssignmentInCreateStage && this.isInModal$ && !isLocalAction) {
@@ -398,14 +395,12 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
             // publish before cancel pressed, because
             // cancel assignment happens "after" cancel assignment happens
-            // @ts-ignore - second parameter “payload” for publish method should be optional
             PCore.getPubSubUtils().publish('cancelPressed');
 
             const cancelPromise = this.cancelAssignment(this.itemKey$);
             cancelPromise
               .then(() => {
                 this.psService.sendMessage(false);
-                // @ts-ignore - second parameter “payload” for publish method should be optional
                 PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
               })
               .catch(() => {

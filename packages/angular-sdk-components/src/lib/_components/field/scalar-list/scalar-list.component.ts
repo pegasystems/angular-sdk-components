@@ -101,11 +101,12 @@ export class ScalarListComponent implements OnInit, OnDestroy {
         {
           type: componentType,
           config: {
+            // @ts-ignore - Object literal may only specify known properties, and 'value' does not exist in type 'ComponentMetadataConfig'.
             value: scalarValue,
             displayMode: 'LABELS_LEFT',
             label: this.label$,
             ...restProps,
-            readOnly: 'true'
+            readOnly: true
           }
         },
         '',

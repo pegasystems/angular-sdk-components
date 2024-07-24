@@ -56,7 +56,7 @@ export class QuickCreateComponent implements OnInit, OnChanges {
       this.classFilter$.forEach(item => {
         let icon = this.utils.getImageSrc('polaris-solid', this.utils.getSDKStaticContentUrl());
         let label = '';
-        envInfo.environmentInfoObject.pyCaseTypeList.forEach(casetype => {
+        (envInfo.environmentInfoObject as any).pyCaseTypeList.forEach(casetype => {
           if (casetype.pyWorkTypeImplementationClassName === item) {
             icon = casetype.pxIcon && this.utils.getImageSrc(casetype?.pxIcon, this.utils.getSDKStaticContentUrl());
             label = casetype.pyWorkTypeName ?? '';

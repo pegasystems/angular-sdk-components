@@ -87,10 +87,8 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     const { multiRecordDisplayAs } = this.configProps$;
     let { contextClass } = this.configProps$;
     if (!contextClass) {
-      // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
       let listName = this.pConn$.getComponentConfig().referenceList;
       listName = PCore.getAnnotationUtils().getPropertyName(listName);
-      // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
       contextClass = this.pConn$.getFieldMetadata(listName)?.pageClass;
     }
     if (multiRecordDisplayAs === 'fieldGroup') {

@@ -249,10 +249,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     let { contextClass } = this.configProps$;
     this.referenceList = referenceList;
     if (!contextClass) {
-      // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
       let listName = this.pConn$.getComponentConfig().referenceList;
       listName = PCore.getAnnotationUtils().getPropertyName(listName);
-      // @ts-ignore - Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'
       contextClass = this.pConn$.getFieldMetadata(listName)?.pageClass;
     }
     this.contextClass = contextClass;
@@ -357,12 +355,13 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     if (this.isInitialized) {
       this.isInitialized = false;
       if (this.allowEditingInModal) {
+        // @ts-ignore - An argument for 'uniqueField' was not provided.
         this.pConn$.getListActions().initDefaultPageInstructions(
           this.pConn$.getReferenceList(),
           this.fieldDefs.filter(item => item.name).map(item => item.name)
         );
       } else {
-        // @ts-ignore - An argument for 'fields' was not provided
+        // @ts-ignore - An argument for 'propertyNames' was not provided.
         this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
       }
     }
@@ -949,12 +948,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   deleteRecord(index) {
-    if (PCore.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$.getListActions().deleteEntry(index, this.pageReference);
-    } else {
-      // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
-      this.pConn$.getListActions().deleteEntry(index);
-    }
+    // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
+    this.pConn$.getListActions().deleteEntry(index);
   }
 
   buildElementsForTable() {

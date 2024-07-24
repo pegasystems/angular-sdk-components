@@ -358,7 +358,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   getListData() {
-    // @ts-ignore - Property 'getComponentConfig' is private and only accessible within class 'C11nEnv'
     const componentConfig = this.pConn$.getComponentConfig();
     if (this.configProps$) {
       this.preparePayload();
@@ -369,8 +368,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
       const dataViewParameters = this.payload.parameters;
 
       const workListDataPromise = !this.bInForm$
-        ? // @ts-ignore - 3rd parameter "context" should be optional in getData method
-          PCore.getDataApiUtils().getData(refList, payload)
+        ? PCore.getDataApiUtils().getData(refList, payload)
         : PCore.getDataPageUtils().getDataAsync(
             refList,
             this.pConn$.getContextName(),
@@ -614,7 +612,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
         this.pConn$.getActionsApi().openAssignment(pzInsKey, pxObjClass, {
           containerName: 'primary',
           channelName: ''
-        });
+        } as any);
       } else {
         this.pConn$.getActionsApi().openWorkByHandle(pzInsKey, pxObjClass);
       }

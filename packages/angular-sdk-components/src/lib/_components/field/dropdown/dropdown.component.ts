@@ -159,7 +159,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;
 
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
     optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
     this.options$ = optionsList;
@@ -184,7 +183,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     this.localizedValue = this.pConn$.getLocalizedValue(
       this.value$,
       this.localePath,
-      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'.
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
     // trigger display of error message with field control
@@ -223,7 +221,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     return this.pConn$.getLocalizedValue(
       opt.value,
       this.localePath,
-      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'.
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
   }

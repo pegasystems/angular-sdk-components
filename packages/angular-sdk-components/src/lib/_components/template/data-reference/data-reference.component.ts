@@ -176,10 +176,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   handleSelection(event) {
     const caseKey = this.pConn$.getCaseInfo().getKey();
     const refreshOptions = { autoDetectRefresh: true };
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     if (this.canBeChangedInReviewMode && this.pConn$.getValue('__currentPageTabViewName')) {
-      // @ts-ignore - second parameter pageReference for getValue method should be optional
-      this.pConn$.getActionsApi().refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), null, refreshOptions);
+      this.pConn$.getActionsApi().refreshCaseView(caseKey, this.pConn$.getValue('__currentPageTabViewName'), '', refreshOptions);
       PCore.getDeferLoadManager().refreshActiveComponents(this.pConn$.getContextName());
     } else {
       const pgRef = this.pConn$.getPageReference().replace('caseInfo.content', '');

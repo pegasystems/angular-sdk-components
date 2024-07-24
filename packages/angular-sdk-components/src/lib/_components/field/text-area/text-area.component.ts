@@ -107,8 +107,6 @@ export class TextAreaComponent implements OnInit, OnDestroy {
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
     }
-    // @ts-ignore -  Property 'getFieldMetadata' is private and only accessible within class 'C11nEnv'.
-    // @ts-ignore - Property 'getRawConfigProps' is private and only accessible within class 'C11nEnv'
     this.nMaxLength$ = this.pConn$.getFieldMetadata(this.pConn$.getRawConfigProps()?.value)?.maxLength || 100;
     this.testId = this.configProps$.testId;
     this.displayMode$ = this.configProps$.displayMode;

@@ -29,7 +29,6 @@ export class CaseHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.configProps$ = this.pConn$.getConfigProps();
 
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
     const dataViewName = 'D_pyWorkHistory';
     const context = this.pConn$.getContextName();

@@ -110,7 +110,6 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
     this.psservice.sendMessage(true);
 
-    // @ts-ignore - second parameter “payload” for publish method should be optional
     PCore.getPubSubUtils().publish('showWork');
 
     createWork(oButtonData.caseTypeID, actionInfo);
@@ -128,7 +127,6 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
     this.psservice.sendMessage(true);
 
-    // @ts-ignore - second parameter “payload” for publish method should be optional
     PCore.getPubSubUtils().publish('showWork');
 
     openAssignment(pzInsKey, pxRefObjectClass, options).then(() => {});

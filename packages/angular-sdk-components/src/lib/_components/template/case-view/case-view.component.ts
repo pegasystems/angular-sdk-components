@@ -106,9 +106,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   }
 
   hasCaseIDChanged(): boolean {
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     if (this.currentCaseID !== this.pConn$.getDataObject().caseInfo.ID) {
-      // @ts-ignore - parameter “contextName” for getDataObject method should be optional
       this.currentCaseID = this.pConn$.getDataObject().caseInfo.ID;
       return true;
     }
@@ -117,13 +115,11 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   updateHeaderAndSummary() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
 
     if (hasNewAttachments !== this.bHasNewAttachments) {
       this.bHasNewAttachments = hasNewAttachments;
       if (this.bHasNewAttachments) {
-        // @ts-ignore - Argument of type 'boolean' is not assignable to parameter of type 'object'
         PCore.getPubSubUtils().publish((PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
       }
     }
@@ -142,7 +138,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
       this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$.header, '', this.localeKey);
       this.id$ = this.configProps$.subheader;
-      // @ts-ignore - second parameter pageReference for getValue method should be optional
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
   }
@@ -158,7 +153,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
     this.arChildren$ = this.pConn$.getChildren() as any[];
 
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
     this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];

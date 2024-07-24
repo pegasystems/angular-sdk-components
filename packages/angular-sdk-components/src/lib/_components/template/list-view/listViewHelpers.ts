@@ -25,7 +25,6 @@ export function useInit(props) {
   let selectionCountThreshold;
 
   // promise to fetch metadata
-  // @ts-ignore - 3rd parameter "associationFilter" should be optional for getDataViewMetadata method
   const metaDataPromise = PCore.getAnalyticsUtils().getDataViewMetadata(referenceList, showDynamicFields);
 
   const promisesArray = [metaDataPromise];

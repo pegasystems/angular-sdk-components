@@ -166,7 +166,6 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;
 
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
 
     const propName = (this.pConn$.getStateProps() as any).value;
@@ -186,7 +185,6 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
     this.localizedValue = this.pConn$.getLocalizedValue(
       this.value$,
       this.localePath,
-      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
     // trigger display of error message with field control
@@ -217,7 +215,6 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
     return this.pConn$.getLocalizedValue(
       opt.value,
       this.localePath,
-      // @ts-ignore - Property 'getLocaleRuleNameFromKeys' is private and only accessible within class 'C11nEnv'
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
   }

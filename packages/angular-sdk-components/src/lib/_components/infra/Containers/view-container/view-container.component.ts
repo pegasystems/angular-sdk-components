@@ -121,7 +121,6 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
     }
 
     if (sessionStorage.getItem('hasViewContainer') == 'false') {
-      // @ts-ignore - Property 'getMetadata' is private and only accessible within class
       if (this.pConn$.getMetadata().children) {
         containerMgr.addContainerItem(this.dispatchObject);
       }

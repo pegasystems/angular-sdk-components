@@ -320,7 +320,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           const fieldName = (this.pConn$.getStateProps() as any).value;
           const context = this.pConn$.getContextName();
           PCore.getMessageManager().addMessages({
-            // @ts-ignore
             messages: [
               {
                 type: 'error',
@@ -351,7 +350,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   clearFieldErrorMessages() {
     const fieldName = (this.pConn$.getStateProps() as any).value;
     const context = this.pConn$.getContextName();
-    // @ts-ignore
     PCore.getMessageManager().clearMessages({
       type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
       property: fieldName,
@@ -382,7 +380,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
             const context = this.pConn$.getContextName();
             // set errors to property to block submit even on errors in file upload
             PCore.getMessageManager().addMessages({
-              // @ts-ignore
               messages: [
                 {
                   type: 'error',

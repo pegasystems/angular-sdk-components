@@ -203,7 +203,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     const configObject = this.getConfigObject(currentItem, this.pConn$);
     const newComp = configObject?.getPConnect();
     // const newCompName = newComp.getComponentName();
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
     // The metadata for pyDetails changed such that the "template": "CaseView"
     //  is no longer a child of the created View but is in the created View's

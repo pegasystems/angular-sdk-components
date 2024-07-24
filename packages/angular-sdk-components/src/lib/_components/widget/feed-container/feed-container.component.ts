@@ -387,7 +387,6 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
     if (bUpdateSelf) {
       this.updateSelf();
     } else {
-      // @ts-ignore - parameter “contextName” for getDataObject method should be optional
       const newPulseData = this.pConn$.getDataObject().pulse;
 
       if (!isEqual(newPulseData, this.pulseData)) {
@@ -395,7 +394,6 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
       }
     }
 
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     this.pulseData = this.pConn$.getDataObject().pulse;
   }
 
@@ -406,10 +404,8 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   getMessageData() {
     const messageIDs = (this.pConn$.getConfigProps() as any).messageIDs;
     const userName = (this.pConn$.getConfigProps() as any).currentUser;
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const imageKey = this.pConn$.getValue('OperatorID.pyImageInsKey');
 
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     const oData: any = this.pConn$.getDataObject();
 
     if (messageIDs && messageIDs.length > 0) {

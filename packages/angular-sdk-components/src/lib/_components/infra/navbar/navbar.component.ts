@@ -120,7 +120,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.navPages$.forEach(page => {
         page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
       });
-      // @ts-ignore - second parameter pageReference for getValue method should be optional
       this.localeReference = this.pConn$.getValue('.pyLocaleReference');
       this.actionsAPI = this.pConn$.getActionsApi();
       this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);

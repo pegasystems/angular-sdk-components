@@ -41,8 +41,7 @@ export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.fields$ = this.initializeColumns(componentConfig.fields);
 
-    const refList = this.configProps$.referenceList;
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
+    const refList: any = this.configProps$.referenceList;
     const tableDataResults = JSON.parse(JSON.stringify(this.pConn$.getValue(refList)));
 
     // update elements like date format

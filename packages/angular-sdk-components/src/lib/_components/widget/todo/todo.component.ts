@@ -105,11 +105,9 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateWorkList(key) {
-    (
-      PCore.getDataApiUtils()
-        // @ts-ignore - 2nd parameter "payload" and 3rd parameter "context" should be optional in getData method
-        .getData(key) as Promise<any>
-    )
+    PCore.getDataApiUtils()
+      // @ts-ignore - 2nd parameter "payload" and 3rd parameter "context" should be optional in getData method
+      .getData(key)
       .then(responseData => {
         const dataObject = {};
         dataObject[key] = {

@@ -71,7 +71,6 @@ export class CancelAlertComponent implements OnChanges {
             this.psService.sendMessage(false);
             this.dismissAlert();
 
-            // @ts-ignore - second parameter “payload” for publish method should be optional
             PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CASE_CREATED);
           })
           .catch(() => {
@@ -92,7 +91,6 @@ export class CancelAlertComponent implements OnChanges {
           .then(() => {
             this.psService.sendMessage(false);
             this.dismissAlert();
-            // @ts-ignore - second parameter “payload” for publish method should be optional
             PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
           })
           .catch(() => {

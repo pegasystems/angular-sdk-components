@@ -179,7 +179,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   getTodoVisibilty() {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
     if (caseViewMode && caseViewMode === 'review') {
       const kid = this.pConn$.getChildren()[0];
@@ -273,7 +272,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
 
   hasAssignments() {
     let hasAssignments = false;
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const assignmentsList: any[] = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
     // const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
     // 8.7 includes assignments in Assignments List that may be assigned to
@@ -308,9 +306,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   isCaseWideLocalAction() {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as any[];
     let bCaseWideAction = false;
     if (caseActions && actionID) {
@@ -323,7 +319,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   hasChildCaseAssignments() {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const childCases = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.CHILD_ASSIGNMENTS);
 
     return childCases && childCases.length > 0;
@@ -334,9 +329,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
 
     const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
 
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseActions = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ACTIONS) as any[];
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const activeActionID = this.pConn$.getValue(CASE_CONSTS.ACTIVE_ACTION_ID);
     const activeAction = caseActions?.find(action => action.ID === activeActionID);
     if (activeAction) {
@@ -376,7 +369,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // const { getPConnect } = this.arChildren$[0].getPConnect();
     const localPConn = this.arChildren$[0].getPConnect();
 
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
     this.bShowBanner = showBanner(this.pConn$);
 
@@ -430,7 +422,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
         const todoAssignments = getToDoAssignments(this.pConn$);
 
         if (todoAssignments && todoAssignments.length > 0) {
-          // @ts-ignore - second parameter pageReference for getValue method should be optional
           this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
           this.todo_datasource$ = { source: todoAssignments };
         }
@@ -458,7 +449,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   showCaseMessages() {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
     if (this.caseMessages$ || !this.hasAssignments()) {
       this.bHasCaseMessages$ = true;
@@ -471,7 +461,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
       }
 
       // publish this "assignmentFinished" for mashup, need to get approved as a standard
-      // @ts-ignore - second parameter “payload” for publish method should be optional
       PCore.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
@@ -571,7 +560,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
       this.psService.sendMessage(false);
 
       const oWorkItem = configObject.getPConnect();
-      // @ts-ignore - parameter “contextName” for getDataObject method should be optional
       const oWorkData: any = oWorkItem.getDataObject();
 
       this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);

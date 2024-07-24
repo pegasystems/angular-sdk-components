@@ -149,20 +149,12 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   };
 
   addFieldGroupItem() {
-    if (PCore.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length, this.pageReference);
-    } else {
-      // @ts-ignore - second parameter "pageRef" is optional for insert method
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
-    }
+    // @ts-ignore - second parameter "pageRef" is optional for insert method
+    this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
   }
 
   deleteFieldGroupItem(index) {
-    if (PCore.getPCoreVersion()?.includes('8.7')) {
-      this.pConn$.getListActions().deleteEntry(index, this.pageReference);
-    } else {
-      // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
-      this.pConn$.getListActions().deleteEntry(index);
-    }
+    // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
+    this.pConn$.getListActions().deleteEntry(index);
   }
 }

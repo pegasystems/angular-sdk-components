@@ -57,7 +57,6 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   onStateChange() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     const theRequestedAssignment = this.pConn$.getValue(PCore.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
     if (theRequestedAssignment !== this.currentLoadedAssignment) {
       this.currentLoadedAssignment = theRequestedAssignment;
@@ -66,7 +65,6 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges() {
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.loadViewCaseID = this.pConn$.getValue(this.constants.PZINSKEY) || this.pConn$.getValue(this.constants.CASE_INFO.CASE_INFO_ID);
     let containerItemData;
     const targetName = this.pConn$.getTarget();
@@ -92,7 +90,6 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
 
   getViewOptions = () => ({
     viewContext: this.resourceType,
-    // @ts-ignore - parameter “contextName” for getDataObject method should be optional
     pageClass: this.loadViewCaseID ? '' : this.pConn$.getDataObject().pyPortal.classID,
     container: this.isContainerPreview ? 'preview' : null,
     containerName: this.isContainerPreview ? 'preview' : null,
@@ -139,9 +136,8 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
         this.pConn$
           .getActionsApi()
           .showData(this.name, dataContext, dataContextParameters, {
-            // @ts-ignore - skipSemanticUrl should be boolean type
             skipSemanticUrl: true,
-            // @ts-ignore
+            // @ts-ignore - Object literal may only specify known properties, and 'isDeferLoaded' does not exist in type '{ containerName: string; skipSemanticUrl: boolean; }'
             isDeferLoaded: true
           })
           .then(data => {
@@ -162,7 +158,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
       this.pConn$
         .getActionsApi()
         .refreshCaseView(encodeURI(this.loadViewCaseID), this.name, '')
-        .then(data => {
+        .then((data: any) => {
           this.onResponse(data.root);
         });
     }
