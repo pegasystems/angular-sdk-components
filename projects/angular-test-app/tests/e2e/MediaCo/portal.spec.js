@@ -150,6 +150,9 @@ test.describe('E2E test', () => {
     await mgrDiscountInput.fill('20');
 
     await page.locator('button:has-text("submit")').click();
+
+    const todo = await page.locator('div[id="worklist"]:has-text("To do")');
+    await expect(todo).toBeVisible();
   }, 10000);
 
   test('should modify(if required) the actual services/packages to be installed and resolve the case', async ({ page }) => {
