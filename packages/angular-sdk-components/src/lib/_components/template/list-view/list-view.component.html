@@ -156,7 +156,7 @@
             <ng-container *ngIf="multiSelectionMode" matColumnDef="select">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let row">
-                <mat-checkbox [value]="row[rowID]" (change)="onCheckboxClick(row, $event)"></mat-checkbox>
+                <mat-checkbox [value]="row[rowID]" [checked]="isChecked(row)" (change)="onCheckboxClick(row, $event)"></mat-checkbox>
               </td>
             </ng-container>
             <ng-container *ngFor="let dCol of fields$" [matColumnDef]="dCol.config.name">

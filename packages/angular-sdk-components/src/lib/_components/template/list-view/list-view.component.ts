@@ -41,6 +41,7 @@ interface ListViewProps {
   reorderFields: string | boolean;
   grouping: string | boolean;
   value: any;
+  readonlyContextList: any;
 }
 
 export class Group {
@@ -507,6 +508,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
     if (this.repeatList$.paginator) {
       this.repeatList$.paginator.firstPage();
     }
+  }
+
+  isChecked(rowIn): any {
+    const initialVal = false;
+    return this.configProps$?.readonlyContextList?.reduce((acc, currRow) => {
+      return acc || rowIn[this.rowID] === currRow[this.rowID];
+    }, initialVal);
   }
 
   fieldOnChange(row) {
