@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { NgxCurrencyDirective } from 'ngx-currency';
+import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -15,6 +15,7 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 interface CurrrencyProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Currency here
   currencyISOCode?: string;
+  allowDecimals: boolean;
 }
 
 @Component({
@@ -52,6 +53,8 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   currSym: string;
   currSep: string;
   currDec: string;
+  inputMode: any;
+  decimalPrecision: number | undefined;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -116,6 +119,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
+    this.inputMode = NgxCurrencyInputMode.Natural;
     let nValue: any = this.configProps$.value;
     if (nValue) {
       if (typeof nValue === 'string') {
@@ -162,6 +166,8 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     if (this.configProps$.currencyISOCode != null) {
       this.currencyISOCode = this.configProps$.currencyISOCode;
     }
+
+    this.decimalPrecision = this.configProps$?.allowDecimals ? 2 : 0;
 
     this.componentReference = (this.pConn$.getStateProps() as any).value;
 

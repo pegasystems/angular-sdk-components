@@ -56,8 +56,10 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
+    let price = await assignment.locator('app-currency >> input');
+    await expect(await price.inputValue()).toBe('$75.00');
+    expect(price).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
@@ -83,7 +85,10 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
+    price = await assignment.locator('app-currency >> input');
+    await expect(await price.inputValue()).toBe('$75.00');
+    expect(price).toBeVisible();
+
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
@@ -108,7 +113,10 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
+    price = await assignment.locator('app-currency >> input');
+    await expect(await price.inputValue()).toBe('$75.00');
+    expect(price).toBeVisible();
+
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
@@ -136,7 +144,10 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
+    price = await assignment.locator('app-currency >> input');
+    await expect(await price.inputValue()).toBe('$75.00');
+    expect(price).toBeVisible();
+
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
@@ -192,7 +203,10 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
+    price = await assignment.locator('app-currency >> input');
+    await expect(await price.inputValue()).toBe('$75.00');
+    expect(price).toBeVisible();
+
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
@@ -277,7 +291,10 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    await expect(assignment.locator('app-text >> label').getByText('75')).toBeVisible();
+    price = await assignment.locator('app-currency >> input');
+    await expect(await price.inputValue()).toBe('$75.00');
+    expect(price).toBeVisible();
+
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
 
     await page.locator('button:has-text("Previous")').click();
