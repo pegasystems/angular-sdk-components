@@ -26,7 +26,7 @@
             </div>
           </div>
         </div>
-        <div class="psdk-todo-assignment-action">
+        <div class="psdk-todo-assignment-action" *ngIf="!isConfirm || canPerform">
           <button mat-flat-button color="primary" (click)="clickGo(assignment)">{{ localizedVal('Go', localeCategory) }}</button>
         </div>
       </div>

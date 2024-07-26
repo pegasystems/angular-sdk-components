@@ -48,6 +48,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
   localeCategory = 'Todo';
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
+  canPerform: boolean;
 
   constructor(
     private psService: ProgressSpinnerService,
@@ -148,6 +149,8 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
         this.arAssignments$ = this.getCaseInfoAssignment(this.assignmentsSource$, this.caseInfoID$);
       }
     }
+
+    this.canPerform = this.arAssignments$?.[0]?.canPerform === 'true' || this.arAssignments$?.[0]?.canPerform === true;
 
     this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
     this.currentUserInitials$ = this.utils.getInitials(this.currentUser$);
