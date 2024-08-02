@@ -172,7 +172,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     /** If compositeKeys is defined, use dynamic value, else fallback to pyID or pyGUID. */
     this.compositeKeys = this.configProps$?.compositeKeys;
     this.rowID = this.compositeKeys && this.compositeKeys?.length === 1 ? this.compositeKeys[0] : defRowID;
-    this.bShowSearch$ = this.utils.getBooleanValue(this.configProps$.globalSearch ? this.configProps$.globalSearch : this.payload.globalSearch);
+    this.bShowSearch$ = this.utils.getBooleanValue(this.configProps$?.globalSearch ? this.configProps$.globalSearch : this.payload?.globalSearch);
     this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps$.reorderFields);
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps$.grouping);
     this.showDynamicFields = this.configProps$?.showDynamicFields;
