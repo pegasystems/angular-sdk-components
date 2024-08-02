@@ -46,7 +46,7 @@
     "copy-index": "shx cp dist/index.html dist/simpleportal.html && shx cp dist/index.html dist/portal.html && shx cp dist/index.html dist/fullportal.html && shx cp dist/index.html dist/embedded.html && shx cp dist/index.html dist/mashup.html",
     "make-mashup-dir": "cd ./dist && shx mkdir -p constellation && cd ./constellation && shx mkdir -p prerequisite && shx mkdir -p assets && cd ./assets && shx mkdir -p icons",
     "build-angularsdk": "shx rm -rf ./dist && ng build --configuration development angular-test-app && npm run copy-index && npm run make-mashup-dir",
-    "build-angular-sdk-components": "ng build angular-sdk-components && node scripts/copy-map.js && node ./scripts/copy-npm-assets-to-components.js",
+    "build-angular-sdk-components": "ng build angular-sdk-components && node ./scripts/copy-npm-assets-to-components.js",
     "prod-build-angularsdk": "shx rm -rf ./dist && npm run prod-build && npm run copy-index && npm run make-mashup-dir && npm run compress-angularsdk",
     "start": "npm run ng serve",
     "_comment_2": "Commands related to running tests against the Angular SDK",
