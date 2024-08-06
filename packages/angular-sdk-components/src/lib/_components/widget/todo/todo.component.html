@@ -16,9 +16,10 @@
           <div class="psdk-todo-assignment-data">
             <div class="psdk-todo-assignment-task">
               {{ localizedVal('Task in', localeCategory) }}
-              <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)">
+              <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)" *ngIf="!isConfirm || canPerform; else readOnlyText">
                 {{ assignment.name }} {{ getID(assignment) }}
               </button>
+              <ng-template #readOnlyText> {{ assignment.name }} {{ getID(assignment) }} </ng-template>
               <span *ngIf="assignment.status != undefined">
                 &bull; <span class="psdk-todo-assignment-status">{{ assignment?.status }}</span>
               </span>
