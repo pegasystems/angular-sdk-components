@@ -1,6 +1,6 @@
 import { Injector } from '@angular/core';
-import { AngularPConnectData, AngularPConnectService } from 'packages/angular-sdk-components/src/public-api';
 import { getPConnectOfActiveContainerItem } from './helper';
+import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 
 export class FlowContainerBaseComponent {
   // For interaction with AngularPConnect
