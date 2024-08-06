@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
-import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { getToDoAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { FlowContainerBaseComponent } from '../base-components/flow-container-base.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -32,11 +32,9 @@ interface FlowContainerProps {
   standalone: true,
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FlowContainerComponent implements OnInit, OnDestroy {
+export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
-  // For interaction with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   pCoreConstants: typeof publicConstants;
   configProps$: FlowContainerProps;
 
@@ -72,14 +70,17 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   banners: any[];
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
+  pConnectOfActiveContainerItem;
+
   constructor(
-    private angularPConnect: AngularPConnectService,
+    injector: Injector,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private fb: FormBuilder,
     private ngZone: NgZone,
     private utils: Utils
   ) {
+    super(injector);
     // create the formGroup
     this.formGroup$ = this.fb.group({ hideRequired: false });
   }
@@ -148,10 +149,14 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // Should always check the bridge to see if the component should update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
+    const pConn = this.pConnectOfActiveContainerItem || this.pConn$;
+    const caseViewModeFromProps = this.angularPConnect.getComponentProp(this, 'caseViewMode');
+    const caseViewModeFromRedux = pConn.getValue('context_data.caseViewMode', '');
+
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
-    if (bUpdateSelf) {
+    if (bUpdateSelf || caseViewModeFromProps !== caseViewModeFromRedux) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
       const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
@@ -369,7 +374,9 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // const { getPConnect } = this.arChildren$[0].getPConnect();
     const localPConn = this.arChildren$[0].getPConnect();
 
-    const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
+    this.pConnectOfActiveContainerItem = this.getPConnectOfActiveContainerItem(this.pConn$) || this.pConn$;
+
+    const caseViewMode = this.pConnectOfActiveContainerItem.getValue('context_data.caseViewMode');
     this.bShowBanner = showBanner(this.pConn$);
 
     if (caseViewMode && caseViewMode == 'review') {

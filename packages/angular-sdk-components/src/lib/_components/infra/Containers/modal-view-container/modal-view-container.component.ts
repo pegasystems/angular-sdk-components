@@ -6,6 +6,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 import { getBanners } from '../../../../_helpers/case-utils';
+import { ReferenceComponent } from '../../reference/reference.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -200,7 +201,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   createView(routingInfo, currentItem, latestItem, key) {
-    const configObject = this.getConfigObject(currentItem, this.pConn$);
+    const configObject = this.getConfigObject(currentItem, null, false);
     const newComp = configObject?.getPConnect();
     // const newCompName = newComp.getComponentName();
     const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
@@ -247,8 +248,17 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
                 ID,
                 `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
               );
-        // // update children with new view's children
-        this.arChildren$ = newComp.getChildren() as any[];
+
+        const bIsRefComponent = this.checkIfRefComponent(newComp);
+
+        if (bIsRefComponent) {
+          const newPConn = ReferenceComponent.normalizePConn(newComp);
+          this.arChildren$ = ReferenceComponent.normalizePConnArray(newPConn.getChildren());
+        } else {
+          // update children with new view's children
+          this.arChildren$ = newComp.getChildren();
+        }
+
         this.bShowModal$ = true;
 
         // for when non modal
@@ -279,21 +289,44 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     });
   }
 
-  getConfigObject(item, pConnect) {
-    if (item) {
-      const { context, view } = item;
-      const config = {
-        meta: view,
+  getConfigObject(item, pConnect, isReverseCoexistence = false) {
+    let config;
+    if (isReverseCoexistence) {
+      config = {
         options: {
-          context,
-          pageReference: view.config.context || pConnect.getPageReference(),
+          pageReference: pConnect?.getPageReference(),
           hasForm: true,
           containerName: pConnect?.getContainerName() || PCore.getConstants().MODAL
         }
       };
       return PCore.createPConnect(config);
     }
+    if (item) {
+      const { context, view, isBulkAction } = item;
+      const target = PCore.getContainerUtils().getTargetFromContainerItemID(context);
+      config = {
+        meta: view,
+        options: {
+          context,
+          pageReference: view.config.context || pConnect.getPageReference(),
+          hasForm: true,
+          ...(isBulkAction && { isBulkAction }),
+          containerName: pConnect?.getContainerName() || PCore.getConstants().MODAL,
+          target
+        }
+      };
+      return PCore.createPConnect(config);
+    }
     return null;
+  }
+
+  checkIfRefComponent(thePConn: any): boolean {
+    let bReturn = false;
+    if (thePConn && thePConn.getComponentName() == 'reference') {
+      bReturn = true;
+    }
+
+    return bReturn;
   }
 
   onAlertState(bData: boolean) {
