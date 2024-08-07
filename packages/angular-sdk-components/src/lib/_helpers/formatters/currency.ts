@@ -45,7 +45,7 @@ function CurrencyFormatter(
     if (position && code) {
       if (position.toLowerCase() === 'before' && code.startsWith('{#}')) {
         code = code.slice(3) + code.slice(0, 3);
-      } else if (position.toLowerCase() === 'after' && code.indexOf('{#}') === code.length - 3) {
+      } else if (position.toLowerCase() === 'after' && code.endsWith('{#}')) {
         code = code.slice(-3) + code.slice(0, -3);
       }
     }

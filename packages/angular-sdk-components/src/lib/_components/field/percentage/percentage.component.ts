@@ -177,7 +177,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const actionsApi = this.pConn$?.getActionsApi();
     const propName = (this.pConn$?.getStateProps() as any).value;
     let value = event?.target?.value;
-    value = value?.replace('%', '');
+    value = value ? value.replace(/%/g, '') : '';
     if (this.currSep === ',') {
       value = value.replace(/,/g, '');
     } else {
