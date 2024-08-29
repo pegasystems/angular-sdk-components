@@ -181,6 +181,10 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
     return this.type$ === this.CONSTS.TODO ? assignment.name : assignment.stepName;
   }
 
+  get canPerform() {
+    return this.assignmentsSource$?.[0]?.canPerform === 'true' || this.assignmentsSource$?.[0]?.canPerform === true;
+  }
+
   initAssignments(): any[] {
     if (this.assignmentsSource$) {
       this.assignmentCount$ = this.assignmentsSource$.length;

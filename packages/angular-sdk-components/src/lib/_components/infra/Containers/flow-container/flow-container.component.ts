@@ -7,7 +7,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
-import { getToDoAssignments, showBanner } from './helpers';
+import { getToDoAssignments, hasAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -271,36 +271,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     this.psService.sendMessage(false);
   }
 
-  hasAssignments() {
-    let hasAssignments = false;
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
-    const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
-    // 8.7 includes assignments in Assignments List that may be assigned to
-    //  a different operator. So, see if there are any assignments for
-    //  the current operator
-    let bAssignmentsForThisOperator = false;
-
-    // Bail if there is no assignmentsList
-    if (!assignmentsList) {
-      return hasAssignments;
-    }
-
-    for (const assignment of assignmentsList) {
-      if ((assignment as any).assigneeInfo.ID === thisOperator) {
-        bAssignmentsForThisOperator = true;
-      }
-    }
-
-    const hasChildCaseAssignments = this.hasChildCaseAssignments();
-
-    if (bAssignmentsForThisOperator || hasChildCaseAssignments || this.isCaseWideLocalAction()) {
-      hasAssignments = true;
-    }
-
-    return hasAssignments;
-  }
-
   isCaseWideLocalAction() {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
@@ -454,19 +424,10 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   showCaseMessages() {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
-    if (this.caseMessages$ || !this.hasAssignments()) {
+    if (this.caseMessages$ || !hasAssignments(this.pConn$)) {
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
       this.checkSvg$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
-      // Temp fix for 8.7 change: confirmationNote no longer coming through in caseMessages$.
-      // So, if we get here and caseMessages$ is empty, use default value in DX API response
-      if (!this.caseMessages$) {
-        this.caseMessages$ = this.localizedVal('Thank you! The next step in this case has been routed appropriately.', this.localeCategory);
-      }
-
-      // publish this "assignmentFinished" for mashup, need to get approved as a standard
-      // @ts-ignore - second parameter “payload” for publish method should be optional
-      PCore.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
     } else if (this.bHasCaseMessages$) {
