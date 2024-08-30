@@ -234,7 +234,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
     const sTarget = this.pConn$.getContainerName();
     const sTargetContainerName = sTarget;
 
-    const options: any = { containerName: sTargetContainerName };
+    const options: any = { containerName: sTargetContainerName, channelName: '' };
 
     if (classname === null || classname === '') {
       classname = this.pConn$.getCaseInfo().getClassName();

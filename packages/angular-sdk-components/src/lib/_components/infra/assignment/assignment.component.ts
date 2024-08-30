@@ -38,7 +38,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   newPConn$: any;
   containerName$: string;
 
-  bIsRefComponent = false;
   bInitialized = false;
 
   templateName$: string;
@@ -127,21 +126,12 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateChanges() {
-    this.bIsRefComponent = this.checkIfRefComponent(this.pConn$);
+    // pConn$ may be a 'reference' component, so normalize it
+    this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
-    this.ngZone.run(() => {
-      // pConn$ may be a 'reference' component, so normalize it
-      // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-      this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-
-      //  If 'reference' so we need to get the children of the normalized pConn
-      if (this.bIsRefComponent) {
-        // this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
-        this.arChildren$ = ReferenceComponent.normalizePConnArray(this.newPConn$.getChildren());
-      }
-    });
-
-    this.createButtons();
+    if (this.arChildren$) {
+      this.createButtons();
+    }
   }
 
   checkIfRefComponent(thePConn: any): boolean {
@@ -154,17 +144,9 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   initComponent() {
-    this.bIsRefComponent = this.checkIfRefComponent(this.pConn$);
-
     // pConn$ may be a 'reference' component, so normalize it
     // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
     this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-
-    // If 'reference' so we need to get the children of the normalized pConn
-    if (this.bIsRefComponent) {
-      // this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
-      this.arChildren$ = ReferenceComponent.normalizePConnArray(this.newPConn$.getChildren());
-    }
 
     // prevent re-intializing with flowContainer update unless an action is taken
     this.bReInit = false;
@@ -206,7 +188,9 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
     this.cancelCreateStageAssignment = actionsAPI.cancelCreateStageAssignment.bind(actionsAPI);
 
-    this.createButtons();
+    if (this.arChildren$) {
+      this.createButtons();
+    }
   }
 
   createButtons() {
