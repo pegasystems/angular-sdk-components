@@ -23,7 +23,6 @@ import { ReferenceComponent } from '../../reference/reference.component';
 })
 export class ModalViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
-  @Input() displayOnlyFA$: boolean;
 
   // for when non modal
   @Output() modalVisibleChange = new EventEmitter<boolean>();
@@ -73,11 +72,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.displayOnlyFA$) {
-      // for when non modal
-      this.bShowAsModal$ = false;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
