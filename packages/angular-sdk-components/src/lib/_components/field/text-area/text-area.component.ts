@@ -7,6 +7,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface TextAreaProps extends PConnFieldProps {
@@ -156,13 +157,9 @@ export class TextAreaComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    // PConnect wants to use changeHandler for onChange
-    this.angularPConnectData.actions?.onChange(this, event);
-  }
-
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'changeNblur', propName, event?.target?.value);
   }
 
   getErrorMessage() {

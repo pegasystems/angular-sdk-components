@@ -214,11 +214,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
-  }
-
   getLocalizedOptionValue(opt: IOption) {
     return this.pConn$.getLocalizedValue(
       opt.value,
