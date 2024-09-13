@@ -294,7 +294,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     });
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange(event: Event) {
     // this works - this.pConn$.setValue( this.componentReference, `property: ${this.componentReference}`);
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
