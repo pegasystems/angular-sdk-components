@@ -9,8 +9,8 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
+import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
 
 interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on Checkbox here
@@ -234,8 +234,9 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     if (this.selectionMode === 'multi') {
       this.pConn$.getValidationApi().validate(this.selectedvalues, this.selectionList);
     } else {
-      event.value = event.checked;
-      this.angularPConnectData.actions?.onBlur(this, event);
+      const actionsApi = this.pConn$?.getActionsApi();
+      const propName = (this.pConn$?.getStateProps() as any).value;
+      handleEvent(actionsApi, 'changeNblur', propName, event.checked);
     }
   }
 

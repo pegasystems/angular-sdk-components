@@ -1,10 +1,9 @@
 <div class="psdk-todo">
-  <div class="psdk-todo-header">
-    <div *ngIf="showTodoList$" class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
+  <div *ngIf="showTodoList$" class="psdk-todo-header">
+    <div class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
     <div id="worklist" class="psdk-todo-text">{{ headerText$ }}</div>
-    <div *ngIf="showTodoList$" class="psdk-assignment-count">{{ assignmentCount$ }}</div>
+    <div class="psdk-assignment-count">{{ assignmentCount$ }}</div>
   </div>
-  <br /><br />
   <div *ngIf="showTodoList$" class="psdk-display-divider"></div>
 
   <div class="psdk-todo-assignments">
@@ -26,7 +25,7 @@
             </div>
           </div>
         </div>
-        <div class="psdk-todo-assignment-action">
+        <div *ngIf="!isConfirm || canPerform" class="psdk-todo-assignment-action">
           <button mat-flat-button color="primary" (click)="clickGo(assignment)">{{ localizedVal('Go', localeCategory) }}</button>
         </div>
       </div>

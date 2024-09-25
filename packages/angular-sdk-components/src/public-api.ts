@@ -50,6 +50,7 @@ export * from './lib/_components/infra/region/region.component';
 export * from './lib/_components/infra/root-container/root-container.component';
 export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
+export * from './lib/_components/infra/Containers/base-components/flow-container-base.component';
 
 export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/case-summary/case-summary.component';

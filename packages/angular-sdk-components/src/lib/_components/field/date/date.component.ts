@@ -13,8 +13,9 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
 import { format } from '../../../_helpers/formatters';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface DateProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Date here
@@ -222,7 +223,9 @@ export class DateComponent implements OnInit, OnDestroy {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
-    this.angularPConnectData.actions?.onBlur(this, { value: event.value });
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'changeNblur', propName, event?.value);
   }
 
   hasErrors() {
