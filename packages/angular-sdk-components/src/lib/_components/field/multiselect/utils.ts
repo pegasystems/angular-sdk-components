@@ -85,6 +85,7 @@ function prepareSearchResults(listObjData, displayFieldMeta) {
   return searchResults;
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 async function doSearch(
   searchText,
   clickedGroup,

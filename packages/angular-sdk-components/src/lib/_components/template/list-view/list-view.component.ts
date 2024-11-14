@@ -961,7 +961,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   filterDataWithDate(item, filterObj, filterValue) {
     let bKeep;
-    let value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
+    let value = item[filterObj.ref] != null || item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
     filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
 
     switch (filterObj.containsFilter) {

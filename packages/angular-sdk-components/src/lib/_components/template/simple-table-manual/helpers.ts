@@ -190,7 +190,7 @@ export const createMetaForTable = (fields, renderMode) => {
 
 export const filterDataByDate = (item, filterObj) => {
   let bKeep;
-  let value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
+  let value = item[filterObj.ref] != null || item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
   let filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
 
   switch (filterObj.containsFilter) {

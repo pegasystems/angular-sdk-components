@@ -134,6 +134,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   }
 
   // updateSelf
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CheckboxProps;

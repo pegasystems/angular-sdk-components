@@ -124,6 +124,7 @@ export class MultiselectComponent implements OnInit, OnDestroy {
   }
 
   // updateSelf
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
@@ -245,6 +246,7 @@ export class MultiselectComponent implements OnInit, OnDestroy {
   }
 
   // main search function trigger
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   getCaseListBasedOnParams(searchText, group, selectedRows, currentItemsTree, isTriggeredFromSearch = false) {
     if (this.referenceList && this.referenceList.length > 0) {
       this.listActions.getSelectedRows(true).then(result => {
