@@ -93,7 +93,7 @@
     "@angular/compiler-cli": "^17.3.12",
     "@angular/language-service": "^17.3.12",
     "@pega/configs": "^0.7.1",
-    "@pega/constellationjs": "24.1.1-dev",
+    "@pega/constellationjs": "^24.1.1",
     "@pega/eslint-config": "^0.7.1",
     "@pega/pcore-pconnect-typedefs": "~3.0.0",
     "@pega/prettier-config": "^0.7.1",
