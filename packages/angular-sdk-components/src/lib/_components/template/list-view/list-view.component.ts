@@ -22,7 +22,7 @@ import { getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { getLocale, getSeconds } from '../../../_helpers/common';
 import { formatters } from '../../../_helpers/formatters/format-utils';
 
-import { useInit } from './listViewHelpers';
+import { init } from './listViewHelpers';
 
 declare const window: any;
 
@@ -218,7 +218,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
       if (!this.payload) {
         this.payload = { referenceList: this.configProps$.referenceList };
       }
-      useInit({
+      init({
         pConn$: this.pConn$,
         bInForm$: this.bInForm$,
         ...this.payload,
