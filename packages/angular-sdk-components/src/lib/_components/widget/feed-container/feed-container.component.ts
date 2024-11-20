@@ -25,8 +25,8 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  userName$: string;
-  imageKey$: string;
+  userName$: string | undefined;
+  imageKey$: string | undefined;
 
   currentUserInitials$: string;
   currentUserName$: string;
@@ -65,7 +65,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userName$ = PCore.getEnvironmentInfo().getOperatorName();
     this.imageKey$ = PCore.getEnvironmentInfo().getOperatorImageInsKey();
-    this.updateCurrentUserName(this.userName$);
+    this.updateCurrentUserName(this.userName$ ?? '');
 
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
@@ -402,11 +402,11 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   }
 
   getMessageData() {
-    const messageIDs = (this.pConn$.getConfigProps() as any).messageIDs;
-    const userName = (this.pConn$.getConfigProps() as any).currentUser;
+    const messageIDs = this.pConn$.getConfigProps().messageIDs;
+    const userName = this.pConn$.getConfigProps().currentUser;
     const imageKey = this.pConn$.getValue('OperatorID.pyImageInsKey');
 
-    const oData: any = this.pConn$.getDataObject();
+    const oData = this.pConn$.getDataObject();
 
     if (messageIDs && messageIDs.length > 0) {
       this.pulseMessages$ = JSON.parse(JSON.stringify(oData.pulse.messages));
@@ -532,7 +532,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
 
       // If feedAPI is defined then only post message
       if (this.feedAPI) {
-        this./* feedAPI. */ postMessage((this.pConn$.getConfigProps() as any).value, this.pulseConversation);
+        this./* feedAPI. */ postMessage(this.pConn$.getConfigProps().value, this.pulseConversation);
       } else {
         console.log("We don't support Pulse yet");
       }

@@ -357,7 +357,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
           savePromise
             .then(() => {
-              // @ts-ignore - Property 'c11nEnv' is private and only accessible within class 'CaseInfo'.
               const caseType = this.pConn$.getCaseInfo().c11nEnv.getValue(PCore.getConstants().CASE_INFO.CASE_TYPE_ID);
               PCore.getPubSubUtils().publish('cancelPressed');
               this.onSaveActionSuccess({ caseType, caseID, assignmentID });

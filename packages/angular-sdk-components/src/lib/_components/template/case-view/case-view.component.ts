@@ -120,7 +120,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     if (hasNewAttachments !== this.bHasNewAttachments) {
       this.bHasNewAttachments = hasNewAttachments;
       if (this.bHasNewAttachments) {
-        PCore.getPubSubUtils().publish((PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
+        PCore.getPubSubUtils().publish(PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
       }
     }
 

@@ -157,7 +157,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
     optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
@@ -166,7 +166,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.value$ = 'Select';
     }
 
-    const propName = (this.pConn$.getStateProps() as any).value;
+    const propName = this.pConn$.getStateProps().value;
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 
@@ -205,7 +205,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
       event.value = '';
     }
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps().value;
     handleEvent(actionsApi, 'changeNblur', propName, event.value);
     if (this.configProps$?.onRecordChange) {
       this.configProps$.onRecordChange(event);

@@ -181,7 +181,9 @@ export class MultiselectComponent implements OnInit, OnDestroy {
       listType: this.listType,
       maxResultsDisplay: this.maxResultsDisplay || '100',
       columns: preProcessColumns(columns),
-      groupColumnsConfig: preProcessColumns(this.groupColumnsConfig)
+      groupColumnsConfig: preProcessColumns(this.groupColumnsConfig),
+      associationFilter: undefined,
+      ignoreCase: undefined
     };
 
     const groupsDisplayFieldMeta = this.listType !== 'associated' ? getDisplayFieldsMetaData(dataConfig.groupColumnsConfig) : null;
@@ -330,7 +332,7 @@ export class MultiselectComponent implements OnInit, OnDestroy {
 
   setSelectedItemsForReferenceList(data: any) {
     // Clear error messages if any
-    const propName = (this.pConn$.getStateProps() as any).selectionList;
+    const propName = this.pConn$.getStateProps().selectionList;
     this.pConn$.clearErrorMessages({
       property: propName,
       category: '',

@@ -193,7 +193,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   }
 
   initContainer() {
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
     const baseContext = this.pConn$.getContextName();
     const containerName = this.pConn$.getContainerName();
     const containerType = 'single';
@@ -232,7 +232,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
 
     // when true, update arChildren from pConn, otherwise, arChilren will be updated in updateSelf()
     if (bLoadChildren) {
-      this.arChildren$ = this.pConn$.getChildren() as any[];
+      this.arChildren$ = this.pConn$.getChildren();
     }
 
     // const oData = this.pConn$.getDataObject();
@@ -272,7 +272,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
 
   hasAssignments() {
     let hasAssignments = false;
-    const assignmentsList: any[] = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
+    const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
     // const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
     // 8.7 includes assignments in Assignments List that may be assigned to
     //  a different operator. So, see if there are any assignments for
@@ -307,7 +307,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
 
   isCaseWideLocalAction() {
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
-    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as any[];
+    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS);
     let bCaseWideAction = false;
     if (caseActions && actionID) {
       const actionObj = caseActions.find(caseAction => caseAction.ID === actionID);

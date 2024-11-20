@@ -55,7 +55,7 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
     // Then, continue on with other initialization
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseSummaryProps;
-    this.arChildren$ = this.pConn$.getChildren() as any[];
+    this.arChildren$ = this.pConn$.getChildren();
 
     this.generatePrimaryAndSecondaryFields();
 

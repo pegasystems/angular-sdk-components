@@ -62,7 +62,7 @@ export class DynamicTabsComponent implements OnInit, OnDestroy {
     this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
     this.pConn$.setInheritedProp('readOnly', true);
 
-    const referenceListData: any = this.pConn$.getValue(`${referenceList}.pxResults`, ''); // 2nd arg empty string until typedefs properly allow optional
+    const referenceListData = this.pConn$.getValue(`${referenceList}.pxResults`, ''); // 2nd arg empty string until typedefs properly allow optional
 
     this.tabsItems =
       referenceListData?.map((item, i) => {

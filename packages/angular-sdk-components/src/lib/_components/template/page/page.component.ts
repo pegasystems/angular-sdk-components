@@ -34,7 +34,7 @@ export class PageComponent implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as PageProps;
-    this.arChildren$ = this.pConn$.getChildren() as any[];
+    this.arChildren$ = this.pConn$.getChildren();
 
     this.title$ = this.configProps$.title;
     const operator = this.configProps$.operator;

@@ -81,7 +81,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     this.resourceType = resourceType;
     this.isContainerPreview = /preview_[0-9]*/g.test(this.pConn$.getContextName());
 
-    const theConfigProps: any = this.pConn$.getConfigProps();
+    const theConfigProps = this.pConn$.getConfigProps();
     this.deferLoadId = theConfigProps.deferLoadId;
     this.name = this.name || theConfigProps.name;
 
@@ -91,8 +91,8 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   getViewOptions = () => ({
     viewContext: this.resourceType,
     pageClass: this.loadViewCaseID ? '' : this.pConn$.getDataObject().pyPortal.classID,
-    container: this.isContainerPreview ? 'preview' : null,
-    containerName: this.isContainerPreview ? 'preview' : null,
+    container: this.isContainerPreview ? 'preview' : undefined,
+    containerName: this.isContainerPreview ? 'preview' : undefined,
     updateData: this.isContainerPreview
   });
 

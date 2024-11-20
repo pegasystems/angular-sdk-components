@@ -88,7 +88,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       this.itemKey$ = baseContext.concat('/').concat(acName);
     }
 
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'
@@ -248,7 +248,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
                 `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
               );
         // // update children with new view's children
-        this.arChildren$ = newComp.getChildren() as any[];
+        this.arChildren$ = newComp.getChildren();
         this.bShowModal$ = true;
 
         // for when non modal

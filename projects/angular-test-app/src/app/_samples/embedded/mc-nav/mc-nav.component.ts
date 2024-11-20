@@ -38,7 +38,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
   starterPackVersion$: string = endpoints.SP_VERSION;
   pConn$: typeof PConnect;
 
-  applicationLabel = '';
+  applicationLabel: string | undefined = '';
   bLoggedIn$ = false;
   bPConnectLoaded$ = false;
   bHasPConnect$ = false;
@@ -141,7 +141,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
       compareSdkPCoreVersions();
       this.applicationLabel = PCore.getEnvironmentInfo().getApplicationLabel();
 
-      this.titleService.setTitle(this.applicationLabel);
+      this.titleService.setTitle(this.applicationLabel ?? '');
 
       // Initialize the SdkComponentMap (local and pega-provided)
       getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {

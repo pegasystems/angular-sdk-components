@@ -21,7 +21,7 @@ interface DateProps extends PConnFieldProps {
 }
 
 class MyFormat {
-  theDateFormat: any = getDateFormatInfo();
+  theDateFormat = getDateFormatInfo();
 
   get display() {
     return {
@@ -83,7 +83,7 @@ export class DateComponent implements OnInit, OnDestroy {
   // Start with default dateFormatInfo
   dateFormatInfo = dateFormatInfoDefault;
   // and then update, as needed, based on locale, etc.
-  theDateFormat: any = getDateFormatInfo();
+  theDateFormat = getDateFormatInfo();
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -194,7 +194,7 @@ export class DateComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {

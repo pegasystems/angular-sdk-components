@@ -80,7 +80,7 @@ export class RichTextComponent implements OnInit, OnDestroy {
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as RichTextProps;
-    const stateProps: any = this.pConn$.getStateProps();
+    const stateProps = this.pConn$.getStateProps();
     this.status = stateProps?.status;
 
     if (this.configProps$.value != undefined) {
@@ -113,7 +113,7 @@ export class RichTextComponent implements OnInit, OnDestroy {
 
   fieldOnChange() {
     if (this.status === 'error') {
-      const property = (this.pConn$.getStateProps() as any).value;
+      const property = this.pConn$.getStateProps().value;
       this.pConn$.clearErrorMessages({
         property,
         category: '',
@@ -125,7 +125,7 @@ export class RichTextComponent implements OnInit, OnDestroy {
   fieldOnBlur(editorValue: any) {
     // PConnect wants to use eventHandler for onBlur
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps()?.value;
     handleEvent(actionsApi, 'changeNblur', propName, editorValue);
   }
 }

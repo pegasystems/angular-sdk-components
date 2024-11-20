@@ -152,7 +152,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
@@ -170,7 +170,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps()?.value;
     let value = event?.target?.value;
     value = value?.replace('%', '');
     if (this.currSep === ',') {

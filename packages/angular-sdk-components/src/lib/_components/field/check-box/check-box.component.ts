@@ -146,7 +146,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = (this.pConn$.getStateProps() as any).value;
+    this.propName = this.pConn$.getStateProps().value;
 
     // multi case
     this.selectionMode = this.configProps$.selectionMode;
@@ -159,7 +159,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
       this.datasource = this.configProps$.datasource;
       this.selectionKey = this.configProps$.selectionKey;
       const listSourceItems = this.datasource?.source ?? [];
-      const dataField: any = this.selectionKey?.split?.('.')[1];
+      const dataField = this.selectionKey?.split?.('.')[1] ?? '';
       const listToDisplay: any[] = [];
       listSourceItems.forEach(element => {
         element.selected = this.selectedvalues?.some?.(data => data[dataField] === element.key);
@@ -204,7 +204,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
         this.fieldControl.disable();
       }
 
-      this.componentReference = (this.pConn$.getStateProps() as any).value;
+      this.componentReference = this.pConn$.getStateProps().value;
 
       // eslint-disable-next-line sonarjs/no-redundant-boolean
       if (this.value$ === 'true' || this.value$ == true) {

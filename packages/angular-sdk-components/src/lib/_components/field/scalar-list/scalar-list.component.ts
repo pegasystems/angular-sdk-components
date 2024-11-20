@@ -101,7 +101,6 @@ export class ScalarListComponent implements OnInit, OnDestroy {
         {
           type: componentType,
           config: {
-            // @ts-ignore - Object literal may only specify known properties, and 'value' does not exist in type 'ComponentMetadataConfig'.
             value: scalarValue,
             displayMode: 'LABELS_LEFT',
             label: this.label$,
@@ -110,7 +109,7 @@ export class ScalarListComponent implements OnInit, OnDestroy {
           }
         },
         '',
-        '',
+        0,
         {}
       ); // 2nd, 3rd, and 4th args empty string/object/null until typedef marked correctly as optional;
     });

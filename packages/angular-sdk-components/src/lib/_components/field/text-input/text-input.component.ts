@@ -113,7 +113,7 @@ export class TextInputComponent implements OnInit, OnDestroy {
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);

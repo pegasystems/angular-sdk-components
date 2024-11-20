@@ -162,7 +162,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
   fieldOnChange() {
     if (this.formGroup$.controls[this.controlName$].value) {
       const actionsApi = this.pConn$?.getActionsApi();
-      const propName = (this.pConn$?.getStateProps() as any).value;
+      const propName = this.pConn$?.getStateProps().value;
       const value = this.formGroup$.controls[this.controlName$].value;
       const eventObj = {
         target: {

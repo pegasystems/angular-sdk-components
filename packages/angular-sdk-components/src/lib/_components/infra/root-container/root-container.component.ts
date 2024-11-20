@@ -67,7 +67,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     const { containers } = PCore.getStore().getState();
     const items = Object.keys(containers).filter(item => item.includes('root'));
 
-    (PCore.getContainerUtils().getContainerAPI() as any).addContainerItems(items);
+    PCore.getContainerUtils().getContainerAPI().addContainerItems(items);
 
     // add preview and modalview containers to redux
     // keep local copies of the the pConnect that is related
@@ -156,7 +156,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
         if (items[key] && items[key].view && Object.keys(items[key].view).length > 0) {
           const itemView = items[key].view;
 
-          const rootObject: any = PCore.createPConnect({
+          const rootObject = PCore.createPConnect({
             meta: itemView,
             options: {
               context: items[key].context
@@ -202,7 +202,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
 
           this.componentName$ = localPConn.getComponentName();
           if (this.componentName$ === 'ViewContainer') {
-            const configProps: any = this.pConn$.getConfigProps();
+            const configProps = this.pConn$.getConfigProps();
             const viewContConfig = {
               meta: {
                 type: 'ViewContainer',

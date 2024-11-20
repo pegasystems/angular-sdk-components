@@ -149,12 +149,10 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   };
 
   addFieldGroupItem() {
-    // @ts-ignore - second parameter "pageRef" is optional for insert method
     this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
   }
 
   deleteFieldGroupItem(index) {
-    // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
     this.pConn$.getListActions().deleteEntry(index);
   }
 }

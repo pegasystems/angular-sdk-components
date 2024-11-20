@@ -184,7 +184,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
     if (this.listType === 'associated') {
       this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
@@ -220,7 +220,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     let datasource = this.configProps$.datasource;
     let columns = this.configProps$.columns;
     // const { deferDatasource, datasourceMetadata } = this.configProps$;
-    const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
+    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps();
     // convert associated to datapage listtype and transform props
     // Process deferDatasource when datapage name is present. WHhen tableType is promptList / localList
     if (deferDatasource && datasourceMetadata?.datasource?.name) {
@@ -318,7 +318,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
     const value = key;
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps().value;
     handleEvent(actionsApi, 'changeNblur', propName, value);
     if (this.configProps$?.onRecordChange) {
       el.value = value;
