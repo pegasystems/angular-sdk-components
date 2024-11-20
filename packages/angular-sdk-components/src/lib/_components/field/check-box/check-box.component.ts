@@ -193,15 +193,14 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
         this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
       }
 
-      if (this.bDisabled$) {
+      if (this.configProps$.readOnly != null) {
+        this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
+      }
+
+      if (this.bDisabled$ || this.bReadonly$) {
         this.fieldControl.disable();
       } else {
         this.fieldControl.enable();
-      }
-
-      if (this.configProps$.readOnly != null) {
-        this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-        this.fieldControl.disable();
       }
 
       this.componentReference = this.pConn$.getStateProps().value;

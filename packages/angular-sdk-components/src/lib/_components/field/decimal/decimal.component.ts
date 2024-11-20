@@ -187,6 +187,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
     } else {
       this.currSym = '';
     }
+    this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
     this.componentReference = this.pConn$.getStateProps().value;
   }

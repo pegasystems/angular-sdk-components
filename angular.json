@@ -110,7 +110,7 @@
             "customWebpackConfig": {
               "path": "./scripts/extra-webpack.config.js"
             },
-            "allowedCommonJsDependencies": ["downloadjs", "dayjs", "fast-deep-equal", "moment"]
+            "allowedCommonJsDependencies": ["lodash.clonedeep", "downloadjs", "dayjs", "fast-deep-equal", "moment"]
           },
           "configurations": {
             "production": {

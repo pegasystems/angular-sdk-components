@@ -962,9 +962,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       this.rawFields?.forEach(item => {
         const referenceListData = getReferenceList(this.pConn$);
         const isDatapage = referenceListData.startsWith('D_');
-        const pageReferenceValue = isDatapage
-          ? `${referenceListData}[${index}]`
-          : `${this.pConn$.getPageReference()}${referenceListData.substring(referenceListData.lastIndexOf('.'))}[${index}]`;
+        const pageReferenceValue = isDatapage ? `${referenceListData}[${index}]` : `${this.pConn$.getPageReference()}${referenceListData}[${index}]`;
         const config = {
           meta: item,
           options: {

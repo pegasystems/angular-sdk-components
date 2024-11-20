@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { NgxCurrencyDirective } from 'ngx-currency';
+import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -48,6 +48,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
   placeholder: string;
   currDec: string;
   currSep: string;
+  inputMode: any;
+  decimalPrecision: number | undefined;
   fieldControl = new FormControl<number | null>(null, null);
 
   constructor(
@@ -110,6 +112,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
+    this.inputMode = NgxCurrencyInputMode.Natural;
     let nValue: any = this.configProps$.value;
     if (nValue) {
       if (typeof nValue === 'string') {
@@ -152,6 +155,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
+    this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
+
     this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
@@ -172,7 +177,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     const actionsApi = this.pConn$?.getActionsApi();
     const propName = this.pConn$?.getStateProps()?.value;
     let value = event?.target?.value;
-    value = value?.replace('%', '');
+    value = value ? value.replace(/%/g, '') : '';
     if (this.currSep === ',') {
       value = value.replace(/,/g, '');
     } else {

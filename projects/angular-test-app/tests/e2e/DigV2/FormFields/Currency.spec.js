@@ -81,11 +81,10 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Update' }).click();
 
     /** Update tests */
-    // const readonlyCurrency = page.locator(
-    //   'input[data-test-id="32bc05c9bac42b8d76ea72511afa89d0"]'
-    // );
-    // attributes = await common.getAttributes(readonlyCurrency);
-    // await expect(attributes.includes('readonly')).toBeTruthy();
+    const readonlyCurrency = page.locator('input[data-test-id="32bc05c9bac42b8d76ea72511afa89d0"]');
+    attributes = await common.getAttributes(readonlyCurrency);
+    await expect(attributes.includes('readonly')).toBeTruthy();
+    await expect(await readonlyCurrency.inputValue()).toBe('$20.00');
 
     const editableCurrency = page.locator('input[data-test-id="837e53069fc48e63debdee7fa61fbc1a"]');
 
@@ -93,6 +92,11 @@ test.describe('E2E test', () => {
 
     attributes = await common.getAttributes(editableCurrency);
     await expect(attributes.includes('readonly')).toBeFalsy();
+
+    const currencyAsDecimal = page.locator('input[data-test-id="a792300f2080cdbcf7a496220fa7a44e"]');
+    attributes = await common.getAttributes(currencyAsDecimal);
+    await expect(attributes.includes('readonly')).toBeTruthy();
+    await expect(await currencyAsDecimal.inputValue()).toBe('$20.00');
 
     /** Selecting Visibility from the Sub Category dropdown */
     selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');

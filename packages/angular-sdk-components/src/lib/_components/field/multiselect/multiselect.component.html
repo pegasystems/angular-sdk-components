@@ -20,11 +20,10 @@
       [matAutocomplete]="auto"
       (input)="fieldOnChange($event)"
       [matChipInputFor]="chipGrid"
-      #trigger="matAutocompleteTrigger"
     />
     <mat-autocomplete #auto="matAutocomplete">
-      <mat-option *ngFor="let item of itemsTree" [value]="item.primary" (click)="optionClicked($event, item, trigger)">
-        <mat-checkbox [checked]="item.selected" (click)="optionClicked($event, item, trigger)">
+      <mat-option *ngFor="let item of itemsTree" [value]="item.primary" (click)="optionClicked($event, item)">
+        <mat-checkbox [checked]="item.selected" (click)="optionClicked($event, item)">
           <span>{{ item.primary }}</span>
         </mat-checkbox>
       </mat-option>

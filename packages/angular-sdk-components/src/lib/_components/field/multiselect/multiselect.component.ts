@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -275,9 +275,6 @@ export class MultiselectComponent implements OnInit, OnDestroy {
           selectedRows || []
         ).then(res => {
           this.itemsTree = res || [];
-          if (this.trigger) {
-            this.trigger.openPanel();
-          }
         });
       });
     }
@@ -292,14 +289,13 @@ export class MultiselectComponent implements OnInit, OnDestroy {
     this.angularPConnectData.actions?.onChange(this, event);
   }
 
-  optionClicked = (event: Event, data: any, trigger?: MatAutocompleteTrigger): void => {
+  optionClicked = (event: Event, data: any): void => {
     event.stopPropagation();
-    this.toggleSelection(data, trigger);
+    this.toggleSelection(data);
   };
 
-  toggleSelection = (data: any, trigger?: MatAutocompleteTrigger): void => {
+  toggleSelection = (data: any): void => {
     data.selected = !data.selected;
-    this.trigger = trigger;
     this.itemsTree.map((ele: any) => {
       if (ele.id === data.id) {
         ele.selected = data.selected;

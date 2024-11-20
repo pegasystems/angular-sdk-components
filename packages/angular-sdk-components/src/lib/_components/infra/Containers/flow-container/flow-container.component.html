@@ -8,22 +8,26 @@
     </div>
     <div *ngIf="todo_showTodo$">
       <component-mapper
+        *ngIf="pConnectOfActiveContainerItem"
         name="Todo"
         [props]="{
-          pConn$: todo_pConn$,
+          pConn$: pConnectOfActiveContainerItem,
           caseInfoID$: todo_caseInfoID$,
           datasource$: todo_datasource$,
           showTodoList$: todo_showTodoList$,
           headerText$: todo_headerText$,
           type$: 'TODO',
           context$: todo_context$,
-          itemKey$: itemKey$,
           isConfirm: true
         }"
       ></component-mapper>
     </div>
     <div *ngIf="!todo_showTodo$">
-      <component-mapper name="Assignment" [props]="{ pConn$, formGroup$, arChildren$, itemKey$ }"></component-mapper>
+      <component-mapper
+        *ngIf="pConnectOfActiveContainerItem"
+        name="Assignment"
+        [props]="{ pConn$: pConnectOfActiveContainerItem, formGroup$, arChildren$, itemKey$ }"
+      ></component-mapper>
     </div>
   </div>
   <div *ngIf="bHasCaseMessages$">
