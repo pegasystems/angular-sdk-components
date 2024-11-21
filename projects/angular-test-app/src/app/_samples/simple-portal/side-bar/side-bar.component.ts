@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
-import { GetLoginStatusService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/get-login-status.service';
 import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
 import { UpdateWorklistService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/update-worklist.service';
 import { CaseService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/case.service';
@@ -25,7 +24,6 @@ export class SideBarComponent implements OnInit, OnDestroy {
 
   constructor(
     private psservice: ProgressSpinnerService,
-    private glsservice: GetLoginStatusService,
     private uwservice: UpdateWorklistService,
     private dpservice: DatapageService,
     private cservice: CaseService
@@ -67,7 +65,6 @@ export class SideBarComponent implements OnInit, OnDestroy {
       },
       err => {
         alert(`Errors from get casetypes:${err.errors}`);
-        this.glsservice.sendMessage('LoggedOff');
       }
     );
   }

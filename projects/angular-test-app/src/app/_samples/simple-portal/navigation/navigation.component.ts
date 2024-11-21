@@ -48,7 +48,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
   userName$ = '';
   isProgress$ = false;
   progressSpinnerSubscription: Subscription;
-  resetPConnectSubscription: Subscription;
 
   constructor(
     private uwservice: UpdateWorklistService,
@@ -64,7 +63,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.progressSpinnerSubscription.unsubscribe();
-    this.resetPConnectSubscription.unsubscribe();
 
     PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 

@@ -5,11 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Subscription, interval } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { loginIfNecessary, logout, sdkSetAuthHeader } from '@pega/auth/lib/sdk-auth-manager';
 
 import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
-import { ResetPConnectService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/reset-pconnect.service';
 import { UpdateWorklistService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/update-worklist.service';
 import { endpoints } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
 import { ServerConfigService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/server-config.service';
@@ -45,14 +44,12 @@ export class MCNavComponent implements OnInit, OnDestroy {
   isProgress$ = false;
 
   progressSpinnerSubscription: Subscription;
-  resetPConnectSubscription: Subscription;
 
   bootstrapShell: any;
 
   constructor(
     private cdRef: ChangeDetectorRef,
     private psservice: ProgressSpinnerService,
-    private rpcservice: ResetPConnectService,
     private uwservice: UpdateWorklistService,
     private titleService: Title,
     private scservice: ServerConfigService
@@ -66,7 +63,6 @@ export class MCNavComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.progressSpinnerSubscription.unsubscribe();
-    this.resetPConnectSubscription.unsubscribe();
   }
 
   async initialize() {
@@ -77,24 +73,6 @@ export class MCNavComponent implements OnInit, OnDestroy {
     // handle showing and hiding the progress spinner
     this.progressSpinnerSubscription = this.psservice.getMessage().subscribe(message => {
       this.showHideProgress(message.show);
-    });
-
-    this.resetPConnectSubscription = this.rpcservice.getMessage().subscribe(message => {
-      if (message.reset) {
-        this.bPConnectLoaded$ = false;
-
-        /// window.PCore = null;
-
-        const timer = interval(1000).subscribe(() => {
-          // this.getPConnectAndUpdate();
-          window.myLoadMashup('app-root', false);
-
-          // update the worklist
-          this.uwservice.sendMessage(true);
-
-          timer.unsubscribe();
-        });
-      }
     });
 
     // Add event listener for when logged in and constellation bootstrap is loaded

@@ -142,10 +142,7 @@ export * from './lib/_helpers/filter-utils';
 export * from './lib/_helpers/instructions-utils';
 
 export * from './lib/_messages/error-messages.service';
-export * from './lib/_messages/get-login-status.service';
-export * from './lib/_messages/oauth-response.service';
 export * from './lib/_messages/progress-spinner.service';
-export * from './lib/_messages/reset-pconnect.service';
 export * from './lib/_messages/update-worklist.service';
 
 export * from './lib/_types/PConnProps.interface';
