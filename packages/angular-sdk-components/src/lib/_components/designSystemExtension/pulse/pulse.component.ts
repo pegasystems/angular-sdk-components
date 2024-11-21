@@ -17,8 +17,8 @@ export class PulseComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
   configProps$: PulseProps;
-  currentUser$: string;
-  currentUserInitials$ = '--';
+  currentUser$: string | undefined;
+  currentUserInitials$: string | undefined = '--';
 
   ngOnInit() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
@@ -26,13 +26,13 @@ export class PulseComponent implements OnInit {
     this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
 
     if (this.currentUser$ != '') {
-      this.currentUserInitials$ = this.currentUser$.charAt(0);
+      this.currentUserInitials$ = this.currentUser$?.charAt(0);
 
-      if (this.currentUser$.lastIndexOf(' ') > 0) {
-        const lastName = this.currentUser$.substring(this.currentUser$.lastIndexOf(' ') + 1);
+      if (this.currentUser$ && this.currentUser$.lastIndexOf(' ') > 0) {
+        const lastName = this.currentUser$?.substring(this.currentUser$.lastIndexOf(' ') + 1);
         this.currentUserInitials$ += lastName.charAt(0);
-      } else if (this.currentUser$.lastIndexOf('.') > 0) {
-        const lastName = this.currentUser$.substring(this.currentUser$.lastIndexOf('.') + 1);
+      } else if (this.currentUser$ && this.currentUser$.lastIndexOf('.') > 0) {
+        const lastName = this.currentUser$?.substring(this.currentUser$.lastIndexOf('.') + 1);
         this.currentUserInitials$ += lastName.charAt(0);
       }
     }

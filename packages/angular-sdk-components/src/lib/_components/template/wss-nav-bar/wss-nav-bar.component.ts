@@ -37,11 +37,11 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
   navExpandCollapse$: string;
   bShowCaseTypes$ = false;
 
-  portalApp$ = '';
+  portalApp$: string | undefined = '';
   portalLogoImage$: string;
   showAppName$ = false;
 
-  portalOperator$: string;
+  portalOperator$: string | undefined;
   portalOperatorInitials$: string;
 
   actionsAPI: any;
@@ -129,7 +129,7 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
 
       this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
       this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
-      this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$);
+      this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
       this.showAppName$ = this.configProps$.showAppName;
 
       this.portalApp$ = PCore.getEnvironmentInfo().getApplicationLabel();

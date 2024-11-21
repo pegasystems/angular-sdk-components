@@ -43,7 +43,7 @@ export class ConfirmationComponent implements OnInit, OnDestroy {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.CONSTS = PCore.getConstants();
-    const activeContainerItemID = PCore.getContainerUtils().getActiveContainerItemName(this.pConn$.getTarget());
+    const activeContainerItemID = PCore.getContainerUtils().getActiveContainerItemName(this.pConn$.getTarget() ?? null);
     this.rootInfo = PCore.getContainerUtils().getContainerItemData(this.pConn$.getTarget(), activeContainerItemID);
     this.checkAndUpdate();
   }

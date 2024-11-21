@@ -107,7 +107,7 @@ export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
   openAssignment(row) {
     const { pxRefObjectClass, pzInsKey } = row;
     const sTarget = this.pConn$.getContainerName();
-    const options: any = { containerName: sTarget };
+    const options = { containerName: sTarget };
     this.pConn$
       .getActionsApi()
       .openAssignment(pzInsKey, pxRefObjectClass, options)

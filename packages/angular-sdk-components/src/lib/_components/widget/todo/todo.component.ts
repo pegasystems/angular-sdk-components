@@ -36,7 +36,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isConfirm;
 
   configProps$: ToDoProps;
-  currentUser$: string;
+  currentUser$: string | undefined;
   currentUserInitials$ = '--';
   assignmentCount$: number;
   bShowMore$ = true;
@@ -59,7 +59,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.CONSTS = PCore.getConstants();
-    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED }: any = PCore.getEvents().getCaseEvent();
+    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = PCore.getEvents().getCaseEvent();
 
     PCore.getPubSubUtils().subscribe(
       PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
@@ -89,7 +89,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED }: any = PCore.getEvents().getCaseEvent();
+    const { CREATE_STAGE_SAVED, CREATE_STAGE_DELETED } = PCore.getEvents().getCaseEvent();
 
     PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'updateToDo');
 
@@ -107,7 +107,6 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
 
   updateWorkList(key) {
     PCore.getDataApiUtils()
-      // @ts-ignore - 2nd parameter "payload" and 3rd parameter "context" should be optional in getData method
       .getData(key)
       .then(responseData => {
         const dataObject = {};
@@ -153,7 +152,7 @@ export class TodoComponent implements OnInit, OnDestroy, OnChanges {
     this.canPerform = this.arAssignments$?.[0]?.canPerform === 'true' || this.arAssignments$?.[0]?.canPerform === true;
 
     this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
-    this.currentUserInitials$ = this.utils.getInitials(this.currentUser$);
+    this.currentUserInitials$ = this.utils.getInitials(this.currentUser$ ?? '');
   }
 
   getID(assignment: any) {

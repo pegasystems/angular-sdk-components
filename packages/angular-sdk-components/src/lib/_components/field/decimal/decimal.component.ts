@@ -140,7 +140,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
     const showGroupSeparators = this.configProps$.showGroupSeparators;
-    const currencyISOCode: any = this.configProps$?.currencyISOCode;
+    const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
     const theSymbols = getCurrencyCharacters(currencyISOCode);
     this.currDec = theSymbols.theDecimalIndicator;
@@ -152,7 +152,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
     if (this.formatter === 'Currency') {
       this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
     } else {
-      this.formattedValue = format(this.value$, this.pConn$.getComponentName().toLowerCase(), theCurrencyOptions);
+      this.formattedValue = format(this.value$, this.pConn$.getComponentName()?.toLowerCase(), theCurrencyOptions);
     }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
@@ -189,12 +189,12 @@ export class DecimalComponent implements OnInit, OnDestroy {
     }
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
   }
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
     if (this.currSep === ',') {
       value = value.replace(/,/g, '');

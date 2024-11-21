@@ -81,7 +81,7 @@ export class PromotedFiltersComponent implements OnInit, OnDestroy {
     });
 
     const filtersWithClassID = { ...this.filtersProperties, classID: this.pageClass };
-    this.transientItemID = (this.pConn$.getContainerManager() as any).addTransientItem({ id: this.viewName, data: filtersWithClassID });
+    this.transientItemID = this.pConn$.getContainerManager().addTransientItem({ id: this.viewName, data: filtersWithClassID });
     this.processedFilters = [];
     this.filters.forEach(filter => {
       const filterClone = { ...filter };

@@ -120,7 +120,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   updateSelf() {
     const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
-    const stateProps: any = this.pConn$.getStateProps();
+    const stateProps = this.pConn$.getStateProps();
     const { value, label, extensions, displayMode } = configProps;
 
     if (configProps.required != null) {
@@ -149,7 +149,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
     this.validateMessage = this.angularPConnectData.validateMessage;
     this.extensions$ = extensions;
-    this.valueRef = (this.pConn$.getStateProps() as any).value;
+    this.valueRef = this.pConn$.getStateProps().value;
     this.valueRef = this.valueRef.startsWith('.') ? this.valueRef.substring(1) : this.valueRef;
     this.displayMode = displayMode;
     /* this is a temporary fix because required is supposed to be passed as a boolean and NOT as a string */
@@ -277,7 +277,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       this.updateAttachmentState(this.pConn$, this.getAttachmentKey(this.valueRef), [...currentAttachmentList, ...attachmentsList]);
       if (file.inProgress) {
         // @ts-ignore - 3rd parameter "responseEncoding" should be optional
-        PCore.getAttachmentUtils().cancelRequest(file.ID, pConn.getContextName());
+        PCore.getAttachmentUtils().cancelRequest(file.ID, this.pConn$.getContextName());
       }
     }
 
@@ -317,14 +317,13 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           )} ${this.extensions$.replaceAll('.', '')}`;
         }
         if (f.props.error) {
-          const fieldName = (this.pConn$.getStateProps() as any).value;
+          const fieldName = this.pConn$.getStateProps().value;
           const context = this.pConn$.getContextName();
           PCore.getMessageManager().addMessages({
             messages: [
               {
                 type: 'error',
-                // @ts-ignore - Type '{ type: string; message: string; }' is not assignable to type 'MessagesConfigObject'.
-                message: pConn.getLocalizedValue('Error with one or more files', '', '')
+                message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
               }
             ],
             property: fieldName,
@@ -348,7 +347,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   clearFieldErrorMessages() {
-    const fieldName = (this.pConn$.getStateProps() as any).value;
+    const fieldName = this.pConn$.getStateProps().value;
     const context = this.pConn$.getContextName();
     PCore.getMessageManager().clearMessages({
       type: PCore.getConstants().MESSAGES.MESSAGES_TYPE_ERROR,
@@ -376,14 +375,13 @@ export class AttachmentComponent implements OnInit, OnDestroy {
             f.props.icon = this.utils.getIconFromFileType(f.type);
             f.props.name = this.pConn$.getLocalizedValue('Unable to upload file', '', '');
             f.inProgress = false;
-            const fieldName = (this.pConn$.getStateProps() as any).value;
+            const fieldName = this.pConn$.getStateProps().value;
             const context = this.pConn$.getContextName();
             // set errors to property to block submit even on errors in file upload
             PCore.getMessageManager().addMessages({
               messages: [
                 {
                   type: 'error',
-                  // @ts-ignore - Type '{ type: string; message: string; }' is not assignable to type 'MessagesConfigObject'.
                   message: this.pConn$.getLocalizedValue('Error with one or more files', '', '')
                 }
               ],

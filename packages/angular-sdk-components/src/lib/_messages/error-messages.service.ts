@@ -20,7 +20,7 @@ export class ErrorMessagesService {
     this.subject.next();
   }
 
-  getMessage(): Observable<any> {
+  getMessage(): Observable<void | object> {
     return this.subject.asObservable();
   }
 }

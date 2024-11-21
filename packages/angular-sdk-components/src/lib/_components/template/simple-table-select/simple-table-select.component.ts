@@ -57,7 +57,7 @@ export class SimpleTableSelectComponent implements OnInit, OnDestroy {
   }
 
   updateSelf() {
-    const theConfigProps: any = this.pConn$.getConfigProps();
+    const theConfigProps = this.pConn$.getConfigProps();
     this.label = theConfigProps.label;
     this.renderMode = theConfigProps.renderMode;
     this.showLabel = theConfigProps.showLabel;
@@ -71,7 +71,7 @@ export class SimpleTableSelectComponent implements OnInit, OnDestroy {
       this.propsToUse.label = '';
     }
     const { MULTI } = PCore.getConstants().LIST_SELECTION_MODE;
-    const { selectionMode, selectionList }: any = this.pConn$.getConfigProps();
+    const { selectionMode, selectionList } = this.pConn$.getConfigProps();
     const isMultiSelectMode = selectionMode === MULTI;
     if (isMultiSelectMode && this.renderMode === 'ReadOnly') {
       this.showSimpleTableManual = true;
@@ -137,7 +137,7 @@ export class SimpleTableSelectComponent implements OnInit, OnDestroy {
       parameters: this.parameters
     };
 
-    this.filters = (this.pConn$.getRawMetadata() as any).config.promotedFilters ?? [];
+    this.filters = (this.pConn$.getRawMetadata()?.config as any).promotedFilters ?? [];
 
     this.isSearchable = this.filters.length > 0;
   }

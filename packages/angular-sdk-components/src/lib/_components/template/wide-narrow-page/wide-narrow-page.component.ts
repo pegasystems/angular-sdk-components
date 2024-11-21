@@ -15,7 +15,7 @@ export class WideNarrowPageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  thePConnType = '';
+  thePConnType: string | undefined = '';
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};

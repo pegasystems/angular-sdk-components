@@ -89,7 +89,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       this.itemKey$ = baseContext.concat('/').concat(acName);
     }
 
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'

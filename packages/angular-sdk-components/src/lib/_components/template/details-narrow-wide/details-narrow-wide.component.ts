@@ -51,7 +51,7 @@ export class DetailsNarrowWideComponent implements OnInit, OnDestroy {
   }
 
   updateSelf() {
-    const rawMetaData: any = this.pConn$.resolveConfigProps((this.pConn$.getRawMetadata() as any).config);
+    const rawMetaData: any = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata()?.config);
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 
     if (this.showHighlightedData) {

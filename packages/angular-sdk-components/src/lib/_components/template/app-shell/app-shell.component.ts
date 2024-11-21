@@ -80,7 +80,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
     }
     this.caseTypes$ = this.configProps$.caseTypes;
 
-    this.arChildren$ = this.pConn$.getChildren() as any[];
+    this.arChildren$ = this.pConn$.getChildren();
 
     this.portalTemplate = this.configProps$.portalTemplate;
 
@@ -129,7 +129,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
       }
 
       this.caseTypes$ = this.configProps$.caseTypes;
-      this.arChildren$ = this.pConn$.getChildren() as any[];
+      this.arChildren$ = this.pConn$.getChildren();
     });
   }
 

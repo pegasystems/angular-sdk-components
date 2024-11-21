@@ -129,7 +129,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
-    const currencyISOCode: any = this.configProps$?.currencyISOCode;
+    const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
     const theSymbols = getCurrencyCharacters(currencyISOCode);
     this.currSym = theSymbols.theCurrencySymbol;
@@ -169,7 +169,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
     this.decimalPrecision = this.configProps$?.allowDecimals ? 2 : 0;
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
@@ -184,7 +184,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
     value = value?.substring(1);
     if (this.currSep === ',') {

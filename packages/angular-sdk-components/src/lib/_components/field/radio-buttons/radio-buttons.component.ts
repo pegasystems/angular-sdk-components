@@ -164,11 +164,11 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
 
-    const propName = (this.pConn$.getStateProps() as any).value;
+    const propName = this.pConn$.getStateProps().value;
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = propName?.slice(propName.lastIndexOf('.') + 1);
 

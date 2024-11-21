@@ -86,7 +86,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
 
     this.pConn$.isBoundToState();
 
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
 
     this.prepareDispatchObject = this.prepareDispatchObject.bind(this);
 
@@ -121,7 +121,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
     }
 
     if (sessionStorage.getItem('hasViewContainer') == 'false') {
-      if (this.pConn$.getMetadata().children) {
+      if (this.pConn$.getMetadata()?.children) {
         containerMgr.addContainerItem(this.dispatchObject);
       }
 
@@ -254,7 +254,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
               console.error(`ViewContainer has a newComp that is NOT a reference!`);
 
               this.createdViewPConn$ = newComp;
-              const newConfigProps: any = newComp.getConfigProps();
+              const newConfigProps = newComp.getConfigProps();
               this.templateName$ = newConfigProps.template || '';
               this.title$ = newConfigProps.title || '';
               // update children with new view's children

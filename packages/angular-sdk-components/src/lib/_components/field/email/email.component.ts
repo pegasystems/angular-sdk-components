@@ -139,7 +139,7 @@ export class EmailComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {

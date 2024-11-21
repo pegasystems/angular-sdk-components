@@ -49,7 +49,7 @@ export class DefaultFormComponent implements OnInit {
     const propToUse: any = { ...this.pConn$.getInheritedProps() };
     this.showLabel = propToUse?.showLabel;
     this.label = propToUse?.label;
-    const kids = this.pConn$.getChildren() as any[];
+    const kids = this.pConn$.getChildren();
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
 
     const numCols = configProps.NumCols ? configProps.NumCols : '1';
