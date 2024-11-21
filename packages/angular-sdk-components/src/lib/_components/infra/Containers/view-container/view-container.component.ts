@@ -5,6 +5,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { configureBrowserBookmark } from './helper';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -96,37 +97,19 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
     //    And expose less via ui-bootstrap.js
     this.state = {
       dispatchObject: this.dispatchObject,
-      // PCore is defined in pxBootstrapShell - eventually will be exported in place of constellationCore
-
       visible: !PCore.checkIfSemanticURL()
     };
+    containerMgr.initializeContainers({
+      type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE
+    });
 
-    // here, to match Nebula/Constellation, the constructor of ViewContainer is only called once, and thus init/add container is only
-    // called once.  Because of Angular creating and destroy components if the parent changes a lot, this component will be
-    // created and destroyed more than once.  So the sessionStore "hasViewContainer" is set to false in rootContainer and then
-    // after first round is true here.  Subsequent ViewContainer creation will not init/add more containers.
-
-    if (sessionStorage.getItem('hasViewContainer') == 'false') {
-      // unlike Nebula/Constellation, have to initializeContainer after we create a dispatcObject and state, otherwise, when calling
-      // initializeContainer before, code will get executed that needs state that wasn't defined.
-
-      containerMgr.initializeContainers({
-        type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE
-      });
-
-      if (mode === CONTAINER_TYPE.MULTIPLE && limit) {
-        /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
-        PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
-      }
+    if (mode === CONTAINER_TYPE.MULTIPLE && limit) {
+      /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
+      PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
     }
 
-    if (sessionStorage.getItem('hasViewContainer') == 'false') {
-      if (this.pConn$.getMetadata()?.children) {
-        containerMgr.addContainerItem(this.dispatchObject);
-      }
-
-      sessionStorage.setItem('hasViewContainer', 'true');
-    }
+    if (!PCore.checkIfSemanticURL()) containerMgr.addContainerItem(this.pConn$ as any);
+    if (!this.displayOnlyFA$) configureBrowserBookmark(this.pConn$);
 
     // cannot call checkAndUpdate becasue first time through, will call updateSelf and that is incorrect (causes issues).
     // however, need angularPConnect to be initialized with currentProps for future updates, so calling shouldComponentUpdate directly

@@ -97,9 +97,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
       }
     });
 
-    // clear out hasViewContainer
-    sessionStorage.setItem('hasViewContainer', 'false');
-
     this.mConn$ = configObjModal.getPConnect();
 
     // First thing in initialization is registering and subscribing to the AngularPConnect service

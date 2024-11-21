@@ -42,9 +42,6 @@ export class PageComponent implements OnInit, OnDestroy {
     if (operator && operator != '') {
       this.title$ += `, ${operator}`;
     }
-
-    // when showing a page, similar to updating root, need to cause viewContainer to call "initContainer"
-    sessionStorage.setItem('hasViewContainer', 'false');
   }
 
   ngOnDestroy(): void {

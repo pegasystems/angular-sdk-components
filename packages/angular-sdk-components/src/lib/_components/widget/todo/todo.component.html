@@ -2,7 +2,7 @@
   <div class="psdk-todo-header">
     <div *ngIf="showTodoList$" class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
     <div id="worklist" class="psdk-todo-text">{{ headerText$ }}</div>
-    <div *ngIf="showTodoList$" class="psdk-assignment-count">{{ assignmentCount$ }}</div>
+    <div *ngIf="showTodoList$" class="psdk-assignment-count">{{ count }}</div>
   </div>
   <br /><br />
   <div *ngIf="showTodoList$" class="psdk-display-divider"></div>
@@ -36,7 +36,7 @@
   </div>
 </div>
 
-<div *ngIf="assignmentCount$ > 3">
+<div *ngIf="count > 3">
   <div *ngIf="bShowMore$; else showLess" class="psdk-todo-show-more">
     <button mat-stroked-button (click)="_showMore()">{{ showMoreLocalizedValue === 'show_more' ? 'Show more' : showMoreLocalizedValue }}</button>
   </div>

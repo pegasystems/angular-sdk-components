@@ -78,6 +78,24 @@ export class AppShellComponent implements OnInit, OnDestroy {
     if (this.pages$) {
       this.bShowAppShell$ = true;
     }
+
+    // @ts-ignore - Property 'pyCaseTypesAvailableToCreateDP' does not exist on type pxApplication
+    const caseTypesAvailableToCreateDP = PCore.getEnvironmentInfo().environmentInfoObject?.pxApplication?.pyCaseTypesAvailableToCreateDP;
+    if (caseTypesAvailableToCreateDP) {
+      const portalID = this.pConn$.getValue('.pyOwner');
+      PCore.getDataPageUtils()
+        .getPageDataAsync(caseTypesAvailableToCreateDP, this.pConn$.getContextName(), {
+          PortalName: portalID
+        })
+        .then((response: any) => {
+          if (response?.pyCaseTypesAvailableToCreate) {
+            this.pConn$.replaceState('.pyCaseTypesAvailableToCreate', response.pyCaseTypesAvailableToCreate, {
+              skipDirtyValidation: true
+            });
+          }
+        });
+    }
+
     this.caseTypes$ = this.configProps$.caseTypes;
 
     this.arChildren$ = this.pConn$.getChildren();
