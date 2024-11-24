@@ -14,7 +14,7 @@ import { ComponentMapperComponent } from '../../../../../../../packages/angular-
   imports: [CommonModule, BundleSwatchComponent, ComponentMapperComponent, ResolutionScreenComponent]
 })
 export class MainScreenComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
+  @Input() pConn$: typeof PConnect | null;
 
   firstConfig$: any;
   secondConfig$: any;
@@ -126,7 +126,27 @@ export class MainScreenComponent implements OnInit, OnDestroy {
     });
   }
 
+  openAssignment() {
+    this.showTriplePlayOptions$ = false;
+    this.showPega$ = true;
+    this.scservice.getSdkConfig().then(sdkConfig => {
+      const mashupAssignmentID = sdkConfig.serverConfig.appMashupAssignmentID;
+      const options: any = {
+        pageName: 'pyEmbedAssignment'
+      };
+      PCore.getMashupApi()
+        .openAssignment(mashupAssignmentID, PCore.getConstants().APP.APP, options)
+        .then(() => {
+          console.log('openAssignment rendering is complete');
+        });
+    });
+  }
+
   onShopNow(sLevel: string) {
-    this.createWork(sLevel);
+    if (sLevel === 'Basic') {
+      this.createWork(sLevel);
+    } else {
+      this.openAssignment();
+    }
   }
 }

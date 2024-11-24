@@ -36,7 +36,7 @@ declare global {
 })
 export class MCNavComponent implements OnInit, OnDestroy {
   starterPackVersion$: string = endpoints.SP_VERSION;
-  pConn$: typeof PConnect;
+  pConn$: typeof PConnect | null;
 
   applicationLabel = '';
   bLoggedIn$ = false;
@@ -67,6 +67,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.progressSpinnerSubscription.unsubscribe();
     this.resetPConnectSubscription.unsubscribe();
+    PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
   }
 
   async initialize() {
@@ -100,6 +101,17 @@ export class MCNavComponent implements OnInit, OnDestroy {
     // Add event listener for when logged in and constellation bootstrap is loaded
     document.addEventListener('SdkConstellationReady', () => {
       this.bLoggedIn$ = true;
+
+      PCore.getPubSubUtils().subscribe(
+        PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
+        () => {
+          // reset store and start mashup freshely when assignment is cancelled
+          PCore.resetStore();
+          this.pConn$ = null;
+          this.startMashup();
+        },
+        'cancelAssignment'
+      );
       // start the portal
       this.startMashup();
     });
@@ -187,7 +199,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
 
     this.pConn$ = props.getPConnect();
 
-    this.pConn$.getContainerManager().initializeContainers({
+    this.pConn$?.getContainerManager().initializeContainers({
       type: 'multiple',
       name: 'modal',
       context: 'app'
