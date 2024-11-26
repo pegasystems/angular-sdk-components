@@ -1,0 +1,13 @@
+<ng-container *ngIf="bVisible$">
+  <div *ngIf="fieldGroupProps || listViewProps; else table">
+    <div *ngIf="fieldGroupProps">
+      <component-mapper name="FieldGroupTemplate" [props]="{ configProps$: fieldGroupProps, pConn$, formGroup$ }"></component-mapper>
+    </div>
+    <div *ngIf="listViewProps">
+      <component-mapper name="ListView" [props]="{ pConn$: refToPConnect, payload: listViewProps }"></component-mapper>
+    </div>
+  </div>
+  <ng-template #table>
+    <component-mapper name="SimpleTableManual" [props]="{ pConn$, formGroup$ }"></component-mapper>
+  </ng-template>
+</ng-container>

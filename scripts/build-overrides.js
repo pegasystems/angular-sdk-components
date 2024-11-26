@@ -15,11 +15,10 @@ const overridesLibDir = path.join(__dirname, '..', overridesPkgDir);
  *
  * @param {*} match - should be a line starting with import
  * @param {*} importPath - import Path to be updates
- * @returns {string} string that should replace importPath (with @pega/angular-sdk-library)
+ * @returns {string} string that should replace importPath (with @pega/angular-sdk-components)
  */
 function modifyImportPath(match, importPath) {
-  const modifiedImport = match.replace(importPath, '@pega/angular-sdk-library');
-  return modifiedImport;
+  return match.replace(importPath, '@pega/angular-sdk-components');
 }
 
 /**
@@ -29,10 +28,10 @@ function modifyImportPath(match, importPath) {
  *
  * This function processes the given file which is expected to be a file in the angular-sdk-overrides/lib
  * directory. It finds relative paths of import statements to other components/files in the
- * angular-sdk-library package and updates those relative paths
+ * angular-sdk-components package and updates those relative paths
  * (ex: import FieldValueList from '../../designSystemExtension/FieldValueList';)
  * and updates those to the appropriate @pega/react-sdk-components path
- * (ex: import FieldValueList from '@pega/angular-sdk-library';)
+ * (ex: import FieldValueList from '@pega/angular-sdk-components';)
  */
 function processOverrideFile(filePath) {
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -47,40 +46,14 @@ function processOverrideFile(filePath) {
     const newData = data.replace(importPattern, (match, importPath) => {
       if (importPath.includes('../')) {
         return modifyImportPath(match, importPath);
-      } else {
-        return match;
       }
+
+      return match;
     });
 
     // Write the modified content back to the file
-    fs.writeFile(filePath, newData, 'utf8', (err) => {
-      if (err) {
-        console.error(`Error writing file: ${filePath}`, err);
-      }
-    });
-  });
-}
-
-function processOverrideCssFile(filePath) {
-  fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-      console.error(`Error reading file: ${filePath}`, err);
-      return;
-    }
-
-    const importPattern = /@import\s+['"]([^'"]+)['"]/g;
-    const newData = data.replace(importPattern, (match, importPath) => {
-      if (importPath.includes('../')) {
-        const modifiedImport = match.replace(importPath, '@pega/angular-sdk-library/_shared/styles.scss');
-        return modifiedImport;
-      } else {
-        return match;
-      }
-    });
-
-    // Write the modified content back to the file
-    fs.writeFile(filePath, newData, 'utf8', (err) => {
-      if (err) {
+    fs.writeFile(filePath, newData, 'utf8', writeErr => {
+      if (writeErr) {
         console.error(`Error writing file: ${filePath}`, err);
       }
     });
@@ -96,13 +69,12 @@ function processSdkOverrides(directory) {
     const stat = fs.statSync(filePath);
     if (stat.isDirectory()) {
       processSdkOverrides(filePath);
-    } else {
-      if (filePath.endsWith('.ts')) {
-        processOverrideFile(filePath);
-      } else if (filePath.endsWith('.scss')) {
-        processOverrideCssFile(filePath);
-      }
+    } else if (filePath.endsWith('.ts')) {
+      processOverrideFile(filePath);
     }
+    // else if (filePath.endsWith('.scss')) {
+    //   processOverrideCssFile(filePath);
+    // }
   }
 }
 

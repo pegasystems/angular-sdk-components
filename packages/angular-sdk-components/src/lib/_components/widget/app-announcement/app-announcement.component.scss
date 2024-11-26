@@ -1,0 +1,19 @@
+h2 {
+  font-size: 1.2rem;
+  margin-block-start: 0rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+}
+ul {
+  padding-inline-start: 20px;
+}
+.psdk-announcement {
+  background-color: var(--app-form-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.6125rem;
+  border-left: 6px solid;
+  border-left-color: var(--app-primary-color);
+}

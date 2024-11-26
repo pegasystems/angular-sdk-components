@@ -1,0 +1,80 @@
+.psdk-full-width {
+  width: 100%;
+}
+
+.psdk-label-readonly {
+  font-size: 1rem;
+  display: block;
+  transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.001px);
+  -ms-transform: translateY(-1.28125em) scale(0.75);
+  width: 133.33333%;
+}
+
+.psdk-data-readonly {
+  padding-top: 0.625rem;
+  width: 100%;
+}
+
+::ng-deep {
+  .mat-mdc-form-field-infix {
+    width: auto;
+  }
+
+  .mat-datepicker-content,
+  .time-container {
+    box-shadow:
+      0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+      0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+      0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    display: block;
+    border-radius: 4px;
+    background-color: var(--mat-datepicker-calendar-container-background-color);
+    color: var(--mat-datepicker-calendar-container-text-color);
+  }
+
+  .mat-calendar-body-cell-content {
+    color: var(--mat-datepicker-calendar-date-text-color);
+    border-color: var(--mat-datepicker-calendar-date-outline-color);
+  }
+
+  .mat-calendar-body-selected {
+    background-color: var(--mat-datepicker-calendar-date-selected-state-background-color);
+    color: var(--mat-datepicker-calendar-date-selected-state-text-color);
+  }
+
+  .mat-calendar-body-cell-content {
+    border: none !important;
+  }
+
+  .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
+    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+    background-color: var(--mat-datepicker-calendar-date-hover-state-background-color);
+  }
+
+  .mat-calendar-arrow {
+    fill: var(--mat-datepicker-calendar-period-button-icon-color);
+  }
+
+  .mat-calendar-table-header th {
+    text-align: center;
+    padding: 0 0 8px 0;
+    color: var(--mat-datepicker-calendar-header-text-color);
+    font-size: var(--mat-datepicker-calendar-header-text-size);
+    font-weight: var(--mat-datepicker-calendar-header-text-weight);
+  }
+
+  .mat-datepicker-content .mat-calendar-previous-button,
+  .mat-datepicker-content .mat-calendar-next-button {
+    color: var(--mat-datepicker-calendar-navigation-button-icon-color);
+  }
+
+  .mat-calendar-table-header-divider::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -8px;
+    right: -8px;
+    height: 1px;
+    background: var(--mat-datepicker-calendar-header-divider-color);
+  }
+}

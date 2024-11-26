@@ -3,12 +3,12 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "angular-sdk-library": ["dist/angular-sdk-library"]
+      "angular-sdk-components": ["dist/angular-sdk-components"]
     },
     "typeRoots": ["node_modules/@types", "node_modules/@pega"],
     "types": ["pcore-pconnect-typedefs", "jasmine"],
     "baseUrl": "./",
-    "outDir": "./packages/angular-sdk-components/lib",
+    "outDir": "./projects/angular-test-app/lib",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": false,

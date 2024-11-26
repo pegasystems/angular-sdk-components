@@ -1,0 +1,29 @@
+<div *ngIf="displayMode$; else noDisplayMode">
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+</div>
+<ng-template #noDisplayMode>
+  <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
+    <div [formGroup]="formGroup$" *ngIf="bVisible$">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+        <mat-label>{{ label$ }}</mat-label>
+        <input
+          matInput
+          [owlDateTime]="dtPicker"
+          [attr.data-test-id]="testId"
+          [placeholder]="placeholder"
+          [formControl]="fieldControl"
+          (blur)="fieldOnBlur($event)"
+          (dateTimeChange)="fieldOnDateChange($event)"
+          [value]="value$"
+          [required]="bRequired$"
+        />
+        <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="dtPicker"></mat-datepicker-toggle>
+        <owl-date-time #dtPicker></owl-date-time>
+        <mat-error *ngIf="fieldControl?.invalid">{{ getErrorMessage() }}</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+</ng-template>
+<ng-template #noEdit>
+  <component-mapper *ngIf="bVisible$ !== false" name="Text" [props]="{ pConn$, formatAs$: 'date-time' }"></component-mapper>
+</ng-template>

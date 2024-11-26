@@ -1,0 +1,8 @@
+{
+  "name": "ScalarList",
+  "label": "ScalarList",
+  "description": "ScalarList",
+  "type": "Field",
+  "subtype": "ScalarList",
+  "properties": []
+}

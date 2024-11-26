@@ -1,0 +1,35 @@
+<div id="dialog" *ngIf="bShowModal$ && bShowAsModal$" class="psdk-dialog-background">
+  <div class="psdk-modal-view-container-top" id="{{ buildName$ }}">
+    <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
+    <component-mapper
+      name="Assignment"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$, isInModal$: true, banners }"
+    ></component-mapper>
+    <div *ngIf="isMultiRecord">
+      <component-mapper
+        name="ListViewActionButtons"
+        [props]="{ pConn$: createdViewPConn$, context$ }"
+        [outputEvents]="{ closeActionsDialog: closeActionsDialog }"
+      ></component-mapper>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="bShowModal$ && !bShowAsModal$">
+  <div id="{{ buildName$ }}">
+    <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
+    <component-mapper
+      name="Assignment"
+      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$ }"
+    ></component-mapper>
+  </div>
+</div>
+
+<div *ngIf="bShowCancelAlert$">
+  <component-mapper
+    name="CancelAlert"
+    [props]="{ bShowAlert$: bShowCancelAlert$, pConn$: cancelPConn$ }"
+    [parent]="this"
+    [outputEvents]="{ onAlertState$: onAlertState }"
+  ></component-mapper>
+</div>

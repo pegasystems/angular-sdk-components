@@ -7,37 +7,56 @@
   "newProjectRoot": "projects",
   "projects": {
     "angular-sdk-components": {
+      "projectType": "library",
+      "root": "packages/angular-sdk-components",
+      "sourceRoot": "packages/angular-sdk-components/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "packages/angular-sdk-components/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "packages/angular-sdk-components/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "packages/angular-sdk-components/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "packages/angular-sdk-components/tsconfig.spec.json",
+            "polyfills": ["zone.js", "zone.js/testing"]
+          }
+        }
+      }
+    },
+    "angular-test-app": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "packages/angular-sdk-components",
-      "sourceRoot": "src",
+      "root": "projects/angular-test-app",
+      "sourceRoot": "projects/angular-test-app/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "outputPath": "dist",
-            "index": "packages/angular-sdk-components/src/index.html",
-            "main": "packages/angular-sdk-components/src/main.ts",
-            "polyfills": "packages/angular-sdk-components/src/polyfills.ts",
-            "tsConfig": "packages/angular-sdk-components/tsconfig.app.json",
-            "aot": true,
+            "index": "projects/angular-test-app/src/index.html",
+            "main": "projects/angular-test-app/src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "projects/angular-test-app/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              {
-                "glob": "authDone.{html,js}",
-                "input": "./node_modules/@pega/auth/lib/oauth-client",
-                "output": "./"
-              },
-              {
-                "glob": "mdi.svg",
-                "input": "./node_modules/@mdi/angular-material",
-                "output": "./assets"
-              },
               {
                 "glob": "sdk-config.json",
                 "input": "./",
@@ -70,135 +89,92 @@
               },
               {
                 "glob": "*.*",
-                "input": "./packages/angular-sdk-components/src/assets/",
+                "input": "./node_modules/@pega/constellationjs/dist/js",
+                "output": "./constellation/prerequisite/js"
+              },
+              {
+                "glob": "*.*",
+                "input": "./projects/angular-test-app/src/assets/",
                 "output": "./constellation/assets"
               },
               {
                 "glob": "*.*",
-                "input": "./packages/angular-sdk-components/src/assets/icons/",
+                "input": "./projects/angular-test-app/src/assets/icons/",
                 "output": "./constellation/assets/icons"
               },
               {
                 "glob": "**/*",
                 "input": "./node_modules/tinymce",
                 "output": "./tinymce"
-              }
+              },
+              "projects/angular-test-app/src/favicon.ico",
+              "projects/angular-test-app/src/assets"
             ],
-            "styles": ["packages/angular-sdk-components/src/styles.scss"],
-            "scripts": [
-              "./node_modules/tinymce/tinymce.min.js"
-            ],
+            "styles": ["projects/angular-test-app/src/styles.scss"],
+            "scripts": ["./node_modules/tinymce/tinymce.min.js"],
             "customWebpackConfig": {
-              "path": "./extra-webpack.config.js"
+              "path": "./scripts/extra-webpack.config.js"
             },
-            "allowedCommonJsDependencies": ["downloadjs", "rxjs/internal/observable/interval"]
+            "allowedCommonJsDependencies": ["lodash.clonedeep", "downloadjs", "dayjs", "fast-deep-equal", "moment"]
           },
           "configurations": {
             "production": {
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "budgets": [
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
-              ]
+              ],
+              "outputHashing": "all"
             },
             "development": {
+              "buildOptimizer": false,
               "optimization": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "aot": true,
-              "extractLicenses": true,
               "vendorChunk": true,
-              "buildOptimizer": true
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
-          "options": {
-            "browserTarget": "angular-sdk-components:build:development",
-            "port": 3500
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "angular-sdk-components:build:production"
-            },
-            "development": {
-              "browserTarget": "angular-sdk-components:build:development"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "angular-sdk-components:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "packages/angular-sdk-components/src/test.ts",
-            "polyfills": "packages/angular-sdk-components/src/polyfills.ts",
-            "tsConfig": "packages/angular-sdk-components/tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "assets": [
-              "packages/angular-sdk-components/src/favicon.ico",
-              "packages/angular-sdk-components/src/assets",
-              "packages/angular-sdk-components/src/assets/mdi.svg"
-            ],
-            "styles": ["./node_modules/intl-tel-input/build/css/intlTelInput.css", "packages/angular-sdk-components/src/styles.scss"],
-            "scripts": []
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "angular-sdk-components:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "angular-sdk-components:serve:production"
-            }
-          }
-        }
-      }
-    },
-    "angular-sdk-library": {
-      "projectType": "library",
-      "root": "projects/angular-sdk-library",
-      "sourceRoot": "projects/angular-sdk-library/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "project": "projects/angular-sdk-library/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/angular-sdk-library/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/angular-sdk-library/tsconfig.lib.json"
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
         },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "buildTarget": "angular-test-app:build:development",
+            "port": 3500
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "angular-test-app:build:production"
+            },
+            "development": {
+              "buildTarget": "angular-test-app:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "angular-test-app:build"
+          }
+        },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/angular-sdk-library/tsconfig.spec.json",
-            "polyfills": ["zone.js", "zone.js/testing"]
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "projects/angular-test-app/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": ["projects/angular-test-app/src/favicon.ico", "projects/angular-test-app/src/assets"],
+            "styles": ["projects/angular-test-app/src/styles.scss"],
+            "scripts": []
           }
         }
       }

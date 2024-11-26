@@ -1,0 +1,20 @@
+<div *ngIf="displayMode$; else noDisplayMode">
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$, isHtml$: true }"></component-mapper>
+</div>
+<ng-template #noDisplayMode>
+  <div *ngIf="!bReadonly$; else noEdit">
+    <div *ngIf="bVisible$">
+      <component-mapper
+        name="RichTextEditor"
+        [props]="{ placeholder, required: bRequired$, disabled: bDisabled$, label: label$, readonly: false, error, info, testId, value: value$ }"
+        [parent]="this"
+        [outputEvents]="{ onBlur: fieldOnBlur, onChange: fieldOnChange }"
+      ></component-mapper>
+    </div>
+  </div>
+</ng-template>
+<ng-template #noEdit>
+  <div *ngIf="bVisible$ !== false">
+    <component-mapper name="RichTextEditor" [props]="{ label: label$, value: value$, readonly: true, testId }" [parent]="this"></component-mapper>
+  </div>
+</ng-template>

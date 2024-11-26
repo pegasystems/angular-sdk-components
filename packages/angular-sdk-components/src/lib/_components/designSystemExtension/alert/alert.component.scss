@@ -1,0 +1,52 @@
+.psdk-alert {
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 5px 0px;
+}
+
+.psdk-alert-icon {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.psdk-alert-error {
+  color: var(--app-alert-error-color);
+  border: 1px solid var(--app-alert-error-border-color);
+  .mat-icon {
+    color: var(--app-alert-error-border-color);
+  }
+}
+
+.psdk-grid-warning {
+  color: var(--app-alert-warning-color);
+  border: 1px solid var(--app-alert-warning-border-color);
+  .mat-icon {
+    color: var(--app-alert-warning-border-color);
+  }
+}
+
+.psdk-grid-success {
+  color: var(--app-alert-success-color);
+  border: 1px solid var(--app-alert-success-border-color);
+  .mat-icon {
+    color: var(--app-alert-success-border-color);
+  }
+}
+
+.psdk-grid-info {
+  color: var(--app-alert-info-color);
+  border: 1px solid var(--app-alert-info-border-color);
+  .mat-icon {
+    color: var(--app-alert-info-border-color);
+  }
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}

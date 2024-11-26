@@ -1,14 +1,12 @@
 {
   "name": "@pega/angular-sdk-components",
-  "version": "8.23.10",
-  "description": "Angular SDK Infrastructure: bridge and components",
-  "_filesComment": "During packing, npm ignores everything NOT in the files list",
-  "files": [
-    "lib"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "24.2.10",
+  "peerDependencies": {
+    "@angular/common": "^18.2.12",
+    "@angular/core": "^18.2.12"
   },
-  "author": "Pegasystems",
-  "license": "SEE LICENCE IN LICENSE"
+  "dependencies": {
+    "tslib": "^2.6.2"
+  },
+  "sideEffects": false
 }

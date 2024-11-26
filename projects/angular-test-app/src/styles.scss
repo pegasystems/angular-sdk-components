@@ -1,0 +1,89 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons';
+// @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+/*@import "@angular/material/prebuilt-themes/pink-bluegrey.css";*/
+@import './containerStyles.scss';
+@import 'theme';
+@import '@danielmoncada/angular-datetime-picker/assets/style/picker.min.css';
+
+html,
+body {
+  @include generate-theme-vars($my-theme);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+button.mat-mdc-menu-item {
+  line-height: 24px !important;
+}
+a.mat-mdc-menu-item > mat-icon {
+  margin-bottom: 14px;
+}
+.mat-icon svg {
+  height: 24px;
+  width: 24px;
+}
+.mat-step-icon-content .mat-icon svg {
+  height: 100%;
+  width: 100%;
+}
+
+.mat-mdc-card {
+  padding: 16px;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled),
+.mat-mdc-form-field-focus-overlay {
+  background-color: transparent !important;
+}
+
+.mdc-text-field {
+  padding: 0 !important;
+}
+
+.psdk-radio-vertical > .mat-mdc-radio-button .mdc-radio {
+  padding: 10px 0 !important;
+}
+
+.mat-sort-header-content {
+  justify-content: space-between;
+  width: 100%;
+}
+.mat-sort-header-container {
+  justify-content: space-between;
+}
+
+.psdk-grid-filter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: calc(2 * 0.5rem);
+  row-gap: calc(2 * 0.5rem);
+  align-items: start;
+}
+
+.psdk-grid-label {
+  color: rgba(0, 0, 0, 0.54);
+  margin: 8px 0px;
+}
+.psdk-value {
+  margin: 8px 0px;
+}
+
+.mdc-button {
+  line-height: inherit !important;
+}
+
+.mat-mdc-form-field {
+  margin: 8px 0;
+}
+
+.ngx-mat-tel-input-container button {
+  margin-top: auto;
+}

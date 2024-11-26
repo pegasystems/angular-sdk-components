@@ -1,0 +1,19 @@
+.rich-text-label {
+  margin: 5px;
+  font-size: 16px;
+}
+
+.rich-text-editor {
+  margin: 10px 0px;
+}
+
+.label-required::after {
+  display: inline;
+  content: ' *';
+  vertical-align: top;
+  color: var(--app-neutral-dark-color);
+}
+
+.text-editor-error {
+  color: var(--app-error-light-color);
+}

@@ -1,0 +1,12 @@
+<div>
+  <div *ngFor="let banner of banners">
+    <div *ngFor="let message of banner.messages">
+      <component-mapper
+        name="Alert"
+        [props]="{ message, severity: SEVERITY_MAP[banner.variant], hideClose: banner.variant === 'urgent' }"
+        [parent]="this"
+        [outputEvents]="{ onClose: onAlertClose }"
+      ></component-mapper>
+    </div>
+  </div>
+</div>
