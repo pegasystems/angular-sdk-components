@@ -73,4 +73,9 @@ export class DefaultFormComponent implements OnInit {
     //  normalize them
     this.arChildren$ = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
   }
+
+  ngOnDestroy(): void {
+    // Clean up
+    PCore.getContextTreeManager().removeContextTreeNode(this.pConn$.getContextName());
+  }
 }
