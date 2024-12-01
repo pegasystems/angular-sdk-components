@@ -457,7 +457,9 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
   showCaseMessages() {
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
-    if (this.caseMessages$ || !this.hasAssignments()) {
+    // caseMessages's behavior has changed in 24.2, and hence it doesn't let Optional Action work.
+    // Changing the below condition for now. Was: (theCaseMessages || !hasAssignments())
+    if (!this.hasAssignments()) {
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
       this.checkSvg$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
