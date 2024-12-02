@@ -102,7 +102,7 @@ export class ScalarListComponent implements OnInit, OnDestroy {
           type: componentType,
           config: {
             value: scalarValue,
-            displayMode: 'LABELS_LEFT',
+            displayMode: 'DISPLAY_ONLY',
             label: this.label$,
             ...restProps,
             readOnly: true
@@ -113,7 +113,7 @@ export class ScalarListComponent implements OnInit, OnDestroy {
         {}
       ); // 2nd, 3rd, and 4th args empty string/object/null until typedef marked correctly as optional;
     });
-    this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL', 'DISPLAY_ONLY'].includes(this.displayMode$ as string);
+    this.isDisplayModeEnabled = ['STACKED_LARGE_VAL', 'DISPLAY_ONLY'].includes(this.displayMode$ as string);
     this.value$ = this.items;
   }
 }

@@ -113,7 +113,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.refList = this.rawViewMetadata.config.referenceList;
     this.canBeChangedInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
     // this.childrenToRender = this.children;
-    this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL'].includes(displayMode);
+    this.isDisplayModeEnabled = ['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(displayMode);
 
     if (this.firstChildMeta?.type !== 'Region') {
       this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;

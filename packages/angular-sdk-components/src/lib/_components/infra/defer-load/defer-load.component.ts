@@ -116,7 +116,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
         }
       };
       const configObject = PCore.createPConnect(config);
-      configObject.getPConnect().setInheritedProp('displayMode', 'LABELS_LEFT');
+      configObject.getPConnect().setInheritedProp('displayMode', 'DISPLAY_ONLY');
       this.loadedPConn$ = ReferenceComponent.normalizePConn(configObject.getPConnect());
       this.componentName$ = this.loadedPConn$.getComponentName();
       if (this.deferLoadId) {

@@ -59,7 +59,7 @@ export class DynamicTabsComponent implements OnInit, OnDestroy {
     const { tablabel } = this.pConn$.getComponentConfig();
     const tablabelProp = PCore.getAnnotationUtils().getPropertyName(tablabel);
 
-    this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
+    this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     this.pConn$.setInheritedProp('readOnly', true);
 
     const referenceListData = this.pConn$.getValue(`${referenceList}.pxResults`, ''); // 2nd arg empty string until typedefs properly allow optional

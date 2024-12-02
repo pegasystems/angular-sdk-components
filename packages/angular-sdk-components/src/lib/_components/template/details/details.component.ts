@@ -79,7 +79,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
         if (theCompType === 'reference' || theCompType === 'group') {
           const configProps = thePConn.getConfigProps();
           configProps.readOnly = true;
-          configProps.displayMode = 'LABELS_LEFT';
+          configProps.displayMode = 'DISPLAY_ONLY';
           const propToUse = { ...thePConn.getInheritedProps() };
           configProps.label = propToUse?.label;
           const options = {

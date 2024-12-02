@@ -75,7 +75,7 @@ export class DetailsTwoColumnComponent implements OnInit, OnDestroy {
       });
     }
 
-    this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
+    this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     this.pConn$.setInheritedProp('readOnly', true);
 
     const kids = this.pConn$.getChildren() as any[];

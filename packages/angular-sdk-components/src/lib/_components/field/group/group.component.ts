@@ -73,12 +73,12 @@ export class GroupComponent implements OnInit {
       this.visibility$ = this.pConn$.getComputedVisibility();
     }
 
-    if (this.configProps$.displayMode === 'LABELS_LEFT') {
+    if (this.configProps$.displayMode === 'DISPLAY_ONLY') {
       if (this.configProps$.visibility === undefined) this.visibility$ = true;
 
       this.arChildren$.forEach(child => {
         const pConn = child.getPConnect();
-        pConn.setInheritedProp('displayMode', 'LABELS_LEFT');
+        pConn.setInheritedProp('displayMode', 'DISPLAY_ONLY');
         pConn.setInheritedProp('readOnly', true);
 
         return child;
