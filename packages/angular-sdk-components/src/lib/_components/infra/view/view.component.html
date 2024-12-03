@@ -14,25 +14,12 @@
   </ng-container>
 
   <ng-template #noTemplate>
-    <div *ngIf="displayOnlyFA$; else displayAll">
-      <div *ngFor="let kid of arChildren$">
-        <div [ngSwitch]="kid.getPConnect().getComponentName()">
-          <component-mapper
-            [name]="kid.getPConnect().getComponentName()"
-            [props]="{ pConn$: kid.getPConnect() }"
-            errorMsg="View Missing (displayOnlyFA): {{ kid.getPConnect().getComponentName() }}"
-          ></component-mapper>
-        </div>
-      </div>
+    <div *ngFor="let kid of arChildren$">
+      <component-mapper
+        [name]="kid.getPConnect().getComponentName()"
+        [props]="{ pConn$: kid.getPConnect() }"
+        errorMsg="View Missing (displayAll): {{ kid.getPConnect().getComponentName() }}"
+      ></component-mapper>
     </div>
-    <ng-template #displayAll>
-      <div *ngFor="let kid of arChildren$">
-        <component-mapper
-          [name]="kid.getPConnect().getComponentName()"
-          [props]="{ pConn$: kid.getPConnect() }"
-          errorMsg="View Missing (displayAll): {{ kid.getPConnect().getComponentName() }}"
-        ></component-mapper>
-      </div>
-    </ng-template>
   </ng-template>
 </div>
