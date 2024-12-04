@@ -113,11 +113,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
     this.inputMode = NgxCurrencyInputMode.Natural;
-    let nValue: any = this.configProps$.value;
+    const nValue: any = this.configProps$.value;
     if (nValue) {
-      if (typeof nValue === 'string') {
-        nValue = parseInt(nValue, 10);
-      }
       this.value$ = nValue;
     }
     this.helperText = this.configProps$.helperText;
