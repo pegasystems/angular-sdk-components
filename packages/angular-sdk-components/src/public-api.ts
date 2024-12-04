@@ -68,6 +68,7 @@ export * from './lib/_components/template/details-wide-narrow/details-wide-narro
 export * from './lib/_components/template/field-group-list/field-group-list.component';
 export * from './lib/_components/template/field-group-template/field-group-template.component';
 export * from './lib/_components/template/field-value-list/field-value-list.component';
+export * from './lib/_components/template/form-template-base/form-template-base.component';
 export * from './lib/_components/template/inline-dashboard/inline-dashboard.component';
 export * from './lib/_components/template/inline-dashboard-page/inline-dashboard-page.component';
 export * from './lib/_components/template/list-page/list-page.component';
