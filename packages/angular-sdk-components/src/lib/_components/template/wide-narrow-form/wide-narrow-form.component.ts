@@ -2,6 +2,7 @@ import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { FormTemplateBaseComponent } from '../form-template-base/form-template-base.component';
 
 @Component({
   selector: 'app-wide-narrow-form',
@@ -10,8 +11,8 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class WideNarrowFormComponent implements OnInit, OnChanges {
-  @Input() pConn$: typeof PConnect;
+export class WideNarrowFormComponent extends FormTemplateBaseComponent implements OnInit, OnChanges {
+  @Input() override pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   arChildren$: any[];
