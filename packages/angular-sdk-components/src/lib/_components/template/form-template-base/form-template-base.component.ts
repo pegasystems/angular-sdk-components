@@ -1,9 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 
-@Component({
-  selector: 'form-template-base',
-  template: ''
-})
+@Directive()
 export class FormTemplateBaseComponent implements OnDestroy {
   pConn$: any;
 
