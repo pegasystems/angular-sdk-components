@@ -104,6 +104,8 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     this.initContainer();
 
+    this.checkAndUpdate();
+
     PCore.getPubSubUtils().subscribe(
       PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {
@@ -595,7 +597,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     });
   }
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
     Object.values(this.formGroup$.controls).forEach(control => {
       control.markAsTouched();

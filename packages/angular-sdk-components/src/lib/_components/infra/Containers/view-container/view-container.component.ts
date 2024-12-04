@@ -99,17 +99,22 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
       dispatchObject: this.dispatchObject,
       visible: !PCore.checkIfSemanticURL()
     };
-    containerMgr.initializeContainers({
-      type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE
-    });
 
-    if (mode === CONTAINER_TYPE.MULTIPLE && limit) {
-      /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
-      PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
+    if (sessionStorage.getItem('hasViewContainer') == 'false') {
+      containerMgr.initializeContainers({
+        type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE
+      });
+
+      if (mode === CONTAINER_TYPE.MULTIPLE && limit) {
+        /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
+        PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
+      }
+
+      if (!PCore.checkIfSemanticURL()) containerMgr.addContainerItem(this.pConn$ as any);
+      if (!this.displayOnlyFA$) configureBrowserBookmark(this.pConn$);
+
+      sessionStorage.setItem('hasViewContainer', 'true');
     }
-
-    if (!PCore.checkIfSemanticURL()) containerMgr.addContainerItem(this.pConn$ as any);
-    if (!this.displayOnlyFA$) configureBrowserBookmark(this.pConn$);
 
     // cannot call checkAndUpdate becasue first time through, will call updateSelf and that is incorrect (causes issues).
     // however, need angularPConnect to be initialized with currentProps for future updates, so calling shouldComponentUpdate directly
