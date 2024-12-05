@@ -173,8 +173,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
       this.caption$ = this.configProps$.caption;
       this.helperText = this.configProps$.helperText;
-      this.trueLabel$ = this.configProps$.trueLabel;
-      this.falseLabel$ = this.configProps$.falseLabel;
+      this.trueLabel$ = this.configProps$.trueLabel || 'Yes';
+      this.falseLabel$ = this.configProps$.falseLabel || 'No';
 
       // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
       setTimeout(() => {
