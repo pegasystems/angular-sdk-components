@@ -159,7 +159,7 @@ export class TextAreaComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange() {
     this.pConn$.clearErrorMessages({
       property: this.propName
     });

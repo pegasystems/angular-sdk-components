@@ -171,7 +171,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange() {
     this.pConn$.clearErrorMessages({
       property: this.propName
     });

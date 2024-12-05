@@ -204,7 +204,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-     if (event?.value === 'Select') {
+    if (event?.value === 'Select') {
       event.value = '';
     }
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);

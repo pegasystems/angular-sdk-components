@@ -211,8 +211,9 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fieldOnBlur(event: any) {
-   // "blur" isn't getting fired
+    // "blur" isn't getting fired
   }
 
   getLocalizedOptionValue(opt: IOption) {

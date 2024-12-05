@@ -159,7 +159,7 @@ export class EmailComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    let value = event?.target?.value;
+    const value = event?.target?.value;
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     this.pConn$.clearErrorMessages({
       property: this.propName
@@ -167,7 +167,7 @@ export class EmailComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(event: any) {
-    let value = event?.target?.value;
+    const value = event?.target?.value;
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 

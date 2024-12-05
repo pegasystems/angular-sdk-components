@@ -16,7 +16,7 @@
             [required]="bRequired$"
             [disabled]="bDisabled$"
             [formControl]="fieldControl"
-            (change)="fieldOnChange($event)"
+            (change)="fieldOnChange()"
             (blur)="fieldOnBlur($event)"
           ></textarea>
           <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

@@ -174,7 +174,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnDateChange(event: any) {
+  fieldOnDateChange() {
     this.pConn$.clearErrorMessages({
       property: this.propName
     });

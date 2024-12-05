@@ -49,6 +49,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
   phoneForm = new FormGroup({
     phone: new FormControl<string | null>(null)
   });
+
   actionsApi: Object;
   propName: string;
 
@@ -164,7 +165,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnBlur(event: any) {
+  fieldOnBlur() {
     // 'blur' isn't getting fired
   }
 
