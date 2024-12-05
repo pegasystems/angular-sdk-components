@@ -216,10 +216,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     });
   }
 
-  fieldOnBlur(event: any) {
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
-  }
-
   getLocalizedOptionValue(opt: IOption) {
     return this.pConn$.getLocalizedValue(
       opt.value,
