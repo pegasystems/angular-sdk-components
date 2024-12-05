@@ -13,6 +13,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { Utils } from '../../../_helpers/utils';
 import { doSearch, getDisplayFieldsMetaData, getGroupDataForItemsTree, preProcessColumns } from './utils';
 import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
+import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
   selector: 'app-multiselect',
@@ -73,6 +74,8 @@ export class MultiselectComponent implements OnInit, OnDestroy {
   dataApiObj: any;
   itemsTree: any[] = [];
   trigger: any;
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -212,6 +215,9 @@ export class MultiselectComponent implements OnInit, OnDestroy {
       this.fieldControl.enable();
     }
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     if (this.listType !== 'associated') {
       PCore.getDataApi()
         ?.init(dataConfig, contextName)
@@ -285,8 +291,10 @@ export class MultiselectComponent implements OnInit, OnDestroy {
     this.getCaseListBasedOnParams(this.value$, '', [...this.selectedItems], [...this.itemsTree], true);
   }
 
-  optionChanged(event: MatAutocompleteSelectedEvent) {
-    this.angularPConnectData.actions?.onChange(this, event);
+  optionChanged(event: any) {
+    let value = event?.target?.value;
+    value = value?.substring(1);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   optionClicked = (event: Event, data: any): void => {

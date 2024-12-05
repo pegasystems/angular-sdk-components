@@ -8,6 +8,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
 
 interface EmailProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Email here
@@ -43,6 +44,8 @@ export class EmailComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl('', null);
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -139,6 +142,9 @@ export class EmailComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
@@ -153,12 +159,16 @@ export class EmailComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
+    let value = event?.target?.value;
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+    let value = event?.target?.value;
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {

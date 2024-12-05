@@ -17,6 +17,7 @@
             [disabled]="bDisabled$"
             [formControl]="fieldControl"
             (change)="fieldOnChange($event)"
+            (blur)="fieldOnBlur($event)"
           ></textarea>
           <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
         </mat-form-field>

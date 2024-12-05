@@ -49,6 +49,8 @@ export class PhoneComponent implements OnInit, OnDestroy {
   phoneForm = new FormGroup({
     phone: new FormControl<string | null>(null)
   });
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -117,6 +119,9 @@ export class PhoneComponent implements OnInit, OnDestroy {
     }
     this.helperText = this.configProps$.helperText;
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -159,25 +164,16 @@ export class PhoneComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange() {
-    if (this.formGroup$.controls[this.controlName$].value) {
-      const actionsApi = this.pConn$?.getActionsApi();
-      const propName = this.pConn$?.getStateProps().value;
-      const value = this.formGroup$.controls[this.controlName$].value;
-      const eventObj = {
-        target: {
-          value
-        }
-      };
-      this.afterBlur = true;
-      this.angularPConnectData.actions?.onChange(this, eventObj);
-      handleEvent(actionsApi, 'blur', propName, value);
-    }
+  fieldOnBlur(event: any) {
+    // 'blur' isn't getting fired
   }
 
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+  fieldOnChange() {
+    if (this.formGroup$.controls[this.controlName$].value) {
+      const value = this.formGroup$.controls[this.controlName$].value;
+      this.afterBlur = true;
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
   }
 
   getErrorMessage() {

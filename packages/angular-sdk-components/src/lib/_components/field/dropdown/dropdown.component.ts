@@ -61,6 +61,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
   localeName = '';
   localePath = '';
   localizedValue = '';
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -166,9 +168,10 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.value$ = 'Select';
     }
 
-    const propName = this.pConn$.getStateProps().value;
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
     const className = this.pConn$.getCaseInfo().getClassName();
-    const refName = propName?.slice(propName.lastIndexOf('.') + 1);
+    const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);
 
     this.fieldMetadata = this.configProps$.fieldMetadata;
     const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter(field => field?.classID === className)[0] : this.fieldMetadata;
@@ -201,20 +204,20 @@ export class DropdownComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    if (event?.value === 'Select') {
+     if (event?.value === 'Select') {
       event.value = '';
     }
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
-    handleEvent(actionsApi, 'changeNblur', propName, event.value);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
     if (this.configProps$?.onRecordChange) {
       this.configProps$.onRecordChange(event);
     }
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
   }
 
   getLocalizedOptionValue(opt: IOption) {

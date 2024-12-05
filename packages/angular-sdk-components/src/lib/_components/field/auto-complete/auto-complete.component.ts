@@ -71,6 +71,8 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   hideLabel: boolean;
   filteredOptions: Observable<any[]>;
   filterValue = '';
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -102,7 +104,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
     this.filteredOptions = this.fieldControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(value || ''))
+      map(value => this._filter((value as string) || ''))
     );
   }
 
@@ -150,6 +152,9 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     }
 
     this.setPropertyValuesFromProps();
+
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
 
     const context = this.pConn$.getContextName();
     const { columns, datasource } = this.generateColumnsAndDataSource();
@@ -299,13 +304,14 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
-    this.filterValue = (event.target as HTMLInputElement).value;
-
-    this.angularPConnectData.actions?.onChange(this, event);
+    const value = (event.target as HTMLInputElement).value;
+    this.filterValue = value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
-  optionChanged(event: MatAutocompleteSelectedEvent) {
-    this.angularPConnectData.actions?.onChange(this, event);
+  optionChanged(event: any) {
+    const value = (event.target as HTMLInputElement).value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
   fieldOnBlur(event: Event) {
@@ -315,11 +321,8 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       const index = this.options$?.findIndex(element => element.value === el.value);
       key = index > -1 ? (key = this.options$[index].key) : el.value;
     }
-
     const value = key;
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
-    handleEvent(actionsApi, 'changeNblur', propName, value);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     if (this.configProps$?.onRecordChange) {
       el.value = value;
       this.configProps$.onRecordChange(event);

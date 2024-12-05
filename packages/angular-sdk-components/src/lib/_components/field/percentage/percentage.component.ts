@@ -51,6 +51,8 @@ export class PercentageComponent implements OnInit, OnDestroy {
   inputMode: any;
   decimalPrecision: number | undefined;
   fieldControl = new FormControl<number | null>(null, null);
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -125,6 +127,9 @@ export class PercentageComponent implements OnInit, OnDestroy {
     this.currDec = theSymbols.theDecimalIndicator || '2';
     this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -167,12 +172,12 @@ export class PercentageComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps()?.value;
     let value = event?.target?.value;
     value = value ? value.replace(/%/g, '') : '';
     if (this.currSep === '.') {
@@ -181,7 +186,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     } else {
       value = value.replace(/,/g, '');
     }
-    handleEvent(actionsApi, 'changeNblur', propName, value);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {

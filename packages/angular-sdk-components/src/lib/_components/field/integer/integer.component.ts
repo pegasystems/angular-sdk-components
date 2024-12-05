@@ -8,6 +8,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
 
 interface IntegerProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Integer here
@@ -43,6 +44,8 @@ export class IntegerComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -115,6 +118,9 @@ export class IntegerComponent implements OnInit, OnDestroy {
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -156,12 +162,14 @@ export class IntegerComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const value = event?.target?.value;
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {

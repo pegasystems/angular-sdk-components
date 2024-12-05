@@ -11,6 +11,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here
@@ -63,6 +64,8 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   // and then update, as needed, based on locale, etc.
   theDateFormat = getDateFormatInfo();
   placeholder: string;
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -157,6 +160,9 @@ export class DateTimeComponent implements OnInit, OnDestroy {
 
     this.componentReference = this.pConn$.getStateProps().value;
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       const timer = interval(100).subscribe(() => {
@@ -169,12 +175,9 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   }
 
   fieldOnDateChange(event: any) {
-    // this comes from the date pop up
-    if (typeof event.value === 'object') {
-      // convert date to pega "date" format
-      event.value = event.value?.toISOString();
-    }
-    this.angularPConnectData.actions?.onChange(this, { value: event.value });
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
@@ -182,8 +185,8 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
-
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const value = event?.target?.value;
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {
