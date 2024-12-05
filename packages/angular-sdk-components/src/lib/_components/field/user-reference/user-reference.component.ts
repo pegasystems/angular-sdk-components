@@ -11,6 +11,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { map, Observable, startWith } from 'rxjs';
+import { handleEvent } from '../../../_helpers/event-util';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
@@ -63,6 +64,8 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   filterValue = '';
 
   fieldControl = new FormControl('', null);
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -150,6 +153,9 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     const { readOnly, required } = props;
     [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     const isUserNameAvailable = user => {
       return typeof user === 'object' && user !== null && user.userName;
     };
@@ -195,7 +201,8 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     if (event?.target) {
       this.filterValue = (event.target as HTMLInputElement).value;
     }
-    this.angularPConnectData.actions?.onChange(this, event);
+    const value = event?.target?.value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
   fieldOnBlur(event: any) {
@@ -205,11 +212,10 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       key = index > -1 ? (key = this.options$[index].key) : event.target.value;
     }
 
-    const eve = {
+    const value = {
       value: key
     };
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onChange(this, eve);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {
