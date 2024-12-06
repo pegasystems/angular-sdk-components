@@ -180,13 +180,13 @@ export class PercentageComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
+  fieldOnChange() {
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps()?.value;
     let value = event?.target?.value;
     value = value ? value.replace(/%/g, '') : '';
     if (this.currSep === '.') {
@@ -195,7 +195,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     } else {
       value = value.replace(/,/g, '');
     }
-    handleEvent(actionsApi, 'changeNblur', propName, value);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {

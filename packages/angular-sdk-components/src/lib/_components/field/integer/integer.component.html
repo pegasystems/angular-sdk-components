@@ -15,7 +15,7 @@
           [required]="bRequired$"
           [formControl]="fieldControl"
           [attr.data-test-id]="testId"
-          (change)="fieldOnChange($event)"
+          (change)="fieldOnChange()"
           (blur)="fieldOnBlur($event)"
         />
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

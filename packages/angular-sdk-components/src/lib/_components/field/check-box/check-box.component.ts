@@ -69,8 +69,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   selectedvalues: any;
   referenceList: string;
   listOfCheckboxes: any[] = [];
-  actionsApi: any;
-  propName: any;
+  actionsApi: Object;
+  propName: string;
 
   fieldControl = new FormControl('', null);
 
@@ -173,8 +173,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
       this.caption$ = this.configProps$.caption;
       this.helperText = this.configProps$.helperText;
-      this.trueLabel$ = this.configProps$.trueLabel;
-      this.falseLabel$ = this.configProps$.falseLabel;
+      this.trueLabel$ = this.configProps$.trueLabel || 'Yes';
+      this.falseLabel$ = this.configProps$.falseLabel || 'No';
 
       // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
       setTimeout(() => {
@@ -225,16 +225,17 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
   fieldOnChange(event: any) {
     event.value = event.checked;
-
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.checked);
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
     if (this.selectionMode === 'multi') {
       this.pConn$.getValidationApi().validate(this.selectedvalues, this.selectionList);
     } else {
-      event.value = event.checked;
-      this.angularPConnectData.actions?.onBlur(this, event);
+      this.pConn$.getValidationApi().validate(event.target.checked);
     }
   }
 

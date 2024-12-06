@@ -40,6 +40,8 @@ export class RichTextComponent implements OnInit, OnDestroy {
   info: any;
   error: boolean;
   status: any;
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -94,6 +96,9 @@ export class RichTextComponent implements OnInit, OnDestroy {
     this.info = stateProps?.validatemessage || this.configProps$.helperText;
     this.error = stateProps?.status === 'error';
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     if (this.configProps$.required != null) {
       this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
     }
@@ -113,7 +118,7 @@ export class RichTextComponent implements OnInit, OnDestroy {
 
   fieldOnChange() {
     if (this.status === 'error') {
-      const property = this.pConn$.getStateProps().value;
+      const property = this.propName;
       this.pConn$.clearErrorMessages({
         property,
         category: '',
@@ -123,9 +128,6 @@ export class RichTextComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(editorValue: any) {
-    // PConnect wants to use eventHandler for onBlur
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps()?.value;
-    handleEvent(actionsApi, 'changeNblur', propName, editorValue);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, editorValue);
   }
 }
