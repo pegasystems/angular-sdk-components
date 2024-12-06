@@ -4,6 +4,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FormGroup } from '@angular/forms';
 
 interface TextProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Text here
@@ -18,6 +19,7 @@ interface TextProps extends PConnFieldProps {
 })
 export class TextComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
+  @Input() formGroup$: FormGroup;
   @Input() formatAs$: string;
 
   // Used with AngularPConnect
