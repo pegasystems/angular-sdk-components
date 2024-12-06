@@ -9,12 +9,14 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
-import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
+import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { format } from '../../../_helpers/formatters';
 
 interface PercentageProps extends PConnFieldProps {
   showGroupSeparators?: string;
   decimalPrecision?: number;
+  currencyISOCode?: string;
   // If any, enter additional props that only exist on Percentage here
 }
 
@@ -53,6 +55,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
   fieldControl = new FormControl<number | null>(null, null);
   actionsApi: Object;
   propName: string;
+  formattedValue: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -121,6 +124,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
+    const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
     const showGroupSeparators = this.configProps$.showGroupSeparators;
 
     const theSymbols = getCurrencyCharacters('');
@@ -129,6 +133,11 @@ export class PercentageComponent implements OnInit, OnDestroy {
 
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
+      this.formattedValue = format(nValue, this.pConn$?.getComponentName()?.toLowerCase(), theCurrencyOptions);
+    }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

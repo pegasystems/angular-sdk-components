@@ -9,8 +9,9 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
-import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
+import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { format } from '../../../_helpers/formatters';
 
 interface CurrrencyProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Currency here
@@ -55,6 +56,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   currDec: string;
   inputMode: any;
   decimalPrecision: number | undefined;
+  formattedValue: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -135,6 +137,11 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     this.currSym = theSymbols.theCurrencySymbol;
     this.currSep = theSymbols.theDigitGroupSeparator;
     this.currDec = theSymbols.theDecimalIndicator;
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
+      this.formattedValue = format(this.configProps$.value, this.pConn$?.getComponentName()?.toLowerCase(), theCurrencyOptions);
+    }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

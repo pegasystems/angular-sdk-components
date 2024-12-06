@@ -16,7 +16,10 @@ export class MaterialDetailsFieldsComponent {
   @Input() arFields$: any[];
   @Input() arHighlightedFields: any[];
 
-  _getValue(configValue) {
+  _getValue(configValue, field: any = {}) {
+    if (field?.type === 'userreference') {
+      return configValue.userName;
+    }
     if (configValue && configValue != '') {
       return configValue;
     }

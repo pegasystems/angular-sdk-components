@@ -59,13 +59,13 @@
   border-radius: 0.5rem;
   border: 0.0625rem solid var(--app-neutral-light-color);
   overflow: hidden;
-  height: 2rem;
   display: flex;
+  flex-wrap: wrap;
 }
 
 .psdk-stages-chevron {
   position: relative;
-  padding: calc(1rem);
+  padding: calc(0.5rem);
   display: flex;
   justify-content: center;
   align-items: center;

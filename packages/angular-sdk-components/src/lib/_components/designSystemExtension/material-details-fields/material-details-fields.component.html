@@ -21,7 +21,7 @@
           <a *ngSwitchCase="'email'" href="mailto: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
           <span *ngSwitchCase="'date'" class="psdk-details-text-style">{{ _formatDate(field.config.value, field.type) }}</span>
           <span *ngSwitchCase="'caseoperator'"></span>
-          <span *ngSwitchDefault>{{ _getValue(field.config.value) }}</span>
+          <span *ngSwitchDefault>{{ _getValue(field.config.value, field) }}</span>
         </div>
       </div>
     </ng-template>
