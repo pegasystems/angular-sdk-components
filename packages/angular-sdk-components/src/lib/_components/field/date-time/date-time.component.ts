@@ -12,6 +12,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { handleEvent } from '../../../_helpers/event-util';
+import { format } from '../../../_helpers/formatters';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here
@@ -66,6 +67,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   placeholder: string;
   actionsApi: Object;
   propName: string;
+  formattedValue$: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -139,6 +141,12 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       this.cdRef.detectChanges();
     });
 
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      this.formattedValue$ = format(this.value$, 'datetime', {
+        format: `${this.theDateFormat.dateFormatString} hh:mm a`
+      });
+    }
+
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
@@ -174,19 +182,13 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnDateChange() {
-    this.pConn$.clearErrorMessages({
-      property: this.propName
-    });
-  }
-
-  fieldOnBlur(event: any) {
+  fieldOnDateChange(event: any) {
+    // this comes from the date pop up
     if (typeof event.value === 'object') {
       // convert date to pega "date" format
       event.value = event.value?.toISOString();
     }
-    const value = event?.target?.value;
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
   }
 
   getErrorMessage() {

@@ -1,5 +1,5 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$: formattedValue$, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
@@ -12,8 +12,7 @@
           [attr.data-test-id]="testId"
           [placeholder]="placeholder"
           [formControl]="fieldControl"
-          (blur)="fieldOnBlur($event)"
-          (dateTimeChange)="fieldOnDateChange()"
+          (dateTimeChange)="fieldOnDateChange($event)"
           [value]="value$"
           [required]="bRequired$"
         />

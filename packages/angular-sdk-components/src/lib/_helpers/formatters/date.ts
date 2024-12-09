@@ -37,7 +37,7 @@ function TimeFormatter(value, options) {
     tempDate.setHours(hours);
     tempDate.setMinutes(minutes);
     tempDate.setSeconds(seconds);
-    return tempDate.toLocaleTimeString(locale);
+    return tempDate.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
   }
   return DateFormatter(value, options);
 }
@@ -53,9 +53,9 @@ export default {
   'DateTime-Since': value => DateFormatter(value, { type: 'fromNow' }),
   'Time-Only': (value, options) =>
     TimeFormatter(value, {
-      ...options,
       type: 'customFormat',
-      format: 'hh:mm:ss A'
+      format: 'hh:mm:ss A',
+      ...options
     }),
   convertToTimezone: (value, options) => {
     return value && options && options.timezone

@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, Inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -87,6 +86,7 @@ export class DateComponent implements OnInit, OnDestroy {
   theDateFormat = getDateFormatInfo();
   actionsApi: Object;
   propName: string;
+  formattedValue$: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -149,21 +149,7 @@ export class DateComponent implements OnInit, OnDestroy {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DateProps;
 
-    if (this.configProps$.value != undefined) {
-      let sDateValue: any = '';
-      sDateValue = this.configProps$.value;
-
-      if (sDateValue != '') {
-        if (typeof sDateValue === 'object') {
-          sDateValue = sDateValue.toISOString();
-        } else if (sDateValue.indexOf('/') < 0) {
-          // if we have the "pega" format, then for display, convert to standard format (US)
-          // sDateValue = this.formatDate(sDateValue);
-          sDateValue = this.utils.generateDate(sDateValue, 'Date-Long-Custom-YYYY');
-        }
-        this.value$ = new Date(sDateValue);
-      }
-    }
+    this.value$ = this.configProps$.value;
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
@@ -180,6 +166,12 @@ export class DateComponent implements OnInit, OnDestroy {
       }
       this.cdRef.detectChanges();
     });
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      this.formattedValue$ = format(this.value$, 'date', {
+        format: this.theDateFormat.dateFormatString
+      });
+    }
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
@@ -215,25 +207,11 @@ export class DateComponent implements OnInit, OnDestroy {
 
   fieldOnDateChange(event: any) {
     // this comes from the date pop up
-    if (typeof event.value === 'object') {
-      // convert date to pega "date" format
-      event.value = event.value?.toISOString();
-    }
-    const value = event?.target?.value;
+    const value = event?.target?.value.format('YYYY-MM-DD');
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     this.pConn$.clearErrorMessages({
       property: this.propName
     });
-  }
-
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    if (typeof event.value === 'object') {
-      // convert date to pega "date" format
-      event.value = event.value?.toISOString();
-    }
-    const value = event?.target?.value;
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   hasErrors() {
@@ -253,11 +231,5 @@ export class DateComponent implements OnInit, OnDestroy {
       errMessage = `${this.fieldControl.errors['matDatepickerParse'].text} is not a valid date value`;
     }
     return errMessage;
-  }
-
-  getFormattedValue() {
-    return format(this.value$, 'date', {
-      format: this.theDateFormat.dateFormatString
-    });
   }
 }

@@ -9,6 +9,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { handleEvent } from '../../../_helpers/event-util';
+import { format } from '../../../_helpers/formatters';
 
 interface TimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Time here
@@ -46,6 +47,7 @@ export class TimeComponent implements OnInit, OnDestroy {
   fieldControl = new FormControl('', null);
   actionsApi: Object;
   propName: string;
+  formattedValue$: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -124,6 +126,12 @@ export class TimeComponent implements OnInit, OnDestroy {
       }
       this.cdRef.detectChanges();
     });
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      this.formattedValue$ = format(this.value$, 'timeonly', {
+        format: 'hh:mm a'
+      });
+    }
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
