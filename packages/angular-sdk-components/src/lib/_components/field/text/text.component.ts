@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-import { FormGroup } from '@angular/forms';
 
 interface TextProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Text here
