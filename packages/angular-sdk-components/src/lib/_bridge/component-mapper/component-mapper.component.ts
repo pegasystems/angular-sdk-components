@@ -17,7 +17,7 @@ const componentsRequireDisplayOnlyFAProp: string[] = [
   templateUrl: './component-mapper.component.html',
   styleUrls: ['./component-mapper.component.scss'],
   standalone: true,
-  imports: [CommonModule, ErrorBoundaryComponent]
+  imports: [CommonModule]
 })
 export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('dynamicComponent', { read: ViewContainerRef, static: true })

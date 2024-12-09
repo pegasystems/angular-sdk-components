@@ -40,12 +40,13 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  componentName$ = '';
+  componentName$? = '';
   bIsProgress$ = false;
 
   // preview and modalview pConn
   pvConn$: any = null;
   mConn$: any = null;
+  childPConn$: any = null;
 
   bShowRoot$ = true;
 
@@ -173,8 +174,8 @@ export class RootContainerComponent implements OnInit, OnDestroy {
               //  when rendering...
               this.componentName$ = theNewPConn.getComponentName();
 
-              this.pConn$ = theNewPConn;
-              // this.pConn$ = rootObject.getPConnect();
+              this.childPConn$ = theNewPConn;
+              console.log(theNewPConn.getChildren());
 
               console.log(`RootContainer updated pConn$ to be: ${this.componentName$}`);
             });
@@ -182,40 +183,17 @@ export class RootContainerComponent implements OnInit, OnDestroy {
         }
       }
     } else if (renderingMode === noPortalMode) {
-      // console.log(`RootContainer: renderingMode === noPortalMode: ${noPortalMode}`);
-      this.generateViewContainerForNoPortal();
+      console.log(`RootContainer: renderingMode === noPortalMode: ${noPortalMode}`);
+      const theChildren = this.pConn$.getChildren();
+      if (theChildren && theChildren.length == 1) {
+        this.childPConn$ = theChildren[0].getPConnect();
+
+        // this.componentName$ = this.childPConn$.getComponentName();
+      }
     } else if (children && children.length > 0) {
       // haven't resolved to here
     } else if (skeleton !== undefined) {
       // TODO: need to update once skeletons are available;
-    }
-  }
-
-  generateViewContainerForNoPortal() {
-    // bootstrap loadMashup resolves to here
-    const arChildren = this.pConn$.getChildren() as any[];
-    if (arChildren && arChildren.length == 1) {
-      // have to have a quick timeout or get an "expressions changed" angular error
-      setTimeout(() => {
-        this.ngZone.run(() => {
-          const localPConn = arChildren[0].getPConnect();
-
-          this.componentName$ = localPConn.getComponentName();
-          if (this.componentName$ === 'ViewContainer') {
-            const configProps = this.pConn$.getConfigProps();
-            const viewContConfig = {
-              meta: {
-                type: 'ViewContainer',
-                config: configProps
-              },
-              options
-            };
-
-            this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
-          }
-          this.bShowRoot$ = true;
-        });
-      });
     }
   }
 

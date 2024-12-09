@@ -116,8 +116,9 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     const { pConn$ } = changes;
+    console.log('pConn$:', pConn$);
 
-    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
+    if (pConn$ && pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
       this.checkAndUpdate();
     }
   }

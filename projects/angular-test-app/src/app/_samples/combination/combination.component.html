@@ -1,0 +1,5 @@
+<!-- <app-top-app-mashup></app-top-app-mashup> -->
+<!-- <app-mc-nav></app-mc-nav> -->
+<button (click)="showHome()">Show Home Page</button>
+<button (click)="createCase()">Create a New Case</button>
+<component-mapper *ngIf="pConn$" name="RootContainer" [props]="{ pConn$, displayOnlyFA$: displayOnlyFA$ }"></component-mapper>

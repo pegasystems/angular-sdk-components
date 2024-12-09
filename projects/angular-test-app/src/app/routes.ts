@@ -3,6 +3,7 @@ import { TopAppMashupComponent } from './_samples/full-portal/top-app-mashup/top
 import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
 import { MCNavComponent } from './_samples/embedded/mc-nav/mc-nav.component';
 import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
+import { CombinationComponent } from './_samples/combination/combination.component';
 
 // Adding path to remove "Cannot match routes" error at launch
 //  Tried this at one point... Need to add /app in path now...
@@ -17,7 +18,7 @@ import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_
 // similiar to Nebula/Constellaion)
 
 export const routes: Routes = [
-  { path: '', component: MCNavComponent },
+  { path: '', component: CombinationComponent },
   { path: endpoints.PORTAL, component: TopAppMashupComponent },
   { path: endpoints.PORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTAL, component: TopAppMashupComponent },

@@ -2,15 +2,18 @@
   <mat-spinner class="progress-spinner"></mat-spinner>
 </div>
 
-<div *ngIf="bShowRoot$">
-  <div [ngSwitch]="componentName$">
+{{ childPConn$?.getComponentName() }}
+<div *ngIf="bShowRoot$ && childPConn$">
+  <component-mapper
+    [name]="childPConn$?.getComponentName()"
+    [props]="{
+      pConn$,
+      displayOnlyFA$
+    }"
+  ></component-mapper>
+  <!-- <div [ngSwitch]="childPConn$?.getComponentName()">
     <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ pConn$, displayOnlyFA$ }"></component-mapper>
-    <!-- <app-reference *ngSwitchCase="'reference'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-reference> -->
-    <component-mapper
-      *ngSwitchCase="'ViewContainer'"
-      name="ViewContainer"
-      [props]="{ pConn$: displayOnlyFA$ ? viewContainerPConn$ : pConn$, displayOnlyFA$ }"
-    ></component-mapper>
+    <component-mapper *ngSwitchCase="'ViewContainer'" name="ViewContainer" [props]="{ pConn$: childPConn$, displayOnlyFA$ }"></component-mapper>
     <app-hybrid-view-container *ngSwitchCase="'HybridViewContainer'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-hybrid-view-container>
     <app-modal-view-container
       *ngSwitchCase="'ModalViewContainer'"
@@ -19,8 +22,8 @@
       (modalVisibleChange)="modalVisibleChanged($event)"
     ></app-modal-view-container>
     <div *ngSwitchCase="''"></div>
-    <div *ngSwitchDefault>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
-  </div>
+    <div *ngSwitchDefault>{{ localizedVal('RootContainer Missing: ' + childPConn$?.getComponentName(), localeCategory) }}.</div>
+  </div> -->
 </div>
 
 <div *ngIf="pvConn$ != null">

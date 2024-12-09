@@ -5,7 +5,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
-import { configureBrowserBookmark } from './helper';
+// import { configureBrowserBookmark } from './helper';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -111,7 +111,6 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
       }
 
       if (!PCore.checkIfSemanticURL()) containerMgr.addContainerItem(this.pConn$ as any);
-      if (!this.displayOnlyFA$) configureBrowserBookmark(this.pConn$);
 
       sessionStorage.setItem('hasViewContainer', 'true');
     }
