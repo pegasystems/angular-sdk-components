@@ -128,16 +128,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  modalVisibleChanged(isVisible) {
-    if (this.displayOnlyFA$) {
-      if (isVisible) {
-        this.bShowRoot$ = false;
-      } else {
-        this.bShowRoot$ = true;
-      }
-    }
-  }
-
   updateSelf() {
     // need to call this.getCurrentCompleteProps (not this.thePConn.getConfigProps)
     //  to get full set of props that affect this component in Redux

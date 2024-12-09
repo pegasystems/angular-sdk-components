@@ -18,6 +18,7 @@
   <div class="psdk-case-view-divider"></div>
 
   <component-mapper
+    *ngIf="arMainButtons$ && arSecondaryButtons$"
     name="ActionButtons"
     [props]="{ arMainButtons$, arSecondaryButtons$ }"
     [parent]="this"

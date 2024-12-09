@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
@@ -189,11 +190,9 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       key = index > -1 ? (key = this.options$[index].key) : event.target.value;
     }
 
-    const eve = {
-      value: key
-    };
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onChange(this, eve);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'changeNblur', propName, key);
   }
 
   getErrorMessage() {
