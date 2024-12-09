@@ -310,7 +310,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   }
 
   optionChanged(event: any) {
-    const value = (event.target as HTMLInputElement).value;
+    const value = event?.option?.value;
     handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
