@@ -484,6 +484,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   updateFlowContainerChildren() {
     // routingInfo was added as component prop in populateAdditionalProps
     const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
+    this.confirm_pconn = null;
 
     let loadingInfo: any;
     try {

@@ -38,7 +38,7 @@
       </div>
     </mat-card>
   </div>
-  <div *ngIf="bShowBanner && bShowConfirm">
+  <div *ngIf="bShowBanner && bShowConfirm && confirm_pconn">
     <component-mapper name="View" [props]="{ formGroup$, pConn$: confirm_pconn }"></component-mapper>
   </div>
 </div>
