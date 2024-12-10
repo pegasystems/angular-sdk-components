@@ -17,6 +17,7 @@ interface CurrrencyProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Currency here
   currencyISOCode?: string;
   allowDecimals: boolean;
+  formatter?: string;
 }
 
 @Component({
@@ -57,6 +58,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   inputMode: any;
   decimalPrecision: number | undefined;
   formattedValue: string;
+  formatter;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -137,10 +139,15 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     this.currSym = theSymbols.theCurrencySymbol;
     this.currSep = theSymbols.theDigitGroupSeparator;
     this.currDec = theSymbols.theDecimalIndicator;
+    this.formatter = this.configProps$.formatter;
 
     if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
       const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
-      this.formattedValue = format(this.configProps$.value, this.pConn$?.getComponentName()?.toLowerCase(), theCurrencyOptions);
+      if (this.formatter) {
+        this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
+      } else {
+        this.formattedValue = format(this.value$, 'currency', theCurrencyOptions);
+      }
     }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError

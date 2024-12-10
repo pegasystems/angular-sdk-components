@@ -149,10 +149,10 @@ export class DecimalComponent implements OnInit, OnDestroy {
     const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
     this.formatter = this.configProps$.formatter;
 
-    if (this.formatter === 'Currency') {
+    if (this.formatter) {
       this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
     } else {
-      this.formattedValue = format(this.value$, this.pConn$.getComponentName()?.toLowerCase(), theCurrencyOptions);
+      this.formattedValue = format(this.value$, 'decimal', theCurrencyOptions);
     }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
