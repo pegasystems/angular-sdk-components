@@ -76,7 +76,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm a`;
+    this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm A`;
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
@@ -143,7 +143,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
 
     if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
       this.formattedValue$ = format(this.value$, 'datetime', {
-        format: `${this.theDateFormat.dateFormatString} hh:mm a`
+        format: `${this.theDateFormat.dateFormatString} hh:mm A`
       });
     }
 

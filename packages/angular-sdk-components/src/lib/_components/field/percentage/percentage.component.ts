@@ -134,7 +134,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
     this.propName = this.pConn$.getStateProps().value;
 
     if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
-      this.formattedValue = format(nValue, 'percentage');
+      this.formattedValue = nValue ? format(nValue, 'percentage') : '';
     }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError

@@ -9,7 +9,6 @@ import { FormTemplateBaseComponent } from '../form-template-base/form-template-b
 interface DefaultFormProps {
   // If any, enter additional props that only exist on this component
   NumCols: string;
-  template: string;
   instructions: string;
 }
 
@@ -26,21 +25,7 @@ export class DefaultFormComponent extends FormTemplateBaseComponent implements O
 
   arChildren$: any[];
   divClass$: string;
-  template: any;
-  showLabel: any;
-  label: any;
   instructions: string;
-
-  NO_HEADER_TEMPLATES = [
-    'SubTabs',
-    'SimpleTable',
-    'Details',
-    'DetailsTwoColumn',
-    'DetailsThreeColumn',
-    'NarrowWideDetails',
-    'WideNarrowDetails',
-    'Confirmation'
-  ];
 
   constructor(private templateUtils: TemplateUtils) {
     super();
@@ -48,10 +33,6 @@ export class DefaultFormComponent extends FormTemplateBaseComponent implements O
 
   ngOnInit(): void {
     const configProps = this.pConn$.getConfigProps() as DefaultFormProps;
-    this.template = configProps?.template;
-    const propToUse: any = { ...this.pConn$.getInheritedProps() };
-    this.showLabel = propToUse?.showLabel;
-    this.label = propToUse?.label;
     const kids = this.pConn$.getChildren();
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
 

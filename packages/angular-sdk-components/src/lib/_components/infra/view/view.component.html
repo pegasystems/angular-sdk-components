@@ -1,5 +1,5 @@
 <div *ngIf="visibility$ !== false" class="ng-view-top">
-  <div *ngIf="showLabel$ && label$ && templateName$ !== 'SimpleTable' && templateName$ !== 'DefaultForm'" class="template-title-container">
+  <div *ngIf="showLabel$ && label$ && !noHeaderTemplates.includes(templateName$)" class="template-title-container">
     <span>{{ label$ }}</span>
   </div>
 

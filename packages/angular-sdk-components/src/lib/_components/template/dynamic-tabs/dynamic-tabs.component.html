@@ -1,3 +1,6 @@
+<div *ngIf="propsToUse.showLabel && propsToUse.label" class="template-title-container">
+  <span>{{ propsToUse.label }}</span>
+</div>
 <mat-tab-group id="dynamic-tabs" mat-stretch-tabs="false" animationDuration="0">
   <mat-tab *ngFor="let tab of tabsItems" [label]="tab.name">
     <component-mapper name="View" [props]="{ pConn$: tab.content.getPConnect() }"></component-mapper>

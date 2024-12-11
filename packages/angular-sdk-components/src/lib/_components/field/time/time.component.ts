@@ -129,7 +129,7 @@ export class TimeComponent implements OnInit, OnDestroy {
 
     if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
       this.formattedValue$ = format(this.value$, 'timeonly', {
-        format: 'hh:mm a'
+        format: 'hh:mm A'
       });
     }
 
