@@ -6,6 +6,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { DatapageService } from '../../../_services/datapage.service';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -22,6 +23,11 @@ interface DropdownProps extends PConnFieldProps {
   datasource?: any[];
   onRecordChange?: any;
   fieldMetadata?: any;
+  listType?: string;
+  columns?: any[];
+  deferDatasource?: boolean;
+  datasourceMetadata?: any;
+  parameters?: any;
 }
 
 @Component({
@@ -67,7 +73,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
-    private utils: Utils
+    private utils: Utils,
+    private dataPageService: DatapageService
   ) {}
 
   ngOnInit(): void {
@@ -122,7 +129,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DropdownProps;
-
+    let { listType, parameters, datasource = [], columns = [] } = this.configProps$;
+    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps() as DropdownProps;
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
     }
@@ -132,6 +140,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     this.label$ = this.configProps$.label;
     this.helperText = this.configProps$.helperText;
     this.hideLabel = this.configProps$.hideLabel;
+    const context = this.pConn$.getContextName();
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -169,6 +178,33 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
+    if (deferDatasource && datasourceMetadata?.datasource?.name) {
+      listType = 'datapage';
+      datasource = datasourceMetadata.datasource.name;
+      const { parameters: dataSourceParameters, propertyForDisplayText, propertyForValue } = datasourceMetadata.datasource;
+      parameters = this.flattenParameters(dataSourceParameters);
+      const displayProp = propertyForDisplayText?.startsWith('@P') ? propertyForDisplayText.substring(3) : propertyForDisplayText;
+      const valueProp = propertyForValue?.startsWith('@P') ? propertyForValue.substring(3) : propertyForValue;
+      columns = [
+        {
+          key: 'true',
+          setProperty: 'Associated property',
+          value: valueProp
+        },
+        {
+          display: 'true',
+          primary: 'true',
+          useForSearch: true,
+          value: displayProp
+        }
+      ];
+    }
+
+    columns = this.preProcessColumns(columns) || [];
+    if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
+      this.getData(datasource, parameters, columns, context);
+    }
+
     this.propName = this.pConn$.getStateProps().value;
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);
@@ -197,6 +233,56 @@ export class DropdownComponent implements OnInit, OnDestroy {
         timer.unsubscribe();
       });
     }
+  }
+
+  getData(datasource, parameters, columns, context) {
+    this.dataPageService.getDataPageData(datasource, parameters, context).then((results: any) => {
+      const optionsData: any[] = [];
+      const displayColumn = this.getDisplayFieldsMetaData(columns);
+      results?.forEach(element => {
+        const val = element[displayColumn.primary]?.toString();
+        const obj = {
+          key: element[displayColumn.key] || element.pyGUID,
+          value: val
+        };
+        optionsData.push(obj);
+      });
+      optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+      this.options$ = optionsData;
+    });
+  }
+
+  flattenParameters(params = {}) {
+    const flatParams = {};
+    Object.keys(params).forEach(key => {
+      const { name, value: theVal } = params[key];
+      flatParams[name] = theVal;
+    });
+
+    return flatParams;
+  }
+
+  preProcessColumns(columnList) {
+    return columnList.map(col => {
+      const tempColObj = { ...col };
+      tempColObj.value = col.value && col.value.startsWith('.') ? col.value.substring(1) : col.value;
+      return tempColObj;
+    });
+  }
+
+  getDisplayFieldsMetaData(columnList) {
+    const displayColumns = columnList.filter(col => col.display === 'true');
+    const metaDataObj: any = { key: '', primary: '', secondary: [] };
+    const keyCol = columnList.filter(col => col.key === 'true');
+    metaDataObj.key = keyCol.length > 0 ? keyCol[0].value : 'auto';
+    for (let index = 0; index < displayColumns.length; index += 1) {
+      if (displayColumns[index].primary === 'true') {
+        metaDataObj.primary = displayColumns[index].value;
+      } else {
+        metaDataObj.secondary.push(displayColumns[index].value);
+      }
+    }
+    return metaDataObj;
   }
 
   isSelected(buttonValue: string): boolean {
