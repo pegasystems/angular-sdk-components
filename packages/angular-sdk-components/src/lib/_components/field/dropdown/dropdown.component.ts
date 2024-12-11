@@ -246,6 +246,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
         };
         optionsData.push(obj);
       });
+      optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
       this.options$ = optionsData;
     });
   }
