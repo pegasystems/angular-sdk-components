@@ -59,7 +59,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   testId = '';
   helperText: string;
   hideLabel: any;
-
+  theDatasource: any[] | null;
   fieldControl = new FormControl('', null);
   fieldMetadata: any[];
   localeContext = '';
@@ -87,7 +87,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     // call updateSelf when initializing
     // this.updateSelf();
     this.checkAndUpdate();
-
+    this.getDatapageData();
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
@@ -129,8 +129,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DropdownProps;
-    let { listType, parameters, datasource = [], columns = [] } = this.configProps$;
-    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps() as DropdownProps;
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
     }
@@ -140,7 +138,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     this.label$ = this.configProps$.label;
     this.helperText = this.configProps$.helperText;
     this.hideLabel = this.configProps$.hideLabel;
-    const context = this.pConn$.getContextName();
+    const datasource = this.configProps$.datasource;
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -148,6 +146,11 @@ export class DropdownComponent implements OnInit, OnDestroy {
       }
       this.cdRef.detectChanges();
     });
+
+    if (!this.deepEqual(datasource, this.theDatasource)) {
+      // inbound datasource is different, so update theDatasource (to trigger useEffect)
+      this.theDatasource = datasource || null;
+    }
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
@@ -170,40 +173,17 @@ export class DropdownComponent implements OnInit, OnDestroy {
 
     this.componentReference = this.pConn$.getStateProps().value;
 
-    const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-    optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-    this.options$ = optionsList;
     if (this.value$ === '' && !this.bReadonly$) {
       this.value$ = 'Select';
     }
 
-    this.actionsApi = this.pConn$.getActionsApi();
-    if (deferDatasource && datasourceMetadata?.datasource?.name) {
-      listType = 'datapage';
-      datasource = datasourceMetadata.datasource.name;
-      const { parameters: dataSourceParameters, propertyForDisplayText, propertyForValue } = datasourceMetadata.datasource;
-      parameters = this.flattenParameters(dataSourceParameters);
-      const displayProp = propertyForDisplayText?.startsWith('@P') ? propertyForDisplayText.substring(3) : propertyForDisplayText;
-      const valueProp = propertyForValue?.startsWith('@P') ? propertyForValue.substring(3) : propertyForValue;
-      columns = [
-        {
-          key: 'true',
-          setProperty: 'Associated property',
-          value: valueProp
-        },
-        {
-          display: 'true',
-          primary: 'true',
-          useForSearch: true,
-          value: displayProp
-        }
-      ];
+    if (this.theDatasource) {
+      const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
+      optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+      this.options$ = optionsList;
     }
 
-    columns = this.preProcessColumns(columns) || [];
-    if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
-      this.getData(datasource, parameters, columns, context);
-    }
+    this.actionsApi = this.pConn$.getActionsApi();
 
     this.propName = this.pConn$.getStateProps().value;
     const className = this.pConn$.getCaseInfo().getClassName();
@@ -233,6 +213,65 @@ export class DropdownComponent implements OnInit, OnDestroy {
         timer.unsubscribe();
       });
     }
+  }
+
+  deepEqual(obj1: any, obj2: any): boolean {
+    if (obj1 === obj2) return true; // Check if they are the same reference or primitive values
+
+    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+      return false; // If either is not an object, they cannot be equal
+    }
+
+    // Get the list of property names from both objects
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) return false; // Objects must have the same number of keys
+
+    for (const key of keys1) {
+      if (!keys2.includes(key)) return false; // obj2 should have all the keys of obj1
+      if (!this.deepEqual(obj1[key], obj2[key])) return false; // Recursively check the values
+    }
+
+    return true;
+  }
+
+  getDatapageData() {
+    const configProps = this.pConn$.getConfigProps() as DropdownProps;
+    let { listType, parameters, datasource = [], columns = [] } = configProps;
+    const { deferDatasource, datasourceMetadata } = configProps;
+    const context = this.pConn$.getContextName();
+    if (deferDatasource && datasourceMetadata?.datasource?.name) {
+      listType = 'datapage';
+      datasource = datasourceMetadata.datasource.name;
+      const { parameters: dataSourceParameters, propertyForDisplayText, propertyForValue } = datasourceMetadata.datasource;
+      parameters = this.flattenParameters(dataSourceParameters);
+      const displayProp = propertyForDisplayText?.startsWith('@P') ? propertyForDisplayText.substring(3) : propertyForDisplayText;
+      const valueProp = propertyForValue?.startsWith('@P') ? propertyForValue.substring(3) : propertyForValue;
+      columns = [
+        {
+          key: 'true',
+          setProperty: 'Associated property',
+          value: valueProp
+        },
+        {
+          display: 'true',
+          primary: 'true',
+          useForSearch: true,
+          value: displayProp
+        }
+      ];
+    }
+
+    columns = this.preProcessColumns(columns) || [];
+    if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
+      this.getData(datasource, parameters, columns, context);
+    }
+    // else {
+    //   const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
+    //   optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+    //   this.options$ = optionsList;
+    // }
   }
 
   getData(datasource, parameters, columns, context) {
