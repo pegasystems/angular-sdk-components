@@ -267,11 +267,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
       this.getData(datasource, parameters, columns, context);
     }
-    // else {
-    //   const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-    //   optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-    //   this.options$ = optionsList;
-    // }
   }
 
   getData(datasource, parameters, columns, context) {
