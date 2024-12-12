@@ -20,5 +20,4 @@ import { FormGroup } from '@angular/forms';
 export class HybridViewContainerComponent {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() displayOnlyFA$: boolean;
 }

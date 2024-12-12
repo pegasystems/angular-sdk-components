@@ -122,7 +122,7 @@ export class MainScreenComponent implements OnInit, OnDestroy {
             : {}
       };
       PCore.getMashupApi()
-        .createCase(mashupCaseType, PCore.getConstants().APP.APP, options)
+        .createCase(mashupCaseType, PCore.getConstants().APP.ROOT, options)
         .then(() => {
           console.log('createCase rendering is complete');
         });

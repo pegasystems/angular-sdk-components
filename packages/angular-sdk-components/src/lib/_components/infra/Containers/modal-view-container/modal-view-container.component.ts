@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
@@ -23,10 +23,6 @@ import { ReferenceComponent } from '../../reference/reference.component';
 })
 export class ModalViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
-  @Input() displayOnlyFA$: boolean;
-
-  // for when non modal
-  @Output() modalVisibleChange = new EventEmitter<boolean>();
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -39,7 +35,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   context$: string;
   title$ = '';
   bShowModal$ = false;
-  bShowAsModal$ = true;
   itemKey$: string;
   formGroup$: FormGroup;
   oCaseInfo: Object = {};
@@ -73,11 +68,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.displayOnlyFA$) {
-      // for when non modal
-      this.bShowAsModal$ = false;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
@@ -261,9 +251,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
 
         this.bShowModal$ = true;
 
-        // for when non modal
-        this.modalVisibleChange.emit(this.bShowModal$);
-
         // save off itemKey to be used for finishAssignment, etc.
         this.itemKey$ = key;
 
@@ -279,14 +266,9 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       // should put here
     }
 
-    this.ngZone.run(() => {
-      this.bShowModal$ = false;
+    this.bShowModal$ = false;
 
-      // for when non modal
-      this.modalVisibleChange.emit(this.bShowModal$);
-
-      this.oCaseInfo = {};
-    });
+    this.oCaseInfo = {};
   }
 
   getConfigObject(item, pConnect, isReverseCoexistence = false) {
@@ -414,13 +396,8 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
 
   closeActionsDialog = () => {
     this.actionsDialog = true;
-    // this.ngZone.run(() => {
     this.bShowModal$ = false;
 
-    // for when non modal
-    this.modalVisibleChange.emit(this.bShowModal$);
-
     this.oCaseInfo = {};
-    // });
   };
 }

@@ -10,7 +10,7 @@
     "mashupClientId": "69184022781147469983",
     "mashupUserIdentifier": "customer@mediaco",
     "mashupClient_comment3": "Note: mashupPassword requires Base64 encoding",
-    "mashupPassword": "",
+    "mashupPassword": "cGVnYQ==",
 
     "portalClientId_comment": "Client ID from the OAuth 2.0 Client Registration record used for portal use case",
     "portalClientId": "69184022781147469983"
@@ -20,7 +20,7 @@
     "comment_serverConfig": "serverConfig is the block for SDK Content Server config entries",
 
     "infinityRestServerUrl_comment": "Full path to Infinity REST server",
-    "infinityRestServerUrl": "https://localhost:1080/prweb",
+    "infinityRestServerUrl": "https://dxaui242d.lab.pega.com/prweb",
 
     "appAlias_comment": "appAlias of the application which operators will be accessing (e.g., MediaCo)",
     "appAlias": "",

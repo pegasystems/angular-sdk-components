@@ -7,7 +7,6 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
-import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -26,7 +25,6 @@ const options = { context: 'app' };
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    HybridViewContainerComponent,
     ModalViewContainerComponent,
     PreviewViewContainerComponent,
     forwardRef(() => ComponentMapperComponent)
@@ -40,14 +38,12 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  componentName$ = '';
   bIsProgress$ = false;
 
   // preview and modalview pConn
   pvConn$: any = null;
   mConn$: any = null;
-
-  bShowRoot$ = true;
+  childPConn$: any = null; // holds pconnect object of children (either view or view-container)
 
   progressSpinnerSubscription: Subscription;
   spinnerTimer: any = null;
@@ -128,16 +124,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  modalVisibleChanged(isVisible) {
-    if (this.displayOnlyFA$) {
-      if (isVisible) {
-        this.bShowRoot$ = false;
-      } else {
-        this.bShowRoot$ = true;
-      }
-    }
-  }
-
   updateSelf() {
     // need to call this.getCurrentCompleteProps (not this.thePConn.getConfigProps)
     //  to get full set of props that affect this component in Redux
@@ -163,59 +149,22 @@ export class RootContainerComponent implements OnInit, OnDestroy {
             }
           });
 
-          setTimeout(() => {
-            // makes sure Angular tracks these changes
-            this.ngZone.run(() => {
-              // the new rootObject may be a 'reference'. So,
-              //  normalize it to get the referencedView if that's the case
-              const theNewPConn = ReferenceComponent.normalizePConn(rootObject.getPConnect());
-              // update ComponentName$ before we update pConn$ to make sure they're in sync
-              //  when rendering...
-              this.componentName$ = theNewPConn.getComponentName();
-
-              this.pConn$ = theNewPConn;
-              // this.pConn$ = rootObject.getPConnect();
-
-              console.log(`RootContainer updated pConn$ to be: ${this.componentName$}`);
-            });
+          this.ngZone.run(() => {
+            this.childPConn$ = ReferenceComponent.normalizePConn(rootObject.getPConnect());
+            console.log(`RootContainer updated pConn$ to be: ${this.childPConn$.getComponentName()}`);
           });
         }
       }
     } else if (renderingMode === noPortalMode) {
       // console.log(`RootContainer: renderingMode === noPortalMode: ${noPortalMode}`);
-      this.generateViewContainerForNoPortal();
+      const theChildren = this.pConn$.getChildren();
+      if (theChildren && theChildren.length == 1) {
+        this.childPConn$ = theChildren[0].getPConnect();
+      }
     } else if (children && children.length > 0) {
       // haven't resolved to here
     } else if (skeleton !== undefined) {
       // TODO: need to update once skeletons are available;
-    }
-  }
-
-  generateViewContainerForNoPortal() {
-    // bootstrap loadMashup resolves to here
-    const arChildren = this.pConn$.getChildren() as any[];
-    if (arChildren && arChildren.length == 1) {
-      // have to have a quick timeout or get an "expressions changed" angular error
-      setTimeout(() => {
-        this.ngZone.run(() => {
-          const localPConn = arChildren[0].getPConnect();
-
-          this.componentName$ = localPConn.getComponentName();
-          if (this.componentName$ === 'ViewContainer') {
-            const configProps = this.pConn$.getConfigProps();
-            const viewContConfig = {
-              meta: {
-                type: 'ViewContainer',
-                config: configProps
-              },
-              options
-            };
-
-            this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
-          }
-          this.bShowRoot$ = true;
-        });
-      });
     }
   }
 
