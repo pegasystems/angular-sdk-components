@@ -5,12 +5,46 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
+import isEqual from 'fast-deep-equal';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+
+function flattenParameters(params = {}) {
+  const flatParams = {};
+  Object.keys(params).forEach(key => {
+    const { name, value: theVal } = params[key];
+    flatParams[name] = theVal;
+  });
+
+  return flatParams;
+}
+
+function preProcessColumns(columnList) {
+  return columnList.map(col => {
+    const tempColObj = { ...col };
+    tempColObj.value = col.value && col.value.startsWith('.') ? col.value.substring(1) : col.value;
+    return tempColObj;
+  });
+}
+
+function getDisplayFieldsMetaData(columnList) {
+  const displayColumns = columnList.filter(col => col.display === 'true');
+  const metaDataObj: any = { key: '', primary: '', secondary: [] };
+  const keyCol = columnList.filter(col => col.key === 'true');
+  metaDataObj.key = keyCol.length > 0 ? keyCol[0].value : 'auto';
+  for (let index = 0; index < displayColumns.length; index += 1) {
+    if (displayColumns[index].primary === 'true') {
+      metaDataObj.primary = displayColumns[index].value;
+    } else {
+      metaDataObj.secondary.push(displayColumns[index].value);
+    }
+  }
+  return metaDataObj;
+}
 
 interface IOption {
   key: string;
@@ -85,9 +119,10 @@ export class DropdownComponent implements OnInit, OnDestroy {
     // Then, continue on with other initialization
 
     // call updateSelf when initializing
-    // this.updateSelf();
     this.checkAndUpdate();
+    // this should get called afer checkAndUpdate
     this.getDatapageData();
+
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
@@ -147,8 +182,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.cdRef.detectChanges();
     });
 
-    if (!this.deepEqual(datasource, this.theDatasource)) {
-      // inbound datasource is different, so update theDatasource (to trigger useEffect)
+    if (!isEqual(datasource, this.theDatasource)) {
+      // inbound datasource is different, so update theDatasource
       this.theDatasource = datasource || null;
     }
 
@@ -215,27 +250,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  deepEqual(obj1: any, obj2: any): boolean {
-    if (obj1 === obj2) return true; // Check if they are the same reference or primitive values
-
-    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
-      return false; // If either is not an object, they cannot be equal
-    }
-
-    // Get the list of property names from both objects
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-
-    if (keys1.length !== keys2.length) return false; // Objects must have the same number of keys
-
-    for (const key of keys1) {
-      if (!keys2.includes(key)) return false; // obj2 should have all the keys of obj1
-      if (!this.deepEqual(obj1[key], obj2[key])) return false; // Recursively check the values
-    }
-
-    return true;
-  }
-
   getDatapageData() {
     const configProps = this.pConn$.getConfigProps() as DropdownProps;
     let { listType, parameters, datasource = [], columns = [] } = configProps;
@@ -245,7 +259,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
       listType = 'datapage';
       datasource = datasourceMetadata.datasource.name;
       const { parameters: dataSourceParameters, propertyForDisplayText, propertyForValue } = datasourceMetadata.datasource;
-      parameters = this.flattenParameters(dataSourceParameters);
+      parameters = flattenParameters(dataSourceParameters);
       const displayProp = propertyForDisplayText?.startsWith('@P') ? propertyForDisplayText.substring(3) : propertyForDisplayText;
       const valueProp = propertyForValue?.startsWith('@P') ? propertyForValue.substring(3) : propertyForValue;
       columns = [
@@ -263,7 +277,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
       ];
     }
 
-    columns = this.preProcessColumns(columns) || [];
+    columns = preProcessColumns(columns) || [];
     if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
       this.getData(datasource, parameters, columns, context);
     }
@@ -272,7 +286,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   getData(datasource, parameters, columns, context) {
     this.dataPageService.getDataPageData(datasource, parameters, context).then((results: any) => {
       const optionsData: any[] = [];
-      const displayColumn = this.getDisplayFieldsMetaData(columns);
+      const displayColumn = getDisplayFieldsMetaData(columns);
       results?.forEach(element => {
         const val = element[displayColumn.primary]?.toString();
         const obj = {
@@ -284,39 +298,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
       optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
       this.options$ = optionsData;
     });
-  }
-
-  flattenParameters(params = {}) {
-    const flatParams = {};
-    Object.keys(params).forEach(key => {
-      const { name, value: theVal } = params[key];
-      flatParams[name] = theVal;
-    });
-
-    return flatParams;
-  }
-
-  preProcessColumns(columnList) {
-    return columnList.map(col => {
-      const tempColObj = { ...col };
-      tempColObj.value = col.value && col.value.startsWith('.') ? col.value.substring(1) : col.value;
-      return tempColObj;
-    });
-  }
-
-  getDisplayFieldsMetaData(columnList) {
-    const displayColumns = columnList.filter(col => col.display === 'true');
-    const metaDataObj: any = { key: '', primary: '', secondary: [] };
-    const keyCol = columnList.filter(col => col.key === 'true');
-    metaDataObj.key = keyCol.length > 0 ? keyCol[0].value : 'auto';
-    for (let index = 0; index < displayColumns.length; index += 1) {
-      if (displayColumns[index].primary === 'true') {
-        metaDataObj.primary = displayColumns[index].value;
-      } else {
-        metaDataObj.secondary.push(displayColumns[index].value);
-      }
-    }
-    return metaDataObj;
   }
 
   isSelected(buttonValue: string): boolean {
