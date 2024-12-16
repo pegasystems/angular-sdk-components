@@ -3,9 +3,9 @@
     <div class="mc-banner">Combine TV, Internet, and Voice for the best deal</div>
 
     <div style="display: flex; justify-content: space-evenly">
-      <app-bundle-swatch [swatchConfig$]="firstConfig$" (ShopNowButtonClick)="onShopNow($event)"></app-bundle-swatch>
-      <app-bundle-swatch [swatchConfig$]="secondConfig$" (ShopNowButtonClick)="onShopNow($event)"></app-bundle-swatch>
-      <app-bundle-swatch [swatchConfig$]="thirdConfig$" (ShopNowButtonClick)="onShopNow($event)"></app-bundle-swatch>
+      <app-shopping-card [swatchConfig$]="firstConfig$" (ShopNowButtonClick)="onShopNow($event)"></app-shopping-card>
+      <app-shopping-card [swatchConfig$]="secondConfig$" (ShopNowButtonClick)="onShopNow($event)"></app-shopping-card>
+      <app-shopping-card [swatchConfig$]="thirdConfig$" (ShopNowButtonClick)="onShopNow($event)"></app-shopping-card>
     </div>
   </div>
   <div [hidden]="!showPega$">

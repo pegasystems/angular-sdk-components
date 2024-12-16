@@ -26,14 +26,14 @@ declare global {
 }
 
 @Component({
-  selector: 'app-mc-nav',
-  templateUrl: './mc-nav.component.html',
-  styleUrls: ['./mc-nav.component.scss'],
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
   providers: [Utils],
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, MatToolbarModule, MatIconModule, MatButtonModule, MainScreenComponent]
 })
-export class MCNavComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, OnDestroy {
   starterPackVersion$: string = endpoints.SP_VERSION;
   pConn$: typeof PConnect;
 

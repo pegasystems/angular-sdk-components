@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
-import { BundleSwatchComponent } from '../bundle-swatch/bundle-swatch.component';
+import { ShoppingCardComponent } from '../shopping-card/shopping-card.component';
 import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
 import { ServerConfigService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/server-config.service';
 import { ComponentMapperComponent } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
@@ -11,7 +11,7 @@ import { ComponentMapperComponent } from '../../../../../../../packages/angular-
   templateUrl: './main-screen.component.html',
   styleUrls: ['./main-screen.component.scss'],
   standalone: true,
-  imports: [CommonModule, BundleSwatchComponent, ComponentMapperComponent, ResolutionScreenComponent]
+  imports: [CommonModule, ShoppingCardComponent, ComponentMapperComponent, ResolutionScreenComponent]
 })
 export class MainScreenComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

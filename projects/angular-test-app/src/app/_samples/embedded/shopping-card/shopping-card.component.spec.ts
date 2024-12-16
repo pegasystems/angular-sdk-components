@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { MCNavComponent } from './mc-nav.component';
+import { ShoppingCardComponent } from './shopping-card.component';
 
-describe('MCNavComponent', () => {
-  let component: MCNavComponent;
-  let fixture: ComponentFixture<MCNavComponent>;
+describe('ShoppingCardComponent', () => {
+  let component: ShoppingCardComponent;
+  let fixture: ComponentFixture<ShoppingCardComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MCNavComponent]
+      declarations: [ShoppingCardComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MCNavComponent);
+    fixture = TestBed.createComponent(ShoppingCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

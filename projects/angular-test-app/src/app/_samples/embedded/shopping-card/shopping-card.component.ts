@@ -1,12 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-  selector: 'app-bundle-swatch',
-  templateUrl: './bundle-swatch.component.html',
-  styleUrls: ['./bundle-swatch.component.scss'],
+  selector: 'app-shopping-card',
+  templateUrl: './shopping-card.component.html',
+  styleUrls: ['./shopping-card.component.scss'],
   standalone: true
 })
-export class BundleSwatchComponent implements OnInit {
+export class ShoppingCardComponent implements OnInit {
   @Input() swatchConfig$: any;
   @Output() ShopNowButtonClick: EventEmitter<any> = new EventEmitter();
 
