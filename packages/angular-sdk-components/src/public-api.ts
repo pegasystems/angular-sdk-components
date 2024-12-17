@@ -52,6 +52,9 @@ export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
 export * from './lib/_components/infra/Containers/base-components/flow-container-base.component';
 
+export * from './lib/_components/template/base/form-template-base';
+export * from './lib/_components/template/base/details-template-base';
+
 export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
@@ -68,7 +71,6 @@ export * from './lib/_components/template/details-wide-narrow/details-wide-narro
 export * from './lib/_components/template/field-group-list/field-group-list.component';
 export * from './lib/_components/template/field-group-template/field-group-template.component';
 export * from './lib/_components/template/field-value-list/field-value-list.component';
-export * from './lib/_components/template/form-template-base/form-template-base.component';
 export * from './lib/_components/template/inline-dashboard/inline-dashboard.component';
 export * from './lib/_components/template/inline-dashboard-page/inline-dashboard-page.component';
 export * from './lib/_components/template/list-page/list-page.component';

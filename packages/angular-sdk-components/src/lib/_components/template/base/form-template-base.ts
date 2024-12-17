@@ -1,7 +1,7 @@
 import { Directive, OnDestroy } from '@angular/core';
 
 @Directive()
-export class FormTemplateBaseComponent implements OnDestroy {
+export class FormTemplateBase implements OnDestroy {
   pConn$: any;
 
   ngOnDestroy(): void {

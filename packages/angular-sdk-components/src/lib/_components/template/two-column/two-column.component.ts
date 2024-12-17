@@ -2,7 +2,7 @@ import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { FormTemplateBaseComponent } from '../form-template-base/form-template-base.component';
+import { FormTemplateBase } from '../base/form-template-base';
 
 @Component({
   selector: 'app-two-column',
@@ -11,7 +11,7 @@ import { FormTemplateBaseComponent } from '../form-template-base/form-template-b
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class TwoColumnComponent extends FormTemplateBaseComponent implements OnInit, OnChanges {
+export class TwoColumnComponent extends FormTemplateBase implements OnInit, OnChanges {
   @Input() override pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 

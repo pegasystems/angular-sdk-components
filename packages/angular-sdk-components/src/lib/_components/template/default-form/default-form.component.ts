@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
-import { FormTemplateBaseComponent } from '../form-template-base/form-template-base.component';
+import { FormTemplateBase } from '../base/form-template-base';
 
 interface DefaultFormProps {
   // If any, enter additional props that only exist on this component
@@ -19,7 +19,7 @@ interface DefaultFormProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DefaultFormComponent extends FormTemplateBaseComponent implements OnInit {
+export class DefaultFormComponent extends FormTemplateBase implements OnInit {
   @Input() override pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
