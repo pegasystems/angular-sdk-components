@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { TopAppMashupComponent } from './_samples/full-portal/top-app-mashup/top-app-mashup.component';
 import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
-import { HeaderComponent } from './_samples/embedded/header/header.component';
+import { EmbeddedComponent } from './_samples/embedded/embedded/embedded.component';
 import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
 
 // Adding path to remove "Cannot match routes" error at launch
@@ -17,15 +17,15 @@ import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_
 // similiar to Nebula/Constellaion)
 
 export const routes: Routes = [
-  { path: '', component: HeaderComponent },
+  { path: '', component: EmbeddedComponent },
   { path: endpoints.PORTAL, component: TopAppMashupComponent },
   { path: endpoints.PORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTAL, component: TopAppMashupComponent },
   { path: endpoints.FULLPORTALHTML, component: TopAppMashupComponent },
   { path: endpoints.SIMPLEPORTAL, component: NavigationComponent },
   { path: endpoints.SIMPLEPORTALHTML, component: NavigationComponent },
-  { path: endpoints.EMBEDDED, component: HeaderComponent },
-  { path: endpoints.EMBEDDEDHTML, component: HeaderComponent },
-  { path: endpoints.MASHUP, component: HeaderComponent },
-  { path: endpoints.MASHUPHTML, component: HeaderComponent }
+  { path: endpoints.EMBEDDED, component: EmbeddedComponent },
+  { path: endpoints.EMBEDDEDHTML, component: EmbeddedComponent },
+  { path: endpoints.MASHUP, component: EmbeddedComponent },
+  { path: endpoints.MASHUPHTML, component: EmbeddedComponent }
 ];
