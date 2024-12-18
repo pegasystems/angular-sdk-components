@@ -7,6 +7,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectService, AngularPConnectData } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface TextInputProps extends PConnFieldProps {
@@ -160,8 +161,9 @@ export class TextInputComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'changeNblur', propName, event?.target?.value);
   }
 
   getErrorMessage() {

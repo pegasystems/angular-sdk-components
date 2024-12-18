@@ -260,14 +260,29 @@ export class AngularPConnectService {
       inComp.bridgeComponentID = theCompID;
     } else {
       returnObject.compID = theCompID;
-      returnObject.unsubscribeFn = theUnsub;
+      returnObject.unsubscribeFn = () => {
+        this.removeFormField(inComp);
+        theUnsub();
+      };
     }
 
     // initialize this components entry in the componentPropsArr
     this.componentPropsArr[theCompID] = {};
 
+    this.addFormField(inComp);
+
     // return object with compID and unsubscribe...
     return returnObject;
+  }
+
+  addFormField(inComp) {
+    inComp.pConn$?.addFormField();
+  }
+
+  removeFormField(inComp) {
+    if (inComp.pConn$?.removeFormField) {
+      inComp.pConn$?.removeFormField();
+    }
   }
 
   // Returns true if the component's entry in ___componentPropsArr___ is

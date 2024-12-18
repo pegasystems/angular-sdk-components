@@ -159,7 +159,7 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
      * The resolution lies in transferring this responsibility to the Reference component, eliminating the need for this code when Reference
      * component is able to handle it.
      */
-    if (this.pConn$.getPageReference().length > 'caseInfo.content'.length) {
+    if (!this.configProps$.visibility && this.pConn$.getPageReference().length > 'caseInfo.content'.length) {
       this.visibility$ = evaluateVisibility(this.pConn$);
     }
 

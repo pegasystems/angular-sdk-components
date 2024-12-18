@@ -202,10 +202,9 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    if (event.target.value) event.value = event.target.value;
-
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'changeNblur', propName, event?.target?.value);
   }
 
   getErrorMessage() {
