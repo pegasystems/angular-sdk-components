@@ -279,25 +279,39 @@ export class DropdownComponent implements OnInit, OnDestroy {
 
     columns = preProcessColumns(columns) || [];
     if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
-      this.getData(datasource, parameters, columns, context);
+      this.getData(datasource, parameters, columns, context, listType);
     }
   }
 
-  getData(datasource, parameters, columns, context) {
-    this.dataPageService.getDataPageData(datasource, parameters, context).then((results: any) => {
-      const optionsData: any[] = [];
-      const displayColumn = getDisplayFieldsMetaData(columns);
-      results?.forEach(element => {
-        const val = element[displayColumn.primary]?.toString();
-        const obj = {
-          key: element[displayColumn.key] || element.pyGUID,
-          value: val
-        };
-        optionsData.push(obj);
+  getData(dataSource, parameters, columns, context, listType) {
+    const dataConfig: any = {
+      columns,
+      dataSource,
+      deferDatasource: true,
+      listType,
+      parameters,
+      matchPosition: 'contains',
+      maxResultsDisplay: '5000',
+      cacheLifeSpan: 'form'
+    };
+    PCore.getDataApi()
+      .init(dataConfig, context)
+      .then((dataApiObj: any) => {
+        const optionsData: any[] = [];
+        const displayColumn = getDisplayFieldsMetaData(columns);
+        dataApiObj?.fetchData('').then(response => {
+          response.data?.forEach(element => {
+            const val = element[displayColumn.primary]?.toString();
+            const obj = {
+              key: element[displayColumn.key] || element.pyGUID,
+              value: val
+            };
+            optionsData.push(obj);
+          });
+          optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+          this.options$ = optionsData;
+        });
       });
-      optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-      this.options$ = optionsData;
-    });
   }
 
   isSelected(buttonValue: string): boolean {
