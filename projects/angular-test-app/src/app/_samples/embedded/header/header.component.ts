@@ -1,9 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { endpoints } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
 
 @Component({
   selector: 'app-header',
@@ -13,9 +12,9 @@ import { endpoints } from '../../../../../../../packages/angular-sdk-components/
   imports: [CommonModule, MatToolbarModule, MatIconModule, MatButtonModule]
 })
 export class HeaderComponent implements OnInit {
-  @Input() applicationLabel: string | undefined;
-  starterPackVersion$: string = endpoints.SP_VERSION;
+  applicationLabel: string | undefined;
 
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
-  ngOnInit() {}
+  ngOnInit() {
+    this.applicationLabel = PCore.getEnvironmentInfo().getApplicationLabel();
+  }
 }

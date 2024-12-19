@@ -2,9 +2,10 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResolutionScreenComponent } from '../resolution-screen/resolution-screen.component';
 import { ShoppingCardComponent } from '../shopping-card/shopping-card.component';
-import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
-import { ServerConfigService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/server-config.service';
-import { ComponentMapperComponent } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
+import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { ServerConfigService } from 'packages/angular-sdk-components/src/lib/_services/server-config.service';
+import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
+import { shoppingOptions } from '../utils';
 
 @Component({
   selector: 'app-main-screen',
@@ -16,11 +17,10 @@ import { ComponentMapperComponent } from '../../../../../../../packages/angular-
 export class MainScreenComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
-  firstConfig$: any;
-  secondConfig$: any;
-  thirdConfig$: any;
-  showTriplePlayOptions$ = true;
+  shoppingOptionsList = shoppingOptions;
+
   showPega$ = false;
+  showTriplePlayOptions$ = true;
   showResolution$ = false;
 
   constructor(
@@ -29,42 +29,6 @@ export class MainScreenComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // first
-    this.firstConfig$ = {
-      play: 'Triple Play',
-      level: 'Basic',
-      channels: '100+',
-      channels_full: '100+ (Basic +)',
-      banner: 'Value package',
-      price: '99.00',
-      internetSpeed: '100 Mbps',
-      calling: ''
-    };
-
-    // second
-    this.secondConfig$ = {
-      play: 'Triple Play',
-      level: 'Silver',
-      channels: '125+',
-      channels_full: '125+ (Delux)',
-      banner: 'Most popular',
-      price: '120.00',
-      internetSpeed: '300 Mbps',
-      calling: ''
-    };
-
-    // third
-    this.thirdConfig$ = {
-      play: 'Triple Play',
-      level: 'Gold',
-      channels: '175+',
-      channels_full: '175+ (Premium)',
-      banner: 'All the channels you want',
-      price: '150.00',
-      internetSpeed: '1 Gbps',
-      calling: ' & International'
-    };
-
     PCore.getPubSubUtils().subscribe(
       PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {

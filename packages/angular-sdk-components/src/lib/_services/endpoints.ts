@@ -30,8 +30,6 @@ export const endpoints = {
   //   loginExperience: loginBoxType.Main
   // },
 
-  SP_VERSION: '1.00',
-
   AUTH: '/v1/authenticate',
   CASES: '/v1/cases',
   CASES_V2: '/application/v2/cases',
