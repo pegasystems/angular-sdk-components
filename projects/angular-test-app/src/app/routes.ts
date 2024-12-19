@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { FullPortalComponent } from './_samples/full-portal/full-portal.component';
-import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
 import { EmbeddedComponent } from './_samples/embedded/embedded.component';
+import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
 import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
 
 // Adding path to remove "Cannot match routes" error at launch
