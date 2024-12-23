@@ -8,6 +8,20 @@ import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs'];
+const DETAILS_TEMPLATES = [
+  'Details',
+  'DetailsFields',
+  'DetailsOneColumn',
+  'DetailsSubTabs',
+  'DetailsThreeColumn',
+  'DetailsTwoColumn',
+  'NarrowWideDetails',
+  'WideNarrowDetails'
+];
+
+function isDetailsTemplate(template) {
+  return DETAILS_TEMPLATES.includes(template);
+}
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -146,7 +160,7 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     this.templateName$ = this.configProps$.template || '';
     this.title$ = this.configProps$.title || '';
     this.label$ = this.configProps$.label || '';
-    this.showLabel$ = this.configProps$.showLabel || this.showLabel$;
+    this.showLabel$ = this.configProps$.showLabel || isDetailsTemplate(this.templateName$) || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
     this.label$ = this.inheritedProps$.label || this.label$;
     this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
