@@ -136,12 +136,12 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     return user.userName;
   };
 
-  getValue(user) {
+  getValue = user => {
     if (this.displayAs$ === DROPDOWN_LIST) {
       return this.utils.getUserId(user) || this.getUserName(user);
     }
     return this.isUserNameAvailable(user) ? this.getUserName(user) : this.utils.getUserId(user);
-  }
+  };
 
   async checkAndUpdate() {
     // Should always check the bridge to see if the component should
