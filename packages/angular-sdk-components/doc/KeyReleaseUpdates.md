@@ -1,19 +1,36 @@
-### Angular SDK - Release Announcement - v24.1.10 (08 August 2024)
+### Angular SDK - Release Announcement - v24.2.10 (26 December 2024)
 
-This release - **SDK-A v24.1.10** - is **only compatible with Pega Infinity 24.1**. This release is related to the [**release/24.1.10** branch of the React SDK repository](https://github.com/pegasystems/angular-sdk/tree/release/24.1.10).
+This release - **SDK-A v24.2.10** - is **only compatible with Pega Infinity 24.2**. This release is related to the [**release/24.2.10** branch of the Angular SDK repository](https://github.com/pegasystems/angular-sdk/tree/release/24.2.10).
 <br>
 
-The SDK-R v24.1.10 release allow React SDK users to to take advantage of the latest [SDK enhancements and fixes noted in **What's New in the SDK?**](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/react-sdk-updates.html) including:
+The SDK-A v24.2.10 release allow Angular SDK users to to take advantage of the latest [SDK enhancements and fixes noted in **What's New in the SDK?**](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/angular-sdk-updates.html) including:
+
+* Upgraded the Angular version to 18 and the Angular Material version to 18.
+* Field components have been updated to perform event handling using the handleEvent utility function.
+* Updated the value of the displayMode property from LABELS_LEFT to DISPLAY_ONLY.
+* Enhanced the support for the details component in a form view.
+* Bug fixes
+* Full set of merged PRs can be found in the [angular-sdk-components GitHub repo list of merged PRs](https://github.com/pegasystems/angular-sdk-components/pulls?q=is%3Apr+is%3Amerged+base%3Amaster+). This release includes all PRs since (and including) #214.
+<br />
+<hr />
+
+### Previous Releases
+
+
+#### Angular SDK - v24.1.10 (08 August 2024)
+
+This release - **SDK-A v24.1.10** - is **only compatible with Pega Infinity 24.1**. This release is related to the [**release/24.1.10** branch of the Angular SDK repository](https://github.com/pegasystems/angular-sdk/tree/release/24.1.10).
+<br>
+
+The SDK-A v24.1.10 release allow Angular SDK users to to take advantage of the latest [SDK enhancements and fixes noted in **What's New in the SDK?**](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/angular-sdk-updates.html) including:
 
 * Support has been added for the approve and reject case actions
 * Support for the Checkbox group and Combo-Box display options in the MultiSelect mode for the Data Reference and Case Reference fields.
 * Save For Later functionality now works as expected
 * Bug fixes
-* Full set of merged PRs can be found in the [react-sdk-components GitHub repo list of merged PRs](https://github.com/pegasystems/angular-sdk-components/pulls?q=is%3Apr+is%3Amerged+base%3Amaster+). This release includes all PRs since (and including) #153.
+* Full set of merged PRs can be found in the [angular-sdk-components GitHub repo list of merged PRs](https://github.com/pegasystems/angular-sdk-components/pulls?q=is%3Apr+is%3Amerged+base%3Amaster+). This release includes all PRs since (and including) #153.
 <br />
 <hr />
-
-### Previous Releases
 
 #### Angular SDK - v23.1.10 (20 March 2024)
 
