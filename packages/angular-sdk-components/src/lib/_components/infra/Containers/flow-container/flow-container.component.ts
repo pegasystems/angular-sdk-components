@@ -119,6 +119,14 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       },
       'cancelPressed'
     );
+
+    PCore.getPubSubUtils().subscribe(
+      'clearBannerMessages',
+      () => {
+        this.banners = [];
+      },
+      'CLEAR_BANNER_MESSAGES'
+    );
   }
 
   ngOnDestroy() {
@@ -129,6 +137,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     PCore.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
+    PCore.getPubSubUtils().unsubscribe('clearBannerMessages', 'CLEAR_BANNER_MESSAGES');
   }
 
   handleCancel() {
@@ -152,14 +161,15 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     const pConn = this.pConnectOfActiveContainerItem || this.pConn$;
     const caseViewModeFromProps = this.angularPConnect.getComponentProp(this, 'caseViewMode');
     const caseViewModeFromRedux = pConn.getValue('context_data.caseViewMode', '');
+    const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
 
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
+    // eslint-disable-next-line sonarjs/no-collapsible-if
     if (bUpdateSelf || caseViewModeFromProps !== caseViewModeFromRedux) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
-      const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
       if (!completeProps.pageMessages || completeProps.pageMessages.length == 0) {
         // with a cancel, need to timeout so todo will update correctly
         if (this.bHasCancel) {
@@ -170,10 +180,10 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
         } else {
           this.updateSelf();
         }
-      } else {
-        this.showPageMessages(completeProps);
       }
     }
+
+    this.showPageMessages(completeProps);
   }
 
   showPageMessages(completeProps: FlowContainerProps) {

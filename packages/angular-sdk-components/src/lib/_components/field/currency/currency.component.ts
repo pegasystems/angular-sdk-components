@@ -170,15 +170,25 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = Number(event.target.value).toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      this.angularPConnectData.actions?.onChange(this, event);
+    }
   }
 
   fieldOnBlur(event: any) {
     // PConnect wants to use eventHandler for onBlur
 
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
-    handleEvent(actionsApi, 'changeNblur', propName, event?.target?.value);
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = Number(event.target.value).toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      const actionsApi = this.pConn$?.getActionsApi();
+      const propName = (this.pConn$?.getStateProps() as any).value;
+      handleEvent(actionsApi, 'changeNblur', propName, event?.target?.value);
+    }
   }
 
   getErrorMessage() {
