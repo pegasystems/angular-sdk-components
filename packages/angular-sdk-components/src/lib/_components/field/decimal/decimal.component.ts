@@ -160,12 +160,18 @@ export class DecimalComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(event: any) {
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
     let value = event?.target?.value;
     value = value.replace(/,/g, '');
     value = value !== '' ? Number(value) : value;
-    handleEvent(actionsApi, 'changeNblur', propName, value);
+
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      const actionsApi = this.pConn$?.getActionsApi();
+      const propName = (this.pConn$?.getStateProps() as any).value;
+      handleEvent(actionsApi, 'changeNblur', propName, value);
+    }
   }
 
   getErrorMessage() {

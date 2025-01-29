@@ -28,7 +28,7 @@ function getChildCaseAssignments(pConnect) {
   return allAssignments;
 }
 
-function hasAssignments(pConnect) {
+export function hasAssignments(pConnect) {
   const { CASE_INFO } = PCore.getConstants();
   const assignments = pConnect.getValue(CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
   const childCasesAssignments = getChildCaseAssignments(pConnect);

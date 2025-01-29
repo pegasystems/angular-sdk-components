@@ -1,9 +1,21 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
+
+function areViewsChanged(oldViews: any[], newViews: any[]): boolean {
+  if (oldViews.length !== newViews.length) {
+    return true;
+  }
+
+  return !oldViews.every((oldView, index) => {
+    const newView = newViews[index];
+    return oldView.getPConnect().viewName === newView.getPConnect().viewName;
+  });
+}
 
 interface DefaultFormProps {
   // If any, enter additional props that only exist on this component
@@ -19,11 +31,14 @@ interface DefaultFormProps {
   standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DefaultFormComponent implements OnInit {
+export class DefaultFormComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
-  arChildren$: any[];
+  // Used with AngularPConnect
+  angularPConnectData: AngularPConnectData = {};
+
+  arChildren$: any[] = [];
   divClass$: string;
   template: any;
   showLabel: any;
@@ -41,9 +56,29 @@ export class DefaultFormComponent implements OnInit {
     'Confirmation'
   ];
 
-  constructor(private templateUtils: TemplateUtils) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private templateUtils: TemplateUtils
+  ) {}
 
   ngOnInit(): void {
+    // First thing in initialization is registering and subscribing to the AngularPConnect service
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+
+    this.updateSelf();
+  }
+
+  ngOnDestroy() {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
+    }
+  }
+
+  onStateChange() {
+    this.updateSelf();
+  }
+
+  updateSelf() {
     const configProps = this.pConn$.getConfigProps() as DefaultFormProps;
     this.template = configProps?.template;
     const propToUse: any = { ...this.pConn$.getInheritedProps() };
@@ -71,6 +106,12 @@ export class DefaultFormComponent implements OnInit {
     // repoint children before getting templateArray
     // Children may contain 'reference' component, so we need to
     //  normalize them
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
+    const children = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
+
+    const visibleChildren = children?.filter(child => child !== undefined) || [];
+
+    if (areViewsChanged(this.arChildren$, visibleChildren)) {
+      this.arChildren$ = visibleChildren;
+    }
   }
 }

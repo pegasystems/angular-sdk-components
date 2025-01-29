@@ -159,25 +159,18 @@ export class PhoneComponent implements OnInit, OnDestroy {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  fieldOnBlur(event: Event) {}
+
   fieldOnChange() {
     if (this.formGroup$.controls[this.controlName$].value) {
-      const actionsApi = this.pConn$?.getActionsApi();
-      const propName = (this.pConn$?.getStateProps() as any).value;
       const value = this.formGroup$.controls[this.controlName$].value;
-      const eventObj = {
-        target: {
-          value
-        }
-      };
       this.afterBlur = true;
-      this.angularPConnectData.actions?.onChange(this, eventObj);
-      handleEvent(actionsApi, 'blur', propName, value);
-    }
-  }
 
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+      const actionsApi = this.pConn$.getActionsApi();
+      const propName = (this.pConn$.getStateProps() as any).value;
+      handleEvent(actionsApi, 'changeNblur', propName, value);
+    }
   }
 
   getErrorMessage() {

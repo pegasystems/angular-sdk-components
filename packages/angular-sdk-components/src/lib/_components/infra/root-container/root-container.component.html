@@ -5,20 +5,11 @@
 <div *ngIf="bShowRoot$">
   <div [ngSwitch]="componentName$">
     <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ pConn$, displayOnlyFA$ }"></component-mapper>
-    <!-- <app-reference *ngSwitchCase="'reference'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-reference> -->
     <component-mapper
       *ngSwitchCase="'ViewContainer'"
       name="ViewContainer"
-      [props]="{ pConn$: displayOnlyFA$ ? viewContainerPConn$ : pConn$, displayOnlyFA$ }"
+      [props]="{ pConn$: viewContainerPConn$, displayOnlyFA$ }"
     ></component-mapper>
-    <app-hybrid-view-container *ngSwitchCase="'HybridViewContainer'" [pConn$]="pConn$" [displayOnlyFA$]="displayOnlyFA$"></app-hybrid-view-container>
-    <app-modal-view-container
-      *ngSwitchCase="'ModalViewContainer'"
-      [pConn$]="pConn$"
-      [displayOnlyFA$]="displayOnlyFA$"
-      (modalVisibleChange)="modalVisibleChanged($event)"
-    ></app-modal-view-container>
-    <div *ngSwitchCase="''"></div>
     <div *ngSwitchDefault>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
   </div>
 </div>
@@ -28,9 +19,5 @@
 </div>
 
 <div *ngIf="mConn$ != null">
-  <app-modal-view-container
-    [pConn$]="mConn$"
-    [displayOnlyFA$]="displayOnlyFA$"
-    (modalVisibleChange)="modalVisibleChanged($event)"
-  ></app-modal-view-container>
+  <app-modal-view-container [pConn$]="mConn$"></app-modal-view-container>
 </div>

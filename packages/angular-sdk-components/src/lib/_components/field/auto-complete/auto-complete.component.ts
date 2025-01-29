@@ -301,7 +301,9 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     // this.angularPConnect.changeHandler( this, event);
     this.filterValue = (event.target as HTMLInputElement).value;
 
-    this.angularPConnectData.actions?.onChange(this, event);
+    const actionsApi = this.pConn$?.getActionsApi();
+    const propName = (this.pConn$?.getStateProps() as any).value;
+    handleEvent(actionsApi, 'change', propName, this.filterValue);
   }
 
   optionChanged(event: MatAutocompleteSelectedEvent) {

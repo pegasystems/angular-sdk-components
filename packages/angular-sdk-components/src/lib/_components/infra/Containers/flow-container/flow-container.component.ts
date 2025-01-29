@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
-import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
-import { getToDoAssignments, showBanner } from './helpers';
+import { getToDoAssignments, hasAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { FlowContainerBaseComponent } from '../base-components/flow-container-base.component';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -32,11 +32,9 @@ interface FlowContainerProps {
   standalone: true,
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FlowContainerComponent implements OnInit, OnDestroy {
+export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
 
-  // For interaction with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   pCoreConstants: typeof publicConstants;
   configProps$: FlowContainerProps;
 
@@ -72,14 +70,17 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   banners: any[];
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
+  pConnectOfActiveContainerItem;
+
   constructor(
-    private angularPConnect: AngularPConnectService,
+    injector: Injector,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private fb: FormBuilder,
     private ngZone: NgZone,
     private utils: Utils
   ) {
+    super(injector);
     // create the formGroup
     this.formGroup$ = this.fb.group({ hideRequired: false });
   }
@@ -118,6 +119,14 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
       },
       'cancelPressed'
     );
+
+    PCore.getPubSubUtils().subscribe(
+      'clearBannerMessages',
+      () => {
+        this.banners = [];
+      },
+      'CLEAR_BANNER_MESSAGES'
+    );
   }
 
   ngOnDestroy() {
@@ -128,6 +137,7 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'cancelAssignment');
 
     PCore.getPubSubUtils().unsubscribe('cancelPressed', 'cancelPressed');
+    PCore.getPubSubUtils().unsubscribe('clearBannerMessages', 'CLEAR_BANNER_MESSAGES');
   }
 
   handleCancel() {
@@ -148,13 +158,18 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // Should always check the bridge to see if the component should update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
+    const pConn = this.pConnectOfActiveContainerItem || this.pConn$;
+    const caseViewModeFromProps = this.angularPConnect.getComponentProp(this, 'caseViewMode');
+    const caseViewModeFromRedux = pConn.getValue('context_data.caseViewMode', '');
+    const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
+
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
-    if (bUpdateSelf) {
+    // eslint-disable-next-line sonarjs/no-collapsible-if
+    if (bUpdateSelf || caseViewModeFromProps !== caseViewModeFromRedux) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
-      const completeProps = this.angularPConnect.getCurrentCompleteProps(this) as FlowContainerProps;
       if (!completeProps.pageMessages || completeProps.pageMessages.length == 0) {
         // with a cancel, need to timeout so todo will update correctly
         if (this.bHasCancel) {
@@ -165,10 +180,10 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
         } else {
           this.updateSelf();
         }
-      } else {
-        this.showPageMessages(completeProps);
       }
     }
+
+    this.showPageMessages(completeProps);
   }
 
   showPageMessages(completeProps: FlowContainerProps) {
@@ -271,36 +286,6 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     this.psService.sendMessage(false);
   }
 
-  hasAssignments() {
-    let hasAssignments = false;
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
-    const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
-    // 8.7 includes assignments in Assignments List that may be assigned to
-    //  a different operator. So, see if there are any assignments for
-    //  the current operator
-    let bAssignmentsForThisOperator = false;
-
-    // Bail if there is no assignmentsList
-    if (!assignmentsList) {
-      return hasAssignments;
-    }
-
-    for (const assignment of assignmentsList) {
-      if ((assignment as any).assigneeInfo.ID === thisOperator) {
-        bAssignmentsForThisOperator = true;
-      }
-    }
-
-    const hasChildCaseAssignments = this.hasChildCaseAssignments();
-
-    if (bAssignmentsForThisOperator || hasChildCaseAssignments || this.isCaseWideLocalAction()) {
-      hasAssignments = true;
-    }
-
-    return hasAssignments;
-  }
-
   isCaseWideLocalAction() {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
@@ -370,8 +355,10 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
     // const { getPConnect } = this.arChildren$[0].getPConnect();
     const localPConn = this.arChildren$[0].getPConnect();
 
-    // @ts-ignore - second parameter pageReference for getValue method should be optional
-    const caseViewMode = this.pConn$.getValue('context_data.caseViewMode');
+    this.pConnectOfActiveContainerItem = this.getPConnectOfActiveContainerItem(this.pConn$) || this.pConn$;
+
+    const caseViewMode = this.pConnectOfActiveContainerItem.getValue('context_data.caseViewMode');
+
     this.bShowBanner = showBanner(this.pConn$);
 
     if (caseViewMode && caseViewMode == 'review') {
@@ -454,19 +441,10 @@ export class FlowContainerComponent implements OnInit, OnDestroy {
   showCaseMessages() {
     // @ts-ignore - second parameter pageReference for getValue method should be optional
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
-    if (this.caseMessages$ || !this.hasAssignments()) {
+    if (this.caseMessages$ || !hasAssignments(this.pConn$)) {
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
       this.checkSvg$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
-      // Temp fix for 8.7 change: confirmationNote no longer coming through in caseMessages$.
-      // So, if we get here and caseMessages$ is empty, use default value in DX API response
-      if (!this.caseMessages$) {
-        this.caseMessages$ = this.localizedVal('Thank you! The next step in this case has been routed appropriately.', this.localeCategory);
-      }
-
-      // publish this "assignmentFinished" for mashup, need to get approved as a standard
-      // @ts-ignore - second parameter “payload” for publish method should be optional
-      PCore.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
     } else if (this.bHasCaseMessages$) {

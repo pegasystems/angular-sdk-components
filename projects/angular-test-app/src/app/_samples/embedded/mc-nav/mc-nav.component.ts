@@ -187,6 +187,12 @@ export class MCNavComponent implements OnInit, OnDestroy {
 
     this.pConn$ = props.getPConnect();
 
+    this.pConn$.getContainerManager().initializeContainers({
+      type: 'multiple',
+      name: 'modal',
+      context: 'app'
+    });
+
     this.bHasPConnect$ = true;
     this.bPConnectLoaded$ = true;
 
@@ -197,7 +203,7 @@ export class MCNavComponent implements OnInit, OnDestroy {
 
   showHideProgress(bShow: boolean) {
     this.isProgress$ = bShow;
-    this.cdRef.detectChanges();
+    // this.cdRef.detectChanges();
   }
 
   logOff() {

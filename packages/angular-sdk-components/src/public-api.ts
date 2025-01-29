@@ -50,6 +50,7 @@ export * from './lib/_components/infra/region/region.component';
 export * from './lib/_components/infra/root-container/root-container.component';
 export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
+export * from './lib/_components/infra/Containers/base-components/flow-container-base.component';
 
 export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/case-summary/case-summary.component';
@@ -122,6 +123,8 @@ export * from './lib/_directives/thousand-seperator.directive';
 export * from './lib/_services/server-config.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
+export * from './lib/_services/idle-detection.service';
+export * from './lib/_services/banner.service';
 export * from './lib/_services/endpoints';
 
 export * from './lib/_helpers/case-utils';
