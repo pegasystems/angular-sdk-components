@@ -1,0 +1,20 @@
+<div>email-triage-holder works!</div>
+<component-mapper
+  [name]="children[0].getPConnect().getComponentName()"
+  [props]="{
+    pConn$: children[0].getPConnect()
+  }"
+  errorMsg="EmailTriageHolder Missing: {{ children[0].getPConnect().getComponentName() }}"
+></component-mapper>
+
+<mat-tab-group mat-stretch-tabs="false" (selectedTabChange)="handleTabClick($event)">
+  <mat-tab *ngFor="let tab of tabs; let i = index" [label]="tab.name">
+    <div class="psdk-sub-tabs" *ngIf="+currentTabId == i">
+      <component-mapper
+        [name]="tab.pConn.getComponentName()"
+        [props]="{ pConn$: tab.pConn }"
+        errorMsg="EmailTriageHolder wants component not yet available: {{ tab.pConn.getComponentName() }}"
+      ></component-mapper>
+    </div>
+  </mat-tab>
+</mat-tab-group>
