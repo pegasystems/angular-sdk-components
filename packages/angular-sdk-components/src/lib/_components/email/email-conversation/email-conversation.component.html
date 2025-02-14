@@ -1,4 +1,4 @@
-<mat-expansion-panel #panel [expanded]="!isCollapsed" (opened)="onExpandCollapse(panel)" (closed)="onExpandCollapse(panel)">
+<mat-expansion-panel #panel [expanded]="!isCollapsed">
   <mat-expansion-panel-header>
     <mat-icon>{{ panel.expanded ? 'caret-down' : isRtl ? 'caret-left' : 'caret-right' }}</mat-icon>
     <span *ngIf="unReadEmailCount" class="unread-indicator"></span>

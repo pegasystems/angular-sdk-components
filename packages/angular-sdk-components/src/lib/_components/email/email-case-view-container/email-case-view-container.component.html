@@ -1,10 +1,12 @@
 <!-- <div *ngFor="let child of children"> -->
 <!-- {{ child.getPConnect().getComponentName() }} -->
-<component-mapper
-  [name]="children[0].getPConnect().getComponentName()"
-  [props]="{
-    pConn$: children[0].getPConnect()
-  }"
-  errorMsg="EmailCaseViewContainer Missing: {{ children[0].getPConnect().getComponentName() }}"
-></component-mapper>
+<div class="email-case-view-container">
+  <component-mapper
+    [name]="children[0].getPConnect().getComponentName()"
+    [props]="{
+      pConn$: children[0].getPConnect()
+    }"
+    errorMsg="EmailCaseViewContainer Missing: {{ children[0].getPConnect().getComponentName() }}"
+  ></component-mapper>
+</div>
 <!-- </div> -->
