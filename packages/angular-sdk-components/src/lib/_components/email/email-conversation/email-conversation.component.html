@@ -1,0 +1,29 @@
+<mat-expansion-panel #panel [expanded]="!isCollapsed" (opened)="onExpandCollapse(panel)" (closed)="onExpandCollapse(panel)">
+  <mat-expansion-panel-header>
+    <mat-icon>{{ panel.expanded ? 'caret-down' : isRtl ? 'caret-left' : 'caret-right' }}</mat-icon>
+    <span *ngIf="unReadEmailCount" class="unread-indicator"></span>
+    <div class="header-content">
+      <div class="header-text">
+        <span>{{ isForwarded ? 'FW' : 'From' }}: {{ from.fullName }}</span>
+        <span *ngIf="undelivered" class="status urgent">Undelivered</span>
+        <!-- status styling to be written -->
+        <span *ngIf="drafts" class="status pending">Draft</span>
+      </div>
+      <div class="recipient-list">
+        <span>To: {{ getRecipientList() }}</span>
+      </div>
+      <div *ngIf="!isSmallOrAbove" class="timestamp">
+        <span>{{ timeStamp | date: 'EEE' }}, {{ timeStamp | date: 'short' }}</span>
+        <!-- function to be written -->
+      </div>
+    </div>
+    <div *ngIf="isSmallOrAbove" class="timestamp">
+      <span>{{ timeStamp | date: 'EEE' }}, {{ timeStamp | date: 'short' }}</span>
+    </div>
+  </mat-expansion-panel-header>
+
+  <div *ngIf="unReadEmailCount" class="unread-count">{{ unReadEmailCount }} new emails</div>
+  <div *ngFor="let email of emails" class="email">
+    <!-- Render email component here -->
+  </div>
+</mat-expansion-panel>

@@ -7,6 +7,4 @@ import { Component } from '@angular/core';
   templateUrl: './email-header.component.html',
   styleUrl: './email-header.component.scss'
 })
-export class EmailHeaderComponent {
-
-}
+export class EmailHeaderComponent {}

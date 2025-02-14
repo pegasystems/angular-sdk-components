@@ -1,0 +1,37 @@
+<p>email-shell works!</p>
+<div class="email-shell" [ngClass]="{ 'single-conversation': singleConversation }">
+  <div *ngIf="headerProps" class="email-shell-header">
+    <div class="header-content">
+      <mat-icon>mail</mat-icon>
+      <!-- add icon -->
+      <span class="header-title">
+        {{ headerProps?.subject ? 'Subject: ' + headerProps?.subject : 'Email' }}
+      </span>
+    </div>
+    <!-- requires change for header actions -->
+    <div class="header-actions">
+      <!-- no such styling created -->
+      <ng-container *ngTemplateOutlet="headerProps?.actions"></ng-container>
+      <!-- ng template not defined for ngTemplateOutlet -->
+    </div>
+  </div>
+
+  <div class="email-conversation-list" role="list" [attr.aria-multiselectable]="!autoCollapse">
+    <ng-container *ngFor="let conversation of renderConversations(); let i = index">
+      <component-mapper name="EmailConversation" [props]="conversation" errorMsg="EmailTriageHolder Missing:"></component-mapper>
+      <!-- <app-email-conversation
+        [id]="conversation.id"
+        [emails]="conversation.emails"
+        [from]="conversation.from"
+        [to]="conversation.to"
+        [unReadEmailCount]="conversation.unReadEmailCount"
+        [timeStamp]="conversation.timeStamp"
+        [isForwarded]="conversation.isForwarded"
+        [isCollapsed]="conversation.isCollapsed"
+        [undelivered]="conversation.undelivered"
+        [drafts]="conversation.drafts"
+        (expand)="onExpand(i, conversation.onExpand)"
+      ></app-email-conversation> -->
+    </ng-container>
+  </div>
+</div>

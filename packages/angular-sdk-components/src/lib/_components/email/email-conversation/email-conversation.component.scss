@@ -1,0 +1,66 @@
+/* filepath: /Users/mohas22/Desktop/cosmos/cosmos/packages/cosmos-social/src/components/Email/EmailConversation.component.scss */
+:host {
+  display: block;
+  margin-bottom: 16px;
+}
+
+mat-expansion-panel {
+  background-color: var(--primary-background);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+mat-expansion-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  background-color: var(--primary-background);
+  color: var(--foreground-color);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.unread-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--brand-primary);
+}
+
+.header-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.header-text {
+  display: flex;
+  gap: 8px;
+}
+
+.recipient-list {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timestamp {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 8px;
+}
+
+.unread-count {
+  padding: 8px;
+  background-color: var(--brand-primary);
+  color: var(--primary-background);
+  font-weight: 600;
+}
+
+.email {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-line);
+}

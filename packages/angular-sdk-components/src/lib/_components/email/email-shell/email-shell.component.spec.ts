@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EmailHeaderComponent } from './email-header.component';
+import { EmailShellComponent } from './email-shell.component';
 
-describe('EmailHeaderComponent', () => {
-  let component: EmailHeaderComponent;
-  let fixture: ComponentFixture<EmailHeaderComponent>;
+describe('EmailShellComponent', () => {
+  let component: EmailShellComponent;
+  let fixture: ComponentFixture<EmailShellComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmailHeaderComponent]
+      imports: [EmailShellComponent]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EmailHeaderComponent);
+    fixture = TestBed.createComponent(EmailShellComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

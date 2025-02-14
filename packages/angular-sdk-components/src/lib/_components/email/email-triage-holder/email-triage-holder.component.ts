@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ComponentMapperComponent, ReferenceComponent } from 'packages/angular-sdk-components/src/public-api';
+import { ReferenceComponent } from 'packages/angular-sdk-components/src/public-api';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'lib-email-triage-holder',
   standalone: true,
-  imports: [MatTabsModule, CommonModule, ComponentMapperComponent],
+  imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)],
   templateUrl: './email-triage-holder.component.html',
   styleUrl: './email-triage-holder.component.scss'
 })

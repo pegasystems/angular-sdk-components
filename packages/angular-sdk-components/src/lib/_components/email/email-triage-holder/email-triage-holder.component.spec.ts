@@ -9,8 +9,7 @@ describe('EmailTriageHolderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EmailTriageHolderComponent]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EmailTriageHolderComponent);
     component = fixture.componentInstance;

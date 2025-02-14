@@ -115,7 +115,12 @@ import { OperatorComponent } from '../../_components/designSystemExtension/opera
 import { PulseComponent } from '../../_components/designSystemExtension/pulse/pulse.component';
 import { RichTextEditorComponent } from '../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 import { WssQuickCreateComponent } from '../../_components/designSystemExtension/wss-quick-create/wss-quick-create.component';
-
+import { EmailCaseViewContainerComponent } from '../../_components/email/email-case-view-container/email-case-view-container.component';
+import { EmailContainerComponent } from '../../_components/email/email-container/email-container.component';
+import { EmailHeaderComponent } from '../../_components/email/email-header/email-header.component';
+import { EmailTriageHolderComponent } from '../../_components/email/email-triage-holder/email-triage-holder.component';
+import { EmailShellComponent } from '../../_components/email/email-shell/email-shell.component';
+import { EmailConversationComponent } from '../../_components/email/email-conversation/email-conversation.component';
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
 // an entry in the localSdkComponentMap
@@ -240,7 +245,13 @@ const pegaSdkComponentMap = {
   WideNarrowForm: WideNarrowFormComponent,
   WideNarrowPage: WideNarrowPageComponent,
   WssNavBar: WssNavBarComponent,
-  WssQuickCreate: WssQuickCreateComponent
+  WssQuickCreate: WssQuickCreateComponent,
+  EmailCaseViewContainer: EmailCaseViewContainerComponent,
+  EmailTriageHolder: EmailTriageHolderComponent,
+  EmailHeader: EmailHeaderComponent,
+  EmailContainer: EmailContainerComponent,
+  EmailShell: EmailShellComponent,
+  EmailConversation: EmailConversationComponent
 };
 
 export default pegaSdkComponentMap;
