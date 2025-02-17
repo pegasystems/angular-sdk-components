@@ -1,7 +1,7 @@
 <mat-expansion-panel #panel [expanded]="!isCollapsed">
   <mat-expansion-panel-header>
     <!-- <mat-icon>{{ panel.expanded ? 'caret-down' : isRtl ? 'caret-left' : 'caret-right' }}</mat-icon> -->
-    <img class="psdk-list-view-svg-icon" src="{{ panel.expanded ? caretDownSvg : caretRightSvg }}" />
+    <!-- <img class="psdk-list-view-svg-icon" src="{{ panel.expanded ? caretDownSvg : caretRightSvg }}" /> -->
     <!-- <mat-icon>{{ panel.expanded ? caretDownSvg : caretRightSvg }}</mat-icon> -->
     <span *ngIf="unReadEmailCount" class="unread-indicator"></span>
     <!-- not used yet-->

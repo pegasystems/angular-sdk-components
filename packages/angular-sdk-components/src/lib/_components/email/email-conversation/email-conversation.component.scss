@@ -20,13 +20,24 @@ mat-expansion-panel {
 mat-expansion-panel-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 16px;
-  background-color: var(--primary-background);
+  gap: 1rem;
   color: var(--foreground-color);
   position: sticky;
   top: 0;
   z-index: 1;
+  border-bottom: 1px solid #e2e2e2;
+  padding-inline: 0.5rem;
+  flex-direction: row-reverse;
+}
+
+::ng-deep {
+  .mat-expansion-indicator {
+    transform: rotate(270deg) !important;
+  }
+
+  .mat-expanded .mat-expansion-indicator {
+    transform: rotate(0deg) !important;
+  }
 }
 
 .unread-indicator {
