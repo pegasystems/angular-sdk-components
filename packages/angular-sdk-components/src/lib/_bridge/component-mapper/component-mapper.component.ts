@@ -1,5 +1,17 @@
-import { Component, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ComponentRef,
+  Inject,
+  Injector,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef
+} from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { getComponentFromMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
@@ -25,6 +37,12 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   @Input() outputEvents: any;
   // parent prop is compulsory when outputEvents is present
   @Input() parent: any;
+  @Input() content: string;
+
+  constructor(
+    private injector: Injector,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
 
   ngOnInit(): void {
     this.loadComponent();
@@ -47,8 +65,13 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
     const component = getComponentFromMap(this.name);
 
     if (this.dynamicComponent) {
+      const ngContent = this.resolveNgContent(this.content);
+      const options = {
+        injector: this.injector,
+        projectableNodes: ngContent
+      };
       this.dynamicComponent.clear();
-      this.componentRef = this.dynamicComponent.createComponent(component);
+      this.componentRef = this.dynamicComponent.createComponent(component, options);
 
       if (component === ErrorBoundaryComponent) {
         this.componentRef.instance.message = this.errorMsg;
@@ -57,6 +80,12 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
         this.bindOutputEvents();
       }
     }
+  }
+
+  resolveNgContent(content: any) {
+    const element = this.document.createElement('div');
+    element.innerHTML = content;
+    return [[element]];
   }
 
   bindInputProps() {
