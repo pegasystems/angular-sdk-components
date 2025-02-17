@@ -29,6 +29,113 @@ export class EmailShellComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.headerProps = { subject: 'Pause service' };
+    this.conversations = [
+      {
+        id: 'M-33001_id',
+        emails: [
+          {
+            id: 'M-33001',
+            subject: '[EXTERNAL] Fw:Test',
+            timeStamp: '2025-02-11T20:39:11.435Z',
+            from: {
+              fullName: 'admin',
+              emailAddress: 'citibak123456@outlook.com',
+              shortName: 'admin',
+              avatarProps: '{icon: "headset"}'
+            },
+            to: [
+              {
+                avatarProps: {
+                  icon: ''
+                },
+                emailAddress: 'vishal@gmail.com',
+                fullName: 'Vishal ',
+                shortName: 'Vishal '
+              }
+            ],
+            trail: {
+              content: '',
+              expanded: false,
+              loading: false
+            }
+          }
+        ],
+        unReadEmailCount: 1,
+        timeStamp: '2025-02-12T01:39:11.435Z',
+        isForwarded: true,
+        from: {
+          fullName: 'admin',
+          emailAddress: 'citibak123456@outlook.com',
+          shortName: 'admin',
+          avatarProps: '{icon: "headset"}'
+        },
+        to: [
+          {
+            avatarProps: {
+              icon: ''
+            },
+            emailAddress: 'vishal@gmail.com',
+            fullName: 'Vishal',
+            shortName: 'Vishal'
+          }
+        ],
+        isCollapsed: true
+      },
+      {
+        id: 'M-33001_id',
+        emails: [
+          {
+            id: 'M-33001',
+            subject: 'Test',
+            timeStamp: '2025-02-11T20:39:11.435Z',
+            from: {
+              avatarProps: {
+                icon: ''
+              },
+              emailAddress: 'vishal@gmail.com',
+              fullName: 'Vishal ',
+              shortName: 'Vishal '
+            },
+            to: [
+              {
+                avatarProps: {
+                  icon: ''
+                },
+                emailAddress: 'citibak123456@outlook.com',
+                fullName: 'citibak123456 ',
+                shortName: 'citibak123456 '
+              }
+            ],
+            body: "<div>\n          Hey, what's up? \n      </div>",
+            sentiment: {
+              variant: 'neutral'
+            },
+            unRead: false
+          }
+        ],
+        unReadEmailCount: null,
+        timeStamp: '2025-02-12T01:39:11.435Z',
+        isForwarded: false,
+        from: {
+          fullName: 'vishal',
+          emailAddress: 'vishal@gmail.com',
+          shortName: 'vishal',
+          avatarProps: '{icon: "headset"}'
+        },
+        to: [
+          {
+            avatarProps: {
+              icon: ''
+            },
+            emailAddress: 'citibak123456@outlook.com',
+            fullName: 'citibak123456 ',
+            shortName: 'citibak123456 '
+          }
+        ],
+        isCollapsed: true
+      }
+    ];
     this.singleConversation = this.conversations?.length === 1;
   }
 

@@ -1,0 +1,28 @@
+/* filepath: /Users/mohas22/Desktop/cosmos/cosmos/packages/cosmos-social/src/components/Email/Email.component.scss */
+.email-card {
+  margin-bottom: 16px;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+mat-card-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

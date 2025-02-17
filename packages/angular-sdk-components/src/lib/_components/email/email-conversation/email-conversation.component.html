@@ -1,7 +1,10 @@
 <mat-expansion-panel #panel [expanded]="!isCollapsed">
   <mat-expansion-panel-header>
-    <mat-icon>{{ panel.expanded ? 'caret-down' : isRtl ? 'caret-left' : 'caret-right' }}</mat-icon>
+    <!-- <mat-icon>{{ panel.expanded ? 'caret-down' : isRtl ? 'caret-left' : 'caret-right' }}</mat-icon> -->
+    <img class="psdk-list-view-svg-icon" src="{{ panel.expanded ? caretDownSvg : caretRightSvg }}" />
+    <!-- <mat-icon>{{ panel.expanded ? caretDownSvg : caretRightSvg }}</mat-icon> -->
     <span *ngIf="unReadEmailCount" class="unread-indicator"></span>
+    <!-- not used yet-->
     <div class="header-content">
       <div class="header-text">
         <span>{{ isForwarded ? 'FW' : 'From' }}: {{ from.fullName }}</span>
@@ -25,5 +28,6 @@
   <div *ngIf="unReadEmailCount" class="unread-count">{{ unReadEmailCount }} new emails</div>
   <div *ngFor="let email of emails" class="email">
     <!-- Render email component here -->
+    <component-mapper name="EmailSocial" [props]="email"></component-mapper>
   </div>
 </mat-expansion-panel>

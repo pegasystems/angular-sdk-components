@@ -4,6 +4,13 @@
   margin-bottom: 16px;
 }
 
+.psdk-list-view-svg-icon {
+  width: 1.4rem;
+  display: inline-block;
+  vertical-align: middle;
+  filter: var(--app-primary-color-filter);
+}
+
 mat-expansion-panel {
   background-color: var(--primary-background);
   border-radius: 4px;
@@ -55,8 +62,8 @@ mat-expansion-panel-header {
 
 .unread-count {
   padding: 8px;
-  background-color: var(--brand-primary);
-  color: var(--primary-background);
+  background-color: var(--app-primary-lightest-color);
+  color: var(--app-primary-color);
   font-weight: 600;
 }
 

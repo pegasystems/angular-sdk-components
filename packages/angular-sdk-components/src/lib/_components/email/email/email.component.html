@@ -1,1 +1,44 @@
-<p>email works!</p>
+<!-- <component-mapper name="SummaryItem" [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }"></component-mapper> -->
+<mat-card class="email-card">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <mat-icon>person</mat-icon>
+    </div>
+    <mat-card-title>
+      <span>{{ from.fullName }}</span>
+      <mat-icon *ngIf="sentiment">{{ sentiment.icon }}</mat-icon>
+      <mat-chip *ngIf="status" [color]="status === 'draft' ? 'warn' : 'primary'">{{ status }}</mat-chip>
+    </mat-card-title>
+    <mat-card-subtitle>
+      <span>{{ getEmailDisplayList(to.slice(0, 2), false) }}</span>
+      <span *ngIf="to.length > 2">; +{{ to.length - 2 }} more</span>
+      <span>{{ timeStamp | date: 'short' }}</span>
+    </mat-card-subtitle>
+    <!-- <button mat-icon-button [matMenuTriggerFor]="emailMoreInfoMenu" (click)="showEmailMoreInfo = !showEmailMoreInfo">
+      <mat-icon>arrow-micro-down</mat-icon>
+    </button> -->
+    <mat-menu #emailMoreInfoMenu="matMenu">
+      <ng-container *ngFor="let field of getEmailMoreInfoFields()">
+        <button mat-menu-item>{{ field.name }}: {{ field.value }}</button>
+      </ng-container>
+    </mat-menu>
+  </mat-card-header>
+  <mat-card-content>
+    <div [innerHTML]="body"></div>
+    <div *ngIf="trail">
+      <button mat-button (click)="trail.onExpandCollapse(id)">
+        <mat-icon>more-alt</mat-icon>
+        {{ trail.expanded ? 'Collapse Trail' : 'Expand Trail' }}
+      </button>
+      <div *ngIf="trail.expanded">
+        <div *ngIf="trail.content" [innerHTML]="trail.content"></div>
+        <mat-progress-bar *ngIf="trail.loading" mode="indeterminate"></mat-progress-bar>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button *ngFor="let action of getActions()" mat-icon-button (click)="action.onClick()">
+      <mat-icon>{{ action.icon }}</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

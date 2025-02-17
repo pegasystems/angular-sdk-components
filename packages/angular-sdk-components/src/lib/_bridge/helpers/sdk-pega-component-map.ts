@@ -121,6 +121,7 @@ import { EmailHeaderComponent } from '../../_components/email/email-header/email
 import { EmailTriageHolderComponent } from '../../_components/email/email-triage-holder/email-triage-holder.component';
 import { EmailShellComponent } from '../../_components/email/email-shell/email-shell.component';
 import { EmailConversationComponent } from '../../_components/email/email-conversation/email-conversation.component';
+import { EmailSocialComponent } from '../../_components/email/email/email.component';
 // pegaSdkComponentMap is the JSON object where we'll store the components that are
 // the default implementations provided by the SDK. These will be used if there isn't
 // an entry in the localSdkComponentMap
@@ -251,7 +252,8 @@ const pegaSdkComponentMap = {
   EmailHeader: EmailHeaderComponent,
   EmailContainer: EmailContainerComponent,
   EmailShell: EmailShellComponent,
-  EmailConversation: EmailConversationComponent
+  EmailConversation: EmailConversationComponent,
+  EmailSocial: EmailSocialComponent
 };
 
 export default pegaSdkComponentMap;
