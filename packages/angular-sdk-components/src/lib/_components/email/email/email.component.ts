@@ -1,16 +1,26 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Utils } from '../../../_helpers/utils';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-email',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatCardModule, MatChipsModule, MatProgressBarModule, MatMenuModule],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    MatCardModule,
+    MatChipsModule,
+    MatProgressBarModule,
+    MatMenuModule,
+    forwardRef(() => ComponentMapperComponent)
+  ],
   templateUrl: './email.component.html',
   styleUrl: './email.component.scss'
 })
@@ -50,8 +60,12 @@ export class EmailSocialComponent implements OnInit {
   isMediumOrAbove: boolean;
   currentTarget: any;
   item$: any;
+  showMoreSvg: string;
 
-  constructor(private breakpointObserver: BreakpointObserver) {
+  constructor(
+    private utils: Utils,
+    private breakpointObserver: BreakpointObserver
+  ) {
     // this.iconRegistry.addSvgIcon('reply', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/reply.svg'));
     // this.iconRegistry.addSvgIcon('reply-all', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/reply-all.svg'));
     // this.iconRegistry.addSvgIcon('forward', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/forward.svg'));
@@ -69,8 +83,21 @@ export class EmailSocialComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Medium, Breakpoints.Tablet]).subscribe(result => {
       this.isMediumOrAbove = !result.matches;
     });
-    this.item$.primary = this.from;
-    this.item$.visual.icon = this.from.avatarProps.icon;
+    // this.item$.primary = this.from;
+    // this.item$.visual.icon = this.from.avatarProps.icon;
+    this.showMoreSvg = this.utils.getImageSrc('arrow-micro-down', this.utils.getSDKStaticContentUrl());
+  }
+
+  getToEmailList(toList: any[]): string {
+    let result = '';
+    toList.slice(0, 2).forEach((to, i) => {
+      if (i !== 0) {
+        result += '; ';
+      }
+      result += `${to.shortName} `;
+    });
+    result += toList.length > 2 ? `+${toList.length - 2} more` : '';
+    return result;
   }
 
   getEmailMoreInfoFields(): any[] {
@@ -144,43 +171,43 @@ export class EmailSocialComponent implements OnInit {
   getActions(): any[] {
     const actions: any = [];
     if (this.status !== 'draft') {
-      if (this.onReply) {
-        actions.push({
-          icon: 'reply',
-          label: 'Reply',
-          onClick: () => this.onReply(this.id)
-        });
-      }
-      if (this.onReplyAll) {
-        actions.push({
-          icon: 'reply-all',
-          label: 'Reply All',
-          onClick: () => this.onReplyAll(this.id)
-        });
-      }
-      if (this.onForward) {
-        actions.push({
-          icon: 'forward',
-          label: 'Forward',
-          onClick: () => this.onForward(this.id)
-        });
-      }
+      // if (this.onReply) {
+      actions.push({
+        icon: this.utils.getImageSrc('reply', this.utils.getSDKStaticContentUrl()),
+        label: 'Reply',
+        onClick: () => this.onReply(this.id)
+      });
+      // }
+      // if (this.onReplyAll) {
+      actions.push({
+        icon: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
+        label: 'Reply All',
+        onClick: () => this.onReplyAll(this.id)
+      });
+      // }
+      // if (this.onForward) {
+      actions.push({
+        icon: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
+        label: 'Forward',
+        onClick: () => this.onForward(this.id)
+      });
+      // }
     }
     if (this.status === 'draft') {
-      if (this.onEditDraft) {
-        actions.push({
-          icon: 'pencil',
-          label: 'Edit',
-          onClick: () => this.onEditDraft(this.id)
-        });
-      }
-      if (this.onDeleteDraft) {
-        actions.push({
-          icon: 'trash',
-          label: 'Delete',
-          onClick: () => this.onDeleteDraft(this.id)
-        });
-      }
+      // if (this.onEditDraft) {
+      actions.push({
+        icon: 'pencil',
+        label: 'Edit',
+        onClick: () => this.onEditDraft(this.id)
+      });
+      // }
+      // if (this.onDeleteDraft) {
+      actions.push({
+        icon: 'trash',
+        label: 'Delete',
+        onClick: () => this.onDeleteDraft(this.id)
+      });
+      // }
     }
     return actions;
   }
