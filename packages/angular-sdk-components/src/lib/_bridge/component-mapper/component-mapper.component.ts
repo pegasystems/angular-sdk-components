@@ -8,6 +8,7 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
+  // TemplateRef,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
@@ -37,7 +38,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   @Input() outputEvents: any;
   // parent prop is compulsory when outputEvents is present
   @Input() parent: any;
-  @Input() content: string;
+  @Input() content: any;
 
   constructor(
     private injector: Injector,
@@ -65,13 +66,17 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
     const component = getComponentFromMap(this.name);
 
     if (this.dynamicComponent) {
-      const ngContent = this.resolveNgContent(this.content);
-      const options = {
-        injector: this.injector,
-        projectableNodes: ngContent
-      };
       this.dynamicComponent.clear();
-      this.componentRef = this.dynamicComponent.createComponent(component, options);
+      if (this.content) {
+        const ngContent = this.resolveNgContent(this.content);
+        const options = {
+          injector: this.injector,
+          projectableNodes: ngContent
+        };
+        this.componentRef = this.dynamicComponent.createComponent(component, options);
+      } else {
+        this.componentRef = this.dynamicComponent.createComponent(component);
+      }
 
       if (component === ErrorBoundaryComponent) {
         this.componentRef.instance.message = this.errorMsg;
@@ -83,9 +88,15 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   resolveNgContent(content: any) {
-    const element = this.document.createElement('div');
-    element.innerHTML = content;
-    return [[element]];
+    // if (content instanceof String) {
+    //   const element = this.document.createElement('div');
+    //   element.innerHTML = content;
+    //   return [[element]];
+    // }
+    // if (content instanceof TemplateRef) {
+    const viewRef = content?.createEmbeddedView(content.elementRef.nativeElement);
+    return [viewRef.rootNodes];
+    // }
   }
 
   bindInputProps() {
