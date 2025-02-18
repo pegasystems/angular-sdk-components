@@ -1,7 +1,10 @@
 <!-- <component-mapper name="SummaryItem" [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }"></component-mapper> -->
 <mat-card class="email-card">
-  <mat-card-header>
-    <div mat-card-avatar>
+  <div class="mat-card-header">
+    <app-email-summary-item [actions]="actions"></app-email-summary-item>
+  </div>
+
+    <!-- <div mat-card-avatar>
       <mat-icon>person</mat-icon>
     </div>
     <mat-card-title>
@@ -14,15 +17,16 @@
       <span *ngIf="to.length > 2">; +{{ to.length - 2 }} more</span>
       <span>{{ timeStamp | date: 'short' }}</span>
     </mat-card-subtitle>
-    <!-- <button mat-icon-button [matMenuTriggerFor]="emailMoreInfoMenu" (click)="showEmailMoreInfo = !showEmailMoreInfo">
+    <button mat-icon-button [matMenuTriggerFor]="emailMoreInfoMenu" (click)="showEmailMoreInfo = !showEmailMoreInfo">
       <mat-icon>arrow-micro-down</mat-icon>
-    </button> -->
+    </button>
     <mat-menu #emailMoreInfoMenu="matMenu">
       <ng-container *ngFor="let field of getEmailMoreInfoFields()">
         <button mat-menu-item>{{ field.name }}: {{ field.value }}</button>
       </ng-container>
-    </mat-menu>
-  </mat-card-header>
+    </mat-menu> -->
+
+    <!-- <mat-card-header></mat-card-header> -->
   <mat-card-content>
     <div [innerHTML]="body"></div>
     <div *ngIf="trail">

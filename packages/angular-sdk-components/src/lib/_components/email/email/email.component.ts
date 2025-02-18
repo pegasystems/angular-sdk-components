@@ -6,11 +6,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { EmailSummaryItemComponent } from '../email-summary-item/email-summary-item.component';
 
 @Component({
   selector: 'app-email',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatCardModule, MatChipsModule, MatProgressBarModule, MatMenuModule],
+  imports: [CommonModule, MatIconModule, MatCardModule, MatChipsModule, MatProgressBarModule, MatMenuModule, EmailSummaryItemComponent],
   templateUrl: './email.component.html',
   styleUrl: './email.component.scss'
 })
@@ -153,7 +154,7 @@ export class EmailSocialComponent implements OnInit {
       }
       if (this.onReplyAll) {
         actions.push({
-          icon: 'reply-all',
+          icon: 'reply_all',
           label: 'Reply All',
           onClick: () => this.onReplyAll(this.id)
         });

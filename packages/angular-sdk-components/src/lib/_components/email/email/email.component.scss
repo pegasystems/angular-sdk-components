@@ -3,10 +3,9 @@
   margin-bottom: 16px;
 }
 
-mat-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.mat-card-header {
+  display: block;
+  padding: 16px;
 }
 
 mat-card-title {
