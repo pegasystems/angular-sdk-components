@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,6 +8,7 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { EmailService } from '../email-service/email.service';
 
 @Component({
   selector: 'app-email',
@@ -25,28 +26,9 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   styleUrl: './email.component.scss'
 })
 export class EmailSocialComponent implements OnInit {
-  @Input() id: string;
-  @Input() from: any;
-  @Input() to: any[] = [];
-  @Input() cc: any[] = [];
-  @Input() bcc: any[] = [];
-  @Input() timeStamp: string;
-  @Input() sentiment: any;
-  @Input() subject: string;
-  @Input() trail: any;
-  @Input() attachments: any[] = [];
-  @Input() suggestions: any[] = [];
-  @Input() entityHighlightMapping: any[] = [];
-  @Input() onReply: Function;
-  @Input() onForward: Function;
-  @Input() onReplyAll: Function;
-  @Input() onEditDraft: Function;
-  @Input() onDeleteDraft: Function;
-  @Input() onSuggestionClick: Function;
-  @Input() contextMenu: any;
-  @Input() status: string;
-  @Input() banner: any;
-  @Input() body: string;
+  private emailService: EmailService = inject(EmailService);
+
+  @Input() email;
 
   @ViewChild('emailMoreInfoBtnRef') emailMoreInfoBtnRef: ElementRef;
   @ViewChild('emailMoreInfoPopover') emailMoreInfoPopover: ElementRef;
@@ -103,43 +85,43 @@ export class EmailSocialComponent implements OnInit {
   getEmailMoreInfoFields(): any[] {
     const fields: any = [];
 
-    if (this.from) {
+    if (this.email.from) {
       fields.push({
         id: 'from',
         name: 'From',
-        value: this.from.emailAddress
+        value: this.email.from.emailAddress
       });
     }
 
-    if (this.to.length > 0) {
+    if (this.email.to.length > 0) {
       fields.push({
         id: 'to',
         name: 'To',
-        value: this.getEmailDisplayList(this.to, true)
+        value: this.getEmailDisplayList(this.email.to, true)
       });
     }
 
-    if (this.cc.length > 0) {
+    if (this.email.cc.length > 0) {
       fields.push({
         id: 'cc',
         name: 'CC',
-        value: this.getEmailDisplayList(this.cc, true)
+        value: this.getEmailDisplayList(this.email.cc, true)
       });
     }
 
-    if (this.bcc.length > 0) {
+    if (this.email.bcc.length > 0) {
       fields.push({
         id: 'bcc',
         name: 'BCC',
-        value: this.getEmailDisplayList(this.bcc, true)
+        value: this.getEmailDisplayList(this.email.bcc, true)
       });
     }
 
-    if (this.timeStamp) {
+    if (this.email.timeStamp) {
       fields.push({
         id: 'date',
         name: 'Date',
-        value: new Date(this.timeStamp).toLocaleString()
+        value: new Date(this.email.timeStamp).toLocaleString()
       });
     }
 
@@ -151,7 +133,7 @@ export class EmailSocialComponent implements OnInit {
   }
 
   onContextMenu(event: MouseEvent): void {
-    if (this.contextMenu) {
+    if (this.email.contextMenu) {
       this.currentTarget = {
         targetNode: event.target,
         cursorPosition: {
@@ -165,47 +147,47 @@ export class EmailSocialComponent implements OnInit {
 
   onItemClick(selectedValue: { fieldName: string; fieldValue: string }): void {
     this.contextMenuPopoverOpen = false;
-    this.contextMenu.onItemClick(selectedValue);
+    this.email.contextMenu.onItemClick(selectedValue);
   }
 
   getActions(): any[] {
     const actions: any = [];
-    if (this.status !== 'draft') {
+    if (this.email.status !== 'draft') {
       // if (this.onReply) {
       actions.push({
         icon: this.utils.getImageSrc('reply', this.utils.getSDKStaticContentUrl()),
         label: 'Reply',
-        onClick: () => this.onReply(this.id)
+        onClick: () => this.emailService.onReply(this.email)
       });
       // }
       // if (this.onReplyAll) {
       actions.push({
         icon: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
-        label: 'Reply All',
-        onClick: () => this.onReplyAll(this.id)
+        label: 'Reply All'
+        // onClick: () => this.onReplyAll(this.id)
       });
       // }
       // if (this.onForward) {
       actions.push({
         icon: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
-        label: 'Forward',
-        onClick: () => this.onForward(this.id)
+        label: 'Forward'
+        // onClick: () => this.onForward(this.id)
       });
       // }
     }
-    if (this.status === 'draft') {
+    if (this.email.status === 'draft') {
       // if (this.onEditDraft) {
       actions.push({
         icon: 'pencil',
-        label: 'Edit',
-        onClick: () => this.onEditDraft(this.id)
+        label: 'Edit'
+        // onClick: () => this.onEditDraft(this.id)
       });
       // }
       // if (this.onDeleteDraft) {
       actions.push({
         icon: 'trash',
-        label: 'Delete',
-        onClick: () => this.onDeleteDraft(this.id)
+        label: 'Delete'
+        // onClick: () => this.onDeleteDraft(this.id)
       });
       // }
     }
