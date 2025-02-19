@@ -29,7 +29,7 @@ export class EmailShellComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.headerProps = { subject: 'Pause service' };
+    // this.headerProps = { subject: 'Pause service' };
     this.singleConversation = this.conversations?.length === 1;
   }
 
