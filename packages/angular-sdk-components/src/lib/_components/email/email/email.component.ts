@@ -6,6 +6,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { EmailSummaryItemComponent } from '../email-summary-item/email-summary-item.component';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { EmailService } from '../email-service/email.service';
@@ -20,6 +21,7 @@ import { EmailService } from '../email-service/email.service';
     MatChipsModule,
     MatProgressBarModule,
     MatMenuModule,
+    EmailSummaryItemComponent,
     forwardRef(() => ComponentMapperComponent)
   ],
   templateUrl: './email.component.html',
@@ -43,6 +45,7 @@ export class EmailSocialComponent implements OnInit {
   currentTarget: any;
   item$: any;
   showMoreSvg: string;
+  actions: any[];
 
   constructor(
     private utils: Utils,
@@ -68,6 +71,7 @@ export class EmailSocialComponent implements OnInit {
     // this.item$.primary = this.from;
     // this.item$.visual.icon = this.from.avatarProps.icon;
     this.showMoreSvg = this.utils.getImageSrc('arrow-micro-down', this.utils.getSDKStaticContentUrl());
+    this.actions = this.getActions();
   }
 
   getToEmailList(toList: any[]): string {
@@ -155,21 +159,24 @@ export class EmailSocialComponent implements OnInit {
     if (this.email.status !== 'draft') {
       // if (this.onReply) {
       actions.push({
-        icon: this.utils.getImageSrc('reply', this.utils.getSDKStaticContentUrl()),
+        icon: 'reply',
+        iconImg: this.utils.getImageSrc('reply', this.utils.getSDKStaticContentUrl()),
         label: 'Reply',
         onClick: () => this.emailService.onReply(this.email)
       });
       // }
       // if (this.onReplyAll) {
       actions.push({
-        icon: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
+        icon: 'reply_all',
+        iconImg: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
         label: 'Reply All'
         // onClick: () => this.onReplyAll(this.id)
       });
       // }
       // if (this.onForward) {
       actions.push({
-        icon: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
+        icon: 'forward',
+        iconImg: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
         label: 'Forward'
         // onClick: () => this.onForward(this.id)
       });

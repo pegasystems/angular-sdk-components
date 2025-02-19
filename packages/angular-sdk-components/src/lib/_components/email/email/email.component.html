@@ -1,23 +1,10 @@
-<!-- <div *nfFor></div>
-<component-mapper name="SummaryItem" [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }" [content]>
-  <ng-template #content>
-    <ng-content class="primary"> -->
-<!-- from email to be displayed using field value list-->
-<!-- <component-mapper name="Text" [props]="{ value$: from.fullName, displayMode$: 'DISPLAY_ONLY' }"></component-mapper>
-      <link>
-      <text>
-    </ng-content>
-    <ng-content class="secondary"> -->
-<!-- iteratee over to list, use field value list to create a text-->
-<!-- add date and combine both text and date-->
-<!-- <text>
-    </ng-content>
-    <ng-content class="actions"></ng-content>
-  </ng-template>
-</component-mapper> -->
-<mat-card *ngIf="email" class="email-card">
-  <mat-card-header>
-    <div mat-card-avatar>
+<!-- <component-mapper name="SummaryItem" [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }"></component-mapper> -->
+<mat-card class="email-card">
+  <div class="mat-card-header">
+    <app-email-summary-item [actions]="actions"></app-email-summary-item>
+  </div>
+
+    <!-- <div mat-card-avatar>
       <mat-icon>person</mat-icon>
     </div>
     <mat-card-title>
@@ -30,19 +17,16 @@
       <span *ngIf="email.to.length > 2">; +{{ email.to.length - 2 }} more</span>
       <span>{{ email.timeStamp | date: 'short' }}</span>
     </mat-card-subtitle>
-    <span *ngIf="email.status" class="psdk-csf-status-style">{{ email.status }}</span>
-    <!-- needs work in styling and value to be shown-->
-    <button mat-icon-button [matMenuTriggerFor]="emailMoreInfoMenu">
-      <img class="psdk-list-view-svg-icon" src="{{ showMoreSvg }}" />
-      <!-- <mat-icon>arrow-micro-down</mat-icon> -->
+    <button mat-icon-button [matMenuTriggerFor]="emailMoreInfoMenu" (click)="showEmailMoreInfo = !showEmailMoreInfo">
+      <mat-icon>arrow-micro-down</mat-icon>
     </button>
     <mat-menu #emailMoreInfoMenu="matMenu">
       <ng-container *ngFor="let field of getEmailMoreInfoFields()">
         <button mat-menu-item>{{ field.name }}: {{ field.value }}</button>
       </ng-container>
-    </mat-menu>
-  </mat-card-header>
-  <div *ngIf="email.banner"><component-mapper name="AlertBanner" [props]="{ banner: email.banner }"></component-mapper></div>
+    </mat-menu> -->
+
+    <!-- <mat-card-header></mat-card-header> -->
   <mat-card-content>
     <div [innerHTML]="email.body"></div>
     <div *ngIf="email.trail">
@@ -59,7 +43,7 @@
   <mat-card-actions>
     <button *ngFor="let action of getActions()" mat-icon-button (click)="action.onClick()">
       <!-- use image and path-->
-      <img class="psdk-list-view-svg-icon" src="{{ action.icon }}" />
+      <img class="psdk-list-view-svg-icon" src="{{ action.iconImg }}" />
       <!-- <mat-icon>{{ action.icon }}</mat-icon> -->
     </button>
   </mat-card-actions>

@@ -1,0 +1,33 @@
+<div class="card-header">
+  <div style="display: flex;">
+      <div class="psdk-avatar">V</div>
+      <div>
+        <div class="email-primary">
+          <div class="email-primary-text">Laura Stevens</div>
+          <mat-icon class="sentiment">sentiment_satisfied</mat-icon>
+        </div>
+        <div class="email-secondary">
+          <span>To: Sara;</span>
+          &bull; Tue, Jan 5, 2021, 9:12 AM
+          <mat-icon class="show-more-icon" matTooltip="Show more" (click)="showMoreData()">arrow_drop_down</mat-icon>
+        </div>
+      </div>
+  </div>
+  <div>
+    <mat-icon class="email-actions" *ngFor="let action of actions" [matTooltip]="action.label">{{action.icon}}</mat-icon>
+    <!-- <mat-icon class="email-actions" matTooltip="Reply">reply</mat-icon>
+    <mat-icon class="email-actions" matTooltip="Reply all">reply_all</mat-icon>
+    <mat-icon class="email-actions" matTooltip="Forward">forward</mat-icon> -->
+  </div>
+</div>
+<div>
+  <div *ngIf="showPopover" class="psdk-operator-popover">
+    <dl>
+      <div>Hello</div>
+      <!-- <div *ngFor="let field of fields$; let i = index">
+        <dt class="psdk-operator-name">{{ field.name }}</dt>
+        <dd class="psdk-operator-value">{{ field.value }}</dd>
+      </div> -->
+    </dl>
+  </div>
+</div>
