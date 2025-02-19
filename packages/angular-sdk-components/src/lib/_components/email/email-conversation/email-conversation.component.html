@@ -28,6 +28,6 @@
   <div *ngIf="unReadEmailCount" class="unread-count">{{ unReadEmailCount }} new emails</div>
   <div *ngFor="let email of emails" class="email">
     <!-- Render email component here -->
-    <component-mapper name="EmailSocial" [props]="email"></component-mapper>
+    <component-mapper name="EmailSocial" [props]="{ email }"></component-mapper>
   </div>
 </mat-expansion-panel>

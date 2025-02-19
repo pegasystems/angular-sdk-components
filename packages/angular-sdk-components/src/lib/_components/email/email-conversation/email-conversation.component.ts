@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, forwardRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, forwardRef, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 // import { DomSanitizer } from '@angular/platform-browser';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -6,6 +6,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { EmailService } from '../email-service/email.service';
 
 // interface EmailConversationProps {
 //   id: string;
@@ -28,6 +29,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   styleUrl: './email-conversation.component.scss'
 })
 export class EmailConversationComponent implements OnInit {
+  public emailService: EmailService = inject(EmailService);
   // @Input() pConn$: typeof PConnect;
   // @Input() conversation: EmailConversationProps;
   @Input() id: string;

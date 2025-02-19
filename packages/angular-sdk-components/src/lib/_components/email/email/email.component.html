@@ -8,14 +8,14 @@
       <mat-icon>person</mat-icon>
     </div>
     <mat-card-title>
-      <span>{{ from.fullName }}</span>
-      <mat-icon *ngIf="sentiment">{{ sentiment.icon }}</mat-icon>
-      <mat-chip *ngIf="status" [color]="status === 'draft' ? 'warn' : 'primary'">{{ status }}</mat-chip>
+      <span>{{ email.from.fullName }}</span>
+      <mat-icon *ngIf="email.sentiment">{{ email.sentiment.icon }}</mat-icon>
+      <mat-chip *ngIf="email.status" [color]="email.status === 'draft' ? 'warn' : 'primary'">{{ email.status }}</mat-chip>
     </mat-card-title>
     <mat-card-subtitle>
-      <span>{{ getEmailDisplayList(to.slice(0, 2), false) }}</span>
-      <span *ngIf="to.length > 2">; +{{ to.length - 2 }} more</span>
-      <span>{{ timeStamp | date: 'short' }}</span>
+      <span>{{ getEmailDisplayList(email.to.slice(0, 2), false) }}</span>
+      <span *ngIf="email.to.length > 2">; +{{ email.to.length - 2 }} more</span>
+      <span>{{ email.timeStamp | date: 'short' }}</span>
     </mat-card-subtitle>
     <button mat-icon-button [matMenuTriggerFor]="emailMoreInfoMenu" (click)="showEmailMoreInfo = !showEmailMoreInfo">
       <mat-icon>arrow-micro-down</mat-icon>
@@ -28,21 +28,23 @@
 
     <!-- <mat-card-header></mat-card-header> -->
   <mat-card-content>
-    <div [innerHTML]="body"></div>
-    <div *ngIf="trail">
-      <button mat-button (click)="trail.onExpandCollapse(id)">
+    <div [innerHTML]="email.body"></div>
+    <div *ngIf="email.trail">
+      <button mat-button (click)="email.trail.onExpandCollapse(email.id)">
         <mat-icon>more-alt</mat-icon>
-        {{ trail.expanded ? 'Collapse Trail' : 'Expand Trail' }}
+        {{ email.trail.expanded ? 'Collapse Trail' : 'Expand Trail' }}
       </button>
-      <div *ngIf="trail.expanded">
-        <div *ngIf="trail.content" [innerHTML]="trail.content"></div>
-        <mat-progress-bar *ngIf="trail.loading" mode="indeterminate"></mat-progress-bar>
+      <div *ngIf="email.trail.expanded">
+        <div *ngIf="email.trail.content" [innerHTML]="email.trail.content"></div>
+        <mat-progress-bar *ngIf="email.trail.loading" mode="indeterminate"></mat-progress-bar>
       </div>
     </div>
   </mat-card-content>
   <mat-card-actions>
     <button *ngFor="let action of getActions()" mat-icon-button (click)="action.onClick()">
-      <mat-icon>{{ action.icon }}</mat-icon>
+      <!-- use image and path-->
+      <img class="psdk-list-view-svg-icon" src="{{ action.icon }}" />
+      <!-- <mat-icon>{{ action.icon }}</mat-icon> -->
     </button>
   </mat-card-actions>
 </mat-card>
