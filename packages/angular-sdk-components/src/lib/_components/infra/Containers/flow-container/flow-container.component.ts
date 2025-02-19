@@ -191,7 +191,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       const kid = this.pConn$.getChildren()[0];
       const todoKid = kid.getPConnect().getChildren()[0];
 
-      this.todo_pConn$ = todoKid.getPConnect();
+      this.todo_pConn$ = todoKid?.getPConnect();
 
       return true;
     }
@@ -270,7 +270,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     // this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
-      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name, undefined, this.localeReference);
+      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
     }
 
     // turn off spinner

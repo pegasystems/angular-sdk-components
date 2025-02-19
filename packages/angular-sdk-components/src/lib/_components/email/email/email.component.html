@@ -43,7 +43,7 @@
   <mat-card-actions>
     <button *ngFor="let action of getActions()" mat-icon-button (click)="action.onClick()">
       <!-- use image and path-->
-      <img class="psdk-list-view-svg-icon" src="{{ action.icon }}" />
+      <img class="psdk-list-view-svg-icon" src="{{ action.iconImg }}" />
       <!-- <mat-icon>{{ action.icon }}</mat-icon> -->
     </button>
   </mat-card-actions>
