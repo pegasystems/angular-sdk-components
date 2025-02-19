@@ -1,4 +1,5 @@
 <div class="psdk-case-view" id="case-view">
+  <!-- Summary Panel-->
   <div class="psdk-case-view-info">
     <mat-toolbar color="primary" class="psdk-case-view-toolbar">
       <mat-toolbar-row style="padding-left: 1rem">
@@ -46,6 +47,8 @@
       [outputEvents]="{ tabClick: onTabClick }"
     ></component-mapper>
   </div>
+
+  <!-- Middle Contianer-->
   <div class="psdk-case-view-main">
     <div>
       <div *ngFor="let kid of arChildren$">
@@ -56,20 +59,16 @@
         >
           <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
         </div>
-      </div>
-    </div>
 
-    <div *ngFor="let kid of arChildren$">
-      <div
-        *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'todo'"
-      >
-        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-      </div>
-    </div>
+        <div
+          *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'todo'"
+        >
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
 
-    <div *ngFor="let kid of arChildren$">
-      <div *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name == 'Main'">
-        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        <div *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name == 'Main'">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
       </div>
     </div>
 
@@ -77,13 +76,28 @@
       <component-mapper name="DeferLoad" [props]="{ pConn$, loadData$: tabData$, name: tabData$?.config?.name }"></component-mapper>
     </div>
   </div>
-  <div>
-    <div *ngIf="arChildren$" class="psdk-case-view-utilities">
-      <div *ngFor="let kid of arChildren$">
-        <div *ngIf="kid.getPConnect().getRawMetadata()?.type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata()?.name == 'Utilities'">
-          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
-        </div>
-      </div>
+
+  <!-- Persistent Utitlities Panel-->
+  <ng-container *ngIf="childrensData.persistentUtilities">
+    <div class="psdk-case-view-persistent-summary">
+      <component-mapper name="View" [props]="{ pConn$: childrensData.persistentUtilities.pConn$ }"></component-mapper>
     </div>
-  </div>
+  </ng-container>
+
+  <!-- Utility Panel-->
+  <ng-container *ngIf="childrensData.utilities">
+    <div class="psdk-case-view-utilities" [ngClass]="{ 'psdk-case-view-utilities-expanded': isUtilitiesExpanded }">
+      <div class="psdk-utilities-header">
+        <h2 *ngIf="isUtilitiesExpanded">Utilities</h2>
+        <mat-icon
+          (click)="isUtilitiesExpanded = !isUtilitiesExpanded"
+          class="psdk-expansion-icon"
+          aria-hidden="false"
+          aria-label="Arrow Right"
+          [fontIcon]="isUtilitiesExpanded ? 'arrow_right' : 'arrow_left'"
+        ></mat-icon>
+      </div>
+      <component-mapper name="Region" [props]="{ pConn$: childrensData.utilities.pConn$, isUtilitiesExpanded }"></component-mapper>
+    </div>
+  </ng-container>
 </div>

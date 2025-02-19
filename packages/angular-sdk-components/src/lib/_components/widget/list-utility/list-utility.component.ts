@@ -21,6 +21,7 @@ export class ListUtilityComponent implements OnInit {
   @Input() arActions$: any[] = [];
   @Input() arItems$: any[] = [];
   @Input() menuIconOverrideAction$: any[] = [];
+  @Input() isUtilitiesExpanded: boolean;
 
   // function to all
   @Input() onViewAll$: any;

@@ -14,6 +14,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class RegionComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+  @Input() isUtilitiesExpanded;
 
   arChildren$: any[];
 
