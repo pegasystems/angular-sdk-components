@@ -4,10 +4,12 @@ import { FormGroup } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ReferenceComponent } from '../../infra/reference/reference.component';
 
 interface CaseViewProps {
   // If any, enter additional props that only exist on this component
@@ -22,7 +24,7 @@ interface CaseViewProps {
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
   standalone: true,
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, MatIconModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -33,6 +35,8 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   configProps$: CaseViewProps;
 
   arChildren$: any[];
+
+  childrensData: any = [];
 
   heading$ = '';
   id$ = '';
@@ -54,6 +58,8 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   localizedVal: any;
   localeCategory = 'CaseView';
   localeKey: string;
+
+  isUtilitiesExpanded = true;
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -165,6 +171,19 @@ export class CaseViewComponent implements OnInit, OnDestroy {
       if (kidPConn.getRawMetadata().name == 'Tabs') {
         this.mainTabs = kid;
         this.mainTabData = this.mainTabs.getPConnect().getChildren();
+      }
+
+      if (kidPConn.getRawMetadata()?.type.toLowerCase() == 'reference' && kidPConn.getRawMetadata()?.config?.name == 'pyPersistentUtilities') {
+        this.childrensData.persistentUtilities = this.childrensData.persistentUtilities || {};
+        this.childrensData.persistentUtilities.pConn$ = ReferenceComponent.normalizePConn(kidPConn);
+
+        // If the persistent utilities region is present then we will not expand the utilities region
+        this.isUtilitiesExpanded = false;
+      }
+
+      if (kidPConn.getRawMetadata()?.type.toLowerCase() == 'region' && kidPConn.getRawMetadata()?.name == 'Utilities') {
+        this.childrensData.utilities = this.childrensData.utilities || {};
+        this.childrensData.utilities.pConn$ = kidPConn;
       }
     }
 

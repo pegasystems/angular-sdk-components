@@ -22,6 +22,7 @@ interface FileUtilityProps {
 })
 export class FileUtilityComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
+  @Input() isUtilitiesExpanded;
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};

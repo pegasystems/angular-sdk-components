@@ -131,3 +131,12 @@
   display: inline-block;
   vertical-align: bottom;
 }
+
+.collapsed-list-utiltiy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .psdk-utility-count {
+    margin: 0;
+  }
+}

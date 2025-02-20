@@ -46,7 +46,6 @@ h1 {
 .psdk-case-view-info {
   flex: 0 0 auto;
   width: 25rem;
-  float: left;
   padding: 0rem 0.3125rem 0rem 0rem;
   margin-left: 0.5rem;
   margin-top: 0.5rem;
@@ -56,7 +55,6 @@ h1 {
 
 .psdk-case-view-main {
   flex-grow: 2;
-  float: left;
   padding: 0rem 0.3125rem;
   height: 100%; /* Should be removed. Only for demonstration */
 }
@@ -84,10 +82,16 @@ h1 {
 }
 
 .psdk-case-view-utilities {
-  width: 21.875rem;
-  float: left;
   padding: 0rem 0.3125rem;
-  height: 100%; /* Should be removed. Only for demonstration */
+  width: 2.5rem;
+
+  &.psdk-case-view-utilities-expanded {
+    width: 21.875rem;
+
+    .psdk-utilities-header {
+      justify-content: space-between;
+    }
+  }
 }
 
 .psdk-case-view-divider {
@@ -104,4 +108,27 @@ h1 {
 
 button {
   margin: 0rem 0.3125rem;
+}
+
+.psdk-case-view-persistent-summary {
+  padding: 0.5rem;
+}
+
+.psdk-utilities-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0.5rem 0;
+
+  h2 {
+    font-size: max(1rem, 12px);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .psdk-expansion-icon {
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+  }
 }
