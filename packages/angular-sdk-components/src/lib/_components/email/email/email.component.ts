@@ -46,6 +46,7 @@ export class EmailSocialComponent implements OnInit {
   item$: any;
   showMoreSvg: string;
   actions: any[];
+  fields: any[];
 
   constructor(
     private utils: Utils,
@@ -72,6 +73,7 @@ export class EmailSocialComponent implements OnInit {
     // this.item$.visual.icon = this.from.avatarProps.icon;
     this.showMoreSvg = this.utils.getImageSrc('arrow-micro-down', this.utils.getSDKStaticContentUrl());
     this.actions = this.getActions();
+    this.fields = this.getEmailMoreInfoFields();
   }
 
   getToEmailList(toList: any[]): string {

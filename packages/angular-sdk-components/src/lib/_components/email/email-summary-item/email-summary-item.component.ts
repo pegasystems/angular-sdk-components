@@ -2,16 +2,19 @@ import { Component, Renderer2, OnInit, ElementRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-email-summary-item',
   standalone: true,
   imports: [CommonModule, MatIconModule, MatTooltipModule],
   templateUrl: './email-summary-item.component.html',
-  styleUrl: './email-summary-item.component.scss'
+  styleUrl: './email-summary-item.component.scss',
+  providers: [DatePipe]
 })
 export class EmailSummaryItemComponent implements OnInit {
   @Input() actions;
+  @Input() fields;
   showPopover: boolean;
   constructor(
     private el: ElementRef,

@@ -22,12 +22,14 @@
 </div>
 <div>
   <div *ngIf="showPopover" class="psdk-operator-popover">
-    <dl>
-      <div>Hello</div>
+    <li style="list-style: none; line-height: 25px;" *ngFor="let field of fields">
+      <div><span class="field-title">{{field.name}}</span> <span>{{field.value}}</span></div>
+    </li>
+
       <!-- <div *ngFor="let field of fields$; let i = index">
         <dt class="psdk-operator-name">{{ field.name }}</dt>
         <dd class="psdk-operator-value">{{ field.value }}</dd>
       </div> -->
-    </dl>
+    <!-- </dl> -->
   </div>
 </div>
