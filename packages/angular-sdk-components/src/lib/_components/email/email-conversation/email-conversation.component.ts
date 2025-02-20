@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { EmailService } from '../email-service/email.service';
-
+import { DatePipe } from '@angular/common';
 // interface EmailConversationProps {
 //   id: string;
 //   emails: any[];
@@ -26,7 +26,8 @@ import { EmailService } from '../email-service/email.service';
   standalone: true,
   imports: [CommonModule, MatExpansionModule, MatIconModule, forwardRef(() => ComponentMapperComponent)],
   templateUrl: './email-conversation.component.html',
-  styleUrl: './email-conversation.component.scss'
+  styleUrl: './email-conversation.component.scss',
+  providers: [DatePipe]
 })
 export class EmailConversationComponent implements OnInit {
   public emailService: EmailService = inject(EmailService);

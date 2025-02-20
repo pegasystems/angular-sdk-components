@@ -1,7 +1,7 @@
 <!-- <component-mapper name="SummaryItem" [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }"></component-mapper> -->
 <mat-card class="email-card">
   <div class="mat-card-header">
-    <app-email-summary-item [actions]="actions"></app-email-summary-item>
+    <app-email-summary-item [actions]="actions" [fields]="fields"></app-email-summary-item>
   </div>
 
     <!-- <div mat-card-avatar>
@@ -40,11 +40,9 @@
       </div>
     </div>
   </mat-card-content>
-  <mat-card-actions>
+  <!-- <mat-card-actions>
     <button *ngFor="let action of getActions()" mat-icon-button (click)="action.onClick()">
-      <!-- use image and path-->
       <img class="psdk-list-view-svg-icon" src="{{ action.iconImg }}" />
-      <!-- <mat-icon>{{ action.icon }}</mat-icon> -->
     </button>
-  </mat-card-actions>
+  </mat-card-actions> -->
 </mat-card>
