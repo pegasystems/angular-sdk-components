@@ -1,6 +1,7 @@
 /* filepath: /Users/mohas22/Desktop/cosmos/cosmos/packages/cosmos-social/src/components/Email/Email.component.scss */
 .email-card {
-  margin-bottom: 16px;
+  border-bottom: 1px solid lightgray !important;
+  border-radius: 0px !important;
 }
 
 .mat-card-header {
@@ -44,4 +45,9 @@ span.psdk-csf-status-style {
   height: calc(0.5rem * 2.5);
   padding: 0 0.5rem;
   text-transform: uppercase;
+}
+
+.email-subject {
+  font-weight: 600;
+  margin-bottom: 16px;
 }

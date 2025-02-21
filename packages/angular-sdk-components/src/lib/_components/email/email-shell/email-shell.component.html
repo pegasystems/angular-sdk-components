@@ -17,21 +17,16 @@
   </div>
 
   <div class="email-conversation-list" role="list" [attr.aria-multiselectable]="!autoCollapse">
-    <ng-container *ngFor="let conversation of renderConversations(); let i = index">
-      <component-mapper name="EmailConversation" [props]="conversation" errorMsg="EmailTriageHolder Missing:"></component-mapper>
-      <!-- <app-email-conversation
-        [id]="conversation.id"
-        [emails]="conversation.emails"
-        [from]="conversation.from"
-        [to]="conversation.to"
-        [unReadEmailCount]="conversation.unReadEmailCount"
-        [timeStamp]="conversation.timeStamp"
-        [isForwarded]="conversation.isForwarded"
-        [isCollapsed]="conversation.isCollapsed"
-        [undelivered]="conversation.undelivered"
-        [drafts]="conversation.drafts"
-        (expand)="onExpand(i, conversation.onExpand)"
-      ></app-email-conversation> -->
+    <ng-container *ngIf="conversations.length === 1; else listOfConversations">
+      <div *ngFor="let email of conversations[0].emails" class="email">
+        <component-mapper name="EmailSocial" [props]="{ email }"></component-mapper>
+      </div>
+      <!-- <component-mapper name="EmailSocial" [props]="{ email:  }"></component-mapper> -->
     </ng-container>
+    <ng-template #listOfConversations>
+      <ng-container *ngFor="let conversation of renderConversations(); let i = index">
+        <component-mapper name="EmailConversation" [props]="{conversation}" errorMsg="EmailTriageHolder Missing:"></component-mapper>
+      </ng-container>
+    </ng-template>
   </div>
 </div>

@@ -33,51 +33,40 @@ export class EmailConversationComponent implements OnInit {
   public emailService: EmailService = inject(EmailService);
   // @Input() pConn$: typeof PConnect;
   // @Input() conversation: EmailConversationProps;
-  @Input() id: string;
-  @Input() emails: any[];
-  @Input() from: any;
-  @Input() to: any[];
-  @Input() unReadEmailCount: number;
-  @Input() timeStamp: string;
-  @Input() isForwarded = false;
-  @Input() isCollapsed = false;
-  @Input() undelivered: boolean;
-  @Input() drafts: boolean;
+  @Input() conversation;
+
   isRtl = true;
   caretDownSvg: string;
   caretRightSvg: string;
-
-  @ViewChild('headerRef') headerRef: ElementRef;
+  emails: any[];
+  isCollapsed = false;
   isSmallOrAbove: boolean;
-
+  to: any;
+  unReadEmailCount: any;
+  isForwarded: any;
+  from: any;
+  undelivered: boolean;
+  timeStamp: string;
+  drafts: boolean;
+  @ViewChild('headerRef') headerRef: ElementRef;
   constructor(
     private utils: Utils,
     // private sanitizer: DomSanitizer,
     private breakpointObserver: BreakpointObserver
-  ) {
-    // this.iconRegistry.addSvgIcon('caret-down', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/caret-down.svg'));
-    // this.iconRegistry.addSvgIcon('caret-left', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/caret-left.svg'));
-    // this.iconRegistry.addSvgIcon('caret-right', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/caret-right.svg'));
-  }
+  ) {}
 
   ngOnInit(): void {
     this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Handset]).subscribe(result => {
       this.isSmallOrAbove = !result.matches;
     });
-
-    this.caretDownSvg = this.utils.getImageSrc('caret-down', this.utils.getSDKStaticContentUrl());
-    this.caretRightSvg = this.utils.getImageSrc('caret-right', this.utils.getSDKStaticContentUrl());
-
-    // this.id = this.conversation.id;
-    // this.emails = this.conversation.emails;
-    // this.from = this.conversation.from;
-    // this.to = this.conversation.to;
-    // this.unReadEmailCount = this.conversation.unReadEmailCount;
-    // this.timeStamp = this.conversation.timeStamp;
-    // this.isForwarded = this.conversation.isForwarded;
-    // this.isCollapsed = this.conversation.isCollapsed;
-    // this.undelivered = this.conversation.undelivered;
-    // this.drafts = this.conversation.drafts;
+    const {id, emails, from, to, unReadEmailCount, timeStamp, isForwarded, isCollapsed, undelivered, drafts} = this.conversation;
+    this.emails = emails;
+    this.from = from;
+    this.to = to;
+    this.isCollapsed = isCollapsed;
+    this.unReadEmailCount = unReadEmailCount;
+    this.isForwarded = isForwarded;
+    this.undelivered = undelivered;
   }
 
   getRecipientList(): string {
@@ -92,6 +81,5 @@ export class EmailConversationComponent implements OnInit {
 
   onExpandCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
-    // panel.toggle();
   }
 }

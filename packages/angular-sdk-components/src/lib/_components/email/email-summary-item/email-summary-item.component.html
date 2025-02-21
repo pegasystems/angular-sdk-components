@@ -3,12 +3,12 @@
       <div class="psdk-avatar">V</div>
       <div>
         <div class="email-primary">
-          <div class="email-primary-text">Laura Stevens</div>
+          <div class="email-primary-text">{{email.from.fullName}}</div>
           <mat-icon class="sentiment">sentiment_satisfied</mat-icon>
         </div>
         <div class="email-secondary">
           <span>To: Sara;</span>
-          &bull; Tue, Jan 5, 2021, 9:12 AM
+          &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm'}}
           <mat-icon class="show-more-icon" matTooltip="Show more" (click)="showMoreData()">arrow_drop_down</mat-icon>
         </div>
       </div>
