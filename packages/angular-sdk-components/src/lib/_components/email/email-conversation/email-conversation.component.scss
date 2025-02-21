@@ -15,6 +15,7 @@ mat-expansion-panel {
   border-radius: 0.5rem;
   overflow: hidden;
   box-shadow: none !important;
+  background: none !important;
 }
 
 mat-expansion-panel-header {
@@ -28,6 +29,16 @@ mat-expansion-panel-header {
   border-bottom: 1px solid #e2e2e2;
   padding-inline: 0.5rem;
   flex-direction: row-reverse;
+  background-color: white !important;
+}
+
+::ng-deep {
+  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+  .mat-expansion-panel-header.mat-expanded {
+    height: none !important;
+  }
 }
 
 ::ng-deep {

@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 export class EmailSummaryItemComponent implements OnInit {
   @Input() actions;
   @Input() fields;
+  @Input() email;
   showPopover: boolean;
   constructor(
     private el: ElementRef,
