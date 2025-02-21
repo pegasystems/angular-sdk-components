@@ -42,6 +42,15 @@ mat-expansion-panel-header {
 }
 
 ::ng-deep {
+  .mat-expansion-panel-body {
+    padding: 0px !important;
+  }
+  .mat-expansion-panel-header.mat-expanded {
+    height: none !important;
+  }
+}
+
+::ng-deep {
   .mat-expansion-indicator {
     transform: rotate(270deg) !important;
   }
