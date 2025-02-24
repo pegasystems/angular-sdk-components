@@ -86,3 +86,24 @@ a.mat-mdc-menu-item > mat-icon {
 .ngx-mat-tel-input-container button {
   margin-top: auto;
 }
+
+app-email {
+  .pega-email-forward-header {
+    font-size: smaller;
+    color: #90909d;
+    margin: 0;
+  }
+
+  blockquote {
+    border-left: 1px solid #D7D7D7;
+    margin-left: 10px;
+    padding-left: 5px;
+    font-style: normal;
+    font-family: inherit;
+    padding-bottom: 0px;
+  }
+
+  .pega-highlight-mapping {
+    display: none;
+  }
+}

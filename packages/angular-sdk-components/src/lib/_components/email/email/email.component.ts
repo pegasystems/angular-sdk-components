@@ -125,6 +125,10 @@ export class EmailSocialComponent implements OnInit {
     return fields;
   }
 
+  showTrialContent(email) {
+    email.trail.expanded = !email.trail.expanded;
+  }
+
   getEmailDisplayList(emailUsers: any[], showEmailAddress: boolean): string {
     return emailUsers.map(user => `${user.fullName}${showEmailAddress ? ` <${user.emailAddress}>` : ''}`).join('; ');
   }
