@@ -133,7 +133,11 @@ export class Utils {
     if (userName && userName != '') {
       userInitials = userName.charAt(0);
 
-      if (userName.lastIndexOf(' ') > 0) {
+      if (userName.lastIndexOf(',') > 0) {
+        const name = userName.split(',');
+        const lastName = name[name.length - 1].trim();
+        userInitials += lastName.charAt(0);
+      } else if (userName.lastIndexOf(' ') > 0) {
         const lastName = userName.substring(userName.lastIndexOf(' ') + 1);
         userInitials += lastName.charAt(0);
       } else if (userName.lastIndexOf('.') > 0) {

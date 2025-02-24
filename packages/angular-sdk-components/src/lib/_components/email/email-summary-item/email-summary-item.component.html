@@ -1,6 +1,9 @@
 <div class="card-header">
   <div style="display: flex;">
-      <div class="psdk-avatar">V</div>
+      <div class="psdk-avatar">
+        <ng-container *ngIf="fromData.avatarProps.icon; else initial"><mat-icon>headset_mic</mat-icon></ng-container>
+        <ng-template #initial>{{userInitial}}</ng-template>
+      </div>
       <div>
         <div class="email-primary">
           <div class="email-primary-text">{{fromData.fullName}}</div>
@@ -8,14 +11,8 @@
         </div>
         <div class="email-secondary">
           <span>To: </span>
-          <span *ngFor="let item of ToData; let i = index">
-            <ng-container *ngIf="i < 2">
-              {{item.fullName}}
-              <ng-container *ngIf="ToData.length > 1 && i < ToData.length - 1">; </ng-container>
-            </ng-container>
-          </span>
-          <span *ngIf="ToData.length > 2">+{{ToData.length - 2}} more...</span>
-          &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm'}}
+          <span>{{getToEmailList(ToData)}}</span>
+          &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm a'}}
           <mat-icon class="show-more-icon" matTooltip="Show more" (click)="showMoreData()">arrow_drop_down</mat-icon>
         </div>
       </div>
