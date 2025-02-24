@@ -3,11 +3,18 @@
       <div class="psdk-avatar">V</div>
       <div>
         <div class="email-primary">
-          <div class="email-primary-text">{{email.from.fullName}}</div>
-          <mat-icon class="sentiment">sentiment_satisfied</mat-icon>
+          <div class="email-primary-text">{{fromData.fullName}}</div>
+          <mat-icon *ngIf="sentiment" class="sentiment">{{sentimentIcons[sentiment.variant]}}</mat-icon>
         </div>
         <div class="email-secondary">
-          <span>To: Sara;</span>
+          <span>To: </span>
+          <span *ngFor="let item of ToData; let i = index">
+            <ng-container *ngIf="i < 2">
+              {{item.fullName}}
+              <ng-container *ngIf="ToData.length > 1 && i < ToData.length - 1">; </ng-container>
+            </ng-container>
+          </span>
+          <span *ngIf="ToData.length > 2">+{{ToData.length - 2}} more...</span>
           &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm'}}
           <mat-icon class="show-more-icon" matTooltip="Show more" (click)="showMoreData()">arrow_drop_down</mat-icon>
         </div>
@@ -15,9 +22,6 @@
   </div>
   <div>
     <mat-icon class="email-actions" *ngFor="let action of actions" [matTooltip]="action.label">{{action.icon}}</mat-icon>
-    <!-- <mat-icon class="email-actions" matTooltip="Reply">reply</mat-icon>
-    <mat-icon class="email-actions" matTooltip="Reply all">reply_all</mat-icon>
-    <mat-icon class="email-actions" matTooltip="Forward">forward</mat-icon> -->
   </div>
 </div>
 <div>
