@@ -45,6 +45,7 @@ export class EmailService {
   readonly dialog = inject(MatDialog);
 
   caseInsKey: string;
+  showContainerHeader: boolean;
   emailContainerPConnect: any;
 
   // stores raw email data
@@ -65,6 +66,8 @@ export class EmailService {
   lastCount;
   etUpdated = '';
   boolHideEntities;
+
+  isEmailClient;
 
   private emailComposerRef;
 
@@ -416,5 +419,13 @@ export class EmailService {
     if (this.emailComposerRef) {
       this.emailComposerRef.close();
     }
+  }
+
+  public doShowContainerHeader() {
+    if (this.isEmailClient) {
+      return false;
+    }
+
+    return this.showContainerHeader;
   }
 }

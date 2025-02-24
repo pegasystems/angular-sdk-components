@@ -1,20 +1,17 @@
 <div class="email-shell" [ngClass]="{ 'single-conversation': singleConversation }">
-  <div *ngIf="headerProps" class="email-shell-header">
-    <div class="header-content">
-      <mat-icon>mail</mat-icon>
-      <!-- add icon -->
-      <span class="header-title">
-        {{ headerProps?.subject ? 'Subject: ' + headerProps?.subject : 'Email' }}
-      </span>
-    </div>
-    <!-- requires change for header actions -->
-    <div class="header-actions">
-      <!-- no such styling created -->
-      <ng-container *ngTemplateOutlet="headerProps?.actions"></ng-container>
-      <!-- two buttons to be added-->
-      <!-- ng template not defined for ngTemplateOutlet -->
-    </div>
-  </div>
+  <mat-card *ngIf="emailService.doShowContainerHeader()" appearance="outlined">
+    <mat-card-content class="header-content">
+      <div class="subject-text">{{ emailService.subject ? 'Subject: ' + emailService.subject : 'Email' }}</div>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Subject Actions menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <span>Hide Entities</span>
+        </button>
+      </mat-menu>
+    </mat-card-content>
+  </mat-card>
 
   <div class="email-conversation-list" role="list" [attr.aria-multiselectable]="!autoCollapse">
     <ng-container *ngIf="conversations.length === 1; else listOfConversations">
@@ -25,7 +22,7 @@
     </ng-container>
     <ng-template #listOfConversations>
       <ng-container *ngFor="let conversation of renderConversations(); let i = index">
-        <component-mapper name="EmailConversation" [props]="{conversation}" errorMsg="EmailTriageHolder Missing:"></component-mapper>
+        <component-mapper name="EmailConversation" [props]="{ conversation }" errorMsg="EmailTriageHolder Missing:"></component-mapper>
       </ng-container>
     </ng-template>
   </div>
