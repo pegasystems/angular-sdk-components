@@ -1,18 +1,24 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { Component, forwardRef, inject, Input, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { EmailService } from '../email-service/email.service';
 // import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-email-shell',
   standalone: true,
-  imports: [CommonModule, MatIconModule, forwardRef(() => ComponentMapperComponent)],
+  imports: [CommonModule, MatCardModule, MatIconModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)],
   templateUrl: './email-shell.component.html',
   styleUrl: './email-shell.component.scss'
 })
 export class EmailShellComponent implements OnInit {
+  public emailService: EmailService = inject(EmailService);
+
   @Input() conversations: any[];
   @Input() headerProps: any;
   @Input() autoCollapse = false;

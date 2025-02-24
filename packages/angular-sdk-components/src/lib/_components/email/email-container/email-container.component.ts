@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, forwardRef, inject } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { EmailService } from '../email-service/email.service';
+import { isCaseInSharedContext } from '../common/EmailContainerContext';
 
 @Component({
   selector: 'app-email-container',
@@ -10,11 +11,13 @@ import { EmailService } from '../email-service/email.service';
   styleUrls: ['./email-container.component.scss']
 })
 export class EmailContainerComponent implements OnInit, OnDestroy {
+  public emailService: EmailService = inject(EmailService);
+
   @Input() pConn$: typeof PConnect;
 
   primaryCase;
 
-  constructor(public emailService: EmailService) {
+  constructor() {
     console.log('EmailContainerComponent: constructor');
   }
 
@@ -26,6 +29,7 @@ export class EmailContainerComponent implements OnInit, OnDestroy {
     this.emailService.emailContainerPConnect = this.pConn$;
 
     this.emailService.caseInsKey = configProps.CaseInsKey;
+    this.emailService.showContainerHeader = configProps.ShowContainerHeader;
 
     this.initialization();
   }
@@ -37,6 +41,8 @@ export class EmailContainerComponent implements OnInit, OnDestroy {
 
   initialization() {
     console.log('EmailContainerComponent: initialization');
+
+    this.emailService.isEmailClient = isCaseInSharedContext(this.emailService.caseInsKey);
 
     const primaryContainer = PCore.getContainerUtils().getActiveContainerItemName('app/primary') as string;
 
