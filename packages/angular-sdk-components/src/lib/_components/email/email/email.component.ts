@@ -6,6 +6,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailSummaryItemComponent } from '../email-summary-item/email-summary-item.component';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -21,6 +22,7 @@ import { EmailService } from '../email-service/email.service';
     MatChipsModule,
     MatProgressBarModule,
     MatMenuModule,
+    MatTooltipModule,
     EmailSummaryItemComponent,
     forwardRef(() => ComponentMapperComponent)
   ],
@@ -172,7 +174,7 @@ export class EmailSocialComponent implements OnInit {
         icon: 'reply_all',
         iconImg: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
         label: 'Reply All'
-        // onClick: () => this.onReplyAll(this.id)
+        // onClick: () => this.emailService.onReplyAll(this.email)
       });
       // }
       // if (this.onForward) {
@@ -180,7 +182,7 @@ export class EmailSocialComponent implements OnInit {
         icon: 'forward',
         iconImg: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
         label: 'Forward'
-        // onClick: () => this.onForward(this.id)
+        // onClick: () => this.emailService.onForward(this.email)
       });
       // }
     }
@@ -189,14 +191,14 @@ export class EmailSocialComponent implements OnInit {
       actions.push({
         icon: 'pencil',
         label: 'Edit'
-        // onClick: () => this.onEditDraft(this.id)
+        // onClick: () => this.emailService.onEditDraft(this.email)
       });
       // }
       // if (this.onDeleteDraft) {
       actions.push({
         icon: 'trash',
         label: 'Delete'
-        // onClick: () => this.onDeleteDraft(this.id)
+        // onClick: () => this.emailService.onDeleteDraft(this.email)
       });
       // }
     }

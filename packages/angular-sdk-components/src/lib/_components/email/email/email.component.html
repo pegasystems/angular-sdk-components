@@ -4,13 +4,10 @@
     <app-email-summary-item [actions]="actions" [fields]="fields" [email]="email"></app-email-summary-item>
   </div>
   <mat-card-content>
-    <div class="email-subject">Subject: {{email.subject}}</div>
+    <div class="email-subject">Subject: {{ email.subject }}</div>
     <div [innerHTML]="email.body"></div>
     <div *ngIf="email.trail">
-      <button mat-button (click)="email.trail.onExpandCollapse(email.id)">
-        <mat-icon>more-alt</mat-icon>
-        {{ email.trail.expanded ? 'Collapse Trail' : 'Expand Trail' }}
-      </button>
+      <mat-icon [matTooltip]="email.trail.expanded ? 'Collapse Trail' : 'Expand Trail'">more_horiz</mat-icon>
       <div *ngIf="email.trail.expanded">
         <div *ngIf="email.trail.content" [innerHTML]="email.trail.content"></div>
         <mat-progress-bar *ngIf="email.trail.loading" mode="indeterminate"></mat-progress-bar>
