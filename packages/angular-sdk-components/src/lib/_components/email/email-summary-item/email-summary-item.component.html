@@ -1,30 +1,39 @@
 <div class="card-header">
-  <div style="display: flex;">
-      <div class="psdk-avatar">
-        <ng-container *ngIf="fromData.avatarProps.icon; else initial"><mat-icon>headset_mic</mat-icon></ng-container>
-        <ng-template #initial>{{userInitial}}</ng-template>
+  <div style="display: flex">
+    <div class="psdk-avatar">
+      <ng-container *ngIf="fromData.avatarProps.icon; else initial"><mat-icon>headset_mic</mat-icon></ng-container>
+      <ng-template #initial>{{ userInitial }}</ng-template>
+    </div>
+    <div>
+      <div class="email-primary">
+        <div class="email-primary-text">{{ fromData.fullName }}</div>
+        <mat-icon *ngIf="sentiment" class="sentiment">{{ sentimentIcons[sentiment.variant] }}</mat-icon>
       </div>
-      <div>
-        <div class="email-primary">
-          <div class="email-primary-text">{{fromData.fullName}}</div>
-          <mat-icon *ngIf="sentiment" class="sentiment">{{sentimentIcons[sentiment.variant]}}</mat-icon>
-        </div>
-        <div class="email-secondary">
-          <span>To: </span>
-          <span>{{getToEmailList(ToData)}}</span>
-          &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm a'}}
-          <mat-icon class="show-more-icon" matTooltip="Show more" (click)="showMoreData()">arrow_drop_down</mat-icon>
-        </div>
+      <div class="email-secondary">
+        <span>To: </span>
+        <span>{{ getToEmailList(toData) }}</span>
+        &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm a' }}
+        <mat-icon class="show-more-icon" matTooltip="Show more" [matMenuTriggerFor]="menu">arrow_drop_down</mat-icon>
       </div>
+    </div>
   </div>
   <div>
-    <mat-icon class="email-actions" *ngFor="let action of actions" [matTooltip]="action.label">{{action.icon}}</mat-icon>
+    <mat-icon
+      class="email-actions"
+      *ngFor="let action of actions"
+      [matTooltip]="action.label"
+      (click)="emailService.handleActionClick(action.name, email)"
+      >{{ action.icon }}</mat-icon
+    >
   </div>
 </div>
-<div>
-  <div *ngIf="showPopover" class="psdk-operator-popover">
-    <li style="list-style: none; line-height: 25px;" *ngFor="let field of fields">
-      <div><span class="field-title">{{field.name}}</span> <span>{{field.value}}</span></div>
+
+<mat-menu #menu="matMenu">
+  <div class="psdk-show-more-popover">
+    <li style="list-style: none; line-height: 25px" *ngFor="let field of fields">
+      <div>
+        <span class="field-title">{{ field.name }}</span> <span>{{ field.value }}</span>
+      </div>
     </li>
   </div>
-</div>
+</mat-menu>

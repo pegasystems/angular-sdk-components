@@ -1,53 +1,44 @@
-import { Component, Renderer2, OnInit, ElementRef, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Input, inject } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { DatePipe } from '@angular/common';
+import { EmailService } from '../email-service/email.service';
 import { Utils } from '../../../_helpers/utils';
+
+const SENTIMENT_ICONS = {
+  negative: 'sentiment_dissatisfied',
+  positive: 'sentiment_satisfied',
+  neutral: 'sentiment_neutral'
+};
 
 @Component({
   selector: 'app-email-summary-item',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatIconModule, MatTooltipModule, MatMenuModule],
   templateUrl: './email-summary-item.component.html',
   styleUrl: './email-summary-item.component.scss',
   providers: [DatePipe]
 })
 export class EmailSummaryItemComponent implements OnInit {
+  public emailService: EmailService = inject(EmailService);
 
   @Input() actions;
   @Input() fields;
   @Input() email;
-  showPopover: boolean;
-  ToData: any;
+
+  sentimentIcons = SENTIMENT_ICONS;
+  toData: any;
   fromData: any;
-  sentimentIcons = {
-    negative: 'sentiment_dissatisfied',
-    positive: 'sentiment_satisfied',
-    neutral: 'sentiment_neutral'
-  }
   sentiment: any;
   userInitial: string;
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private utils: Utils
-  ) {}
+
+  constructor(private utils: Utils) {}
 
   ngOnInit(): void {
-    this.renderer.listen('window', 'click', el => {
-      const clickedInside = this.el.nativeElement.contains(el.target);
-
-      if (!clickedInside) {
-        this.showPopover = false;
-      }
-    });
-
-    this.showPopover = false;
-    this.ToData = this.email?.to;
+    this.toData = this.email?.to;
     this.fromData = this.email.from;
     this.sentiment = this.email.sentiment;
-    console.log('this.email', this.email);
     this.userInitial = this.utils.getInitials(this.fromData.fullName ?? '');
   }
 
@@ -58,13 +49,8 @@ export class EmailSummaryItemComponent implements OnInit {
       if (toList.length > 1 && i < toList.length - 1) {
         result += '; ';
       }
-
     });
     result += toList.length > 2 ? `+${toList.length - 2} more...` : '';
     return result;
-  }
-
-  showMoreData() {
-    this.showPopover = !this.showPopover;
   }
 }

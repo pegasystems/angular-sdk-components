@@ -11,6 +11,7 @@ import { EmailSummaryItemComponent } from '../email-summary-item/email-summary-i
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { EmailService } from '../email-service/email.service';
+import { EMAIL_ACTIONS } from '../common/Constants';
 
 @Component({
   selector: 'app-email',
@@ -154,23 +155,23 @@ export class EmailSocialComponent implements OnInit {
         icon: 'reply',
         iconImg: this.utils.getImageSrc('reply', this.utils.getSDKStaticContentUrl()),
         label: 'Reply',
-        onClick: () => this.emailService.onReply(this.email)
+        name: EMAIL_ACTIONS.REPLY
       });
       // }
       // if (this.onReplyAll) {
       actions.push({
         icon: 'reply_all',
         iconImg: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
-        label: 'Reply All'
-        // onClick: () => this.emailService.onReplyAll(this.email)
+        label: 'Reply All',
+        name: EMAIL_ACTIONS.REPLY_ALL
       });
       // }
       // if (this.onForward) {
       actions.push({
         icon: 'forward',
         iconImg: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
-        label: 'Forward'
-        // onClick: () => this.emailService.onForward(this.email)
+        label: 'Forward',
+        name: EMAIL_ACTIONS.FORWARD
       });
       // }
     }
@@ -178,15 +179,15 @@ export class EmailSocialComponent implements OnInit {
       // if (this.onEditDraft) {
       actions.push({
         icon: 'pencil',
-        label: 'Edit'
-        // onClick: () => this.emailService.onEditDraft(this.email)
+        label: 'Edit',
+        name: EMAIL_ACTIONS.EDIT
       });
       // }
       // if (this.onDeleteDraft) {
       actions.push({
         icon: 'trash',
-        label: 'Delete'
-        // onClick: () => this.emailService.onDeleteDraft(this.email)
+        label: 'Delete',
+        name: EMAIL_ACTIONS.DELETE
       });
       // }
     }

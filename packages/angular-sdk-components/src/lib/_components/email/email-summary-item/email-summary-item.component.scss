@@ -53,23 +53,19 @@
   cursor: pointer;
 }
 
-.psdk-operator-popover {
-  display: table;
-  margin: auto;
-  min-width: 100px;
-  background-color: var(--app-form-color);
-  border: 1px solid var(--app-inverse-form-color);
-  // border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
-  position: absolute;
-  z-index: 99;
-  left: 18rem;
-  max-width: 480px;
-}
-
 .field-title {
   color: grey;
   margin-right: 8px;
   font-weight: bold;
+}
+
+.psdk-show-more-popover {
+  padding: 0.5rem 1rem;
+  font-size: 15px;
+}
+
+::ng-deep {
+  .mat-mdc-menu-panel {
+    max-width: fit-content;
+  }
 }
