@@ -13,10 +13,19 @@ import { DatePipe } from '@angular/common';
   providers: [DatePipe]
 })
 export class EmailSummaryItemComponent implements OnInit {
+
   @Input() actions;
   @Input() fields;
   @Input() email;
   showPopover: boolean;
+  ToData: any;
+  fromData: any;
+  sentimentIcons = {
+    negative: 'sentiment_dissatisfied',
+    positive: 'sentiment_satisfied',
+    neutral: 'sentiment_neutral'
+  }
+  sentiment: any;
   constructor(
     private el: ElementRef,
     private renderer: Renderer2
@@ -32,6 +41,9 @@ export class EmailSummaryItemComponent implements OnInit {
     });
 
     this.showPopover = false;
+    this.ToData = this.email?.to;
+    this.fromData = this.email.from;
+    this.sentiment = this.email.sentiment;
   }
 
   showMoreData() {
