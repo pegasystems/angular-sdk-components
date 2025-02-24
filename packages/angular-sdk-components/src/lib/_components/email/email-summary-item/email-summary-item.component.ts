@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DatePipe } from '@angular/common';
+import { Utils } from '../../../_helpers/utils';
 
 @Component({
   selector: 'app-email-summary-item',
@@ -26,9 +27,11 @@ export class EmailSummaryItemComponent implements OnInit {
     neutral: 'sentiment_neutral'
   }
   sentiment: any;
+  userInitial: string;
   constructor(
     private el: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private utils: Utils
   ) {}
 
   ngOnInit(): void {
@@ -44,9 +47,24 @@ export class EmailSummaryItemComponent implements OnInit {
     this.ToData = this.email?.to;
     this.fromData = this.email.from;
     this.sentiment = this.email.sentiment;
+    console.log('this.email', this.email);
+    this.userInitial = this.utils.getInitials(this.fromData.fullName ?? '');
+  }
+
+  getToEmailList(toList: any[]): string {
+    let result = '';
+    toList.slice(0, 2).forEach((to, i) => {
+      result += `${to.shortName} `;
+      if (toList.length > 1 && i < toList.length - 1) {
+        result += '; ';
+      }
+
+    });
+    result += toList.length > 2 ? `+${toList.length - 2} more...` : '';
+    return result;
   }
 
   showMoreData() {
-    this.showPopover = true;
+    this.showPopover = !this.showPopover;
   }
 }

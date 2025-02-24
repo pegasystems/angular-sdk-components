@@ -78,18 +78,6 @@ export class EmailSocialComponent implements OnInit {
     this.fields = this.getEmailMoreInfoFields();
   }
 
-  getToEmailList(toList: any[]): string {
-    let result = '';
-    toList.slice(0, 2).forEach((to, i) => {
-      if (i !== 0) {
-        result += '; ';
-      }
-      result += `${to.shortName} `;
-    });
-    result += toList.length > 2 ? `+${toList.length - 2} more` : '';
-    return result;
-  }
-
   getEmailMoreInfoFields(): any[] {
     const fields: any = [];
 
