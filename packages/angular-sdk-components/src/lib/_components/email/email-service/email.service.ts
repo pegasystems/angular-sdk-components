@@ -7,6 +7,7 @@ import { escapeHTML, getEmailBody } from '../common/Container';
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { getCanPerform, isContextEmail } from '../common/EmailContainerContext';
 import { EmailComposerComponent } from '../email-composer/email-composer.component';
+import { EMAIL_ACTIONS } from '../common/Constants';
 
 interface IMetadata {
   readOnlyView?: boolean;
@@ -370,12 +371,34 @@ export class EmailService {
     return !getCanPerform();
   }
 
-  public onReply(email) {
+  private onReply(email) {
     // if (this.doMakeReadOnly) {
     //   return;
     // }
     if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
       this.openEmailComposer(email);
+    }
+  }
+
+  public handleActionClick(action, email) {
+    switch (action) {
+      case EMAIL_ACTIONS.REPLY:
+        this.onReply(email);
+        break;
+      case EMAIL_ACTIONS.REPLY_ALL:
+        // this.onReplyAll(email);
+        break;
+      case EMAIL_ACTIONS.FORWARD:
+        // this.onForward(email);
+        break;
+      case EMAIL_ACTIONS.DELETE:
+        // this.onDelete(email);
+        break;
+      case EMAIL_ACTIONS.EDIT:
+        // this.onEditDraft(email);
+        break;
+      default:
+        break;
     }
   }
 

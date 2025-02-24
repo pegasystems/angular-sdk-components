@@ -22,3 +22,11 @@ export const REPLIED_CONTENT_DIV = 'pega-email-message-reply';
 export const FORWARDED_CONTENT_DIV = 'pega-email-message-forward';
 export const PDF_TYPE = 'application/pdf';
 export const BYTES_TO_MB = 1000000;
+
+export const EMAIL_ACTIONS = {
+  REPLY: 'reply',
+  REPLY_ALL: 'replyAll',
+  FORWARD: 'forward',
+  DELETE: 'delete',
+  EDIT: 'edit'
+};
