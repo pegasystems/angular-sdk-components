@@ -23,15 +23,15 @@
           [compose]="true"
         ></app-email-selector>
 
-        <a *ngIf="!ccVisible" mat-button href="#" (click)="handleCC($event)">Cc</a>
-        <a *ngIf="!bccVisible" mat-button style="margin-left: 1rem" href="#" (click)="handleBCC($event)">Bcc</a>
+        <button *ngIf="!ccVisible" mat-button color="primary" (click)="handleCC($event)">Cc</button>
+        <button *ngIf="!bccVisible" mat-button color="primary" (click)="handleBCC($event)">Bcc</button>
       </div>
     </div>
 
     <app-email-selector
       *ngIf="ccVisible"
       [participants]="participants"
-      [label]="'CC'"
+      [label]="'Cc'"
       [selectedItems]="data.cc.value || []"
       mode="'multi-select'"
       [compose]="true"
@@ -40,20 +40,20 @@
     <app-email-selector
       *ngIf="bccVisible"
       [participants]="participants"
-      [label]="'BCC'"
+      [label]="'Bcc'"
       [selectedItems]="data.bcc.value || []"
       mode="'multi-select'"
       [compose]="true"
     ></app-email-selector>
 
     <div class="form-group">
-      <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
         <mat-label>Subject</mat-label>
         <input matInput type="text" [value]="data.subject.value" />
       </mat-form-field>
     </div>
     <div class="form-group">
-      <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+      <mat-form-field class="psdk-full-width response-template" subscriptSizing="dynamic">
         <mat-select [value]="" multiple>
           <mat-option *ngFor="let opt of responseTemplateOptions" [value]="opt.key">
             {{ opt.value }}
@@ -62,15 +62,19 @@
         <mat-label>Response templates</mat-label>
       </mat-form-field>
     </div>
-    <div class="form-group" class="psdk-full-width" style="margin-right: 0.1rem; width: 90%">
+    <div class="form-group" class="psdk-full-width">
       <app-rich-text-editor subscriptSizing="dynamic"></app-rich-text-editor>
     </div>
-    <div class="psdk-full-width" style="display: flex; margin-right: 0.1rem; width: 90%; margin-top: 50px; justify-content: space-between">
+    <div class="psdk-full-width" style="display: flex; margin-top: 1.5rem; justify-content: space-between">
       <div>
         <button mat-raised-button color="secondary" (click)="handleCancel($event)">Cancel</button>
       </div>
-      <div>
-        <a mat-button href="#" (click)="handleAttachment($event)">Cc</a>
+      <div style="    display: flex
+      ;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;">
+        <div><mat-icon (click)="handleAttachment($event)">attach_file</mat-icon></div>
         <button mat-raised-button color="secondary">Save as draft</button>
         <button mat-raised-button color="primary">Send</button>
       </div>

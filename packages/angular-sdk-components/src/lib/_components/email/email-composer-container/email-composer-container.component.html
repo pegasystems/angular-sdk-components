@@ -1,6 +1,6 @@
-<div class="composer-heading">{{ composerData.subject.value }}</div>
-
-<lib-email-composer
+<div style="padding: 1.5rem;">
+  <div class="composer-heading">{{ composerData.subject.value }}</div>
+  <lib-email-composer
   [progress]="isProgress ? { message: loadingText } : false"
   [participants]="participants"
   [data]="composerData"
@@ -11,4 +11,5 @@
   (onSave)="saveDraft()"
   (onSend)="isDraftSaved = false; isGenAIEnabled ? (Isrephrased ? sendEmail() : toneAnalysisWithGenAI()) : sendEmail()"
   [handle]="composerHandle"
-></lib-email-composer>
+  ></lib-email-composer>
+</div>

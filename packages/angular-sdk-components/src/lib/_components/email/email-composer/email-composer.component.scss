@@ -1,7 +1,6 @@
 .psdk-full-width {
-  width: 80%;
-  margin-left: 2.5em;
-  margin-right: 1em;
+  width: 100%;
+  // font-size: 14px;
 }
 
 .button-container {
@@ -9,3 +8,30 @@
   align-items: center;
   justify-content: space-evenly;
 }
+
+.email-composer {
+  margin-top: 1.5rem;
+}
+
+::ng-deep {
+  app-rich-text-editor {
+    .rich-text-editor {
+      .tox-tinymce  {
+        height: 150px !important;
+      }
+    }
+  }
+}
+// ::ng-deep {
+//   .response-template {
+//     .mdc-text-field {
+//       .mat-mdc-form-field-flex {
+//         .mat-mdc-form-field-infix {
+//           label {
+//             font-size: 14px;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }

@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { MatInputModule } from '@angular/material/input';
-import { RichTextEditorComponent } from 'packages/angular-sdk-overrides/lib/designSystemExtension/rich-text-editor/rich-text-editor.component';
+import { RichTextEditorComponent } from '../../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { EmailService } from '../email-service/email.service';

@@ -95,7 +95,7 @@ app-email {
   }
 
   blockquote {
-    border-left: 1px solid #d7d7d7;
+    border-left: 1px solid #D7D7D7;
     margin-left: 10px;
     padding-left: 5px;
     font-style: normal;
@@ -107,3 +107,13 @@ app-email {
     display: none;
   }
 }
+
+// lib-email-composer {
+//   app-rich-text-editor {
+//     .rich-text-editor {
+//       .tox-tinymce  {
+//         height: 150px !important;
+//       }
+//     }
+//   }
+// }
