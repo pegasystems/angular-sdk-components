@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-angular-sdk-components',
+  selector: 'lib-angular-sdk-components',
   template: ` <p>angular-sdk-components works!</p> `,
   styles: []
 })

@@ -1,7 +1,4 @@
 <div class="email-composer">
-  <!-- <button id="menu-button" mat-icon-button [matMenuTriggerFor]="actionMenu">
-    <img class="psdk-utility-card-action-svg-icon" src="{{ settingsSvgIcon$ }}" />
-  </button> -->
   <mat-select style="width: 20%" class="psdk-full-width" [value]="responseType" (selectionChange)="onMenuChange($event)">
     <mat-select-trigger style="display: flex; align-items: center; width: 100%">
       <mat-icon>{{ responseType }}</mat-icon>
@@ -25,28 +22,12 @@
           mode="'multi-select'"
           [compose]="true"
         ></app-email-selector>
-        <!-- <mat-form-field class="psdk-full-width" style="width: 80%" subscriptSizing="dynamic">
-          <mat-select [value]="[email.to]" multiple>
-            <mat-option *ngFor="let opt of options$" [value]="opt.emailAddress">
-              {{ opt.emailAddress }}
-            </mat-option>
-          </mat-select>
-          <mat-label>To</mat-label>
-        </mat-form-field> -->
+
         <a *ngIf="!ccVisible" mat-button href="#" (click)="handleCC($event)">Cc</a>
         <a *ngIf="!bccVisible" mat-button style="margin-left: 1rem" href="#" (click)="handleBCC($event)">Bcc</a>
       </div>
     </div>
-    <!-- <div *ngIf="ccVisible" class="form-group">
-      <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
-        <mat-select [value]="email.cc" multiple>
-          <mat-option *ngFor="let opt of options$" [value]="opt.key">
-            {{ opt.value }}
-          </mat-option>
-        </mat-select>
-        <mat-label>CC</mat-label>
-      </mat-form-field>
-    </div> -->
+
     <app-email-selector
       *ngIf="ccVisible"
       [participants]="participants"
@@ -64,16 +45,7 @@
       mode="'multi-select'"
       [compose]="true"
     ></app-email-selector>
-    <!-- <div *ngIf="bccVisible" class="form-group">
-      <mat-form-field style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
-        <mat-select [value]="email.bcc" multiple>
-          <mat-option *ngFor="let opt of options$" [value]="opt.emailAddress">
-            {{ opt.emailAddress }}
-          </mat-option>
-        </mat-select>
-        <mat-label>BCC</mat-label>
-      </mat-form-field>
-    </div> -->
+
     <div class="form-group">
       <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
         <mat-label>Subject</mat-label>
@@ -103,13 +75,5 @@
         <button mat-raised-button color="primary">Send</button>
       </div>
     </div>
-    <!-- <mat-grid-list cols="2" rowHeight="6.25rem">
-      <mat-grid-tile>
-        <button mat-raised-button color="secondary">Cancel</button>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <button mat-raised-button color="primary">Send</button>
-      </mat-grid-tile>
-    </mat-grid-list> -->
   </form>
 </div>

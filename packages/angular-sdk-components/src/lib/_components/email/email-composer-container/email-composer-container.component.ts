@@ -6,8 +6,6 @@ import { UtilityService } from './utility.service';
 import { EmailUtilityContext } from './email-utility.context';
 import { EmailComposerComponent } from '../email-composer/email-composer.component';
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
-// import { UtilityService } from '../services/utility.service'; // Assuming a service for utility management
-// import { EmailUtilityContext } from '../context/email-utility.context'; // Assuming a context service
 
 @Component({
   selector: 'app-email-composer-container',
