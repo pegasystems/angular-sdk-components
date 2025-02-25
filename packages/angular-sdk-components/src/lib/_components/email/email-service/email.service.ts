@@ -431,10 +431,13 @@ export class EmailService {
   }
 
   private openEmailComposer(email, actionType) {
-    EmailComposerContainerComponent.prototype.pConn = this.emailContainerPConnect;
-    EmailComposerContainerComponent.prototype.context = email.id;
-    EmailComposerContainerComponent.prototype.ActionType = actionType;
     this.emailComposerRef = this.dialog.open(EmailComposerContainerComponent, {
+      data: {
+        pConn: this.emailContainerPConnect,
+        context: email.id,
+        ActionType: actionType,
+        CaseID: this.caseInsKey
+      },
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },
       minHeight: '600px',

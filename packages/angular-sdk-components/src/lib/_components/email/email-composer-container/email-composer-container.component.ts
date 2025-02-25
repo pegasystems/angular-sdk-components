@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // @ts-ignore
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { UtilityService } from './utility.service';
 import { EmailUtilityContext } from './email-utility.context';
@@ -15,6 +16,8 @@ import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
   styleUrls: ['./email-composer-container.component.scss']
 })
 export class EmailComposerContainerComponent implements OnInit, OnDestroy {
+  data = inject(MAT_DIALOG_DATA);
+
   @Input() CaseID: string;
   @Input() TemplateID = '';
   @Input() Replies: any[] = [];
@@ -26,12 +29,9 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   @Input() body: string;
   @Input() preLoadArticleData: any;
 
-  pConn: any;
-
   subscription: Subscription;
   widgets: string[] = [];
   emailContentChanged = false;
-  ActionType: string;
   isDraftSaved = false;
   doImplicitDraftSave = false;
   initialLoad = false;
@@ -96,7 +96,6 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   cancelActions: any;
   toneActions: any;
   isEmailClientRef: any = false;
-  context: any;
 
   constructor(
     private utilityService: UtilityService,
@@ -104,6 +103,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.data);
     this.emailUtilityContext.setUtilitySummaryDetails = this.setUtilitySummaryDetails.bind(this);
     this.getMetadata();
   }
@@ -154,9 +154,9 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     this.attachmentsList = [];
     this.preExistingAttachments = [];
     const payload = {
-      ActionType: this.ActionType,
-      CaseID: this.getWrapperCaseID(),
-      Context: this.context,
+      ActionType: this.data.ActionType,
+      CaseID: this.data.CaseID,
+      Context: this.data.context,
       TemplateID: this.TemplateID,
       Draft: this.hasSavedDraft,
       WrapperCaseID: this.getWrapperCaseID()
@@ -195,17 +195,17 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
 
     this.composerData = {
       to: { value: toRecipientItems },
-      cc: { value: this.ActionType === 'REPLYALL' || this.hasSavedDraft ? ccRecipientItems : [] },
-      bcc: { value: this.ActionType === 'REPLYALL' || this.hasSavedDraft ? bccRecipientItems : [] },
-      subject: { value: this.ActionType === 'FORWARD' ? `Fw: ${metaData.pySubject}` : metaData.pySubject },
+      cc: { value: this.data.ActionType === 'REPLYALL' || this.hasSavedDraft ? ccRecipientItems : [] },
+      bcc: { value: this.data.ActionType === 'REPLYALL' || this.hasSavedDraft ? bccRecipientItems : [] },
+      subject: { value: this.data.ActionType === 'FORWARD' ? `Fw: ${metaData.pySubject}` : metaData.pySubject },
       bodyContent: {
         defaultValue: bodyContent,
-        forwardedContent: updateImageSrcsWithAbsoluteURLs(metaData.pyForwardedContent, this.pConn),
+        forwardedContent: updateImageSrcsWithAbsoluteURLs(metaData.pyForwardedContent, this.data.pConn),
         repliedContent: metaData.pyRepliedContent
       },
       selectedTemplateId: this.TemplateID || metaData.pySelectedReplyTemplate || '',
       attachments: this.attachmentsList as any,
-      responseType: this.ActionType === 'REPLYALL' ? 'replyAll' : this.ActionType.toLowerCase()
+      responseType: this.data.ActionType === 'REPLYALL' ? 'replyAll' : this.data.ActionType.toLowerCase()
     };
 
     console.log(this.composerData);
@@ -292,12 +292,12 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         this.draftWindow?.dismiss();
         this.closeComposer(true);
         this.setIsActive(false);
-        (PCore as any).getToaster().push({ content: this.pConn.getLocalizedValue('Draft saved') });
+        (PCore as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Draft saved') });
       } else {
-        (({ PCore }) as any).getToaster().push({ content: this.pConn.getLocalizedValue('Error in saving draft') });
+        (({ PCore }) as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Error in saving draft') });
       }
     } else {
-      this.updateProgressState(this.pConn.getLocalizedValue('Sending email'), true);
+      this.updateProgressState(this.data.pConn.getLocalizedValue('Sending email'), true);
       const { data } = await (PCore as any).getRestClient().invokeRestApi('sendTriageEmail', {
         body: sendEmailPayload
       });
@@ -344,13 +344,13 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
 
     const attachmentIDs: { type: string; category: string; name: any; ID: any }[] = [];
     const attachmentUtils = window.PCore.getAttachmentUtils();
-    this.updateProgressState(this.pConn.getLocalizedValue('Sending email'), true);
+    this.updateProgressState(this.data.pConn.getLocalizedValue('Sending email'), true);
     if (attachmentsToUpload && attachmentsToUpload.length > 0) {
       attachmentsToUpload
         .filter((file: any) => !file.error)
         .forEach((file: any) => {
           attachmentUtils
-            .uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.pConn.getContextName())
+            .uploadAttachment(file, this.onUploadProgress, this.errorHandler, this.data.pConn.getContextName())
             .then(async (fileResponse: any) => {
               const fileConfig = {
                 type: 'File',
@@ -429,7 +429,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   }
 
   saveDraft(): void {
-    this.updateProgressState(this.pConn.getLocalizedValue('Saving draft'), true);
+    this.updateProgressState(this.data.pConn.getLocalizedValue('Saving draft'), true);
     this.isDraftSaved = true;
     this.sendEmail();
   }
@@ -443,15 +443,15 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   }
 
   private async deleteDraft(): Promise<void> {
-    this.updateProgressState(this.pConn.getLocalizedValue('Deleting draft'), true);
+    this.updateProgressState(this.data.pConn.getLocalizedValue('Deleting draft'), true);
     if (this.hasSavedDraft) {
       const { data } = await (PCore as any).getRestClient().invokeRestApi('deleteTriageEmailDraft', {
-        queryPayload: { caseID: this.CaseID, contextID: this.context }
+        queryPayload: { caseID: this.CaseID, contextID: this.data.context }
       });
       if (data.Status === 'success') {
         this.closeComposer(true);
         this.setIsActive(false);
-        (PCore as any).getToaster().push({ content: this.pConn.getLocalizedValue('Draft deleted') });
+        (PCore as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Draft deleted') });
       }
     }
     this.updateProgressState('', false);
@@ -460,7 +460,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   }
 
   private closeComposer(getUpdatedData: boolean = false): void {
-    (PCore as any).getPubSubUtils().publish('CLOSE_COMPOSER', { Context: this.context, getUpdatedData });
+    (PCore as any).getPubSubUtils().publish('CLOSE_COMPOSER', { Context: this.data.context, getUpdatedData });
     if (this.doImplicitDraftSave) {
       const draftAndUndeliveredStatus = {
         hasDraft: true,
@@ -474,7 +474,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   private async rephraseBody(): Promise<void> {
     if (this.composerData.bodyContent.defaultValue) {
       if (!this.rephrasedBody) {
-        (PCore as any).getToaster().push({ content: this.pConn.getLocalizedValue('Error while rephrasing email using AI.') });
+        (PCore as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Error while rephrasing email using AI.') });
         this.errorWithGenAI = true;
         this.toneAnalysisWindow?.dismiss();
       } else if (this.rephrasedBody) {
@@ -492,7 +492,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         this.toneAnalysisWindow = (PCore as any).getModalManager().create(this.toneAnalysisModal, {
           heading: this.toneModalHeading,
           actions: this.ToneActions,
-          content: this.pConn.getLocalizedValue('The email is poorly formatted and not appropriate for customer interaction')
+          content: this.data.pConn.getLocalizedValue('The email is poorly formatted and not appropriate for customer interaction')
         });
       }
     } else {
@@ -520,7 +520,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
           Message: message,
           EmailAddress: this.composerData.to.value.length > 0 ? this.composerData.to.value[0] : ''
         };
-        this.updateProgressState(this.pConn.getLocalizedValue('Reviewing response'), true);
+        this.updateProgressState(this.data.pConn.getLocalizedValue('Reviewing response'), true);
         const { data } = await (PCore as any).getDataApiUtils().getData('D_pxEmailToneAnalysis', {
           dataViewParameters: payload1
         });
@@ -570,7 +570,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
 
     if (field === 'responseType') {
       this.composerData.responseType = value;
-      this.ActionType = value.toUpperCase();
+      this.data.ActionType = value.toUpperCase();
       this.getMetadata();
     }
 
