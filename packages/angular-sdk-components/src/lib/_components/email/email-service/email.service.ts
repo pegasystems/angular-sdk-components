@@ -119,6 +119,7 @@ export class EmailService {
     this.getEmailThreads();
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   sendEmail(payload: any): Observable<any> {
     // Logic to send email
     return of({ status: 'success' }); // Replace with actual HTTP call

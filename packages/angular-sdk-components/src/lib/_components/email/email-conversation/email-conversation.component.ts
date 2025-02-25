@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, Input, OnInit, ViewChild, ElementRef, forwardRef, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 // import { DomSanitizer } from '@angular/platform-browser';
@@ -59,7 +60,7 @@ export class EmailConversationComponent implements OnInit {
     this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Handset]).subscribe(result => {
       this.isSmallOrAbove = !result.matches;
     });
-    const {id, emails, from, to, unReadEmailCount, timeStamp, isForwarded, isCollapsed, undelivered, drafts} = this.conversation;
+    const { id, emails, from, to, unReadEmailCount, timeStamp, isForwarded, isCollapsed, undelivered, drafts } = this.conversation;
     this.emails = emails;
     this.from = from;
     this.to = to;
