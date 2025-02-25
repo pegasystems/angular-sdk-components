@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, inject, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, inject, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,7 +16,7 @@ import { EmailService } from '../email-service/email.service';
   templateUrl: './email-shell.component.html',
   styleUrl: './email-shell.component.scss'
 })
-export class EmailShellComponent implements OnInit {
+export class EmailShellComponent {
   public emailService: EmailService = inject(EmailService);
 
   @Input() conversations: any[];
@@ -24,7 +24,6 @@ export class EmailShellComponent implements OnInit {
   @Input() autoCollapse = false;
 
   activeIndex = 0;
-  singleConversation: boolean;
 
   constructor(
     private iconRegistry: MatIconRegistry,
@@ -34,15 +33,10 @@ export class EmailShellComponent implements OnInit {
     this.iconRegistry.addSvgIcon('mail', this.sanitizer.bypassSecurityTrustResourceUrl('assets/icons/mail.svg'));
   }
 
-  ngOnInit(): void {
-    // this.headerProps = { subject: 'Pause service' };
-    this.singleConversation = this.conversations?.length === 1;
-  }
-
   renderConversations(): any[] {
     if (!this.conversations) return [];
 
-    if (this.singleConversation) {
+    if (this.conversations.length === 1) {
       const conversation = this.conversations[0];
       return [conversation];
     }

@@ -1,4 +1,4 @@
-<div class="email-shell" [ngClass]="{ 'single-conversation': singleConversation }">
+<div class="email-shell" [ngClass]="{ 'single-conversation': conversations.length === 1 }">
   <mat-card *ngIf="emailService.doShowContainerHeader()" appearance="outlined">
     <mat-card-content class="header-content">
       <div class="subject-text">{{ emailService.subject ? 'Subject: ' + emailService.subject : 'Email' }}</div>

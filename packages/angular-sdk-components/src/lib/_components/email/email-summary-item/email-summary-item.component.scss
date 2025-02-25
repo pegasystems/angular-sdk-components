@@ -6,7 +6,7 @@
 
 .email-actions {
   cursor: pointer;
-  padding: 0 6px;
+  padding: 0 3px;
 }
 
 .psdk-avatar {
@@ -37,6 +37,7 @@
 
 .email-secondary {
   color: grey;
+  font-size: 13px;
 }
 
 .sentiment {
@@ -62,6 +63,10 @@
 .psdk-show-more-popover {
   padding: 0.5rem 1rem;
   font-size: 15px;
+}
+
+.email-actions-container {
+  min-width: 85px;
 }
 
 ::ng-deep {

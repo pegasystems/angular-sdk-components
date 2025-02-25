@@ -8,11 +8,18 @@
 
 .email-shell.single-conversation {
   gap: 0;
+
+  & > mat-card {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
 }
 
 .email-conversation-list {
   display: flex;
   flex-direction: column;
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
 }
 
 .header-content {
