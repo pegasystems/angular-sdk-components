@@ -17,11 +17,3 @@
 .text-editor-error {
   color: var(--app-error-light-color);
 }
-
-.readonly-richtext-editor {
-  ::ng-deep {
-    .tox-tinymce {
-      border: none !important;
-    }
-  }
-}
