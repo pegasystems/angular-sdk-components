@@ -5,7 +5,8 @@
   </div>
   <mat-card-content>
     <div class="email-subject">Subject: {{ email.subject }}</div>
-    <div [innerHTML]="email.body"></div>
+    <component-mapper name="RichTextEditor" [props]="{ value: email.body, readonly: true }" [parent]="this"></component-mapper>
+    <!-- <div [innerHTML]="email.body"></div> -->
     <div *ngIf="email.trail">
       <mat-icon style="cursor: pointer" [matTooltip]="email.trail.expanded ? 'Collapse Trail' : 'Expand Trail'" (click)="showTrialContent(email)"
         >more_horiz</mat-icon
