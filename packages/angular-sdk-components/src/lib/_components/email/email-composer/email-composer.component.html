@@ -1,1 +1,115 @@
-<p>email-composer works!</p>
+<div class="email-composer">
+  <!-- <button id="menu-button" mat-icon-button [matMenuTriggerFor]="actionMenu">
+    <img class="psdk-utility-card-action-svg-icon" src="{{ settingsSvgIcon$ }}" />
+  </button> -->
+  <mat-select style="width: 20%" class="psdk-full-width" [value]="responseType" (selectionChange)="onMenuChange($event)">
+    <mat-select-trigger style="display: flex; align-items: center; width: 100%">
+      <mat-icon>{{ responseType }}</mat-icon>
+      <span style="margin-left: 5px">{{ responseType }}</span>
+    </mat-select-trigger>
+    <mat-option *ngFor="let field of menuItems" [value]="field.id">
+      <!-- <button mat-icon-button style="display: contents"> -->
+      <mat-icon>{{ field.id }}</mat-icon>
+      {{ field.id }}
+      <!-- </button> -->
+    </mat-option>
+  </mat-select>
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <div class="button-container">
+        <app-email-selector
+          style="width: -webkit-fill-available"
+          [participants]="participants"
+          [label]="'To'"
+          [selectedItems]="data.to.value || []"
+          mode="'multi-select'"
+          [compose]="true"
+        ></app-email-selector>
+        <!-- <mat-form-field class="psdk-full-width" style="width: 80%" subscriptSizing="dynamic">
+          <mat-select [value]="[email.to]" multiple>
+            <mat-option *ngFor="let opt of options$" [value]="opt.emailAddress">
+              {{ opt.emailAddress }}
+            </mat-option>
+          </mat-select>
+          <mat-label>To</mat-label>
+        </mat-form-field> -->
+        <a *ngIf="!ccVisible" mat-button href="#" (click)="handleCC($event)">Cc</a>
+        <a *ngIf="!bccVisible" mat-button style="margin-left: 1rem" href="#" (click)="handleBCC($event)">Bcc</a>
+      </div>
+    </div>
+    <!-- <div *ngIf="ccVisible" class="form-group">
+      <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+        <mat-select [value]="email.cc" multiple>
+          <mat-option *ngFor="let opt of options$" [value]="opt.key">
+            {{ opt.value }}
+          </mat-option>
+        </mat-select>
+        <mat-label>CC</mat-label>
+      </mat-form-field>
+    </div> -->
+    <app-email-selector
+      *ngIf="ccVisible"
+      [participants]="participants"
+      [label]="'CC'"
+      [selectedItems]="data.cc.value || []"
+      mode="'multi-select'"
+      [compose]="true"
+    ></app-email-selector>
+
+    <app-email-selector
+      *ngIf="bccVisible"
+      [participants]="participants"
+      [label]="'BCC'"
+      [selectedItems]="data.bcc.value || []"
+      mode="'multi-select'"
+      [compose]="true"
+    ></app-email-selector>
+    <!-- <div *ngIf="bccVisible" class="form-group">
+      <mat-form-field style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+        <mat-select [value]="email.bcc" multiple>
+          <mat-option *ngFor="let opt of options$" [value]="opt.emailAddress">
+            {{ opt.emailAddress }}
+          </mat-option>
+        </mat-select>
+        <mat-label>BCC</mat-label>
+      </mat-form-field>
+    </div> -->
+    <div class="form-group">
+      <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+        <mat-label>Subject</mat-label>
+        <input matInput type="text" [value]="data.subject.value" />
+      </mat-form-field>
+    </div>
+    <div class="form-group">
+      <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+        <mat-select [value]="" multiple>
+          <mat-option *ngFor="let opt of responseTemplateOptions" [value]="opt.key">
+            {{ opt.value }}
+          </mat-option>
+        </mat-select>
+        <mat-label>Response templates</mat-label>
+      </mat-form-field>
+    </div>
+    <div class="form-group" class="psdk-full-width" style="margin-right: 0.1rem; width: 90%">
+      <app-rich-text-editor subscriptSizing="dynamic"></app-rich-text-editor>
+    </div>
+    <div class="psdk-full-width" style="display: flex; margin-right: 0.1rem; width: 90%; margin-top: 50px; justify-content: space-between">
+      <div>
+        <button mat-raised-button color="secondary" (click)="handleCancel($event)">Cancel</button>
+      </div>
+      <div>
+        <a mat-button href="#" (click)="handleAttachment($event)">Cc</a>
+        <button mat-raised-button color="secondary">Save as draft</button>
+        <button mat-raised-button color="primary">Send</button>
+      </div>
+    </div>
+    <!-- <mat-grid-list cols="2" rowHeight="6.25rem">
+      <mat-grid-tile>
+        <button mat-raised-button color="secondary">Cancel</button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-raised-button color="primary">Send</button>
+      </mat-grid-tile>
+    </mat-grid-list> -->
+  </form>
+</div>

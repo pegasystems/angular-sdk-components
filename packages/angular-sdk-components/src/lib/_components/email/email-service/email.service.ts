@@ -6,8 +6,9 @@ import getRecipient, { getRecipientList } from '../common/recipients';
 import { escapeHTML, getEmailBody } from '../common/Container';
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { getCanPerform, isContextEmail } from '../common/EmailContainerContext';
-import { EmailComposerComponent } from '../email-composer/email-composer.component';
 import { EMAIL_ACTIONS } from '../common/Constants';
+import { EmailComposerContainerComponent } from '../email-composer-container/email-composer-container.component';
+import { Observable, of } from 'rxjs';
 
 interface IMetadata {
   readOnlyView?: boolean;
@@ -116,6 +117,11 @@ export class EmailService {
     }
 
     this.getEmailThreads();
+  }
+
+  sendEmail(payload: any): Observable<any> {
+    // Logic to send email
+    return of({ status: 'success' }); // Replace with actual HTTP call
   }
 
   private async getEmailThreads() {
@@ -379,7 +385,25 @@ export class EmailService {
     //   return;
     // }
     if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
-      this.openEmailComposer(email);
+      this.openEmailComposer(email, 'REPLY');
+    }
+  }
+
+  private onReplyAll(email) {
+    // if (this.doMakeReadOnly) {
+    //   return;
+    // }
+    if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
+      this.openEmailComposer(email, 'REPLYALL');
+    }
+  }
+
+  private onForward(email) {
+    // if (this.doMakeReadOnly) {
+    //   return;
+    // }
+    if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
+      this.openEmailComposer(email, 'FORWARD');
     }
   }
 
@@ -389,10 +413,10 @@ export class EmailService {
         this.onReply(email);
         break;
       case EMAIL_ACTIONS.REPLY_ALL:
-        // this.onReplyAll(email);
+        this.onReplyAll(email);
         break;
       case EMAIL_ACTIONS.FORWARD:
-        // this.onForward(email);
+        this.onForward(email);
         break;
       case EMAIL_ACTIONS.DELETE:
         // this.onDelete(email);
@@ -405,13 +429,15 @@ export class EmailService {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private openEmailComposer(email) {
-    this.emailComposerRef = this.dialog.open(EmailComposerComponent, {
+  private openEmailComposer(email, actionType) {
+    EmailComposerContainerComponent.prototype.pConn = this.emailContainerPConnect;
+    EmailComposerContainerComponent.prototype.context = email.id;
+    EmailComposerContainerComponent.prototype.ActionType = actionType;
+    this.emailComposerRef = this.dialog.open(EmailComposerContainerComponent, {
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },
-      height: '600px',
-      width: '700px'
+      height: '630px',
+      width: '740px'
     });
   }
 
