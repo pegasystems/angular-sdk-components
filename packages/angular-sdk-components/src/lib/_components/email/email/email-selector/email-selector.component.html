@@ -1,5 +1,5 @@
 <div class="form-group">
-  <mat-form-field class="psdk-full-width" style="margin-right: 0.1rem; width: 90%" subscriptSizing="dynamic">
+  <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
     <mat-select [value]="selectedItems" multiple>
       <mat-option *ngFor="let opt of participants" [value]="opt.EmailAddress">
         {{ opt.EmailAddress }}

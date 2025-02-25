@@ -437,7 +437,7 @@ export class EmailService {
     this.emailComposerRef = this.dialog.open(EmailComposerContainerComponent, {
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },
-      height: '630px',
+      minHeight: '600px',
       width: '740px'
     });
   }
