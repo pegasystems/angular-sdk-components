@@ -7,12 +7,12 @@ import { UtilityService } from './utility.service';
 import { EmailUtilityContext } from './email-utility.context';
 import { EmailComposerComponent } from '../email-composer/email-composer.component';
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
-
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-email-composer-container',
   templateUrl: './email-composer-container.component.html',
   standalone: true,
-  imports: [EmailComposerComponent],
+  imports: [EmailComposerComponent, MatIconModule],
   styleUrls: ['./email-composer-container.component.scss']
 })
 export class EmailComposerContainerComponent implements OnInit, OnDestroy {

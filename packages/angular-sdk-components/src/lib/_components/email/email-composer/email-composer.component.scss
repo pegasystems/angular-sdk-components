@@ -11,13 +11,14 @@
 
 .email-composer {
   margin-top: 1.5rem;
+  height: 100%;
 }
 
 ::ng-deep {
   app-rich-text-editor {
     .rich-text-editor {
       .tox-tinymce  {
-        height: 150px !important;
+        min-height: 150px !important;
       }
     }
   }
@@ -35,3 +36,57 @@
 //     }
 //   }
 // }
+
+.composer-heading {
+  font-weight: 500;
+}
+
+.composer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.minimize-window {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.minimize-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(1rem);
+  width: 92%;
+  min-width: 0px;
+  flex-shrink: 0;
+  padding: 10px;
+}
+
+.subject {
+  margin-inline-end: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.minimize-icons {
+  cursor: pointer;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.maximize-icons {
+  display: flex;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
