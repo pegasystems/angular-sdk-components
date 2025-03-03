@@ -16,8 +16,12 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailSelectorComponent } from '../email/email-selector/email-selector.component';
-
+import {
+  MatDialogActions,
+  MatDialogContent,
+} from '@angular/material/dialog';
 @Component({
   selector: 'lib-email-composer',
   standalone: true,
@@ -37,6 +41,9 @@ import { EmailSelectorComponent } from '../email/email-selector/email-selector.c
     MatProgressBarModule,
     MatMenuModule,
     EmailSelectorComponent,
+    MatDialogActions,
+    MatDialogContent,
+    MatTooltipModule,
     forwardRef(() => ComponentMapperComponent)
   ],
   templateUrl: './email-composer.component.html',
@@ -72,6 +79,8 @@ export class EmailComposerComponent implements OnInit {
   private emailService: EmailService = inject(EmailService);
   options$: { emailAddress: string; fullName: string; shortName: string }[];
   static getPConnect: any;
+  showMinimizeWindow: boolean;
+  isMaximized: boolean;
 
   constructor(private fb: FormBuilder) {
     this.emailForm = this.fb.group({
@@ -218,9 +227,25 @@ export class EmailComposerComponent implements OnInit {
     e.preventDefault();
   }
 
-  handleCancel(e) {
+  closeComposerWindow(e) {
     e.preventDefault();
     this.emailService.closeEmailComposer();
+  }
+
+  minimize()  {
+    this.showMinimizeWindow = true;
+    this.emailService.minimize();
+  }
+
+  maximize() {
+    this.isMaximized = true;
+    this.showMinimizeWindow = false;
+    this.emailService.maximize();
+  }
+
+  dock() {
+    this.showMinimizeWindow = false;
+    this.emailService.dock();
   }
 
   onMenuChange(e) {

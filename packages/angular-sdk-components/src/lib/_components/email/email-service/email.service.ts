@@ -493,10 +493,26 @@ export class EmailService {
       },
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },
-      minHeight: '600px',
+      height: '700px',
       width: '740px'
     });
   }
+
+  maximize() {
+    this.emailComposerRef.updatePosition({bottom: '10px', right: '10px', left: '180px', top: '40px'});
+    this.emailComposerRef.updateSize('100%','90%');
+  }
+
+  minimize() {
+    this.emailComposerRef.updatePosition({bottom: '10px', right: '10px'});
+    this.emailComposerRef.updateSize('18rem','50px');
+  }
+
+  dock() {
+    this.emailComposerRef.updatePosition({bottom: '10px', right: '10px'});
+    this.emailComposerRef.updateSize('740px','700px');
+  }
+
 
   public closeEmailComposer() {
     if (this.emailComposerRef) {

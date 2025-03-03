@@ -108,12 +108,14 @@ app-email {
   }
 }
 
-// lib-email-composer {
-//   app-rich-text-editor {
-//     .rich-text-editor {
-//       .tox-tinymce  {
-//         height: 150px !important;
-//       }
-//     }
-//   }
-// }
+app-rich-text-editor {
+  .rich-text-editor {
+    .tox-tinymce  {
+      height: 100% !important;
+    }
+  }
+}
+
+.mat-mdc-dialog-content {
+  max-height: unset !important;
+}
