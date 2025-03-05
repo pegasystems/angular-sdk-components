@@ -154,46 +154,36 @@ export class EmailSocialComponent implements OnInit {
   getActions(): any[] {
     const actions: any = [];
     if (this.email.status !== 'draft') {
-      // if (this.onReply) {
       actions.push({
         icon: 'reply',
         iconImg: this.utils.getImageSrc('reply', this.utils.getSDKStaticContentUrl()),
         label: 'Reply',
         name: EMAIL_ACTIONS.REPLY
       });
-      // }
-      // if (this.onReplyAll) {
       actions.push({
         icon: 'reply_all',
         iconImg: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
         label: 'Reply All',
         name: EMAIL_ACTIONS.REPLY_ALL
       });
-      // }
-      // if (this.onForward) {
       actions.push({
         icon: 'forward',
         iconImg: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),
         label: 'Forward',
         name: EMAIL_ACTIONS.FORWARD
       });
-      // }
     }
     if (this.email.status === 'draft') {
-      // if (this.onEditDraft) {
       actions.push({
-        icon: 'pencil',
+        icon: 'edit',
         label: 'Edit',
         name: EMAIL_ACTIONS.EDIT
       });
-      // }
-      // if (this.onDeleteDraft) {
       actions.push({
-        icon: 'trash',
+        icon: 'delete',
         label: 'Delete',
         name: EMAIL_ACTIONS.DELETE
       });
-      // }
     }
     return actions;
   }

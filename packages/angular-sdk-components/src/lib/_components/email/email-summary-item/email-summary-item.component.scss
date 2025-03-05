@@ -67,6 +67,8 @@
 
 .email-actions-container {
   min-width: 85px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 ::ng-deep {

@@ -1,6 +1,10 @@
-import { inject, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/public-api';
+import { Component, inject, Injectable } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Observable, of } from 'rxjs';
+
+import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { UPDATE_CASE_IN_LIST, UPDATE_SUBJECT_BY_CASE, UPDATE_UTILITY_COUNT } from '../common/PubSubEvents';
 import getRecipient, { getRecipientList } from '../common/recipients';
 import { escapeHTML, getEmailBody } from '../common/Container';
@@ -8,7 +12,21 @@ import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { getCanPerform, isContextEmail } from '../common/EmailContainerContext';
 import { EMAIL_ACTIONS } from '../common/Constants';
 import { EmailComposerContainerComponent } from '../email-composer-container/email-composer-container.component';
-import { Observable, of } from 'rxjs';
+
+@Component({
+  selector: 'app-delete-draft-confirmation-dialog',
+  imports: [MatDialogModule, MatButtonModule],
+  standalone: true,
+  template: `
+    <h2 mat-dialog-title>Delete Draft</h2>
+    <mat-dialog-content>Are you sure you want to permanently delete the selected draft?</mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Go back</button>
+      <button mat-button color="primary" [mat-dialog-close]="true">Delete</button>
+    </mat-dialog-actions>
+  `
+})
+class DeleteDraftConfirmationDialogComponent {}
 
 interface IMetadata {
   readOnlyView?: boolean;
@@ -44,6 +62,7 @@ const getEntityListFromMail = email => {
 })
 export class EmailService {
   readonly dialog = inject(MatDialog);
+  readonly snackBar = inject(MatSnackBar);
 
   caseInsKey: string;
   showContainerHeader: boolean;
@@ -385,7 +404,7 @@ export class EmailService {
     // if (this.doMakeReadOnly) {
     //   return;
     // }
-    if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
+    if (email.status !== 'draft' && !this.isReadOnlyMode()) {
       this.openEmailComposer(email, 'REPLY');
     }
   }
@@ -394,7 +413,7 @@ export class EmailService {
     // if (this.doMakeReadOnly) {
     //   return;
     // }
-    if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
+    if (email.status !== 'draft' && !this.isReadOnlyMode()) {
       this.openEmailComposer(email, 'REPLYALL');
     }
   }
@@ -403,9 +422,43 @@ export class EmailService {
     // if (this.doMakeReadOnly) {
     //   return;
     // }
-    if (!email.pyHasEmailDraft && !this.isReadOnlyMode()) {
+    if (email.status !== 'draft' && !this.isReadOnlyMode()) {
       this.openEmailComposer(email, 'FORWARD');
     }
+  }
+
+  private onDelete(email) {
+    if (email.status === 'draft' && !this.isReadOnlyMode()) {
+      const ref = this.dialog.open(DeleteDraftConfirmationDialogComponent, {
+        position: { top: '10px' }
+      });
+
+      ref.afterClosed().subscribe(async result => {
+        if (result) {
+          const { data } = await PCore.getRestClient().invokeRestApi('deleteTriageEmailDraft', {
+            queryPayload: { caseID: this.caseInsKey, contextID: email.id }
+          });
+          if (data.Status === 'success') {
+            this.snackBar.open(this.emailContainerPConnect.getLocalizedValue('Draft deleted'), 'Close', {
+              duration: 5000
+            });
+
+            // update the list without draft badge in case of drafts deletion
+            this.closeComposerCallback(true);
+          }
+        }
+      });
+    }
+  }
+
+  closeComposerCallback(getUpdatedData) {
+    if (getUpdatedData) {
+      this.getEmailThreads();
+    }
+  }
+
+  private onEditDraft(email) {
+    console.log(email);
   }
 
   public handleActionClick(action, email) {
@@ -420,10 +473,10 @@ export class EmailService {
         this.onForward(email);
         break;
       case EMAIL_ACTIONS.DELETE:
-        // this.onDelete(email);
+        this.onDelete(email);
         break;
       case EMAIL_ACTIONS.EDIT:
-        // this.onEditDraft(email);
+        this.onEditDraft(email);
         break;
       default:
         break;
