@@ -18,10 +18,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailSelectorComponent } from '../email/email-selector/email-selector.component';
-import {
-  MatDialogActions,
-  MatDialogContent,
-} from '@angular/material/dialog';
+import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
+
 @Component({
   selector: 'lib-email-composer',
   standalone: true,
@@ -81,6 +79,7 @@ export class EmailComposerComponent implements OnInit {
   static getPConnect: any;
   showMinimizeWindow: boolean;
   isMaximized: boolean;
+  menuIconOverrideAction$: any;
 
   constructor(private fb: FormBuilder) {
     this.emailForm = this.fb.group({
@@ -153,6 +152,7 @@ export class EmailComposerComponent implements OnInit {
     ];
 
     this.menuItemsText = ['reply', 'replyAll', 'forward'];
+    this.menuIconOverrideAction$ = { onClick: this.removeFile.bind(this) };
   }
 
   getText(val) {
@@ -166,42 +166,43 @@ export class EmailComposerComponent implements OnInit {
   }
 
   sendEmail() {
-    if (this.emailForm.valid) {
-      this.isProgress = true;
-      const payload = this.prepareEmailPayload();
-      this.emailService.sendEmail(payload).subscribe(
-        response => {
-          this.isProgress = false;
-          if (response.status === 'success') {
-            // this.toastr.success('Email sent successfully');
-            this.setIsActive(false);
-          } else {
-            //  this.toastr.error('Error sending email');
-          }
-        },
-        error => {
-          this.isProgress = false;
-          // this.toastr.error('Error sending email');
+    // if (this.emailForm.valid) {
+    this.isProgress = true;
+    const payload = this.prepareEmailPayload();
+    this.emailService.sendEmail(payload).then(
+      response => {
+        this.isProgress = false;
+        if (response.status === 'success') {
+          // this.toastr.success('Email sent successfully');
+          this.setIsActive(false);
+        } else {
+          //  this.toastr.error('Error sending email');
         }
-      );
-    } else {
-      // this.toastr.error('Please fill in all required fields');
-    }
+      },
+      error => {
+        this.isProgress = false;
+        // this.toastr.error('Error sending email');
+      }
+    );
+    // } else {
+    //   // this.toastr.error('Please fill in all required fields');
+    // }
   }
 
   prepareEmailPayload() {
     return {
-      to: this.emailForm.value.to,
-      cc: this.emailForm.value.cc,
-      bcc: this.emailForm.value.bcc,
-      subject: this.emailForm.value.subject,
+      to: this.data.to.value,
+      cc: this.data.cc.value,
+      bcc: this.data.bcc.value,
+      subject: this.data.subject.value,
+      // body: this.emailForm.value.body,
       body: this.emailForm.value.body,
       attachments: this.data.attachments,
       templateId: this.data.selectedTemplateId,
-      context: this.Context,
-      caseId: this.CaseID,
-      actionType: this.ActionType,
-      guid: this.GUID
+      context: this.data.Context,
+      caseId: this.data.CaseID,
+      actionType: this.data.ActionType,
+      guid: this.data.GUID
     };
   }
 
@@ -223,8 +224,44 @@ export class EmailComposerComponent implements OnInit {
     this.bccVisible = true;
   }
 
+  createUID = (): string => {
+    return `_${Math.random().toString(36).slice(2, 11)}`;
+  };
+
   handleAttachment(e) {
-    e.preventDefault();
+    // e.preventDefault();
+    console.log('Attachment clicked');
+    // name: attachment.pyName,
+    //   value: attachment.pyName,
+    //   format: attachment.pyName.split('.').pop(),
+    if (e.target.files) {
+      // const newFiles = Array.from(e.target.files).map((file: any) => ({
+      //   File: file,
+      //   visual: { icon: 'document-doc' },
+      //   primary: { name: file.name },
+      //   secondary: { text: '' },
+      //   id: '1234', // require unique id generation
+      //   name: file.name,
+      //   value: file.name,
+      //   format: file.name.split('.').pop(),
+      //   src: null,
+      //   onClick: file.onDownload // remove function to be added
+      // }));
+      const files = Array.from(e.target.files).map((file: any) => ({
+        File: file,
+        ID: this.createUID() // require unique id generation
+      }));
+      const newFiles = this.emailService.prepareInputForAttachment(files);
+      this.data.attachments = this.data.attachments ? [...this.data.attachments, ...newFiles] : newFiles;
+      // onChange('attachments', attachments ? [...attachments, ...newFiles] : newFiles);
+    }
+  }
+
+  removeFile(e) {
+    console.log('Remove file clicked');
+    const newAttachments = this.data.attachments.filter(attachment => attachment.id !== e.id);
+    this.data.attachments = newAttachments;
+    // onChange('attachments', newAttachments);
   }
 
   closeComposerWindow(e) {
@@ -232,7 +269,7 @@ export class EmailComposerComponent implements OnInit {
     this.emailService.closeEmailComposer();
   }
 
-  minimize()  {
+  minimize() {
     this.showMinimizeWindow = true;
     this.emailService.minimize();
   }

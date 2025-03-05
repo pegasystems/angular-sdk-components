@@ -1,5 +1,6 @@
 <!-- <div style="padding: 1.5rem;"> -->
-  <lib-email-composer style="height: 100%; overflow: hidden;"
+<lib-email-composer
+  style="height: 100%; overflow: hidden"
   [progress]="isProgress ? { message: loadingText } : false"
   [participants]="participants"
   [data]="composerData"
@@ -10,5 +11,5 @@
   (onSave)="saveDraft()"
   (onSend)="isDraftSaved = false; isGenAIEnabled ? (Isrephrased ? sendEmail() : toneAnalysisWithGenAI()) : sendEmail()"
   [handle]="composerHandle"
-  ></lib-email-composer>
+></lib-email-composer>
 <!-- </div> -->

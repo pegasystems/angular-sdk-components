@@ -62,13 +62,25 @@
 
   <mat-dialog-actions align="end" style="padding: 0 24px;">
     <div class="psdk-full-width" style="display: flex; justify-content: space-between">
+    <div *ngIf="data.attachments.length > 0">
+      <component-mapper
+        name="SummaryList"
+        [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$ }"
+      ></component-mapper>
+    </div>
+    <div class="psdk-full-width" style="display: flex; margin-top: 1.5rem; justify-content: space-between">
       <div>
         <button mat-raised-button color="secondary" (click)="closeComposerWindow($event)">Cancel</button>
       </div>
-      <div class="composer-actions">
-        <div><mat-icon (click)="handleAttachment($event)">attach_file</mat-icon></div>
+      <!-- <div class="composer-actions">
+        <div><mat-icon (click)="handleAttachment($event)">attach_file</mat-icon></div> -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
+        <input hidden type="file" multiple #uploader (change)="handleAttachment($event)" />
+
+        <!-- <button mat-stroked-button color="primary" (click)="uploader.click()">{{ pConn$.getLocalizedValue('Upload file(s)', '', '') }}</button> -->
+        <div matRipple><mat-icon (click)="uploader.click()">attach_file</mat-icon></div>
         <button mat-raised-button color="secondary">Save as draft</button>
-        <button mat-raised-button color="primary">Send</button>
+        <button mat-raised-button color="primary" (click)="sendEmail()">Send</button>
       </div>
     </div>
   </mat-dialog-actions>

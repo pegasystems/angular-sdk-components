@@ -8,6 +8,8 @@ import { EmailUtilityContext } from './email-utility.context';
 import { EmailComposerComponent } from '../email-composer/email-composer.component';
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { MatIconModule } from '@angular/material/icon';
+import { EmailService } from '../email-service/email.service';
+
 @Component({
   selector: 'app-email-composer-container',
   templateUrl: './email-composer-container.component.html',
@@ -16,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./email-composer-container.component.scss']
 })
 export class EmailComposerContainerComponent implements OnInit, OnDestroy {
+  private emailService: EmailService = inject(EmailService);
   data = inject(MAT_DIALOG_DATA);
 
   @Input() CaseID: string;
@@ -178,17 +181,26 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
       templates: replyTemplate.templates
     }));
 
-    const preExistingAttachmentsList =
-      metaData.pyAttachments?.map(attachment => ({
-        name: attachment.fileName,
-        id: attachment.ID,
-        type: attachment.extension,
-        isExisting: true,
-        onPreview: this.handlePreviewClick(attachment.ID)
-      })) || [];
+    // const preExistingAttachmentsList =
+    //   metaData.pyAttachments?.map(attachment => ({
+    //     visual: { icon: 'document-doc' },
+    //     primary: { name: attachment.fileName },
+    //     secondary: { text: '' },
+    //     // name: attachment.fileName,
+    //     id: attachment.ID,
+    //     // type: attachment.extension,
+    //     isExisting: true
+    //     // onPreview: this.handlePreviewClick(attachment.ID)
+    //   })) || [];
 
+    const preExistingAttachmentsList =
+      this.emailService.prepareInputForAttachment(metaData.pyAttachments)?.map(attachment => ({
+        ...attachment,
+        isExisting: true
+      })) || [];
     this.previewAttachments = preExistingAttachmentsList;
     this.preExistingAttachments = preExistingAttachmentsList;
+    // need to update this logic
     this.attachmentsList = preExistingAttachmentsList.concat(this.composerState.attachments || []);
 
     const bodyContent = this.body ? `${this.body}${this.getReplyOrForwardContent(metaData)}` : this.getBodyContent(metaData);

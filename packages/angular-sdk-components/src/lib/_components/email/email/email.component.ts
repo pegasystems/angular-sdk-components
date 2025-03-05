@@ -50,6 +50,8 @@ export class EmailSocialComponent implements OnInit {
   showMoreSvg: string;
   actions: any[];
   fields: any[];
+  attachments: any[] = [];
+  menuIconOverrideAction$: any;
 
   constructor(
     private utils: Utils,
@@ -77,6 +79,9 @@ export class EmailSocialComponent implements OnInit {
     this.showMoreSvg = this.utils.getImageSrc('arrow-micro-down', this.utils.getSDKStaticContentUrl());
     this.actions = this.getActions();
     this.fields = this.getEmailMoreInfoFields();
+    this.menuIconOverrideAction$ = { onClick: this.downloadFile.bind(this) };
+    this.attachments = this.email.attachments;
+    // this.prepareInputForAttachment(this.email.attachments);
   }
 
   getEmailMoreInfoFields(): any[] {
@@ -186,5 +191,15 @@ export class EmailSocialComponent implements OnInit {
       });
     }
     return actions;
+  }
+
+  downloadFile(attachment) {
+    console.log(`Download file clicked${attachment}`);
+    const attachmentInfo = {
+      name: attachment.name,
+      ID: attachment.id
+    };
+    this.emailService.downloadAttachment(attachmentInfo, this.emailService.emailContainerPConnect);
+    // attachment.onClick();
   }
 }
