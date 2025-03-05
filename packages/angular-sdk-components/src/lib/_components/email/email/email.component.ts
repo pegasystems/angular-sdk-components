@@ -165,12 +165,14 @@ export class EmailSocialComponent implements OnInit {
         label: 'Reply',
         name: EMAIL_ACTIONS.REPLY
       });
-      actions.push({
-        icon: 'reply_all',
-        iconImg: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
-        label: 'Reply All',
-        name: EMAIL_ACTIONS.REPLY_ALL
-      });
+      if (this.email.to?.length > 1) {
+        actions.push({
+          icon: 'reply_all',
+          iconImg: this.utils.getImageSrc('reply-all', this.utils.getSDKStaticContentUrl()),
+          label: 'Reply All',
+          name: EMAIL_ACTIONS.REPLY_ALL
+        });
+      }
       actions.push({
         icon: 'forward',
         iconImg: this.utils.getImageSrc('forward', this.utils.getSDKStaticContentUrl()),

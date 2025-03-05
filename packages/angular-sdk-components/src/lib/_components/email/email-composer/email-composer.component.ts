@@ -282,6 +282,7 @@ export class EmailComposerComponent implements OnInit {
 
   dock() {
     this.showMinimizeWindow = false;
+    this.isMaximized = false;
     this.emailService.dock();
   }
 

@@ -625,8 +625,8 @@ export class EmailService {
   }
 
   maximize() {
-    this.emailComposerRef.updatePosition({ bottom: '10px', right: '10px', left: '180px', top: '40px' });
-    this.emailComposerRef.updateSize('100%', '90%');
+    this.emailComposerRef.updatePosition({top: '40px', left: '180px'});
+    this.emailComposerRef.updateSize('1500px','900px');
   }
 
   minimize() {

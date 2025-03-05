@@ -1,4 +1,4 @@
-<div class="email-composer" *ngIf="!showMinimizeWindow">
+<div class="email-composer" [ngStyle]="{display: showMinimizeWindow ? 'none' : null}">
   <div class="composer-header">
     <div class="composer-heading">{{ data.subject.value }}</div>
     <div class="maximize-icons">
