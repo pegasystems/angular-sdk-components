@@ -16,4 +16,10 @@
       </div>
     </div>
   </mat-card-content>
+  <div>
+    <component-mapper
+      name="SummaryList"
+      [props]="{ arItems$: attachments, menuIconOverride$: 'download', menuIconOverrideAction$ }"
+    ></component-mapper>
+  </div>
 </mat-card>

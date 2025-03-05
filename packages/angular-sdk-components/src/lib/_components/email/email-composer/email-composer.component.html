@@ -8,10 +8,9 @@
       <mat-icon matTooltip="close" (click)="closeComposerWindow($event)">close</mat-icon>
     </div>
   </div>
-  <mat-dialog-content style="height: 85%; display: flex; flex-direction: column;">
+  <mat-dialog-content style="height: 85%; display: flex; flex-direction: column">
     <div>
-      <mat-select style="width: 20%" class="psdk-full-width" [value]="responseType"
-        (selectionChange)="onMenuChange($event)">
+      <mat-select style="width: 20%" class="psdk-full-width" [value]="responseType" (selectionChange)="onMenuChange($event)">
         <mat-select-trigger style="display: flex; align-items: center; width: 100%">
           <mat-icon>{{ responseType }}</mat-icon>
           <span style="margin-left: 5px">{{ responseType }}</span>
@@ -26,18 +25,36 @@
     </div>
     <div class="form-group">
       <div class="button-container">
-        <app-email-selector style="width: -webkit-fill-available" [participants]="participants" [label]="'To'"
-          [selectedItems]="data.to.value || []" mode="'multi-select'" [compose]="true"></app-email-selector>
+        <app-email-selector
+          style="width: -webkit-fill-available"
+          [participants]="participants"
+          [label]="'To'"
+          [selectedItems]="data.to.value || []"
+          mode="'multi-select'"
+          [compose]="true"
+        ></app-email-selector>
         <button *ngIf="!ccVisible" mat-button color="primary" (click)="handleCC($event)">Cc</button>
         <button *ngIf="!bccVisible" mat-button color="primary" (click)="handleBCC($event)">Bcc</button>
       </div>
     </div>
 
-    <app-email-selector *ngIf="ccVisible" [participants]="participants" [label]="'Cc'"
-      [selectedItems]="data.cc.value || []" mode="'multi-select'" [compose]="true"></app-email-selector>
+    <app-email-selector
+      *ngIf="ccVisible"
+      [participants]="participants"
+      [label]="'Cc'"
+      [selectedItems]="data.cc.value || []"
+      mode="'multi-select'"
+      [compose]="true"
+    ></app-email-selector>
 
-    <app-email-selector *ngIf="bccVisible" [participants]="participants" [label]="'Bcc'"
-      [selectedItems]="data.bcc.value || []" mode="'multi-select'" [compose]="true"></app-email-selector>
+    <app-email-selector
+      *ngIf="bccVisible"
+      [participants]="participants"
+      [label]="'Bcc'"
+      [selectedItems]="data.bcc.value || []"
+      mode="'multi-select'"
+      [compose]="true"
+    ></app-email-selector>
 
     <div class="form-group">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
@@ -55,20 +72,33 @@
         <mat-label>Response templates</mat-label>
       </mat-form-field>
     </div>
-    <div class="form-group" class="psdk-full-width" style="flex-grow: 1;">
+    <div class="form-group" class="psdk-full-width" style="flex-grow: 1">
       <app-rich-text-editor subscriptSizing="dynamic"></app-rich-text-editor>
     </div>
   </mat-dialog-content>
 
-  <mat-dialog-actions align="end" style="padding: 0 24px;">
+  <mat-dialog-actions align="end" style="padding: 0 24px">
     <div class="psdk-full-width" style="display: flex; justify-content: space-between">
-      <div>
-        <button mat-raised-button color="secondary" (click)="closeComposerWindow($event)">Cancel</button>
+      <div *ngIf="data.attachments.length > 0">
+        <component-mapper
+          name="SummaryList"
+          [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$ }"
+        ></component-mapper>
       </div>
-      <div class="composer-actions">
-        <div><mat-icon (click)="handleAttachment($event)">attach_file</mat-icon></div>
-        <button mat-raised-button color="secondary">Save as draft</button>
-        <button mat-raised-button color="primary">Send</button>
+      <div class="psdk-full-width" style="display: flex; margin-top: 1.5rem; justify-content: space-between">
+        <div>
+          <button mat-raised-button color="secondary" (click)="closeComposerWindow($event)">Cancel</button>
+        </div>
+        <!-- <div class="composer-actions">
+        <div><mat-icon (click)="handleAttachment($event)">attach_file</mat-icon></div> -->
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
+          <input hidden type="file" multiple #uploader (change)="handleAttachment($event)" />
+
+          <!-- <button mat-stroked-button color="primary" (click)="uploader.click()">{{ pConn$.getLocalizedValue('Upload file(s)', '', '') }}</button> -->
+          <div matRipple><mat-icon (click)="uploader.click()">attach_file</mat-icon></div>
+          <button mat-raised-button color="secondary">Save as draft</button>
+          <button mat-raised-button color="primary" (click)="sendEmail()">Send</button>
+        </div>
       </div>
     </div>
   </mat-dialog-actions>

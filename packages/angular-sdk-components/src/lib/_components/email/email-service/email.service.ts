@@ -2,8 +2,6 @@ import { Component, inject, Injectable } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, of } from 'rxjs';
-
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { UPDATE_CASE_IN_LIST, UPDATE_SUBJECT_BY_CASE, UPDATE_UTILITY_COUNT } from '../common/PubSubEvents';
 import getRecipient, { getRecipientList } from '../common/recipients';
@@ -12,6 +10,7 @@ import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { getCanPerform, isContextEmail } from '../common/EmailContainerContext';
 import { EMAIL_ACTIONS } from '../common/Constants';
 import { EmailComposerContainerComponent } from '../email-composer-container/email-composer-container.component';
+import download from 'downloadjs';
 
 @Component({
   selector: 'app-delete-draft-confirmation-dialog',
@@ -138,10 +137,130 @@ export class EmailService {
     this.getEmailThreads();
   }
 
+  // sendEmail(payload: any): Observable<any> {
+  //   // Logic to send email
+  //   return of({ status: 'success' }); // Replace with actual HTTP call
+  // }
+
+  async sendEmail(payload: any): Promise<any> {
+    // const hasError = false;
+    const data = { ...payload };
+    // if (this.doImplicitDraftSave) {
+    //   data = this.composerStateForDraft;
+    // }
+    // hasError = this.validateInputs(data, hasError);
+
+    // if (data.attachments) { // check for large attachments
+    //   data.attachments
+    //     .filter(attachment => this.filterLargeAttachment(attachment))
+    //     .forEach((file: any) => {
+    //       file.error = this.largeAttachmentError();
+    //       hasError = true;
+    //       file.onCancel = (id: string) => {
+    //         this.OnCancelOfAttachment(id);
+    //       };
+    //     });
+    // }
+    // if (hasError) {
+    //   this.updateProgressState('', false);
+    //   this.composerData = data;
+    //   return;
+    // }
+    const payloadPreExistAttachments = [];
+    const attachmentsToUpload = [];
+    // to seperate new uploaded attachments and pre-existing attachments
+    this.setAttachmentsToUpload(data.attachments, attachmentsToUpload, payloadPreExistAttachments);
+    // const templateID = this.isDraftSaved ? data.selectedTemplateId : this.TemplateID;
+    const sendEmailPayload = this.getSendEmailPayload(
+      data,
+      data.ActionType,
+      payloadPreExistAttachments,
+      false,
+      data.CaseID,
+      data.Context,
+      data.templateID,
+      data.GUID
+    );
+
+    const attachmentIDs: { type: string; category: string; name: any; ID: any }[] = [];
+    const attachmentUtils = window.PCore.getAttachmentUtils();
+    // this.updateProgressState(this.data.pConn.getLocalizedValue('Sending email'), true);
+    if (attachmentsToUpload && attachmentsToUpload.length > 0) {
+      attachmentsToUpload
+        .filter((file: any) => !file.error)
+        .forEach((file: any) => {
+          attachmentUtils
+            .uploadAttachment(file, this.onUploadProgress, this.errorHandler, data.pConn.getContextName())
+            .then(async (fileResponse: any) => {
+              const fileConfig = {
+                type: 'File',
+                category: 'File',
+                name: file.name,
+                ID: fileResponse?.ID
+              };
+              attachmentIDs.push(fileConfig);
+              if (attachmentIDs.length === attachmentsToUpload.length) {
+                (sendEmailPayload as any).Attachments = attachmentIDs;
+                // this.sendEmailAPICall(sendEmailPayload as any);
+              }
+            })
+            .catch(console.error);
+        });
+    } else {
+      // this.sendEmailAPICall(sendEmailPayload as any);
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  sendEmail(payload: any): Observable<any> {
-    // Logic to send email
-    return of({ status: 'success' }); // Replace with actual HTTP call
+  errorHandler(file: any, onUploadProgress: (file: any, onUploadProgress: any, errorHandler: any, arg3: any) => void, errorHandler: any, arg3: any) {
+    throw new Error('Method not implemented.');
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onUploadProgress(file: any, onUploadProgress: any, errorHandler: any, arg3: any) {
+    throw new Error('Method not implemented.');
+  }
+
+  getSendEmailPayload(
+    data: any,
+    actionType,
+    payloadPreExistAttachments: never[],
+    isOutbound = false,
+    caseID = '',
+    Context = '',
+    templateID = '',
+    GUID = ''
+  ) {
+    // const CaseId = isOutbound ? (caseID != '' ? caseID : getCaseId()) : caseID;
+    const CaseId = caseID;
+    return {
+      From: isOutbound ? data.emailAccount.value : '',
+      ReplyAction: actionType,
+      CaseId,
+      Context,
+      TemplateId: templateID,
+      Subject: data.subject.value,
+      Body: data.bodyContent.defaultValue,
+      GUID,
+      ToRecipients: data.to,
+      CCRecipients: data.cc,
+      BCCRecipients: data.bcc,
+      PreExistingAttachments: payloadPreExistAttachments
+    };
+  }
+
+  setAttachmentsToUpload(attachments: any, attachmentsToUpload: any[], payloadPreExistAttachments: any[]) {
+    if (attachments) {
+      attachments.forEach((attachment: any) => {
+        if (attachment.isExisting && attachment.File) {
+          attachmentsToUpload.push(attachment.File);
+        } else {
+          payloadPreExistAttachments.push({
+            ID: attachment.id
+          });
+        }
+      });
+    }
   }
 
   private async getEmailThreads() {
@@ -299,6 +418,7 @@ export class EmailService {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private createEmailConversation(email, entitiesList, entityMapContextHandle, doMakeReadOnly) {
+    const onSpamAttachClick = '';
     const emailConversation: any = {
       id: email.pyID,
       timeStamp: email.pxCreateDateTime,
@@ -311,13 +431,18 @@ export class EmailService {
       prevMessageKey: email.pxPrevMessageKey,
       entityHighlightMapping: this.boolHideEntities ? entitiesList : [],
       tempEntityHighlightMapping: !this.boolHideEntities ? entitiesList : [],
-      unRead: email.pyMessageMetadata.pyIsUnread
+      unRead: email.pyMessageMetadata.pyIsUnread,
       // onEditDraft: doMakeReadOnly ? undefined : this.getEditDraftAction(email),
       // onDeleteDraft: doMakeReadOnly ? undefined : getDeleteDraftAction(email),
       // onReply: doMakeReadOnly ? undefined : getReplyAction(email),
       // onReplyAll: doMakeReadOnly ? undefined : getReplyAllAction(email),
       // onForward: doMakeReadOnly ? undefined : getForwardAction(email),
-      // attachments: getAttachments(email.pyAttachmentsOnContext, pConn, email.pyMessageMetadata.pyIsSpamEmail, onSpamAttachClick),
+      attachments: this.getAttachments(
+        email.pyAttachmentsOnContext,
+        this.emailContainerPConnect,
+        email.pyMessageMetadata.pyIsSpamEmail,
+        onSpamAttachClick
+      )
       // suggestions: doMakeReadOnly ? undefined : getSuggestions(email),
       // onSuggestionClick: (id, suggestionId) => {
       //   openEmailComposerOnSuggestion(email, id, suggestionId, email.pyMessageMetadata.pySubject);
@@ -489,7 +614,8 @@ export class EmailService {
         pConn: this.emailContainerPConnect,
         context: email.id,
         ActionType: actionType,
-        CaseID: this.caseInsKey
+        CaseID: this.caseInsKey,
+        GUID: email.pyGUID
       },
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },
@@ -499,20 +625,19 @@ export class EmailService {
   }
 
   maximize() {
-    this.emailComposerRef.updatePosition({bottom: '10px', right: '10px', left: '180px', top: '40px'});
-    this.emailComposerRef.updateSize('100%','90%');
+    this.emailComposerRef.updatePosition({ bottom: '10px', right: '10px', left: '180px', top: '40px' });
+    this.emailComposerRef.updateSize('100%', '90%');
   }
 
   minimize() {
-    this.emailComposerRef.updatePosition({bottom: '10px', right: '10px'});
-    this.emailComposerRef.updateSize('18rem','50px');
+    this.emailComposerRef.updatePosition({ bottom: '10px', right: '10px' });
+    this.emailComposerRef.updateSize('18rem', '50px');
   }
 
   dock() {
-    this.emailComposerRef.updatePosition({bottom: '10px', right: '10px'});
-    this.emailComposerRef.updateSize('740px','700px');
+    this.emailComposerRef.updatePosition({ bottom: '10px', right: '10px' });
+    this.emailComposerRef.updateSize('740px', '700px');
   }
-
 
   public closeEmailComposer() {
     if (this.emailComposerRef) {
@@ -526,5 +651,75 @@ export class EmailService {
     }
 
     return this.showContainerHeader;
+  }
+
+  prepareInputForAttachment(attachments: any[]) {
+    let result: any = [];
+    if (attachments && attachments.length > 0) {
+      result = attachments.map(attachment => {
+        return {
+          visual: { icon: 'document-doc' },
+          primary: { name: attachment.pyName || attachment.fileName || attachment.File.name },
+          secondary: { text: '' },
+          id: attachment.pyID || attachment.ID,
+          name: attachment.pyName || attachment.fileName || attachment.File.name,
+          File: attachment.File ?? undefined
+        };
+      });
+    }
+    return result;
+  }
+
+  fileDownload = (data, fileName, ext) => {
+    const name = ext ? `${fileName}.${ext}` : fileName;
+    // Temp fix: downloading EMAIl type attachment as html file
+    if (ext === 'html') {
+      download(data, name, 'text/html');
+    } else {
+      download(atob(data), name);
+    }
+  };
+
+  public downloadAttachment(attachmentInfo, pConn) {
+    PCore.getAttachmentUtils()
+      .downloadAttachment(attachmentInfo.ID, pConn.getContextName(), '')
+      .then((content: any) => {
+        const extension = attachmentInfo.name.split('.').pop();
+        this.fileDownload(content.data, attachmentInfo.name.split('.')[0], extension);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/default-param-last, @typescript-eslint/no-unused-vars
+  public getAttachments(attachments, pConn, isSpamEmail = false, onSpamAttachClick) {
+    if (attachments === undefined || attachments === null) return [];
+    let attachmentDetails: any = [];
+    attachmentDetails = this.prepareInputForAttachment(attachments);
+    for (const attachment of attachments) {
+      attachment.isSpamEmail = isSpamEmail;
+      // const attachmentInfo = {
+      //   name: attachment.pyName,
+      //   ID: attachment.pyID
+      // };
+      // const attachmentToShow = {
+      //   id: attachment.pyID,
+      //   name: attachment.pyName,
+      //   value: attachment.pyName,
+      //   format: attachment.pyName.split('.').pop(),
+      //   src: null,
+      //   onDownload: () => {
+      //     if (isSpamEmail) {
+      //       onSpamAttachClick();
+      //     } else {
+      //       this.downloadAttachment(attachmentInfo, pConn);
+      //     }
+      //     return 1;
+      //   }
+      // };
+      // attachmentDetails.push(attachmentToShow);
+    }
+    return attachmentDetails;
   }
 }
