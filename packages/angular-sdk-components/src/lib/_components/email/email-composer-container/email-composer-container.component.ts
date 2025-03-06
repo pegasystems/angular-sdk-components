@@ -99,6 +99,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   cancelActions: any;
   toneActions: any;
   isEmailClientRef: any = false;
+  externalValidator: any;
 
   constructor(
     private utilityService: UtilityService,
@@ -106,8 +107,8 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.data);
     this.emailUtilityContext.setUtilitySummaryDetails = this.setUtilitySummaryDetails.bind(this);
+    this.externalValidator = this.utilityService.handleExternalEntry;
     this.getMetadata();
   }
 

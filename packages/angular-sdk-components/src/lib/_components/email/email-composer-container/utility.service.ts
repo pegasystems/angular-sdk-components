@@ -20,4 +20,10 @@ export class UtilityService {
     // Implement API call logic here
     return of({ utilities: [] });
   }
+
+  handleExternalEntry(filterValue): boolean {
+    const pattern = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    const matched = filterValue.match(pattern);
+    return !!matched?.input;
+  }
 }

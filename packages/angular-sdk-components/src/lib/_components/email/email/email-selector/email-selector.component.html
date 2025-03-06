@@ -1,8 +1,21 @@
 <div class="form-group">
-  <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
-    <mat-select [value]="selectedItems" multiple>
-      <mat-option *ngFor="let opt of participants" [value]="opt.EmailAddress">
-        {{ opt.EmailAddress }}
+  <mat-form-field class="psdk-full-width">
+    <mat-select [formControl]="emailMultiCtrl" multiple #multiSelect>
+      <mat-option>
+        <ngx-mat-select-search
+          ngDefaultControl
+          [formControl]="emailMultiFilterCtrl"
+          placeholderLabel="Search for email"
+          [noEntriesFoundLabel]="'No matching emails found'"
+        >
+          <span ngxMatSelectNoEntriesFound>
+            <div *ngIf="!validEmail">No entries found</div>
+            <button *ngIf="validEmail" mat-button color="primary" (click)="handleClick()">Add <mat-icon>add</mat-icon></button>
+          </span>
+        </ngx-mat-select-search>
+      </mat-option>
+      <mat-option *ngFor="let email of filteredEmailsMulti | async" [value]="email.EmailAddress">
+        {{ email.EmailAddress }}
       </mat-option>
     </mat-select>
     <mat-label>{{ label }}</mat-label>
