@@ -452,7 +452,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
     Object.values(this.formGroup$.controls).forEach((control: any) => {
       control.markAsTouched();

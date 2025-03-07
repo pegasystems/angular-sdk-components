@@ -27,7 +27,6 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
     this.updateLabelAndDate(this.secondaryFields$);
   }
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   ngOnChanges() {
     this.updatePrimaryWithStatus();
     this.updateLabelAndDate(this.primaryFieldsWithStatus$);

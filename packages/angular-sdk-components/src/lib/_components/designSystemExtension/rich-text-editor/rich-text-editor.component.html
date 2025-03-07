@@ -1,7 +1,8 @@
-<div [attr.data-test-id]="testId" style="height: 100%;">
+<div [attr.data-test-id]="testId" style="height: 100%">
   <label *ngIf="label" [ngClass]="{ 'label-required': required === true }" class="rich-text-label">{{ label }}</label>
   <div class="rich-text-editor" *ngIf="!readonly" style="height: 100%">
-    <editor style="height: 100%"
+    <editor
+      style="height: 100%"
       [formControl]="richText"
       [attr.disabled]="disabled"
       [initialValue]="value"
