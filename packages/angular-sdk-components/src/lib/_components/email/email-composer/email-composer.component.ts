@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, inject, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -70,6 +69,7 @@ export class EmailComposerComponent implements OnInit {
   @Input() label;
   @Input() responseType: string;
   @Input() externalValidator: any;
+  @Output() onSend: EventEmitter<any> = new EventEmitter();
   email: any;
 
   emailForm: FormGroup;
@@ -167,45 +167,49 @@ export class EmailComposerComponent implements OnInit {
   }
 
   sendEmail() {
+    this.onSend.emit();
+    // .then(response => {
+    //   console.log('Email sent successfully');
+    // });
     // if (this.emailForm.valid) {
-    this.isProgress = true;
-    const payload = this.prepareEmailPayload();
-    this.emailService.sendEmail(payload).then(
-      response => {
-        this.isProgress = false;
-        if (response.status === 'success') {
-          // this.toastr.success('Email sent successfully');
-          this.setIsActive(false);
-        } else {
-          //  this.toastr.error('Error sending email');
-        }
-      },
-      error => {
-        this.isProgress = false;
-        // this.toastr.error('Error sending email');
-      }
-    );
+    // this.isProgress = true;
+    // const payload = this.prepareEmailPayload();
+    // this.emailService.sendEmail(payload).then(
+    //   response => {
+    //     this.isProgress = false;
+    //     if (response.status === 'success') {
+    //       // this.toastr.success('Email sent successfully');
+    //       this.setIsActive(false);
+    //     } else {
+    //       //  this.toastr.error('Error sending email');
+    //     }
+    //   },
+    //   error => {
+    //     this.isProgress = false;
+    //     // this.toastr.error('Error sending email');
+    //   }
+    // );
     // } else {
     //   // this.toastr.error('Please fill in all required fields');
     // }
   }
 
-  prepareEmailPayload() {
-    return {
-      to: this.data.to.value,
-      cc: this.data.cc.value,
-      bcc: this.data.bcc.value,
-      subject: this.data.subject.value,
-      // body: this.emailForm.value.body,
-      body: this.emailForm.value.body,
-      attachments: this.data.attachments,
-      templateId: this.data.selectedTemplateId,
-      context: this.data.Context,
-      caseId: this.data.CaseID,
-      actionType: this.data.ActionType,
-      guid: this.data.GUID
-    };
-  }
+  // prepareEmailPayload() {
+  //   return {
+  //     to: this.data.to.value,
+  //     cc: this.data.cc.value,
+  //     bcc: this.data.bcc.value,
+  //     subject: this.data.subject.value,
+  //     // body: this.emailForm.value.body,
+  //     body: this.emailForm.value.body,
+  //     attachments: this.data.attachments,
+  //     templateId: this.data.selectedTemplateId,
+  //     context: this.data.Context,
+  //     caseId: this.data.CaseID,
+  //     actionType: this.data.ActionType,
+  //     guid: this.data.GUID
+  //   };
+  // }
 
   saveDraft() {
     // Logic to save draft
@@ -253,16 +257,17 @@ export class EmailComposerComponent implements OnInit {
         ID: this.createUID() // require unique id generation
       }));
       const newFiles = this.emailService.prepareInputForAttachment(files);
-      this.data.attachments = this.data.attachments ? [...this.data.attachments, ...newFiles] : newFiles;
-      // onChange('attachments', attachments ? [...attachments, ...newFiles] : newFiles);
+      // this.data.attachments = this.data.attachments ? [...this.data.attachments, ...newFiles] : newFiles;
+      this.onChange('attachments', this.data.attachments ? [...this.data.attachments, ...newFiles] : newFiles);
+      // handleOnChange in container
     }
   }
 
   removeFile(e) {
     console.log('Remove file clicked');
     const newAttachments = this.data.attachments.filter(attachment => attachment.id !== e.id);
-    this.data.attachments = newAttachments;
-    // onChange('attachments', newAttachments);
+    // this.data.attachments = newAttachments;
+    this.onChange('attachments', newAttachments);
   }
 
   closeComposerWindow(e) {

@@ -137,9 +137,34 @@ export class EmailService {
     this.getEmailThreads();
   }
 
-  // sendEmail(payload: any): Observable<any> {
-  //   // Logic to send email
-  //   return of({ status: 'success' }); // Replace with actual HTTP call
+  // private async sendEmailAPICall(sendEmailPayload): Promise<void> {]
+
+  //   if (this.isDraftSaved) {
+  //     const { data } = await PCore.getRestClient().invokeRestApi('saveTriageEmailDraft', {
+  //       body: sendEmailPayload
+  //     });
+  //     if (data.Status === 'success') {
+  //       this.emailContentChanged = false;
+  //       this.draftWindow?.dismiss();
+  //       this.closeComposer(true);
+  //       this.setIsActive(false);
+  //       (PCore as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Draft saved') });
+  //     } else {
+  //       (({ PCore }) as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Error in saving draft') });
+  //     }
+  //   } else {
+  //     this.updateProgressState(this.data.pConn.getLocalizedValue('Sending email'), true);
+  //     const { data } = await (PCore as any).getRestClient().invokeRestApi('sendTriageEmail', {
+  //       body: sendEmailPayload
+  //     });
+  //     this.updateProgressState('', false);
+  //     if (data.Status === 'success') {
+  //       this.emailContentChanged = false;
+  //       this.closeComposer(true);
+  //       this.setIsActive(false);
+  //       this.updateProgressState('', false);
+  //     }
+  //   }
   // }
 
   async sendEmail(payload: any): Promise<any> {
@@ -252,7 +277,7 @@ export class EmailService {
   setAttachmentsToUpload(attachments: any, attachmentsToUpload: any[], payloadPreExistAttachments: any[]) {
     if (attachments) {
       attachments.forEach((attachment: any) => {
-        if (attachment.isExisting && attachment.File) {
+        if (!attachment.isExisting && attachment.File) {
           attachmentsToUpload.push(attachment.File);
         } else {
           payloadPreExistAttachments.push({
@@ -263,7 +288,7 @@ export class EmailService {
     }
   }
 
-  private async getEmailThreads() {
+  public async getEmailThreads() {
     console.log('EmailContainerComponent: getEmailThreads');
 
     this.psService.sendMessage(true);
@@ -442,7 +467,8 @@ export class EmailService {
         this.emailContainerPConnect,
         email.pyMessageMetadata.pyIsSpamEmail,
         onSpamAttachClick
-      )
+      ),
+      pyGUID: email.pyGUID
       // suggestions: doMakeReadOnly ? undefined : getSuggestions(email),
       // onSuggestionClick: (id, suggestionId) => {
       //   openEmailComposerOnSuggestion(email, id, suggestionId, email.pyMessageMetadata.pySubject);
@@ -612,7 +638,7 @@ export class EmailService {
     this.emailComposerRef = this.dialog.open(EmailComposerContainerComponent, {
       data: {
         pConn: this.emailContainerPConnect,
-        context: email.id,
+        Context: email.id,
         ActionType: actionType,
         CaseID: this.caseInsKey,
         GUID: email.pyGUID
@@ -697,7 +723,7 @@ export class EmailService {
     if (attachments === undefined || attachments === null) return [];
     let attachmentDetails: any = [];
     attachmentDetails = this.prepareInputForAttachment(attachments);
-    for (const attachment of attachments) {
+    for (const attachment of attachmentDetails) {
       attachment.isSpamEmail = isSpamEmail;
       // const attachmentInfo = {
       //   name: attachment.pyName,

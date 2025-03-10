@@ -9,6 +9,7 @@ import { EmailComposerComponent } from '../email-composer/email-composer.compone
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { MatIconModule } from '@angular/material/icon';
 import { EmailService } from '../email-service/email.service';
+import { filterLargeAttachment, getSendEmailPayload, largeAttachmentError, setAttachmentsToUpload, validateInputs } from '../common/composer';
 
 @Component({
   selector: 'app-email-composer-container',
@@ -58,8 +59,8 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   discardUnsavedChanges = 'Discard unsaved changes?';
   saveAndClose = 'Save & close';
   invalidEmail = 'invalid email address';
-  emptyField = 'Field cannot be blank';
-  emptyRecipient = 'Please specify at least one recipient';
+  emptyField: string;
+  emptyRecipient: string;
   goBack = 'Go back';
   rephraseEmail = 'Rephrase with AI';
   proceedToSendEmail = 'Send anyway';
@@ -100,6 +101,9 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   toneActions: any;
   isEmailClientRef: any = false;
   externalValidator: any;
+  // payloadTo = [];
+  // payloadBCC = [];
+  // payloadCC = [];
 
   constructor(
     private utilityService: UtilityService,
@@ -107,6 +111,9 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    // console.log(this.data);
+    this.emptyField = this.data.pConn.getLocalizedValue('Field cannot be blank');
+    this.emptyRecipient = this.data.pConn.getLocalizedValue('Please specify at least one recipient');
     this.emailUtilityContext.setUtilitySummaryDetails = this.setUtilitySummaryDetails.bind(this);
     this.externalValidator = this.utilityService.handleExternalEntry;
     this.getMetadata();
@@ -127,7 +134,10 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     this.getUtilitiesCount(widget);
   }
 
-  handleCancel() {}
+  handleCancel(getUpdatedData: boolean = false): void {
+    this.emailService.closeEmailComposer();
+    if (getUpdatedData) this.emailService.getEmailThreads();
+  }
 
   private async getUtilitiesCount(widgetItem: any): Promise<void> {
     if (!widgetItem) return;
@@ -160,7 +170,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     const payload = {
       ActionType: this.data.ActionType,
       CaseID: this.data.CaseID,
-      Context: this.data.context,
+      Context: this.data.Context,
       TemplateID: this.TemplateID,
       Draft: this.hasSavedDraft,
       WrapperCaseID: this.getWrapperCaseID()
@@ -199,10 +209,10 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         ...attachment,
         isExisting: true
       })) || [];
-    this.previewAttachments = preExistingAttachmentsList;
+    this.previewAttachments = preExistingAttachmentsList; // not needed
     this.preExistingAttachments = preExistingAttachmentsList;
     // need to update this logic
-    this.attachmentsList = preExistingAttachmentsList.concat(this.composerState.attachments || []);
+    this.attachmentsList = preExistingAttachmentsList.concat(this.composerData.attachments || []);
 
     const bodyContent = this.body ? `${this.body}${this.getReplyOrForwardContent(metaData)}` : this.getBodyContent(metaData);
 
@@ -290,12 +300,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     };
   }
 
-  private async sendEmailAPICall(
-    sendEmailPayload: {
-      Attachments?: { type: string; category: string; name: any; ID: any }[];
-      [key: string]: any;
-    } & { Attachments: { type: string; category: string; name: any; ID: any }[] }
-  ): Promise<void> {
+  private async sendEmailAPICall(sendEmailPayload): Promise<void> {
     if (this.isDraftSaved) {
       const { data } = await PCore.getRestClient().invokeRestApi('saveTriageEmailDraft', {
         body: sendEmailPayload
@@ -317,29 +322,39 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
       this.updateProgressState('', false);
       if (data.Status === 'success') {
         this.emailContentChanged = false;
-        this.closeComposer(true);
-        this.setIsActive(false);
+        this.handleCancel(true);
+        // need to trigger email threads refresh
+        // this.closeComposer(true); to close the composer and trigger email threads refresh
+        // this.setIsActive(false); not used in angular sdk
         this.updateProgressState('', false);
       }
     }
   }
 
-  async sendEmail(): Promise<void> {
+  sendEmail() {
     let hasError = false;
     let data = { ...this.composerData };
     if (this.doImplicitDraftSave) {
       data = this.composerStateForDraft;
     }
-    hasError = this.validateInputs(data, hasError);
+    // hasError = this.validateInputs(data, hasError);
+    hasError = validateInputs(
+      this.doImplicitDraftSave ? this.composerStateForDraft : this.composerData,
+      data,
+      hasError,
+      this.isDraftSaved,
+      this.emptyField,
+      this.emptyRecipient
+    );
 
     if (this.composerData.attachments) {
       data.attachments
-        .filter(attachment => this.filterLargeAttachment(attachment))
+        .filter(attachment => filterLargeAttachment(attachment))
         .forEach((file: any) => {
-          file.error = this.largeAttachmentError();
+          file.error = largeAttachmentError(this.data.pConn);
           hasError = true;
           file.onCancel = (id: string) => {
-            this.OnCancelOfAttachment(id);
+            this.OnCancelOfAttachment(id); // to be implemented
           };
         });
     }
@@ -350,10 +365,30 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     }
     const payloadPreExistAttachments = [];
     const attachmentsToUpload = [];
-    this.setAttachmentsToUpload(this.attachmentsList, attachmentsToUpload, this.preExistingAttachments, payloadPreExistAttachments);
+    // this.setAttachmentsToUpload(this.composerData.attachments, attachmentsToUpload, this.preExistingAttachments, payloadPreExistAttachments);
+    setAttachmentsToUpload(this.composerData.attachments, attachmentsToUpload, this.preExistingAttachments, payloadPreExistAttachments);
     const templateID = this.isDraftSaved ? data.selectedTemplateId : this.TemplateID;
 
-    const sendEmailPayload = this.getSendEmailPayload(data, payloadPreExistAttachments, templateID);
+    // const sendEmailPayload = this.getSendEmailPayload(
+    //   data,
+    //   this.data.ActionType,
+    //   payloadPreExistAttachments,
+    //   false,
+    //   this.data.CaseID,
+    //   this.data.Context,
+    //   templateID,
+    //   this.data.GUID
+    // );
+    const sendEmailPayload = getSendEmailPayload(
+      data,
+      this.data.ActionType,
+      payloadPreExistAttachments,
+      false,
+      this.data.CaseID,
+      this.data.Context,
+      templateID,
+      this.data.GUID
+    );
 
     const attachmentIDs: { type: string; category: string; name: any; ID: any }[] = [];
     const attachmentUtils = window.PCore.getAttachmentUtils();
@@ -384,61 +419,136 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  validateInputs(
-    data: {
-      to: { value: never[] };
-      cc: { value: never[] };
-      bcc: { value: never[] };
-      subject: { value: string };
-      bodyContent: { defaultValue: string; forwardedContent: string; repliedContent: string };
-      selectedTemplateId: string;
-      attachments: never[];
-      responseType: string;
-    },
-    hasError: boolean
-  ): boolean {
-    throw new Error('Method not implemented.');
-  }
+  // convertToArrayOfEmailAddress(EmailUsers) {
+  //   return EmailUsers.map(Email => {
+  //     return { EmailAddress: Email };
+  //   });
+  // }
 
-  filterLargeAttachment(attachment: never): unknown {
-    throw new Error('Method not implemented.');
-  }
+  // validateInputs(data, hasError): boolean {
+  //   this.payloadTo = this.composerData.to.value ? this.convertToArrayOfEmailAddress(this.composerData.to.value) : undefined;
+  //   this.payloadCC = this.composerData.cc.value ? this.convertToArrayOfEmailAddress(this.composerData.cc.value) : undefined;
+  //   this.payloadBCC = this.composerData.bcc.value ? this.convertToArrayOfEmailAddress(this.composerData.bcc.value) : undefined;
+  //   if (this.isDraftSaved === false) {
+  //     if (this.payloadTo.length === 0) {
+  //       data.to.value = [];
+  //       data.to.error = 'Please specify at least one recipient'; // pConn.getLocalizedValue('Please specify at least one recipient');
+  //       hasError = true;
+  //     } else {
+  //       this.clearComposerErrors(data, 'to', hasError);
+  //     }
+  //     // if (this.composerData.bodyContent.defaultValue === '') {
+  //     //   data.bodyContent.defaultValue = '';
+  //     //   data.bodyContent.error = 'Field cannot be blank'; // pConn.getLocalizedValue('Field cannot be blank');
+  //     //   hasError = true;
+  //     // } else {
+  //     //   this.clearComposerErrors(data, 'bodyContent', hasError);
+  //     // }
+  //     if (this.composerData.subject.value.length === 0) {
+  //       data.subject.value = '';
+  //       data.subject.error = 'Field cannot be blank';
+  //       hasError = true;
+  //     } else {
+  //       this.clearComposerErrors(data, 'subject', hasError);
+  //     }
+  //   }
+  //   return hasError;
+  // }
 
-  largeAttachmentError(): any {
-    throw new Error('Method not implemented.');
-  }
+  // clearComposerErrors(data, param, hasError) {
+  //   data[param].error = '';
+  //   if (!hasError) {
+  //     hasError = false;
+  //   }
+  // }
+
+  // filterLargeAttachment(attachment) {
+  //   const maxAllowedSizeInMB: any = PCore.getEnvironmentInfo().getMaxAttachmentSize();
+  //   return attachment.File && attachment.File.size && attachment.File.size / 1000000 >= maxAllowedSizeInMB;
+  // }
+
+  // largeAttachmentError(): any {
+  //   const maxAllowedSizeInMB: any = PCore.getEnvironmentInfo().getMaxAttachmentSize();
+  //   return `File size exceeding ${maxAllowedSizeInMB} MB`;
+  //   // return `${pConn.getLocalizedValue('File size exceeding')} ${maxAllowedSizeInMB}${pConn.getLocalizedValue('MB')}`;
+  // }
 
   OnCancelOfAttachment(id: string) {
     throw new Error('Method not implemented.');
   }
 
-  setAttachmentsToUpload(attachmentsList: any[], attachmentsToUpload: never[], preExistingAttachments: any[], payloadPreExistAttachments: never[]) {
-    throw new Error('Method not implemented.');
-  }
+  // setAttachmentsToUpload(attachmentsList: any[], attachmentsToUpload: any[], preExistingAttachments: any[], payloadPreExistAttachments: any[]) {
+  //   if (attachmentsList) {
+  //     attachmentsList.forEach((attachment: any) => {
+  //       if (attachment.File) {
+  //         attachmentsToUpload.push(attachment.File);
+  //       } else {
+  //         preExistingAttachments.forEach(prevAttach => {
+  //           if (prevAttach.name === attachment.name) {
+  //             payloadPreExistAttachments.push({
+  //               ID: prevAttach.id
+  //             });
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
-  getSendEmailPayload(
-    data: {
-      to: { value: never[] };
-      cc: { value: never[] };
-      bcc: { value: never[] };
-      subject: { value: string };
-      bodyContent: { defaultValue: string; forwardedContent: string; repliedContent: string };
-      selectedTemplateId: string;
-      attachments: never[];
-      responseType: string;
-    },
-    payloadPreExistAttachments: never[],
-    templateID: string
-  ) {
-    throw new Error('Method not implemented.');
-  }
+  // getSendEmailPayload(
+  //   data: any,
+  //   actionType,
+  //   payloadPreExistAttachments: never[],
+  //   isOutbound = false,
+  //   caseID = '',
+  //   Context = '',
+  //   templateID = '',
+  //   GUID = ''
+  // ) {
+  //   // const CaseId = isOutbound ? (caseID != '' ? caseID : getCaseId()) : caseID;
+  //   const CaseId = caseID;
+  //   return {
+  //     From: isOutbound ? data.emailAccount.value : '',
+  //     ReplyAction: actionType,
+  //     CaseId,
+  //     Context,
+  //     TemplateId: templateID,
+  //     Subject: data.subject.value,
+  //     // Body: data.bodyContent.defaultValue,
+  //     Body: 'FYI', // to be removed
+  //     GUID,
+  //     ToRecipients: this.payloadTo,
+  //     CCRecipients: this.payloadCC,
+  //     BCCRecipients: this.payloadBCC,
+  //     PreExistingAttachments: payloadPreExistAttachments
+  //   };
+  // }
 
   onUploadProgress(file: never, onUploadProgress: any, errorHandler: any, arg3: any) {
-    throw new Error('Method not implemented.');
+    return {};
   }
 
-  errorHandler(file: never, onUploadProgress: any, errorHandler: any, arg3: any) {
-    throw new Error('Method not implemented.');
+  errorHandler(isFetchCanceled, file) {
+    return error => {
+      this.updateProgressState('', false);
+      if (!isFetchCanceled(error)) {
+        // need pConn instance to get localized value
+        let uploadFailMsg = this.data.pConn.getLocalizedValue('Upload failed');
+        if (error.response && error.response.data && error.response.data.errorDetails) {
+          uploadFailMsg = error.response.data.errorDetails[0].localizedValue;
+        }
+        delete file.progress;
+
+        this.attachmentsList.forEach(attachment => {
+          if (attachment.name == file.name) {
+            attachment.meta = uploadFailMsg;
+            attachment.error = true;
+          }
+        });
+        error.isHandled = true;
+      }
+      throw error;
+    };
   }
 
   saveDraft(): void {
@@ -459,7 +569,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     this.updateProgressState(this.data.pConn.getLocalizedValue('Deleting draft'), true);
     if (this.hasSavedDraft) {
       const { data } = await (PCore as any).getRestClient().invokeRestApi('deleteTriageEmailDraft', {
-        queryPayload: { caseID: this.CaseID, contextID: this.data.context }
+        queryPayload: { caseID: this.CaseID, contextID: this.data.Context }
       });
       if (data.Status === 'success') {
         this.closeComposer(true);
@@ -473,7 +583,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   }
 
   private closeComposer(getUpdatedData: boolean = false): void {
-    (PCore as any).getPubSubUtils().publish('CLOSE_COMPOSER', { Context: this.data.context, getUpdatedData });
+    (PCore as any).getPubSubUtils().publish('CLOSE_COMPOSER', { Context: this.data.Context, getUpdatedData });
     if (this.doImplicitDraftSave) {
       const draftAndUndeliveredStatus = {
         hasDraft: true,
@@ -570,8 +680,8 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   handleOnChange(field: any, value: any): void {
     if (this.initialLoad) this.emailContentChanged = true;
     const hasStateChanged = false;
-    this.composerData = { ...this.composerData };
-    this.handleComposerOnChange(this.composerData, field, ''); // value);
+    // this.composerData = { ...this.composerData };
+    this.handleComposerOnChange(this.composerData, field, value);
     if (field === 'bodyContent') {
       const parser = new DOMParser();
       const currentMessage = parser.parseFromString('', 'text/html');
@@ -589,6 +699,23 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
 
     if (field === 'bodyContent') {
       const parser = new DOMParser();
+    }
+    if (field === 'attachments') {
+      value.forEach(attachment => {
+        if (attachment.File && attachment.File.type) {
+          const fileNameSplit = attachment.File.type.split('/');
+          const length = fileNameSplit.length;
+          if (length > 0) attachment.format = fileNameSplit[length - 1];
+        }
+        // This code is responsible for previewing the content on adding from user local.
+        // attachment.onPreview = handlePreviewClick(attachment.id);
+      });
+      this.composerData.attachments = value;
+      this.attachmentsList = value;
+      // prev.attachments = value;
+      // attachmentsList.current = value;
+      // setPreviewAttachments(attachmentsList.current);
+      // composerState.current.attachments = value;
     }
   }
 
