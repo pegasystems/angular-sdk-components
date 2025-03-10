@@ -26,18 +26,36 @@
     </div>
     <div class="form-group">
       <div class="button-container">
-        <app-email-selector style="width: -webkit-fill-available" [participants]="participants" [label]="'To'"
-          [selectedItems]="data.to.value || []" mode="'multi-select'" [compose]="true"></app-email-selector>
+        <app-email-selector
+          style="width: -webkit-fill-available"
+          [participants]="participants"
+          [label]="'To'"
+          [selectedItems]="data.to.value || []"
+          mode="'multi-select'"
+          [compose]="true"
+        ></app-email-selector>
         <button *ngIf="!ccVisible" mat-button color="primary" (click)="handleCC($event)">Cc</button>
         <button *ngIf="!bccVisible" mat-button color="primary" (click)="handleBCC($event)">Bcc</button>
       </div>
     </div>
 
-    <app-email-selector *ngIf="ccVisible" [participants]="participants" [label]="'Cc'"
-      [selectedItems]="data.cc.value || []" mode="'multi-select'" [compose]="true"></app-email-selector>
+    <app-email-selector
+      *ngIf="ccVisible"
+      [participants]="participants"
+      [label]="'Cc'"
+      [selectedItems]="data.cc.value || []"
+      mode="'multi-select'"
+      [compose]="true"
+    ></app-email-selector>
 
-    <app-email-selector *ngIf="bccVisible" [participants]="participants" [label]="'Bcc'"
-      [selectedItems]="data.bcc.value || []" mode="'multi-select'" [compose]="true"></app-email-selector>
+    <app-email-selector
+      *ngIf="bccVisible"
+      [participants]="participants"
+      [label]="'Bcc'"
+      [selectedItems]="data.bcc.value || []"
+      mode="'multi-select'"
+      [compose]="true"
+    ></app-email-selector>
 
     <div class="form-group">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
@@ -59,8 +77,11 @@
       <app-rich-text-editor subscriptSizing="dynamic"></app-rich-text-editor>
     </div>
     <div style="margin-top: 1.5rem" *ngIf="data.attachments.length > 0" class="email-attachments">
-      <component-mapper name="SummaryList" class="email-attachments"
-        [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$, isEmailAttachments: true }"></component-mapper>
+      <component-mapper
+        name="SummaryList"
+        class="email-attachments"
+        [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$, isEmailAttachments: true }"
+      ></component-mapper>
     </div>
   </mat-dialog-content>
 
