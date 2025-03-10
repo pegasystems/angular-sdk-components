@@ -9,6 +9,14 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+function getRefreshProps(refreshConditions) {
+  // refreshConditions cuurently supports only "Changes" event
+  if (!refreshConditions) {
+    return [];
+  }
+  return refreshConditions.filter(item => item.event && item.event === 'Changes').map(item => [item.field, item.field?.substring(1)]) || [];
+}
+
 interface AssignmentProps {
   // If any, enter additional props that only exist on this component
   template: string;
@@ -128,6 +136,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateChanges() {
+    this.registerForRefresh();
+
     // pConn$ may be a 'reference' component, so normalize it
     this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
 
@@ -457,5 +467,37 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     Object.values(this.formGroup$.controls).forEach((control: any) => {
       control.markAsTouched();
     });
+  }
+
+  registerForRefresh() {
+    // @ts-ignore - Property 'getActionRefreshConditions' is private and only accessible within class 'CaseInfo'
+    const refreshConditions = this.pConn$.getCaseInfo()?.getActionRefreshConditions();
+    const pageReference = this.pConn$.getPageReference();
+    const context = this.pConn$.getContextName();
+
+    // refresh api de-registration
+    PCore.getRefreshManager().deRegisterForRefresh(context);
+
+    // refresh api registration
+    const refreshProps = getRefreshProps(refreshConditions);
+    const caseKey = this.pConn$.getCaseInfo().getKey();
+    const refreshOptions = {
+      autoDetectRefresh: true,
+      preserveClientChanges: false
+    };
+    if (refreshProps.length > 0) {
+      refreshProps.forEach(prop => {
+        PCore.getRefreshManager().registerForRefresh(
+          'PROP_CHANGE',
+          this.pConn$.getActionsApi().refreshCaseView.bind(this.pConn$.getActionsApi(), caseKey, '', pageReference, {
+            ...refreshOptions,
+            refreshFor: prop[0]
+          }),
+          `${pageReference}.${prop[1]}`,
+          `${context}/${pageReference}`,
+          context
+        );
+      });
+    }
   }
 }
