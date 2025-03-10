@@ -69,6 +69,7 @@ export class EmailComposerComponent implements OnInit {
   @Input() onChange: any;
   @Input() label;
   @Input() responseType: string;
+  @Input() externalValidator: any;
   email: any;
 
   emailForm: FormGroup;

@@ -1,7 +1,7 @@
 .psdk-full-width {
   width: 100%;
-  // margin-left: 2.5em;
-  // margin-right: 1em;
+  //margin-left: 2.5em;
+  //margin-right: 1em;
 }
 
 .email-selector {
@@ -15,10 +15,6 @@ label {
 }
 
 input {
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  margin-bottom: 1rem;
 }
 
 ul {
@@ -27,17 +23,6 @@ ul {
   margin: 0;
 }
 
-li {
-  padding: 0.5rem;
-  cursor: pointer;
-}
-
 li:hover {
   background-color: #f0f0f0;
-}
-
-.selected-items span {
-  display: inline-block;
-  margin-right: 0.5rem;
-  cursor: pointer;
 }

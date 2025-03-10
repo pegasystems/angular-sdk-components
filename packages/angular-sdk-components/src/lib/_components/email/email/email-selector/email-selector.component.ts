@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -12,11 +11,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { RichTextEditorComponent } from '../../../designSystemExtension/rich-text-editor/rich-text-editor.component';
+import { take, takeUntil } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 interface EmailParticipant {
-  emailAddress: string;
+  EmailAddress: string;
   fullName: string;
   shortName: string;
 }
@@ -25,6 +27,7 @@ interface EmailParticipant {
   selector: 'app-email-selector',
   templateUrl: './email-selector.component.html',
   standalone: true,
+
   imports: [
     CommonModule,
     MatIconModule,
@@ -32,6 +35,7 @@ interface EmailParticipant {
     MatMenuModule,
     MatProgressBarModule,
     ReactiveFormsModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -43,44 +47,110 @@ interface EmailParticipant {
     MatCardModule,
     MatChipsModule,
     MatProgressBarModule,
-    MatMenuModule
+    MatMenuModule,
+    NgxMatSelectSearchModule
   ],
   styleUrls: ['./email-selector.component.scss']
 })
-export class EmailSelectorComponent implements OnChanges {
+export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() participants: any = [];
+
   @Input() selectedItems: any = [];
   @Input() label = '';
   @Input() mode: any;
   @Input() required = false;
-  @Input() externalValidator?: (value: string) => boolean;
+  @Input() externalValidator: any;
   @Input() status?: string;
   @Input() info?: string;
   @Input() compose: any;
   @Output() selectedItemsChange = new EventEmitter<string[]>();
 
+  public filteredEmailsMulti: ReplaySubject<any> = new ReplaySubject<any>(1);
+
+  protected _onDestroy = new Subject<void>();
+
   filterValue = '';
   emailParticipants: any[] = [];
   emailsToRender: any[] = [];
+  validEmail = false;
 
-  constructor() {
-    console.log(this.participants);
-    console.log(this.selectedItems);
+  public emailMultiCtrl: FormControl<any> = new FormControl<any>([]);
+
+  public emailMultiFilterCtrl: FormControl<string | null> = new FormControl<string | null>('');
+
+  @ViewChild('multiSelect', { static: true }) multiSelect: MatSelect;
+
+  handleClick() {
+    const val = this.emailMultiFilterCtrl.value;
+    this.emailMultiCtrl.setValue([...this.emailMultiCtrl.value, val]);
+    this.emailParticipants.push({ EmailAddress: val });
+    this.filteredEmailsMulti.next(this.emailParticipants.slice());
+  }
+
+  filterEmailsMulti() {
+    if (!this.emailParticipants) {
+      return;
+    }
+    // get the search keyword
+    let search = this.emailMultiFilterCtrl.value;
+    if (!search) {
+      this.filteredEmailsMulti.next(this.emailParticipants.slice());
+      return;
+    }
+    search = search.toLowerCase();
+    this.filterValue = search;
+
+    if (this.externalValidator?.(this.filterValue)) {
+      this.validEmail = true;
+    } else {
+      this.validEmail = false;
+    }
+
+    // filter the emails
+    this.filteredEmailsMulti.next(this.emailParticipants.filter(bank => bank.EmailAddress.toLowerCase().indexOf(search) > -1));
+  }
+
+  protected setInitialValue() {
+    this.filteredEmailsMulti.pipe(take(1), takeUntil(this._onDestroy)).subscribe(() => {
+      // setting the compareWith property to a comparison function
+      // triggers initializing the selection according to the initial value of
+      // the form control
+      // this needs to be done after the filteredEmailsMulti are loaded initially
+      // and after the mat-option elements are available
+      this.multiSelect.compareWith = (a: EmailParticipant, b: EmailParticipant) => {
+        return a && b && a === b;
+      };
+    });
+  }
+
+  ngAfterViewInit() {
+    this.setInitialValue();
   }
 
   // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   ngOnInit() {
     console.log(this.participants);
     console.log(this.selectedItems);
-    this.emailParticipants = this.participants?.map(participant => participant.EmailAddress);
-    this.updateEmailsToRender();
+
+    this.emailMultiFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+      this.filterEmailsMulti();
+    });
+  }
+
+  ngOnDestroy() {
+    this._onDestroy.next();
+    this._onDestroy.complete();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log(this.participants);
-    console.log(this.selectedItems);
-    if (changes['participants']) {
-      this.emailParticipants = this.participants;
+    this.emailParticipants = [...this.participants];
+
+    this.emailMultiCtrl.setValue(this.selectedItems);
+
+    this.filteredEmailsMulti.next(this.emailParticipants.slice());
+    this.updateEmailsToRender();
+
+    if (changes['emailParticipants']) {
       this.updateEmailsToRender();
     }
   }
@@ -95,37 +165,8 @@ export class EmailSelectorComponent implements OnChanges {
     this.filterValue = '';
   }
 
-  updateEmailsToRender() {
-    const filterRegex = new RegExp(this.filterValue, 'i');
-    const filteredItems = (
-      this.filterValue
-        ? this.emailParticipants.filter(({ emailAddress, fullName, shortName }) => {
-            return filterRegex.test(emailAddress) || filterRegex.test(fullName) || filterRegex.test(shortName);
-          })
-        : this.emailParticipants
-    ).map(({ emailAddress, fullName }) => {
-      return {
-        id: emailAddress,
-        primary: fullName,
-        secondary: emailAddress,
-        selected: this.selectedItems.includes(emailAddress)
-      };
-    });
-
-    const isValid = this.externalValidator?.(this.filterValue);
-
-    this.emailsToRender =
-      ((this.filterValue && this.externalValidator && isValid) || (this.filterValue && !this.externalValidator)) && !this.compose
-        ? [
-            {
-              id: this.filterValue,
-              primary: `Use: ${this.filterValue}`,
-              selected: this.selectedItems.includes(this.filterValue)
-            },
-            ...filteredItems
-          ]
-        : filteredItems;
-  }
+  /* To be implemented later  */
+  updateEmailsToRender() {}
 
   toggleSelectedItems(id: string) {
     let newSelectedItems = this.mode === 'single-select' ? [] : [...this.selectedItems];
