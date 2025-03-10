@@ -119,3 +119,33 @@ app-rich-text-editor {
 .mat-mdc-dialog-content {
   max-height: unset !important;
 }
+
+.email-attachments {
+  app-material-summary-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: calc(0.25rem);
+    app-material-summary-item {
+      .psdk-utility-card {
+        border-radius: calc(0.25rem);
+        border: 0.0625rem solid rgb(207, 207, 207);
+        height: 2rem;
+        .psdk-utility-card-icon {
+          align-items: center;
+          display: flex;
+          margin-right: 4px;
+          .psdk-utility-card-svg-icon {
+            width: 1.5rem;
+          }
+        }
+        .psdk-utility-card-main {
+          .psdk-utility-card-main-primary-label {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+}
