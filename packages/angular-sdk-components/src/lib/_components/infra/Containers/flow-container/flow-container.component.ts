@@ -6,7 +6,7 @@ import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
-import { getToDoAssignments, showBanner } from './helpers';
+import { getToDoAssignments, hasAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 import { FlowContainerBaseComponent } from '../base-components/flow-container-base.component';
 
@@ -277,41 +277,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     this.psService.sendMessage(false);
   }
 
-  hasAssignments() {
-    let hasAssignments = false;
-    const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
-    // const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
-    // 8.7 includes assignments in Assignments List that may be assigned to
-    //  a different operator. So, see if there are any assignments for
-    //  the current operator
-    const isEmbedded = window.location.href.includes('embedded');
-    let bAssignmentsForThisOperator = false;
-
-    if (isEmbedded) {
-      const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
-      for (const assignment of assignmentsList) {
-        if (assignment.assigneeInfo.ID === thisOperator) {
-          bAssignmentsForThisOperator = true;
-        }
-      }
-    } else {
-      bAssignmentsForThisOperator = true;
-    }
-
-    // Bail if there is no assignmentsList
-    if (!assignmentsList) {
-      return hasAssignments;
-    }
-
-    const hasChildCaseAssignments = this.hasChildCaseAssignments();
-
-    if (bAssignmentsForThisOperator || hasChildCaseAssignments || this.isCaseWideLocalAction()) {
-      hasAssignments = true;
-    }
-
-    return hasAssignments;
-  }
-
   isCaseWideLocalAction() {
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
     const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS);
@@ -461,7 +426,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
     // caseMessages's behavior has changed in 24.2, and hence it doesn't let Optional Action work.
     // Changing the below condition for now. Was: (theCaseMessages || !hasAssignments())
-    if (!this.hasAssignments()) {
+    if (!hasAssignments(this.pConn$)) {
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
       this.checkSvg$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
