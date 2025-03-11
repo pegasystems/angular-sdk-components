@@ -33,6 +33,7 @@
           [selectedItems]="data.to.value || []"
           mode="'multi-select'"
           [compose]="true"
+          [externalValidator]="externalValidator"
         ></app-email-selector>
         <button *ngIf="!ccVisible" mat-button color="primary" (click)="handleCC($event)">Cc</button>
         <button *ngIf="!bccVisible" mat-button color="primary" (click)="handleBCC($event)">Bcc</button>
@@ -46,6 +47,7 @@
       [selectedItems]="data.cc.value || []"
       mode="'multi-select'"
       [compose]="true"
+      [externalValidator]="externalValidator"
     ></app-email-selector>
 
     <app-email-selector
@@ -55,6 +57,7 @@
       [selectedItems]="data.bcc.value || []"
       mode="'multi-select'"
       [compose]="true"
+      [externalValidator]="externalValidator"
     ></app-email-selector>
 
     <div class="form-group">
