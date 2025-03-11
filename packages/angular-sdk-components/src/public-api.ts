@@ -126,6 +126,7 @@ export * from './lib/_directives/thousand-seperator.directive';
 export * from './lib/_services/server-config.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
+export * from './lib/_services/idle-detection.service';
 export * from './lib/_services/endpoints';
 
 export * from './lib/_helpers/case-utils';
