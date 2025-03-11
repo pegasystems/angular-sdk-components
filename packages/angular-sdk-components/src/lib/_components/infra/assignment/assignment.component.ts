@@ -318,21 +318,21 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       switch (sAction) {
         case 'navigateToStep':
           this.erService.sendMessage('publish', '');
-          if (this.formValid()) {
-            this.bReInit = true;
-            this.psService.sendMessage(true);
+          // if (this.formValid()) {
+          this.bReInit = true;
+          this.psService.sendMessage(true);
 
-            const navigatePromise = this.navigateToStep('previous', this.itemKey$);
-            navigatePromise
-              .then(() => {
-                this.updateChanges();
-                this.psService.sendMessage(false);
-              })
-              .catch(() => {
-                this.psService.sendMessage(false);
-                this.snackBar.open(`${this.localizedVal('Navigation failed!', this.localeCategory)}`, 'Ok');
-              });
-          }
+          const navigatePromise = this.navigateToStep('previous', this.itemKey$);
+          navigatePromise
+            .then(() => {
+              this.updateChanges();
+              this.psService.sendMessage(false);
+            })
+            .catch(() => {
+              this.psService.sendMessage(false);
+              this.snackBar.open(`${this.localizedVal('Navigation failed!', this.localeCategory)}`, 'Ok');
+            });
+          // }
           break;
 
         case 'saveAssignment': {
@@ -462,7 +462,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
     Object.values(this.formGroup$.controls).forEach((control: any) => {
       control.markAsTouched();
