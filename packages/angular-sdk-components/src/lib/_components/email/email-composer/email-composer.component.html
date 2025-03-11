@@ -80,7 +80,7 @@
       <component-mapper
         name="SummaryList"
         class="email-attachments"
-        [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$, isEmailAttachments: true }"
+        [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$ }"
       ></component-mapper>
     </div>
   </mat-dialog-content>
@@ -98,7 +98,7 @@
 
           <!-- <button mat-stroked-button color="primary" (click)="uploader.click()">{{ pConn$.getLocalizedValue('Upload file(s)', '', '') }}</button> -->
           <div matRipple><mat-icon (click)="uploader.click()">attach_file</mat-icon></div>
-          <button mat-raised-button color="secondary">Save as draft</button>
+          <button mat-raised-button color="secondary" (click)="saveDraft()">Save as draft</button>
           <button mat-raised-button color="primary" (click)="sendEmail()">Send</button>
         </div>
       </div>

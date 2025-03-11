@@ -33,7 +33,8 @@
     "editor.formatOnSave": true
   },
   "[html]": {
-    "editor.formatOnSave": true
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
   "[markdown]": {
     "editor.formatOnSave": false

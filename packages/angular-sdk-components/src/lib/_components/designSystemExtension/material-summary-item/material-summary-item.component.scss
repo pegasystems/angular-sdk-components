@@ -85,8 +85,8 @@
 }
 
 .psdk-utility-card-main {
-  flex-grow: 2;
-  max-width: 16.563rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .psdk-utility-card-main-primary-url {

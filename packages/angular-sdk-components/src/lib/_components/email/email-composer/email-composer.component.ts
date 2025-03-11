@@ -70,6 +70,7 @@ export class EmailComposerComponent implements OnInit {
   @Input() responseType: string;
   @Input() externalValidator: any;
   @Output() onSend: EventEmitter<any> = new EventEmitter();
+  @Output() onSave: EventEmitter<any> = new EventEmitter();
   email: any;
 
   emailForm: FormGroup;
@@ -166,6 +167,10 @@ export class EmailComposerComponent implements OnInit {
     return 'Reply';
   }
 
+  saveDraft() {
+    this.onSave.emit();
+  }
+
   sendEmail() {
     this.onSend.emit();
     // .then(response => {
@@ -211,9 +216,9 @@ export class EmailComposerComponent implements OnInit {
   //   };
   // }
 
-  saveDraft() {
-    // Logic to save draft
-  }
+  // saveDraft() {
+  //   // Logic to save draft
+  // }
 
   discardChanges() {
     // Logic to discard changes

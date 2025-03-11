@@ -1,4 +1,4 @@
 <ng-container *ngFor="let item of arItems$">
-  <component-mapper name="SummaryItem"
+  <component-mapper name="SummaryItem" style="width: auto; min-width: 0"
     [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }"></component-mapper>
 </ng-container>
