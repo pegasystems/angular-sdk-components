@@ -28,6 +28,7 @@
 .email-primary {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .email-primary-text {
@@ -42,7 +43,6 @@
 
 .sentiment {
   color: grey;
-  margin: 0px 8px;
 }
 
 .show-more-icon {
@@ -75,4 +75,17 @@
   .mat-mdc-menu-panel {
     max-width: fit-content;
   }
+}
+
+.status {
+  display: inline-block;
+  position: relative;
+  background-color: rgb(241, 233, 251);
+  border-radius: calc(0.125rem);
+  color: rgb(104, 31, 195);
+  box-shadow: rgba(104, 31, 195, 0.1) 0px 0px 0px 0.0625rem inset;
+  font-size: max(0.75rem, 12px);
+  font-weight: bold;
+  line-height: 1rem;
+  padding-inline: calc(0.25rem);
 }

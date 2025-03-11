@@ -310,6 +310,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         this.draftWindow?.dismiss();
         this.closeComposer(true);
         this.setIsActive(false);
+        this.emailService.closeEmailComposer();
         (PCore as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Draft saved') });
       } else {
         (({ PCore }) as any).getToaster().push({ content: this.data.pConn.getLocalizedValue('Error in saving draft') });
