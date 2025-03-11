@@ -106,6 +106,12 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
     this.pConn$ = props.getPConnect();
 
+    this.pConn$.getContainerManager().initializeContainers({
+      type: 'multiple',
+      name: 'modal',
+      context: 'app'
+    });
+
     this.bHasPConnect$ = true;
 
     this.showHideProgress(false);
