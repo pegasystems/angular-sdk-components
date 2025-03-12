@@ -1,5 +1,5 @@
 <div>
-  <div><component-mapper name="AlertBanner" [props]="{ banners }" [parent]="this"></component-mapper></div>
+  <div><component-mapper name="AlertBanner" [props]="{ banners: bannerService.banners }" [parent]="this"></component-mapper></div>
   <div *ngIf="bHasNavigation$" class="psdk-stepper">
     <component-mapper
       name="MultiStep"
