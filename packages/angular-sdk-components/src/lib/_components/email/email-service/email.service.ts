@@ -457,6 +457,8 @@ export class EmailService {
       entityHighlightMapping: this.boolHideEntities ? entitiesList : [],
       tempEntityHighlightMapping: !this.boolHideEntities ? entitiesList : [],
       unRead: email.pyMessageMetadata.pyIsUnread,
+      // hasEmailDraft: email.pyHasEmailDraft,
+      emailDraftAction: email.pyEmailDraftAction,
       // onEditDraft: doMakeReadOnly ? undefined : this.getEditDraftAction(email),
       // onDeleteDraft: doMakeReadOnly ? undefined : getDeleteDraftAction(email),
       // onReply: doMakeReadOnly ? undefined : getReplyAction(email),
@@ -590,9 +592,7 @@ export class EmailService {
             queryPayload: { caseID: this.caseInsKey, contextID: email.id }
           });
           if (data.Status === 'success') {
-            this.snackBar.open(this.emailContainerPConnect.getLocalizedValue('Draft deleted'), 'Close', {
-              duration: 5000
-            });
+            this.displayMessage('Draft deleted');
 
             // update the list without draft badge in case of drafts deletion
             this.closeComposerCallback(true);
@@ -600,6 +600,12 @@ export class EmailService {
         }
       });
     }
+  }
+
+  displayMessage(message) {
+    this.snackBar.open(this.emailContainerPConnect.getLocalizedValue(message), 'Close', {
+      duration: 5000
+    });
   }
 
   closeComposerCallback(getUpdatedData) {
@@ -610,6 +616,10 @@ export class EmailService {
 
   private onEditDraft(email) {
     console.log(email);
+    const emailDraftActionType = email.emailDraftAction ? email.emailDraftAction : '';
+    if (this.isReadOnlyMode() === false && email.status === 'draft') {
+      this.openEmailComposer(email, emailDraftActionType);
+    }
   }
 
   public handleActionClick(action, email) {
