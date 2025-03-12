@@ -20,7 +20,7 @@
     "comment_serverConfig": "serverConfig is the block for SDK Content Server config entries",
 
     "infinityRestServerUrl_comment": "Full path to Infinity REST server",
-    "infinityRestServerUrl": "https://localhost:1080/prweb",
+    "infinityRestServerUrl": "https://dxaui242d.lab.pega.com/prweb",
 
     "appAlias_comment": "appAlias of the application which operators will be accessing (e.g., MediaCo)",
     "appAlias": "",
@@ -29,7 +29,7 @@
     "sdkContentServerUrl": "",
 
     "appPortal_comment": "If specified, the given appPortal will be loaded. If left blank, the operator's default Portal is used. Ignored for Mashup",
-    "appPortal": "",
+    "appPortal": "PortalForEmail",
 
     "appMashupCaseType_comment": "If specified, uses this case type for mashup.  Otherwise, uses the first case type found for the app",
     "appMashupCaseType": "",
