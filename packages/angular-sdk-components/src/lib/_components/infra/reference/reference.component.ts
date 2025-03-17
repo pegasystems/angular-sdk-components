@@ -33,12 +33,8 @@ export class ReferenceComponent {
   static createFullReferencedViewFromRef(inPConn: any) {
     // BAIL and ERROR if inPConn is NOT a reference!
     if (inPConn.getComponentName() !== 'reference') {
-      // debugger;
-
       console.error(`Reference component: createFullReferencedViewFromRef inPConn is NOT a reference! ${inPConn.getComponentName()}`);
     }
-
-    const theResolvedConfigProps = inPConn.resolveConfigProps(inPConn.getConfigProps());
 
     const referenceConfig = { ...inPConn.getComponentConfig() } || {};
 
@@ -47,8 +43,8 @@ export class ReferenceComponent {
     //  (and also leaving the others in for now) so the referenced View can act on
     //  the visibility prop. (The following 3 lines were carried over from React SDK)
     delete referenceConfig?.name;
-    // delete referenceConfig?.type;
-    // delete referenceConfig?.visibility;
+    delete referenceConfig?.type;
+    delete referenceConfig?.visibility;
 
     const viewMetadata = inPConn.getReferencedView();
 
@@ -68,12 +64,15 @@ export class ReferenceComponent {
       }
     };
 
+    const theResolvedConfigProps = inPConn.resolveConfigProps(inPConn.getConfigProps());
+    const { visibility = true, context, readOnly = false, displayMode = '' } = theResolvedConfigProps;
+
     if (ReferenceComponent.bLogging) {
-      console.log(`Reference: about to call createComponent with pageReference: context: ${theResolvedConfigProps.context}`);
+      console.log(`Reference: about to call createComponent with pageReference: context: ${inPConn.getContextName()}`);
     }
 
     const viewComponent = inPConn.createComponent(viewObject, null, null, {
-      pageReference: theResolvedConfigProps.context
+      pageReference: context && context.startsWith('@CLASS') ? '' : context
     });
 
     // updating the referencedComponent should trigger a render
@@ -81,8 +80,8 @@ export class ReferenceComponent {
 
     newCompPConnect.setInheritedConfig({
       ...referenceConfig,
-      readOnly: theResolvedConfigProps.readOnly ? theResolvedConfigProps.readOnly : false,
-      displayMode: theResolvedConfigProps.displayMode ? theResolvedConfigProps.displayMode : null
+      readOnly,
+      displayMode
     });
 
     if (ReferenceComponent.bLogging) {
@@ -93,7 +92,11 @@ export class ReferenceComponent {
       );
     }
 
-    return newCompPConnect;
+    if (visibility !== false) {
+      return newCompPConnect;
+    }
+
+    return null;
   }
 
   // STATIC method that other components can call to normalize
@@ -130,7 +133,7 @@ export class ReferenceComponent {
         // debugger;
         let theRefViewPConn = this.createFullReferencedViewFromRef(inPConn.getPConnect());
         // now return its PConnect
-        theRefViewPConn = theRefViewPConn.getComponent();
+        theRefViewPConn = theRefViewPConn?.getComponent();
 
         // const theFullReference = theRefViewPConn.getPConnect().getFullReference();
         // console.log(`theFullReference: ${theFullReference}`);
