@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output, SimpleChanges, OnChanges, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { MatInputModule } from '@angular/material/input';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RichTextEditorComponent } from '../../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
@@ -72,7 +73,7 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   @Output() onSend: EventEmitter<any> = new EventEmitter();
   @Output() onSave: EventEmitter<any> = new EventEmitter();
   email: any;
-
+  readonly dialog = inject(MatDialog);
   emailForm: FormGroup;
   isProgress = false;
 
@@ -174,16 +175,6 @@ export class EmailComposerComponent implements OnInit, OnChanges {
           responseTemplates: []
         });
         this.initialFormData = this.emailForm.value;
-        console.log('Data changed:', this.data, this.initialFormData);
-        // this.emailForm = this.fb.group({
-        //   responseType: [this.data.responseType],
-        //   to: [this.data.to.value || [], Validators.required],
-        //   cc: [this.data.cc.value || []],
-        //   bcc: [this.data.bcc.value || []],
-        //   subject: [this.data.subject.value, Validators.required],
-        //   responseTemplates: [[]],
-        //   emailBody: ['']
-        // });
       }
     }
   }
@@ -264,20 +255,6 @@ export class EmailComposerComponent implements OnInit, OnChanges {
     this.data.bcc.value = this.emailForm.value.bcc;
     this.data.subject.value = this.emailForm.value.subject;
     this.data.bodyContent = { defaultValue: this.emailForm.value.emailBody };
-
-    // return {
-    //   to: this.emailForm.value.to,
-    //   cc: this.emailForm.value.cc,
-    //   bcc: this.emailForm.value.bcc,
-    //   subject: this.emailForm.value.subject,
-    //   body: this.emailForm.value.body,
-    //   attachments: this.data.attachments,
-    //   templateId: this.data.selectedTemplateId,
-    //   context: this.data.Context,
-    //   caseId: this.data.CaseID,
-    //   actionType: this.data.ActionType,
-    //   guid: this.data.GUID
-    // };
   }
 
   // saveDraft() {
@@ -341,7 +318,23 @@ export class EmailComposerComponent implements OnInit, OnChanges {
 
   closeComposerWindow(e) {
     e.preventDefault();
-    this.emailService.closeEmailComposer();
+    const formData = this.emailForm.value;
+    const dirtyFields = {};
+
+    Object.keys(this.emailForm.controls).forEach(key => {
+      if (this.emailForm.controls[key].dirty) {
+        dirtyFields[key] = this.emailForm.controls[key].value;
+      }
+    });
+    const isFormDirty = JSON.stringify(formData) !== JSON.stringify(this.initialFormData);
+    if (isFormDirty) {
+      this.dialog.open(DiscardUnsavedChangesDialogComponent, {
+        position: { top: '10px' },
+        data: { componentRef: this }
+      });
+    } else {
+      this.emailService.closeEmailComposer();
+    }
   }
 
   minimize() {
@@ -381,5 +374,40 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   onSubmit() {
     console.log('Email sent:', this.email);
     // Add your email sending logic here
+  }
+}
+
+@Component({
+  selector: 'app-discard-unsaved-changes-dialog',
+  imports: [MatDialogModule, MatButtonModule, MatIconModule],
+  standalone: true,
+  styleUrl: './email-composer.component.scss',
+  template: `
+    <div class="dialog-header">
+      <h2 mat-dialog-title>Discard unsaved changes?</h2>
+      <mat-icon style="cursor:pointer" matTooltip="close" [mat-dialog-close]="true">close</mat-icon>
+    </div>
+    <mat-dialog-content>You have unsaved changes. You can discard them or go back to keep working.</mat-dialog-content>
+    <mat-dialog-actions align="end" style="justify-content: space-between; padding:24px">
+      <button mat-raised-button color="secondary" [mat-dialog-close]="true">Go back</button>
+      <div>
+        <button mat-raised-button color="secondary" (click)="saveDraft()" [mat-dialog-close]="true">Save & close</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="closeComposerWindow()">Discard changes</button>
+      </div>
+    </mat-dialog-actions>
+  `
+})
+class DiscardUnsavedChangesDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<DiscardUnsavedChangesDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+
+  saveDraft() {
+    this.data.componentRef.saveDraft();
+  }
+
+  closeComposerWindow() {
+    this.data.componentRef.emailService.closeEmailComposer();
   }
 }
