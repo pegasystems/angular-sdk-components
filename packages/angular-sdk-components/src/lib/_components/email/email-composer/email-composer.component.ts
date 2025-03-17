@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, inject, Input, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -46,7 +46,7 @@ import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
   templateUrl: './email-composer.component.html',
   styleUrl: './email-composer.component.scss'
 })
-export class EmailComposerComponent implements OnInit {
+export class EmailComposerComponent implements OnInit, OnChanges {
   @Input() IsEmailClient: boolean;
   @Input() Context: string;
   @Input() CaseID: string;
@@ -82,6 +82,7 @@ export class EmailComposerComponent implements OnInit {
   showMinimizeWindow: boolean;
   isMaximized: boolean;
   menuIconOverrideAction$: any;
+  initialFormData: any;
 
   constructor(private fb: FormBuilder) {
     this.emailForm = this.fb.group({
@@ -89,7 +90,8 @@ export class EmailComposerComponent implements OnInit {
       cc: [''],
       bcc: [''],
       subject: ['', [Validators.required]],
-      body: ['', [Validators.required]]
+      emailBody: [''],
+      responseTemplates: [[]]
     });
   }
 
@@ -157,6 +159,35 @@ export class EmailComposerComponent implements OnInit {
     this.menuIconOverrideAction$ = { onClick: this.removeFile.bind(this) };
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    const { data } = changes;
+    if (data) {
+      console.log('Email Composer Data:changes', changes);
+      const { previousValue, currentValue } = data;
+      if (previousValue && previousValue !== currentValue) {
+        this.emailForm.setValue({
+          to: this.data.to.value || [],
+          cc: this.data.cc.value || [],
+          bcc: this.data.bcc.value || [],
+          subject: this.data.subject.value,
+          emailBody: '',
+          responseTemplates: []
+        });
+        this.initialFormData = this.emailForm.value;
+        console.log('Data changed:', this.data, this.initialFormData);
+        // this.emailForm = this.fb.group({
+        //   responseType: [this.data.responseType],
+        //   to: [this.data.to.value || [], Validators.required],
+        //   cc: [this.data.cc.value || []],
+        //   bcc: [this.data.bcc.value || []],
+        //   subject: [this.data.subject.value, Validators.required],
+        //   responseTemplates: [[]],
+        //   emailBody: ['']
+        // });
+      }
+    }
+  }
+
   getText(val) {
     console.log(val);
     this.menuItems.forEach(item => {
@@ -172,6 +203,34 @@ export class EmailComposerComponent implements OnInit {
   }
 
   sendEmail() {
+    console.log('this.emailForm', this.emailForm.dirty);
+    if (this.emailForm.valid) {
+      const formData = this.emailForm.value;
+      const dirtyFields = {};
+
+      Object.keys(this.emailForm.controls).forEach(key => {
+        if (this.emailForm.controls[key].dirty) {
+          dirtyFields[key] = this.emailForm.controls[key].value;
+        }
+      });
+      const isFormDirty = JSON.stringify(formData) !== JSON.stringify(this.initialFormData);
+
+      console.log('Form Data:', formData);
+      console.log('Dirty Fields:', dirtyFields);
+      console.log('Is Form Dirty:', isFormDirty);
+      // Implement your logic to send the email using formData
+    } else {
+      console.log('Form is invalid');
+    }
+
+    // if (this.emailForm.valid) {
+    //   const formData = this.emailForm.value;
+    //   console.log('Form Data:', formData);
+    //   // Implement your logic to send the email using formData
+    // } else {
+    //   console.log('Form is invalid');
+    // }
+    this.prepareEmailPayload();
     this.onSend.emit();
     // .then(response => {
     //   console.log('Email sent successfully');
@@ -199,22 +258,27 @@ export class EmailComposerComponent implements OnInit {
     // }
   }
 
-  // prepareEmailPayload() {
-  //   return {
-  //     to: this.data.to.value,
-  //     cc: this.data.cc.value,
-  //     bcc: this.data.bcc.value,
-  //     subject: this.data.subject.value,
-  //     // body: this.emailForm.value.body,
-  //     body: this.emailForm.value.body,
-  //     attachments: this.data.attachments,
-  //     templateId: this.data.selectedTemplateId,
-  //     context: this.data.Context,
-  //     caseId: this.data.CaseID,
-  //     actionType: this.data.ActionType,
-  //     guid: this.data.GUID
-  //   };
-  // }
+  prepareEmailPayload() {
+    this.data.to.value = this.emailForm.value.to;
+    this.data.cc.value = this.emailForm.value.cc;
+    this.data.bcc.value = this.emailForm.value.bcc;
+    this.data.subject.value = this.emailForm.value.subject;
+    this.data.bodyContent = { defaultValue: this.emailForm.value.emailBody };
+
+    // return {
+    //   to: this.emailForm.value.to,
+    //   cc: this.emailForm.value.cc,
+    //   bcc: this.emailForm.value.bcc,
+    //   subject: this.emailForm.value.subject,
+    //   body: this.emailForm.value.body,
+    //   attachments: this.data.attachments,
+    //   templateId: this.data.selectedTemplateId,
+    //   context: this.data.Context,
+    //   caseId: this.data.CaseID,
+    //   actionType: this.data.ActionType,
+    //   guid: this.data.GUID
+    // };
+  }
 
   // saveDraft() {
   //   // Logic to save draft

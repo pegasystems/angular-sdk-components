@@ -7,16 +7,20 @@
     <div class="email-subject">Subject: {{ email.subject }}</div>
     <div [innerHTML]="email.body"></div>
     <div *ngIf="email.trail">
-      <mat-icon style="cursor: pointer" [matTooltip]="email.trail.expanded ? 'Collapse Trail' : 'Expand Trail'"
-        (click)="showTrialContent(email)">more_horiz</mat-icon>
+      <mat-icon style="cursor: pointer" [matTooltip]="email.trail.expanded ? 'Collapse Trail' : 'Expand Trail'" (click)="showTrialContent(email)"
+        >more_horiz</mat-icon
+      >
       <div *ngIf="email.trail.expanded">
         <div *ngIf="email.trail.content" class="trail" [innerHTML]="email.trail.content"></div>
         <mat-progress-bar *ngIf="email.trail.loading" mode="indeterminate"></mat-progress-bar>
       </div>
     </div>
-    <div style="margin-top: 0.5rem;">
-      <component-mapper class="email-attachments" name="SummaryList"
-        [props]="{ arItems$: attachments, menuIconOverride$: 'download', menuIconOverrideAction$ }"></component-mapper>
+    <div style="margin-top: 0.5rem">
+      <component-mapper
+        class="email-attachments"
+        name="SummaryList"
+        [props]="{ arItems$: attachments, menuIconOverride$: 'download', menuIconOverrideAction$ }"
+      ></component-mapper>
     </div>
   </mat-card-content>
 </mat-card>
