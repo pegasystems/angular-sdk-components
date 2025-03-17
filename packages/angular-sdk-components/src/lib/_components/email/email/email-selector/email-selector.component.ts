@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild, AfterViewInit, OnDestroy, forwardRef } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormsModule, ReactiveFormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -50,9 +51,16 @@ interface EmailParticipant {
     MatMenuModule,
     NgxMatSelectSearchModule
   ],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EmailSelectorComponent),
+      multi: true
+    }
+  ],
   styleUrls: ['./email-selector.component.scss']
 })
-export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestroy {
+export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestroy, ControlValueAccessor {
   @Input() participants: any = [];
 
   @Input() selectedItems: any = [];
@@ -85,6 +93,29 @@ export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestr
     this.emailMultiCtrl.setValue([...this.emailMultiCtrl.value, val]);
     this.emailParticipants.push({ EmailAddress: val });
     this.filteredEmailsMulti.next(this.emailParticipants.slice());
+  }
+
+  private onChange = (value: any) => {};
+  private onTouched = () => {};
+
+  // ControlValueAccessor method: Write a new value to the DOM
+  writeValue(value: number): void {
+    console.log('writeValue');
+    this.emailMultiCtrl.setValue(value);
+    // if (value !== undefined && value !== null) {
+    //   this.selectedItems = value;
+    // }
+  }
+
+  // ControlValueAccessor method: Registers the onChange function
+  registerOnChange(fn: (value: any) => void): void {
+    console.log('registerOnChange');
+    this.onChange = fn;
+  }
+
+  // ControlValueAccessor method: Registers the onTouched function
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
   }
 
   filterEmailsMulti() {
@@ -129,11 +160,20 @@ export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestr
 
   // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   ngOnInit() {
+    console.log('ngOnInit in selector');
     console.log(this.participants);
     console.log(this.selectedItems);
 
     this.emailMultiFilterCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
       this.filterEmailsMulti();
+    });
+
+    this.emailMultiCtrl.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(value => {
+      console.log('Value changed:', value);
+      console.log('emailMultiCtrl:', this.emailMultiCtrl);
+      this.onChange(this.emailMultiCtrl.value);
+      // this.selectedItemsChange.emit(this.emailMultiCtrl.value);
+      // Perform actions based on the new value
     });
   }
 
@@ -143,9 +183,37 @@ export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.emailParticipants = [...this.participants];
+    console.log('ngOnChanges in selector');
+    if (changes['participants']?.currentValue?.length !== changes['participants']?.previousValue?.length) {
+      this.emailParticipants = [...changes['participants'].currentValue];
+    } else {
+      let isChanged = false;
+      changes['participants']?.currentValue.forEach((participant: any) => {
+        if (!changes['participants']?.previousValue.find((email: any) => email.EmailAddress === participant.EmailAddress)) {
+          isChanged = true;
+        }
+      });
+      if (isChanged) {
+        this.emailParticipants = [...changes['participants'].currentValue];
+      }
+    }
 
-    this.emailMultiCtrl.setValue(this.selectedItems);
+    if (changes['selectedItems']?.currentValue?.length !== changes['selectedItems']?.previousValue?.length) {
+      this.emailMultiCtrl.setValue(changes['selectedItems'].currentValue);
+    } else {
+      let isChanged = false;
+      changes['selectedItems']?.currentValue.forEach((selectedItem: any) => {
+        if (!changes['selectedItems']?.previousValue.find((email: any) => email === selectedItem)) {
+          isChanged = true;
+        }
+      });
+      if (isChanged) {
+        this.emailMultiCtrl.setValue(changes['selectedItems'].currentValue);
+      }
+    }
+    // this.emailParticipants = [...this.participants];
+
+    // this.emailMultiCtrl.setValue(this.selectedItems);
 
     this.filteredEmailsMulti.next(this.emailParticipants.slice());
     this.updateEmailsToRender();
@@ -153,6 +221,7 @@ export class EmailSelectorComponent implements OnChanges, AfterViewInit, OnDestr
     if (changes['emailParticipants']) {
       this.updateEmailsToRender();
     }
+    // need to re render
   }
 
   onFilterChange(event: Event) {

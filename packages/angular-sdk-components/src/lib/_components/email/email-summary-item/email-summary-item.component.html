@@ -8,7 +8,7 @@
       <div class="email-primary">
         <div class="email-primary-text">{{ fromData.fullName }}</div>
         <mat-icon *ngIf="sentiment" class="sentiment">{{ sentimentIcons[sentiment.variant] }}</mat-icon>
-        <div class="status">{{email.status?.toUpperCase()}}</div>
+        <div class="status">{{ email.status?.toUpperCase() }}</div>
       </div>
       <div class="email-secondary">
         <span>To: </span>

@@ -1,7 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Component, Input, Output, EventEmitter, OnChanges, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { Subject } from 'rxjs';
 
 declare let tinymce: any;
 
@@ -11,9 +13,16 @@ declare let tinymce: any;
   styleUrls: ['./rich-text-editor.component.scss'],
   standalone: true,
   imports: [CommonModule, EditorModule, ReactiveFormsModule],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => RichTextEditorComponent),
+      multi: true
+    }
+  ]
 })
-export class RichTextEditorComponent implements OnChanges {
+export class RichTextEditorComponent implements OnChanges, ControlValueAccessor {
   @Input() placeholder;
   @Input() disabled;
   @Input() readonly;
@@ -28,6 +37,21 @@ export class RichTextEditorComponent implements OnChanges {
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
   richText = new FormControl();
+  private onChangeCallBack = (value: any) => {};
+  private onTouchedCallBack = (value: boolean) => {};
+  protected _onDestroy = new Subject<void>();
+
+  writeValue(obj: any): void {
+    this.richText.setValue(obj);
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChangeCallBack = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouchedCallBack = fn;
+  }
 
   ngOnChanges() {
     if (this.required) {
@@ -79,11 +103,18 @@ export class RichTextEditorComponent implements OnChanges {
   blur() {
     if (tinymce.activeEditor) {
       const editorValue = tinymce.activeEditor.getContent({ format: 'html' });
-      this.onBlur.emit(editorValue);
+      this.onChangeCallBack(editorValue);
+      this.onTouchedCallBack(true);
+      this.onBlur?.emit(editorValue);
     }
   }
 
   change(event) {
-    this.onChange.emit(event);
+    this.onChangeCallBack(event.editor?.getContent({ format: 'html' }));
+    this.onChange?.emit(event);
   }
+
+  // setDisabledState?(isDisabled: boolean): void {
+  //   throw new Error('Method not implemented.');
+  // }
 }

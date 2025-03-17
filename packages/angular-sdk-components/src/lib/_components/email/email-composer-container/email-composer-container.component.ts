@@ -46,9 +46,9 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   articleData = '';
   previewAttachId = '';
   isDataLoading = false;
-  previewAttachments: any[] = [];
+  // previewAttachments: any[] = [];
   participants: any[] = [];
-  attachmentsList: any[] = [];
+  // attachmentsList: any[] = [];
   preExistingAttachments: any[] = [];
   composerState: any = {};
   composerStateForDraft: any = {};
@@ -165,7 +165,28 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   }
 
   getMetadata = async () => {
-    this.attachmentsList = [];
+    let attachmentsList: any = [];
+    if (this.composerData.attachments != undefined) {
+      this.composerData.attachments.forEach((attachment: any) => {
+        if (!attachment.isExisting) {
+          attachmentsList.push(attachment);
+        }
+      });
+    }
+    this.composerData = {
+      to: { value: [] },
+      cc: { value: [] },
+      bcc: { value: [] },
+      subject: { value: '' },
+      bodyContent: {
+        defaultValue: '',
+        forwardedContent: '',
+        repliedContent: ''
+      },
+      selectedTemplateId: '',
+      attachments: [],
+      responseType: ''
+    };
     this.preExistingAttachments = [];
     const payload = {
       ActionType: this.data.ActionType,
@@ -209,10 +230,10 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         ...attachment,
         isExisting: true
       })) || [];
-    this.previewAttachments = preExistingAttachmentsList; // not needed
+    // this.previewAttachments = preExistingAttachmentsList; // not needed
     this.preExistingAttachments = preExistingAttachmentsList;
     // need to update this logic
-    this.attachmentsList = preExistingAttachmentsList.concat(this.composerData.attachments || []);
+    attachmentsList = preExistingAttachmentsList.concat(attachmentsList || []);
 
     const bodyContent = this.body ? `${this.body}${this.getReplyOrForwardContent(metaData)}` : this.getBodyContent(metaData);
 
@@ -227,7 +248,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         repliedContent: metaData.pyRepliedContent
       },
       selectedTemplateId: this.TemplateID || metaData.pySelectedReplyTemplate || '',
-      attachments: this.attachmentsList as any,
+      attachments: attachmentsList as any,
       responseType: this.data.ActionType === 'REPLYALL' ? 'replyAll' : this.data.ActionType.toLowerCase()
     };
 
@@ -542,7 +563,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         }
         delete file.progress;
 
-        this.attachmentsList.forEach(attachment => {
+        this.composerData.attachments.forEach((attachment: any) => {
           if (attachment.name == file.name) {
             attachment.meta = uploadFailMsg;
             attachment.error = true;
@@ -714,7 +735,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         // attachment.onPreview = handlePreviewClick(attachment.id);
       });
       this.composerData.attachments = value;
-      this.attachmentsList = value;
+      // this.attachmentsList = value;
       // prev.attachments = value;
       // attachmentsList.current = value;
       // setPreviewAttachments(attachmentsList.current);
