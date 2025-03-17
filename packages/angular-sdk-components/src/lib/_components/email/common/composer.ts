@@ -1,4 +1,5 @@
-import { BYTES_TO_MB } from './Constants';
+import { BYTES_TO_MB, FORWARD_ACTION_IN_COMPOSER, FORWARDED_CONTENT_DIV, REM_ALL_ADDITIONAL_CONTENT, REPLIED_CONTENT_DIV } from './Constants';
+import { updateImageSrcsWithAbsoluteURLs } from './utils';
 
 let payloadTo = [];
 let payloadBCC = [];
@@ -127,4 +128,47 @@ export const getSendEmailPayload = (
     BCCRecipients: payloadBCC,
     PreExistingAttachments: payloadPreExistAttachments
   };
+};
+
+/* Function to remove forwarded content/replied content within the composer */
+export const removeElementWithId = (id, emailContent) => {
+  let temp = emailContent;
+  if (emailContent.includes(id)) {
+    const dummyElement = document.createElement('div');
+    dummyElement.innerHTML = emailContent;
+    const divToBeRemoved = dummyElement.querySelector(`#${id}`);
+    if (divToBeRemoved !== null) {
+      divToBeRemoved.remove();
+    }
+    temp = dummyElement.innerHTML
+      .toString()
+      .replace(/(\r\n|\n|\r)/gm, '')
+      .trim();
+  }
+  return temp;
+};
+export const removeAdditionalContent = (emailContent, contentType) => {
+  if (contentType === REM_ALL_ADDITIONAL_CONTENT) {
+    emailContent = removeElementWithId(FORWARDED_CONTENT_DIV, emailContent);
+    emailContent = removeElementWithId(REPLIED_CONTENT_DIV, emailContent);
+  }
+  if (contentType == FORWARD_ACTION_IN_COMPOSER) {
+    emailContent = removeElementWithId(FORWARDED_CONTENT_DIV, emailContent);
+  } else {
+    emailContent = removeElementWithId(REPLIED_CONTENT_DIV, emailContent);
+  }
+  return emailContent;
+};
+
+/* input: Metadata from TriageCaseMetadata DP, email composer action type
+output : Returns additonal content based on email composer action type
+*/
+export const getReplyOrForwardContent = (metaData, emailActionType, pConn) => {
+  let additionalContent = '';
+  if (emailActionType == FORWARD_ACTION_IN_COMPOSER && metaData.pyForwardedContent) {
+    additionalContent = metaData.pyForwardedContent;
+  } else if (metaData.pyRepliedContent) {
+    additionalContent = metaData.pyRepliedContent;
+  }
+  return updateImageSrcsWithAbsoluteURLs(additionalContent, pConn);
 };
