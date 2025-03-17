@@ -442,14 +442,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
       this.checkSvg$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
-      // Temp fix for 8.7 change: confirmationNote no longer coming through in caseMessages$.
-      // So, if we get here and caseMessages$ is empty, use default value in DX API response
-      if (!this.caseMessages$) {
-        this.caseMessages$ = this.localizedVal('Thank you! The next step in this case has been routed appropriately.', this.localeCategory);
-      }
-
-      // publish this "assignmentFinished" for mashup, need to get approved as a standard
-      PCore.getPubSubUtils().publish('assignmentFinished');
 
       this.psService.sendMessage(false);
     } else {

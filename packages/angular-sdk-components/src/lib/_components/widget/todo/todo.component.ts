@@ -91,7 +91,6 @@ export class TodoComponent implements OnInit, OnDestroy {
   localeCategory = 'Todo';
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
-  canPerform: boolean;
   count: number;
 
   constructor(
@@ -117,6 +116,10 @@ export class TodoComponent implements OnInit, OnDestroy {
     PCore.getPubSubUtils().unsubscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, 'updateToDo');
     PCore.getPubSubUtils().unsubscribe(CREATE_STAGE_SAVED, CREATE_STAGE_SAVED);
     PCore.getPubSubUtils().unsubscribe(CREATE_STAGE_DELETED, CREATE_STAGE_DELETED);
+  }
+
+  get canPerform() {
+    return this.assignmentsSource$?.[0]?.canPerform === 'true' || this.assignmentsSource$?.[0]?.canPerform === true;
   }
 
   updateList() {
@@ -155,8 +158,6 @@ export class TodoComponent implements OnInit, OnDestroy {
         this.arAssignments$ = this.getCaseInfoAssignment(this.assignmentsSource$, this.caseInfoID$);
       }
     }
-
-    this.canPerform = this.arAssignments$?.[0]?.canPerform === 'true' || this.arAssignments$?.[0]?.canPerform === true;
 
     this.currentUser$ = PCore.getEnvironmentInfo().getOperatorName();
     this.currentUserInitials$ = this.utils.getInitials(this.currentUser$ ?? '');

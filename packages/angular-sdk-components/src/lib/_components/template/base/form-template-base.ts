@@ -1,5 +1,5 @@
 import { Directive, OnDestroy } from '@angular/core';
-import { AngularPConnectData } from 'packages/angular-sdk-components/src/public-api';
+import { AngularPConnectData } from '../../../_bridge/angular-pconnect';
 
 @Directive()
 export class FormTemplateBase implements OnDestroy {

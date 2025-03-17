@@ -6,9 +6,9 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { BannerService } from '../../../_services/banner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { BannerService } from 'packages/angular-sdk-components/src/public-api';
 
 function getRefreshProps(refreshConditions) {
   // refreshConditions cuurently supports only "Changes" event
