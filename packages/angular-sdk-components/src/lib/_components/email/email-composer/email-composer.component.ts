@@ -19,6 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailSelectorComponent } from '../email/email-selector/email-selector.component';
 import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'lib-email-composer',
@@ -84,6 +85,8 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   isMaximized: boolean;
   menuIconOverrideAction$: any;
   initialFormData: any;
+
+  protected _onDestroy = new Subject<void>();
 
   constructor(private fb: FormBuilder) {
     this.emailForm = this.fb.group({
@@ -158,6 +161,9 @@ export class EmailComposerComponent implements OnInit, OnChanges {
 
     this.menuItemsText = ['reply', 'replyAll', 'forward'];
     this.menuIconOverrideAction$ = { onClick: this.removeFile.bind(this) };
+    this.emailForm.valueChanges.pipe(takeUntil(this._onDestroy)).subscribe(() => {
+      this.prepareEmailPayload();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -171,7 +177,7 @@ export class EmailComposerComponent implements OnInit, OnChanges {
           cc: this.data.cc.value || [],
           bcc: this.data.bcc.value || [],
           subject: this.data.subject.value,
-          emailBody: '',
+          emailBody: this.data.bodyContent.defaultValue,
           responseTemplates: []
         });
         this.initialFormData = this.emailForm.value;

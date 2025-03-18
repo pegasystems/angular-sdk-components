@@ -9,7 +9,16 @@ import { EmailComposerComponent } from '../email-composer/email-composer.compone
 import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { MatIconModule } from '@angular/material/icon';
 import { EmailService } from '../email-service/email.service';
-import { filterLargeAttachment, getSendEmailPayload, largeAttachmentError, setAttachmentsToUpload, validateInputs } from '../common/composer';
+import {
+  filterLargeAttachment,
+  getReplyOrForwardContent,
+  getSendEmailPayload,
+  largeAttachmentError,
+  removeAdditionalContent,
+  setAttachmentsToUpload,
+  validateInputs
+} from '../common/composer';
+import { FORWARD_ACTION_IN_COMPOSER, REM_ALL_ADDITIONAL_CONTENT } from '../common/Constants';
 
 @Component({
   selector: 'app-email-composer-container',
@@ -173,6 +182,11 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
         }
       });
     }
+    this.body =
+      this.data.ActionType !== FORWARD_ACTION_IN_COMPOSER
+        ? removeAdditionalContent(this.composerData.bodyContent.defaultValue, FORWARD_ACTION_IN_COMPOSER)
+        : this.composerData.bodyContent.defaultValue;
+    let subject = this.composerData.subject.value;
     this.composerData = {
       to: { value: [] },
       cc: { value: [] },
@@ -235,13 +249,16 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     // need to update this logic
     attachmentsList = preExistingAttachmentsList.concat(attachmentsList || []);
 
-    const bodyContent = this.body ? `${this.body}${this.getReplyOrForwardContent(metaData)}` : this.getBodyContent(metaData);
+    const bodyContent = this.body
+      ? `${this.body}${getReplyOrForwardContent(metaData, this.data.ActionType, this.data.pConn)}`
+      : this.getBodyContent(metaData);
 
+    subject = subject === '' ? metaData.pySubject : subject;
     this.composerData = {
       to: { value: toRecipientItems },
       cc: { value: this.data.ActionType === 'REPLYALL' || this.hasSavedDraft ? ccRecipientItems : [] },
       bcc: { value: this.data.ActionType === 'REPLYALL' || this.hasSavedDraft ? bccRecipientItems : [] },
-      subject: { value: this.data.ActionType === 'FORWARD' ? `Fw: ${metaData.pySubject}` : metaData.pySubject },
+      subject: { value: this.data.ActionType === 'FORWARD' ? `Fw: ${subject}` : metaData.pySubject.replace('Fw:', '') },
       bodyContent: {
         defaultValue: bodyContent,
         forwardedContent: updateImageSrcsWithAbsoluteURLs(metaData.pyForwardedContent, this.data.pConn),
@@ -277,13 +294,15 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   };
 
   getBodyContent(metaData: any): string {
-    // Implement the logic to return a string
-    return '';
-  }
-
-  getReplyOrForwardContent(metaData: any): string {
-    // Implement the logic to return a string
-    return '';
+    let body = '';
+    if (this.body) {
+      body = removeAdditionalContent(this.body, REM_ALL_ADDITIONAL_CONTENT);
+    }
+    if (body == '') {
+      body = metaData.pyBody ? metaData.pyBody : '<br>';
+    }
+    body = `${body}${getReplyOrForwardContent(metaData, this.data.ActionType, this.data.pConn)}`;
+    return body;
   }
 
   private getWrapperCaseID(): string {
@@ -632,74 +651,70 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  async toneAnalysisWithGenAI(): Promise<void> {
-    await this.checkToneIsPoliteOrNot();
-    if (!this.isPoliteTone) {
-      if (this.composerData.bodyContent.defaultValue) {
-        this.toneAnalysisWindow = (PCore as any).getModalManager().create(this.toneAnalysisModal, {
-          heading: this.toneModalHeading,
-          actions: this.ToneActions,
-          content: this.data.pConn.getLocalizedValue('The email is poorly formatted and not appropriate for customer interaction')
-        });
-      }
-    } else {
-      this.sendEmail();
-    }
-  }
+  // async toneAnalysisWithGenAI(): Promise<void> {
+  //   await this.checkToneIsPoliteOrNot();
+  //   if (!this.isPoliteTone) {
+  //     if (this.composerData.bodyContent.defaultValue) {
+  //       this.toneAnalysisWindow = (PCore as any).getModalManager().create(this.toneAnalysisModal, {
+  //         heading: this.toneModalHeading,
+  //         actions: this.ToneActions,
+  //         content: this.data.pConn.getLocalizedValue('The email is poorly formatted and not appropriate for customer interaction')
+  //       });
+  //     }
+  //   } else {
+  //     this.sendEmail();
+  //   }
+  // }
 
-  toneAnalysisModal(toneAnalysisModal: any, arg1: { heading: string; actions: any; content: any }): any {
-    throw new Error('Method not implemented.');
-  }
+  // toneAnalysisModal(toneAnalysisModal: any, arg1: { heading: string; actions: any; content: any }): any {
+  //   throw new Error('Method not implemented.');
+  // }
 
-  private async checkToneIsPoliteOrNot(): Promise<void> {
-    const forwardedContentDivId = `#FORWARDED_CONTENT_DIV`;
-    const repliedContentDivId = `#REPLIED_CONTENT_DIV`;
-    const emailContentElement = document.createElement('div');
-    emailContentElement.innerHTML = this.composerData.bodyContent.defaultValue;
-    const forwardDiv = emailContentElement.querySelector(forwardedContentDivId);
-    const repliedDiv = emailContentElement.querySelector(repliedContentDivId);
-    if (this.composerData.bodyContent.defaultValue) {
-      const message = this.removeAdditionalContent(this.composerData.bodyContent.defaultValue);
-      const parser = new DOMParser();
-      const currentMessage = parser.parseFromString(message as any, 'text/html');
-      if (currentMessage.body.innerText.trim()) {
-        const payload1 = {
-          Message: message,
-          EmailAddress: this.composerData.to.value.length > 0 ? this.composerData.to.value[0] : ''
-        };
-        this.updateProgressState(this.data.pConn.getLocalizedValue('Reviewing response'), true);
-        const { data } = await (PCore as any).getDataApiUtils().getData('D_pxEmailToneAnalysis', {
-          dataViewParameters: payload1
-        });
-        this.updateProgressState('', false);
-        if (data.data?.length) {
-          const poilteTone = data.data[0].pxIsPoliteTone;
-          let genAIResponse = data.data[0].pxRephrasedMessage;
-          if (poilteTone === null || genAIResponse === null || poilteTone === true) {
-            this.isPoliteTone = true;
-          } else if (typeof poilteTone === 'string') {
-            this.isPoliteTone = poilteTone.toLowerCase() === 'true';
-          } else if (typeof poilteTone === 'boolean') {
-            this.isPoliteTone = poilteTone;
-          }
-          if (genAIResponse) {
-            genAIResponse = genAIResponse.trimStart();
-            genAIResponse = genAIResponse.trimEnd();
-            this.rephrasedBody = genAIResponse.replace(/(?:\r\n|\r|\n)/g, '<br>');
-            if (forwardDiv !== null) {
-              this.rephrasedBody += forwardDiv.outerHTML.toString();
-            } else if (repliedDiv !== null) {
-              this.rephrasedBody += repliedDiv.outerHTML.toString();
-            }
-          }
-        }
-      }
-    }
-  }
-
-  removeAdditionalContent(defaultValue: string) {
-    throw new Error('Method not implemented.');
-  }
+  // private async checkToneIsPoliteOrNot(): Promise<void> {
+  //   const forwardedContentDivId = `#FORWARDED_CONTENT_DIV`;
+  //   const repliedContentDivId = `#REPLIED_CONTENT_DIV`;
+  //   const emailContentElement = document.createElement('div');
+  //   emailContentElement.innerHTML = this.composerData.bodyContent.defaultValue;
+  //   const forwardDiv = emailContentElement.querySelector(forwardedContentDivId);
+  //   const repliedDiv = emailContentElement.querySelector(repliedContentDivId);
+  //   if (this.composerData.bodyContent.defaultValue) {
+  //     const message = this.removeAdditionalContent(this.composerData.bodyContent.defaultValue);
+  //     const parser = new DOMParser();
+  //     const currentMessage = parser.parseFromString(message as any, 'text/html');
+  //     if (currentMessage.body.innerText.trim()) {
+  //       const payload1 = {
+  //         Message: message,
+  //         EmailAddress: this.composerData.to.value.length > 0 ? this.composerData.to.value[0] : ''
+  //       };
+  //       this.updateProgressState(this.data.pConn.getLocalizedValue('Reviewing response'), true);
+  //       const { data } = await (PCore as any).getDataApiUtils().getData('D_pxEmailToneAnalysis', {
+  //         dataViewParameters: payload1
+  //       });
+  //       this.updateProgressState('', false);
+  //       if (data.data?.length) {
+  //         const poilteTone = data.data[0].pxIsPoliteTone;
+  //         let genAIResponse = data.data[0].pxRephrasedMessage;
+  //         if (poilteTone === null || genAIResponse === null || poilteTone === true) {
+  //           this.isPoliteTone = true;
+  //         } else if (typeof poilteTone === 'string') {
+  //           this.isPoliteTone = poilteTone.toLowerCase() === 'true';
+  //         } else if (typeof poilteTone === 'boolean') {
+  //           this.isPoliteTone = poilteTone;
+  //         }
+  //         if (genAIResponse) {
+  //           genAIResponse = genAIResponse.trimStart();
+  //           genAIResponse = genAIResponse.trimEnd();
+  //           this.rephrasedBody = genAIResponse.replace(/(?:\r\n|\r|\n)/g, '<br>');
+  //           if (forwardDiv !== null) {
+  //             this.rephrasedBody += forwardDiv.outerHTML.toString();
+  //           } else if (repliedDiv !== null) {
+  //             this.rephrasedBody += repliedDiv.outerHTML.toString();
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   handleOnChange(field: any, value: any): void {
     if (this.initialLoad) this.emailContentChanged = true;
