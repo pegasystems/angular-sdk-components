@@ -1,4 +1,4 @@
-<form style="height: 100%;" [formGroup]="emailForm" (ngSubmit)="sendEmail()">
+<form style="height: 100%" [formGroup]="emailForm" (ngSubmit)="sendEmail()">
   <div class="email-composer" [ngStyle]="{ display: showMinimizeWindow ? 'none' : null }">
     <div class="composer-header">
       <div class="composer-heading">{{ data.subject.value }}</div>

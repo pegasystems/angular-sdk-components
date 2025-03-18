@@ -22,6 +22,41 @@ import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
+  selector: 'app-discard-unsaved-changes-dialog',
+  imports: [MatDialogModule, MatButtonModule, MatIconModule],
+  standalone: true,
+  styleUrl: './email-composer.component.scss',
+  template: `
+    <div class="dialog-header">
+      <h2 mat-dialog-title>Discard unsaved changes?</h2>
+      <mat-icon style="cursor:pointer" matTooltip="close" [mat-dialog-close]="true">close</mat-icon>
+    </div>
+    <mat-dialog-content>You have unsaved changes. You can discard them or go back to keep working.</mat-dialog-content>
+    <mat-dialog-actions align="end" style="justify-content: space-between; padding:24px">
+      <button mat-raised-button color="secondary" [mat-dialog-close]="true">Go back</button>
+      <div>
+        <button mat-raised-button color="secondary" (click)="saveDraft()" [mat-dialog-close]="true">Save & close</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="closeComposerWindow()">Discard changes</button>
+      </div>
+    </mat-dialog-actions>
+  `
+})
+class DiscardUnsavedChangesDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<DiscardUnsavedChangesDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+
+  saveDraft() {
+    this.data.componentRef.saveDraft();
+  }
+
+  closeComposerWindow() {
+    this.data.componentRef.emailService.closeEmailComposer();
+  }
+}
+
+@Component({
   selector: 'lib-email-composer',
   standalone: true,
   imports: [
@@ -380,40 +415,5 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   onSubmit() {
     console.log('Email sent:', this.email);
     // Add your email sending logic here
-  }
-}
-
-@Component({
-  selector: 'app-discard-unsaved-changes-dialog',
-  imports: [MatDialogModule, MatButtonModule, MatIconModule],
-  standalone: true,
-  styleUrl: './email-composer.component.scss',
-  template: `
-    <div class="dialog-header">
-      <h2 mat-dialog-title>Discard unsaved changes?</h2>
-      <mat-icon style="cursor:pointer" matTooltip="close" [mat-dialog-close]="true">close</mat-icon>
-    </div>
-    <mat-dialog-content>You have unsaved changes. You can discard them or go back to keep working.</mat-dialog-content>
-    <mat-dialog-actions align="end" style="justify-content: space-between; padding:24px">
-      <button mat-raised-button color="secondary" [mat-dialog-close]="true">Go back</button>
-      <div>
-        <button mat-raised-button color="secondary" (click)="saveDraft()" [mat-dialog-close]="true">Save & close</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="closeComposerWindow()">Discard changes</button>
-      </div>
-    </mat-dialog-actions>
-  `
-})
-class DiscardUnsavedChangesDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<DiscardUnsavedChangesDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
-
-  saveDraft() {
-    this.data.componentRef.saveDraft();
-  }
-
-  closeComposerWindow() {
-    this.data.componentRef.emailService.closeEmailComposer();
   }
 }
