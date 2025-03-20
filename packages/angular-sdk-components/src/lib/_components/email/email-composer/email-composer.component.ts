@@ -16,6 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailSelectorComponent } from '../email/email-selector/email-selector.component';
 import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
@@ -78,6 +79,7 @@ class DiscardUnsavedChangesDialogComponent {
     MatDialogActions,
     MatDialogContent,
     MatTooltipModule,
+    MatProgressSpinnerModule,
     forwardRef(() => ComponentMapperComponent)
   ],
   templateUrl: './email-composer.component.html',
@@ -130,7 +132,8 @@ export class EmailComposerComponent implements OnInit, OnChanges {
       bcc: [''],
       subject: ['', [Validators.required]],
       emailBody: [''],
-      responseTemplates: [[]]
+      responseTemplates: [[]],
+      responseType: ['']
     });
   }
 
@@ -153,7 +156,6 @@ export class EmailComposerComponent implements OnInit, OnChanges {
       { key: 'vishal@hmail.com', value: 'vishal@hmail.com' },
       { key: 'ss@h.com', value: 'ss@h.com' }
     ]; */
-
     this.options$ = [
       { emailAddress: 'vishal@hmail.com', fullName: 'vishal@hmail.com', shortName: 'vishal' },
       { emailAddress: 'rahul@hmail.com', fullName: 'rahul@hmail.com', shortName: 'rahul' }
@@ -213,9 +215,11 @@ export class EmailComposerComponent implements OnInit, OnChanges {
           bcc: this.data.bcc.value || [],
           subject: this.data.subject.value,
           emailBody: this.data.bodyContent.defaultValue,
-          responseTemplates: []
+          responseTemplates: [],
+          responseType: this.data.responseType
         });
         this.initialFormData = this.emailForm.value;
+        this.isProgress = this.progress;
       }
     }
   }
@@ -236,6 +240,7 @@ export class EmailComposerComponent implements OnInit, OnChanges {
 
   sendEmail() {
     console.log('this.emailForm', this.emailForm.dirty);
+    this.isProgress = true;
     if (this.emailForm.valid) {
       const formData = this.emailForm.value;
       const dirtyFields = {};
@@ -296,6 +301,7 @@ export class EmailComposerComponent implements OnInit, OnChanges {
     this.data.bcc.value = this.emailForm.value.bcc;
     this.data.subject.value = this.emailForm.value.subject;
     this.data.bodyContent = { defaultValue: this.emailForm.value.emailBody };
+    this.data.responseType = this.emailForm.value.responseType;
   }
 
   // saveDraft() {

@@ -9,108 +9,111 @@
         <mat-icon matTooltip="close" (click)="closeComposerWindow($event)">close</mat-icon>
       </div>
     </div>
-    <mat-dialog-content style="height: 85%; display: flex; flex-direction: column">
-      <div>
-        <mat-select
-          style="width: 20%"
-          class="psdk-full-width"
-          [value]="responseType"
-          formControlName="responseType"
-          (selectionChange)="onMenuChange($event)"
-        >
-          <mat-select-trigger style="display: flex; align-items: center; width: 100%">
-            <mat-icon>{{ responseType }}</mat-icon>
-            <span style="margin-left: 5px">{{ responseType }}</span>
-          </mat-select-trigger>
-          <mat-option *ngFor="let field of menuItems" [value]="field.id">
-            <mat-icon>{{ field.id }}</mat-icon>
-            {{ field.id }}
-          </mat-option>
-        </mat-select>
-      </div>
-      <div class="form-group">
-        <div class="button-container">
-          <app-email-selector
-            style="width: -webkit-fill-available"
-            [participants]="participants"
-            [label]="'To'"
-            formControlName="to"
-            [selectedItems]="data.to.value || []"
-            mode="'multi-select'"
-            [compose]="true"
-            [externalValidator]="externalValidator"
-          ></app-email-selector>
-          <button *ngIf="!ccVisible" mat-button color="primary" (click)="handleCC($event)">Cc</button>
-          <button *ngIf="!bccVisible" mat-button color="primary" (click)="handleBCC($event)">Bcc</button>
-        </div>
-      </div>
-
-      <app-email-selector
-        *ngIf="ccVisible"
-        [participants]="participants"
-        [label]="'Cc'"
-        formControlName="cc"
-        [selectedItems]="data.cc.value || []"
-        mode="'multi-select'"
-        [compose]="true"
-        [externalValidator]="externalValidator"
-      ></app-email-selector>
-
-      <app-email-selector
-        *ngIf="bccVisible"
-        [participants]="participants"
-        [label]="'Bcc'"
-        formControlName="bcc"
-        [selectedItems]="data.bcc.value || []"
-        mode="'multi-select'"
-        [compose]="true"
-        [externalValidator]="externalValidator"
-      ></app-email-selector>
-
-      <div class="form-group">
-        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
-          <mat-label>Subject</mat-label>
-          <input matInput type="text" formControlName="subject" [value]="data.subject.value" />
-        </mat-form-field>
-      </div>
-      <div class="form-group">
-        <mat-form-field class="psdk-full-width response-template" subscriptSizing="dynamic">
-          <mat-select formControlName="responseTemplates" multiple>
-            <mat-option *ngFor="let opt of responseTemplateOptions" [value]="opt.key">
-              {{ opt.value }}
+    <div *ngIf="!isProgress">
+      <mat-dialog-content style="height: 85%; display: flex; flex-direction: column">
+        <div>
+          <mat-select
+            style="width: 20%"
+            class="psdk-full-width"
+            [value]="responseType"
+            formControlName="responseType"
+            (selectionChange)="onMenuChange($event)"
+          >
+            <mat-select-trigger style="display: flex; align-items: center; width: 100%">
+              <mat-icon>{{ responseType }}</mat-icon>
+              <span style="margin-left: 5px">{{ responseType }}</span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let field of menuItems" [value]="field.id">
+              <mat-icon>{{ field.id }}</mat-icon>
+              {{ field.id }}
             </mat-option>
           </mat-select>
-          <mat-label>Response templates</mat-label>
-        </mat-form-field>
-      </div>
-      <div class="form-group" class="psdk-full-width" style="flex-grow: 1">
-        <app-rich-text-editor formControlName="emailBody" subscriptSizing="dynamic"></app-rich-text-editor>
-      </div>
-      <div style="margin-top: 1.5rem" *ngIf="data.attachments.length > 0" class="email-attachments">
-        <component-mapper
-          name="SummaryList"
-          class="email-attachments"
-          [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$ }"
-        ></component-mapper>
-      </div>
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end" style="padding: 0 24px">
-      <div class="psdk-full-width" style="display: flex; justify-content: space-between">
-        <div class="psdk-full-width" style="display: flex; justify-content: space-between">
-          <div>
-            <button mat-raised-button color="secondary" (click)="closeComposerWindow($event)">Cancel</button>
-          </div>
-          <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
-            <input hidden type="file" multiple #uploader (change)="handleAttachment($event)" />
-            <div matRipple><mat-icon (click)="uploader.click()">attach_file</mat-icon></div>
-            <button mat-raised-button color="secondary" (click)="saveDraft()">Save as draft</button>
-            <button mat-raised-button color="primary" type="submit">Send</button>
+        </div>
+        <div class="form-group">
+          <div class="button-container">
+            <app-email-selector
+              style="width: -webkit-fill-available"
+              [participants]="participants"
+              [label]="'To'"
+              formControlName="to"
+              [selectedItems]="data.to.value || []"
+              mode="'multi-select'"
+              [compose]="true"
+              [externalValidator]="externalValidator"
+            ></app-email-selector>
+            <button *ngIf="!ccVisible" mat-button color="primary" (click)="handleCC($event)">Cc</button>
+            <button *ngIf="!bccVisible" mat-button color="primary" (click)="handleBCC($event)">Bcc</button>
           </div>
         </div>
-      </div>
-    </mat-dialog-actions>
+
+        <app-email-selector
+          *ngIf="ccVisible"
+          [participants]="participants"
+          [label]="'Cc'"
+          formControlName="cc"
+          [selectedItems]="data.cc.value || []"
+          mode="'multi-select'"
+          [compose]="true"
+          [externalValidator]="externalValidator"
+        ></app-email-selector>
+
+        <app-email-selector
+          *ngIf="bccVisible"
+          [participants]="participants"
+          [label]="'Bcc'"
+          formControlName="bcc"
+          [selectedItems]="data.bcc.value || []"
+          mode="'multi-select'"
+          [compose]="true"
+          [externalValidator]="externalValidator"
+        ></app-email-selector>
+
+        <div class="form-group">
+          <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
+            <mat-label>Subject</mat-label>
+            <input matInput type="text" formControlName="subject" [value]="data.subject.value" />
+          </mat-form-field>
+        </div>
+        <div class="form-group">
+          <mat-form-field class="psdk-full-width response-template" subscriptSizing="dynamic">
+            <mat-select formControlName="responseTemplates" multiple>
+              <mat-option *ngFor="let opt of responseTemplateOptions" [value]="opt.key">
+                {{ opt.value }}
+              </mat-option>
+            </mat-select>
+            <mat-label>Response templates</mat-label>
+          </mat-form-field>
+        </div>
+        <div class="form-group" class="psdk-full-width" style="flex-grow: 1">
+          <app-rich-text-editor formControlName="emailBody" subscriptSizing="dynamic"></app-rich-text-editor>
+        </div>
+        <div style="margin-top: 1.5rem" *ngIf="data.attachments.length > 0" class="email-attachments">
+          <component-mapper
+            name="SummaryList"
+            class="email-attachments"
+            [props]="{ arItems$: data.attachments, menuIconOverride$: 'trash', menuIconOverrideAction$ }"
+          ></component-mapper>
+        </div>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end" style="padding: 0 24px">
+        <div class="psdk-full-width" style="display: flex; justify-content: space-between">
+          <div class="psdk-full-width" style="display: flex; justify-content: space-between">
+            <div>
+              <button mat-raised-button color="secondary" (click)="closeComposerWindow($event)">Cancel</button>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
+              <input hidden type="file" multiple #uploader (change)="handleAttachment($event)" />
+              <div matRipple><mat-icon (click)="uploader.click()">attach_file</mat-icon></div>
+              <button mat-raised-button color="secondary" (click)="saveDraft()">Save as draft</button>
+              <button mat-raised-button color="primary" type="submit">Send</button>
+            </div>
+          </div>
+        </div>
+      </mat-dialog-actions>
+    </div>
   </div>
+  <mat-spinner *ngIf="isProgress" class="progress-spinner" diameter="50"></mat-spinner>
 
   <div *ngIf="showMinimizeWindow" class="minimize-window">
     <div class="minimize-div">
