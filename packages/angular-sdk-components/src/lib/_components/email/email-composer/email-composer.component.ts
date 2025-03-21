@@ -16,11 +16,46 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailSelectorComponent } from '../email/email-selector/email-selector.component';
 import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subject, takeUntil } from 'rxjs';
+
+@Component({
+  selector: 'app-discard-unsaved-changes-dialog',
+  imports: [MatDialogModule, MatButtonModule, MatIconModule],
+  standalone: true,
+  styleUrl: './email-composer.component.scss',
+  template: `
+    <div class="dialog-header">
+      <h2 mat-dialog-title>Discard unsaved changes?</h2>
+      <mat-icon style="cursor:pointer" matTooltip="close" [mat-dialog-close]="true">close</mat-icon>
+    </div>
+    <mat-dialog-content>You have unsaved changes. You can discard them or go back to keep working.</mat-dialog-content>
+    <mat-dialog-actions align="end" style="justify-content: space-between; padding:24px">
+      <button mat-raised-button color="secondary" [mat-dialog-close]="true">Go back</button>
+      <div>
+        <button mat-raised-button color="secondary" (click)="saveDraft()" [mat-dialog-close]="true">Save & close</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="closeComposerWindow()">Discard changes</button>
+      </div>
+    </mat-dialog-actions>
+  `
+})
+class DiscardUnsavedChangesDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<DiscardUnsavedChangesDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
+
+  saveDraft() {
+    this.data.componentRef.saveDraft();
+  }
+
+  closeComposerWindow() {
+    this.data.componentRef.emailService.closeEmailComposer();
+  }
+}
 
 @Component({
   selector: 'lib-email-composer',
@@ -121,7 +156,6 @@ export class EmailComposerComponent implements OnInit, OnChanges {
       { key: 'vishal@hmail.com', value: 'vishal@hmail.com' },
       { key: 'ss@h.com', value: 'ss@h.com' }
     ]; */
-
     this.options$ = [
       { emailAddress: 'vishal@hmail.com', fullName: 'vishal@hmail.com', shortName: 'vishal' },
       { emailAddress: 'rahul@hmail.com', fullName: 'rahul@hmail.com', shortName: 'rahul' }
@@ -335,40 +369,5 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   onSubmit() {
     console.log('Email sent:', this.email);
     // Add your email sending logic here
-  }
-}
-
-@Component({
-  selector: 'app-discard-unsaved-changes-dialog',
-  imports: [MatDialogModule, MatButtonModule, MatIconModule],
-  standalone: true,
-  styleUrl: './email-composer.component.scss',
-  template: `
-    <div class="dialog-header">
-      <h2 mat-dialog-title>Discard unsaved changes?</h2>
-      <mat-icon style="cursor:pointer" matTooltip="close" [mat-dialog-close]="true">close</mat-icon>
-    </div>
-    <mat-dialog-content>You have unsaved changes. You can discard them or go back to keep working.</mat-dialog-content>
-    <mat-dialog-actions align="end" style="justify-content: space-between; padding:24px">
-      <button mat-raised-button color="secondary" [mat-dialog-close]="true">Go back</button>
-      <div>
-        <button mat-raised-button color="secondary" (click)="saveDraft()" [mat-dialog-close]="true">Save & close</button>
-        <button mat-raised-button color="primary" [mat-dialog-close]="true" (click)="closeComposerWindow()">Discard changes</button>
-      </div>
-    </mat-dialog-actions>
-  `
-})
-class DiscardUnsavedChangesDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<DiscardUnsavedChangesDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
-
-  saveDraft() {
-    this.data.componentRef.saveDraft();
-  }
-
-  closeComposerWindow() {
-    this.data.componentRef.emailService.closeEmailComposer();
   }
 }
