@@ -3,27 +3,23 @@
     <span *ngIf="unReadEmailCount" class="unread-indicator"></span>
     <!-- not used yet-->
     <div class="header-content">
-      <div class="header-text">
-        <span>{{ isForwarded ? 'FW' : 'From' }}: {{ from.fullName }}</span>
-        <span *ngIf="undelivered" class="status urgent">Undelivered</span>
-        <!-- status styling to be written -->
-        <span *ngIf="drafts" class="status pending">Draft</span>
-      </div>
-      <div class="recipient-list">
-        <span>To: {{ getRecipientList() }}</span>
+      <div>
+        <div class="header-text">
+          <span>{{ isForwarded ? 'FW' : 'From' }}: {{ from.fullName }}</span>
+          <span *ngIf="undelivered" class="status urgent">Undelivered</span>
+        </div>
+        <div class="recipient-list">
+          <span>To: {{ getRecipientList() }}</span>
+        </div>
       </div>
       <div *ngIf="!isSmallOrAbove" class="timestamp">
-        <span>{{ timeStamp | date: 'EEE' }}, {{ timeStamp | date: 'short' }}</span>
+        <!-- <span>{{ timeStamp | date: 'EEE' }}, {{ timeStamp | date: 'short' }}</span>
+        date: 'EEE, d MMM yyyy, HH:mm a' -->
+        <span>{{ timeStamp | date: 'EEE, d MMM yyyy, HH:mm a' }}</span>
         <!-- function to be written -->
       </div>
     </div>
-    <div *ngIf="isSmallOrAbove" class="timestamp">
-      <!-- <span>{{ timeStamp | date: 'EEE' }}, {{ timeStamp | date: 'short' }}</span> -->
-      <span>{{ timeStamp | date: 'EEE, d MMM yyyy, HH:mm' }}</span>
-    </div>
   </mat-expansion-panel-header>
-
-  <div *ngIf="unReadEmailCount" class="unread-count">{{ unReadEmailCount }} new emails</div>
   <div *ngFor="let email of emails" class="email">
     <component-mapper name="EmailSocial" [props]="{ email }"></component-mapper>
   </div>

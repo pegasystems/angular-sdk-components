@@ -207,7 +207,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
       CaseID: this.data.CaseID,
       Context: this.data.Context,
       TemplateID: this.TemplateID,
-      Draft: this.hasSavedDraft,
+      Draft: this.data.hasSavedDraft,
       WrapperCaseID: this.getWrapperCaseID()
     };
 
@@ -390,7 +390,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
       this.emptyRecipient
     );
 
-    if (this.composerData.attachments) {
+    if (this.composerData.attachments?.length > 0) {
       data.attachments
         .filter(attachment => filterLargeAttachment(attachment))
         .forEach((file: any) => {
@@ -408,20 +408,9 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     }
     const payloadPreExistAttachments = [];
     const attachmentsToUpload = [];
-    // this.setAttachmentsToUpload(this.composerData.attachments, attachmentsToUpload, this.preExistingAttachments, payloadPreExistAttachments);
     setAttachmentsToUpload(this.composerData.attachments, attachmentsToUpload, this.preExistingAttachments, payloadPreExistAttachments);
     const templateID = this.isDraftSaved ? data.selectedTemplateId : this.TemplateID;
 
-    // const sendEmailPayload = this.getSendEmailPayload(
-    //   data,
-    //   this.data.ActionType,
-    //   payloadPreExistAttachments,
-    //   false,
-    //   this.data.CaseID,
-    //   this.data.Context,
-    //   templateID,
-    //   this.data.GUID
-    // );
     const sendEmailPayload = getSendEmailPayload(
       data,
       this.data.ActionType,

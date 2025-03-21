@@ -69,7 +69,7 @@ mat-expansion-panel-header {
 
 .header-content {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   flex-grow: 1;
   font-weight: normal;
 }

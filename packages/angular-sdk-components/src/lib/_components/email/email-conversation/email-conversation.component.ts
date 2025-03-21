@@ -2,7 +2,6 @@
 import { Component, Input, OnInit, ViewChild, ElementRef, forwardRef, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 // import { DomSanitizer } from '@angular/platform-browser';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { CommonModule } from '@angular/common';
 import { Utils } from '../../../_helpers/utils';
@@ -52,14 +51,9 @@ export class EmailConversationComponent implements OnInit {
   @ViewChild('headerRef') headerRef: ElementRef;
   constructor(
     private utils: Utils,
-    // private sanitizer: DomSanitizer,
-    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
-    this.breakpointObserver.observe([Breakpoints.Small, Breakpoints.Handset]).subscribe(result => {
-      this.isSmallOrAbove = !result.matches;
-    });
     const { id, emails, from, to, unReadEmailCount, timeStamp, isForwarded, isCollapsed, undelivered, drafts } = this.conversation;
     this.emails = emails;
     this.from = from;
@@ -68,6 +62,7 @@ export class EmailConversationComponent implements OnInit {
     this.unReadEmailCount = unReadEmailCount;
     this.isForwarded = isForwarded;
     this.undelivered = undelivered;
+    this.timeStamp = timeStamp;
   }
 
   getRecipientList(): string {

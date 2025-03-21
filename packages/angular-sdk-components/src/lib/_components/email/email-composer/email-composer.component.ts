@@ -206,7 +206,6 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     const { data } = changes;
     if (data) {
-      console.log('Email Composer Data:changes', changes);
       const { previousValue, currentValue } = data;
       if (previousValue && previousValue !== currentValue) {
         this.emailForm.setValue({
@@ -215,8 +214,8 @@ export class EmailComposerComponent implements OnInit, OnChanges {
           bcc: this.data.bcc.value || [],
           subject: this.data.subject.value,
           emailBody: this.data.bodyContent.defaultValue,
-          responseTemplates: [],
-          responseType: this.data.responseType
+          responseType: this.data.responseType,
+          responseTemplates: []
         });
         this.initialFormData = this.emailForm.value;
         this.isProgress = this.progress;
@@ -239,60 +238,13 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   }
 
   sendEmail() {
-    console.log('this.emailForm', this.emailForm.dirty);
     this.isProgress = true;
     if (this.emailForm.valid) {
-      const formData = this.emailForm.value;
-      const dirtyFields = {};
-
-      Object.keys(this.emailForm.controls).forEach(key => {
-        if (this.emailForm.controls[key].dirty) {
-          dirtyFields[key] = this.emailForm.controls[key].value;
-        }
-      });
-      const isFormDirty = JSON.stringify(formData) !== JSON.stringify(this.initialFormData);
-
-      console.log('Form Data:', formData);
-      console.log('Dirty Fields:', dirtyFields);
-      console.log('Is Form Dirty:', isFormDirty);
-      // Implement your logic to send the email using formData
+      this.prepareEmailPayload();
+      this.onSend.emit();
     } else {
       console.log('Form is invalid');
     }
-
-    // if (this.emailForm.valid) {
-    //   const formData = this.emailForm.value;
-    //   console.log('Form Data:', formData);
-    //   // Implement your logic to send the email using formData
-    // } else {
-    //   console.log('Form is invalid');
-    // }
-    this.prepareEmailPayload();
-    this.onSend.emit();
-    // .then(response => {
-    //   console.log('Email sent successfully');
-    // });
-    // if (this.emailForm.valid) {
-    // this.isProgress = true;
-    // const payload = this.prepareEmailPayload();
-    // this.emailService.sendEmail(payload).then(
-    //   response => {
-    //     this.isProgress = false;
-    //     if (response.status === 'success') {
-    //       // this.toastr.success('Email sent successfully');
-    //       this.setIsActive(false);
-    //     } else {
-    //       //  this.toastr.error('Error sending email');
-    //     }
-    //   },
-    //   error => {
-    //     this.isProgress = false;
-    //     // this.toastr.error('Error sending email');
-    //   }
-    // );
-    // } else {
-    //   // this.toastr.error('Please fill in all required fields');
-    // }
   }
 
   prepareEmailPayload() {
@@ -303,10 +255,6 @@ export class EmailComposerComponent implements OnInit, OnChanges {
     this.data.bodyContent = { defaultValue: this.emailForm.value.emailBody };
     this.data.responseType = this.emailForm.value.responseType;
   }
-
-  // saveDraft() {
-  //   // Logic to save draft
-  // }
 
   discardChanges() {
     // Logic to discard changes

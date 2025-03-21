@@ -105,7 +105,7 @@
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px">
               <input hidden type="file" multiple #uploader (change)="handleAttachment($event)" />
               <div matRipple><mat-icon (click)="uploader.click()">attach_file</mat-icon></div>
-              <button mat-raised-button color="secondary" (click)="saveDraft()">Save as draft</button>
+              <button mat-raised-button color="secondary" type="button" (click)="saveDraft()">Save as draft</button>
               <button mat-raised-button color="primary" type="submit">Send</button>
             </div>
           </div>
