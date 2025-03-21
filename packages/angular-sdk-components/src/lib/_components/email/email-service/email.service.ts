@@ -10,6 +10,7 @@ import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { getCanPerform, isContextEmail } from '../common/EmailContainerContext';
 import { EMAIL_ACTIONS } from '../common/Constants';
 import { EmailComposerContainerComponent } from '../email-composer-container/email-composer-container.component';
+import { format } from '../../../_helpers/formatters';
 import download from 'downloadjs';
 
 @Component({
@@ -298,6 +299,7 @@ export class EmailService {
       timeStamp: email.pxCreateDateTime,
       from: getRecipient(email.pyMessageMetadata, email.pyFromChannel),
       to: getRecipientList(email.pyMessageMetadata.pyToRecipientList, email.pyFromChannel),
+      toDate: email.pyMessageMetadata.pySentDate,
       cc: getRecipientList(email.pyMessageMetadata.pyCCRecipientList, email.pyFromChannel),
       bcc: getRecipientList(email.pyMessageMetadata.pyBCCRecipientList, email.pyFromChannel),
       subject: escapeHTML(email.pyMessageMetadata.pySubject),
@@ -500,7 +502,8 @@ export class EmailService {
         Context: email.id,
         ActionType: actionType,
         CaseID: this.caseInsKey,
-        GUID: email.pyGUID
+        GUID: email.pyGUID,
+        hasSavedDraft: email.status === 'draft'
       },
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },

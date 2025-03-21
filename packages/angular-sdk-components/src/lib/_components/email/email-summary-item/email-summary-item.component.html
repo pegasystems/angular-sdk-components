@@ -13,7 +13,8 @@
       <div class="email-secondary">
         <span>To: </span>
         <span>{{ getToEmailList(toData) }}</span>
-        &bull; {{ email.timeStamp | date: 'EEE, d MMM yyyy, HH:mm a' }}
+        &bull; {{ formattedValue$ }}
+
         <mat-icon class="show-more-icon" matTooltip="Show more" [matMenuTriggerFor]="menu">arrow_drop_down</mat-icon>
       </div>
     </div>

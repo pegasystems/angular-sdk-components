@@ -112,6 +112,7 @@ app-rich-text-editor {
   .rich-text-editor {
     .tox-tinymce {
       height: 100% !important;
+      min-height: 150px !important;
     }
   }
 }

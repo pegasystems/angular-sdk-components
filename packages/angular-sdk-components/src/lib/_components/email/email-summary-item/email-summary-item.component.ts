@@ -5,7 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailService } from '../email-service/email.service';
 import { Utils } from '../../../_helpers/utils';
-
+import { format } from '../../../_helpers/formatters';
 const SENTIMENT_ICONS = {
   negative: 'sentiment_dissatisfied',
   positive: 'sentiment_satisfied',
@@ -32,7 +32,7 @@ export class EmailSummaryItemComponent implements OnInit {
   fromData: any;
   sentiment: any;
   userInitial: string;
-
+  formattedValue$: string;
   constructor(private utils: Utils) {}
 
   ngOnInit(): void {
@@ -40,6 +40,10 @@ export class EmailSummaryItemComponent implements OnInit {
     this.fromData = this.email.from;
     this.sentiment = this.email.sentiment;
     this.userInitial = this.utils.getInitials(this.fromData.fullName ?? '');
+    this.formattedValue$ = format(this.email.timeStamp, 'datetime', {
+      // format: `${this.theDateFormat.dateFormatString} hh:mm A`
+      format: 'ddd, DD MMM YYYY, hh:mm A'
+    });
   }
 
   getToEmailList(toList: any[]): string {
