@@ -44,7 +44,6 @@ export class PercentageComponent implements OnInit, OnDestroy {
   displayMode$?: string = '';
   controlName$: string;
   bHasForm$ = true;
-  componentReference = '';
   testId: string;
   helperText: string;
   placeholder: string;
@@ -166,8 +165,6 @@ export class PercentageComponent implements OnInit, OnDestroy {
     }
 
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {

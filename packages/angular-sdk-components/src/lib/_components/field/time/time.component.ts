@@ -40,7 +40,6 @@ export class TimeComponent implements OnInit, OnDestroy {
   controlName$: string;
   testId = '';
   bHasForm$ = true;
-  componentReference = '';
   helperText: string;
   placeholder: string;
 
@@ -151,8 +150,6 @@ export class TimeComponent implements OnInit, OnDestroy {
     if (this.configProps$.readOnly != null) {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {

@@ -4,15 +4,17 @@ import { FieldBase } from './field.base';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
-interface TextInputProps extends PConnFieldProps {
+interface TextAreaProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on TextArea here
   fieldMetadata?: any;
 }
 
 @Directive()
-export class TextInputBase extends FieldBase {
-  configProps$: TextInputProps;
-
+export class TextAreaBase extends FieldBase {
+  configProps$: TextAreaProps;
   override fieldControl = new FormControl('', null);
+
+  nMaxLength$: number;
 
   /**
    * Updates the component's properties based on the configuration.
@@ -21,18 +23,18 @@ export class TextInputBase extends FieldBase {
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;
 
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextInputProps;
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextAreaProps;
 
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
     }
 
+    this.nMaxLength$ = this.pConn$.getFieldMetadata(this.pConn$.getRawConfigProps()?.value)?.maxLength || 100;
     this.testId = this.configProps$.testId;
-    this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
+    this.label$ = this.configProps$.label;
     this.helperText = this.configProps$.helperText;
-    this.placeholder = this.configProps$.placeholder || '';
-    this.bVisible$ = this.configProps$.visibility ? this.utils.getBooleanValue(this.configProps$.visibility) : true;
+    this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
     this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);

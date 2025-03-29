@@ -52,7 +52,6 @@ export class DecimalComponent implements OnInit, OnDestroy {
   displayMode$?: string = '';
   controlName$: string;
   bHasForm$ = true;
-  componentReference = '';
   testId: string;
   helperText: string;
   placeholder: string;
@@ -186,8 +185,6 @@ export class DecimalComponent implements OnInit, OnDestroy {
       this.currencySymbol = theSymbols.theCurrencySymbol;
     }
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
-
-    this.componentReference = this.pConn$.getStateProps().value;
   }
 
   fieldOnBlur(event: any) {

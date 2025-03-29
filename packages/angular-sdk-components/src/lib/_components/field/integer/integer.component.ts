@@ -38,7 +38,6 @@ export class IntegerComponent implements OnInit, OnDestroy {
   displayMode$?: string = '';
   controlName$: string;
   bHasForm$ = true;
-  componentReference = '';
   testId: string;
   helperText: string;
   placeholder: string;
@@ -147,8 +146,6 @@ export class IntegerComponent implements OnInit, OnDestroy {
     if (this.configProps$.readOnly != null) {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {

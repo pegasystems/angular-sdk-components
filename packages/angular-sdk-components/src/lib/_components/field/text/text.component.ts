@@ -34,7 +34,6 @@ export class TextComponent implements OnInit, OnDestroy {
   bVisible$ = true;
   displayMode$?: string = '';
   controlName$: string;
-  componentReference = '';
   formattedValue$: string;
   format$ = 'text';
   formattedUrl$ = '';

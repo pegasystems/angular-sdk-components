@@ -38,7 +38,6 @@ export class PhoneComponent implements OnInit, OnDestroy {
   displayMode$?: string = '';
   controlName$: string;
   bHasForm$ = true;
-  componentReference = '';
   testId: string;
   separateDialCode = false;
   afterBlur: boolean;

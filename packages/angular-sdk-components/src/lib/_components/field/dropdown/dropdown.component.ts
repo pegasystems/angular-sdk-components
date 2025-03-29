@@ -89,7 +89,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
   controlName$: string;
   bHasForm$ = true;
   options$: IOption[];
-  componentReference = '';
   testId = '';
   helperText: string;
   hideLabel: any;
@@ -205,8 +204,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     if (this.configProps$.readOnly != null) {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     if (this.value$ === '' && !this.bReadonly$) {
       this.value$ = 'Select';

@@ -8,8 +8,6 @@ export interface PConnFieldProps {
   value?: string;
   validatemessage: string;
   status?: string;
-  onChange: any;
-  onBlur?: any;
   readOnly: boolean;
   testId: string;
   helperText: string;
@@ -17,4 +15,6 @@ export interface PConnFieldProps {
   hideLabel: boolean;
   placeholder?: string;
   visibility?: boolean;
+  onChange: any;
+  onBlur?: any;
 }

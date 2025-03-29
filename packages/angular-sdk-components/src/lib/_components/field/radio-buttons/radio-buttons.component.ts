@@ -49,7 +49,6 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
   controlName$: string;
   bHasForm$ = true;
   options$: IOption[];
-  componentReference = '';
   testId: string;
   helperText: string;
   placeholder: string;
@@ -166,8 +165,6 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
     if (this.configProps$.readOnly != null) {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
 

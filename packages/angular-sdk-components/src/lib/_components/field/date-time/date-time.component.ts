@@ -51,7 +51,6 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   displayMode$?: string = '';
   controlName$: string;
   bHasForm$ = true;
-  componentReference = '';
   testId = '';
   helperText: string;
 
@@ -165,8 +164,6 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     if (this.configProps$.readOnly != null) {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;

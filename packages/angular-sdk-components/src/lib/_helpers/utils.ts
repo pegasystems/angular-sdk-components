@@ -161,18 +161,20 @@ export class Utils {
     return serverUrl.concat('assets/icons/');
   }
 
+  /**
+   * Converts a given value to a boolean.
+   *
+   * If the input is a string, it will be considered true if it's 'true' (case-insensitive).
+   * For other types, the value will be converted to a boolean using the standard JavaScript rules.
+   *
+   * @param inValue The value to convert to a boolean.
+   * @returns The boolean representation of the input value.
+   */
   getBooleanValue(inValue: any): boolean {
-    let bReturn = false;
-
     if (typeof inValue === 'string') {
-      if (inValue.toLowerCase() == 'true') {
-        bReturn = true;
-      }
-    } else {
-      bReturn = inValue;
+      return inValue.toLowerCase() === 'true';
     }
-
-    return bReturn;
+    return !!inValue;
   }
 
   generateDate(dateVal, dateFormat) {
