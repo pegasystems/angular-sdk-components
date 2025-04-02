@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ComponentMapperComponent } from '@pega/angular-sdk-components';
 
-import { TextInputBase } from '../../base/field/text-input.base';
+import { TextInputBase } from '@pega/angular-sdk-components';
 
 @Component({
   selector: 'app-text-input',

@@ -26,7 +26,6 @@ export * from './lib/_components/field/semantic-link/semantic-link.component';
 export * from './lib/_components/field/text/text.component';
 export * from './lib/_components/field/text-area/text-area.component';
 export * from './lib/_components/field/text-content/text-content.component';
-export * from './lib/_components/field/text-input/text-input.component';
 export * from './lib/_components/field/time/time.component';
 export * from './lib/_components/field/url/url.component';
 export * from './lib/_components/field/user-reference/user-reference.component';
@@ -148,6 +147,9 @@ export * from './lib/_helpers/instructions-utils';
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/update-worklist.service';
+
+export * from './lib/_components/base/field/field.base';
+export * from './lib/_components/base/field/text-input.base';
 
 export * from './lib/_types/PConnProps.interface';
 

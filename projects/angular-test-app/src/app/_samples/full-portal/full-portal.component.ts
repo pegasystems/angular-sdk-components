@@ -9,7 +9,7 @@ import { compareSdkPCoreVersions } from 'packages/angular-sdk-components/src/lib
 import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
+import localSdkComponentMap from '../../../sdk-local-component-map';
 
 declare global {
   interface Window {

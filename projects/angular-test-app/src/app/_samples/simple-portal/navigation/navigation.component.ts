@@ -15,7 +15,7 @@ import { MainContentComponent } from '../main-content/main-content.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 
 import { getSdkComponentMap } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../../../../packages/angular-sdk-components/src/sdk-local-component-map';
+import localSdkComponentMap from '../../../../sdk-local-component-map';
 
 declare global {
   interface Window {
@@ -111,7 +111,6 @@ export class NavigationComponent implements OnInit, OnDestroy {
     });
   }
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   assignmentFinished() {
     setTimeout(() => {
       // update the worklist

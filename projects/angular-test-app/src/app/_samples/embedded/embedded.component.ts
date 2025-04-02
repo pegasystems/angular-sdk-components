@@ -14,7 +14,7 @@ import { HeaderComponent } from './header/header.component';
 import { MainScreenComponent } from './main-screen/main-screen.component';
 
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
+import localSdkComponentMap from '../../../sdk-local-component-map';
 import { initializeAuthentication } from './utils';
 
 declare global {
