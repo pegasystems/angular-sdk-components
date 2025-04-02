@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';

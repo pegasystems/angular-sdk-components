@@ -80,6 +80,7 @@ export class AutoCompleteBase extends FieldBase implements OnInit {
   filteredOptions: Observable<any[]>;
   filterValue = '';
 
+  // Override ngOnInit method
   override ngOnInit(): void {
     super.ngOnInit();
 
@@ -89,36 +90,33 @@ export class AutoCompleteBase extends FieldBase implements OnInit {
     );
   }
 
-  // updateSelf
+  /**
+   * Updates the component's properties based on the configuration.
+   */
   override async updateSelf(): Promise<void> {
+    // Resolve configuration properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AutoCompleteProps;
 
-    if (this.configProps$.value != undefined) {
-      const index = this.options$?.findIndex(element => element.key === this.configProps$.value);
-      this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
+    // Update component common properties
+    this.updateComponentCommonProperties(this.configProps$);
+
+    // Set component specific properties
+    const { value, listType, parameters, hideLabel } = this.configProps$;
+
+    if (value != undefined) {
+      const index = this.options$?.findIndex(element => element.key === value);
+      this.value$ = index > -1 ? this.options$[index].value : value;
     }
 
-    this.setPropertyValuesFromProps();
-
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
+    this.listType = listType;
+    this.hideLabel = hideLabel;
+    this.parameters = parameters;
 
     const context = this.pConn$.getContextName();
     const { columns, datasource } = this.generateColumnsAndDataSource();
 
     if (columns) {
       this.columns = preProcessColumns(columns);
-    }
-
-    this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-    this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
     }
 
     if (this.listType === 'associated') {
@@ -129,23 +127,6 @@ export class AutoCompleteBase extends FieldBase implements OnInit {
       const results = await this.dataPageService.getDataPageData(datasource, this.parameters, context);
       this.options$ = getOptions(results, this.columns);
     }
-
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      this.fieldControl.setErrors({ message: true });
-      this.fieldControl.markAsTouched();
-    }
-  }
-
-  private setPropertyValuesFromProps() {
-    this.testId = this.configProps$.testId;
-    this.label$ = this.configProps$.label;
-    this.placeholder = this.configProps$.placeholder || '';
-    this.displayMode$ = this.configProps$.displayMode;
-    this.listType = this.configProps$.listType;
-    this.hideLabel = this.configProps$.hideLabel;
-    this.helperText = this.configProps$.helperText;
-    this.parameters = this.configProps$?.parameters;
   }
 
   private _filter(value: string): string[] {
@@ -184,30 +165,46 @@ export class AutoCompleteBase extends FieldBase implements OnInit {
     return { columns, datasource };
   }
 
-  fieldOnChange(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
+  /**
+   * Handles the change event of a field.
+   *
+   * @param event The event triggered by the field change.
+   */
+  override fieldOnChange(event?: Event) {
+    const target = event?.target as HTMLInputElement;
+    const value = target?.value;
+
     this.filterValue = value;
     handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
+  /**
+   * Handles the change event of an option.
+   *
+   * @param event The event triggered by the option change.
+   */
   optionChanged(event: any) {
     const value = event?.option?.value;
     handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
-  fieldOnBlur(event: Event) {
-    let key = '';
-    const el = event?.target as HTMLInputElement;
-    if (el?.value) {
-      const index = this.options$?.findIndex(element => element.value === el.value);
-      key = index > -1 ? (key = this.options$[index].key) : el.value;
-    }
-    const value = key;
+  /**
+   * Handles the blur event on the field.
+   *
+   * @param {Event} event - The blur event.
+   */
+  override fieldOnBlur(event: Event) {
+    const target = event?.target as HTMLInputElement;
 
+    // finds the option object that matches the target element's value.
+    const option = this.options$?.find(o => o.value === target.value);
+    const value = option?.key || target.value || '';
+
+    // handles the change and blur event.
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
 
+    // if a record change callback is provided, updates the target element's value and calls the callback.
     if (this.configProps$?.onRecordChange) {
-      el.value = value;
       this.configProps$.onRecordChange(event);
     }
   }

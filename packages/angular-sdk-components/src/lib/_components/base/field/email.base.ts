@@ -3,13 +3,13 @@ import { FormControl } from '@angular/forms';
 import { FieldBase } from './field.base';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
-interface TextInputProps extends PConnFieldProps {
-  fieldMetadata?: any;
+interface EmailProps extends PConnFieldProps {
+  // If any, enter additional props that only exist on Email here
 }
 
 @Directive()
-export class TextInputBase extends FieldBase {
-  configProps$: TextInputProps;
+export abstract class EmailBase extends FieldBase {
+  configProps$: EmailProps;
 
   override fieldControl = new FormControl('', null);
 
@@ -18,7 +18,7 @@ export class TextInputBase extends FieldBase {
    */
   override updateSelf(): void {
     // Resolve configuration properties
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextInputProps;
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as EmailProps;
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);

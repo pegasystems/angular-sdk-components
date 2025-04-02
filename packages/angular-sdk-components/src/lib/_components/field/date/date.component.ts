@@ -49,27 +49,15 @@ class MyFormat {
   providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateComponent extends DateBase {
+  /**
+   * Handles the date change event from the date popup.
+   *
+   * @param event The date change event.
+   */
   fieldOnDateChange(event: any) {
-    // this comes from the date pop up
+    // Extract the date value from the event target
     const value = event?.target?.value.format('YYYY-MM-DD');
+    // Trigger a change and blur event with the updated value
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
-    this.pConn$.clearErrorMessages({
-      property: this.propName
-    });
-  }
-
-  override getErrorMessage() {
-    let errMessage = '';
-    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
-    if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage ?? '';
-      return errMessage;
-    }
-    if (this.fieldControl.hasError('required')) {
-      errMessage = 'You must enter a value';
-    } else if (this.fieldControl.errors) {
-      errMessage = `${this.fieldControl.errors['matDatepickerParse'].text} is not a valid date value`;
-    }
-    return errMessage;
   }
 }

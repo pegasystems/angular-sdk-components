@@ -19,43 +19,25 @@ export class DateBase extends FieldBase {
   theDateFormat = getDateFormatInfo();
   formattedValue$: any;
 
-  // updateSelf
+  /**
+   * Updates the component's properties based on the configuration.
+   */
   override updateSelf(): void {
-    // starting very simple...
-    // moved this from ngOnInit() and call this from there instead...
+    // Resolve config properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DateProps;
 
-    this.value$ = this.configProps$.value;
-    this.testId = this.configProps$.testId;
-    this.label$ = this.configProps$.label;
-    this.displayMode$ = this.configProps$.displayMode;
-    this.helperText = this.configProps$.helperText;
-    this.placeholder = this.configProps$.placeholder || '';
+    // Update component common properties
+    this.updateComponentCommonProperties(this.configProps$);
 
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
+    // Extract and normalize the value property
+    const { value } = this.configProps$;
+    this.value$ = value;
 
-    this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-    this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-
-    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+    // Format value for display modes
+    if (['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(this.displayMode$)) {
       this.formattedValue$ = format(this.value$, 'date', {
         format: this.theDateFormat.dateFormatString
       });
-    }
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
-    }
-
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      this.fieldControl.setErrors({ message: true });
-      this.fieldControl.markAsTouched();
     }
   }
 }
