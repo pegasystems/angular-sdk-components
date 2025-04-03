@@ -5,8 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 
-import { DecimalBase } from '../../base/field/decimal.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ComponentMapperComponent, DecimalBase } from '@pega/angular-sdk-components';
 
 @Component({
   selector: 'app-decimal',

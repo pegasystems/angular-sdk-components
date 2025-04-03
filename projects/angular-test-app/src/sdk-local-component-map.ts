@@ -1,6 +1,18 @@
 // Statically load all "local" components that aren't yet in the npm package
 
-import { TextInputComponent } from '@pega/angular-sdk-material-samples';
+import {
+  AutoCompleteComponent,
+  CheckBoxComponent,
+  CurrencyComponent,
+  DateComponent,
+  DateTimeComponent,
+  DecimalComponent,
+  EmailComponent,
+  IntegerComponent,
+  PercentageComponent,
+  TextAreaComponent,
+  TextInputComponent
+} from '@pega/angular-sdk-material-samples';
 
 /* import end - DO NOT REMOVE */
 
@@ -9,7 +21,18 @@ import { TextInputComponent } from '@pega/angular-sdk-material-samples';
 
 const localSdkComponentMap = {
   /* map end - DO NOT REMOVE */
-  TextInput: TextInputComponent
+
+  AutoComplete: AutoCompleteComponent,
+  Checkbox: CheckBoxComponent,
+  Currency: CurrencyComponent,
+  Date: DateComponent,
+  DateTime: DateTimeComponent,
+  Decimal: DecimalComponent,
+  Email: EmailComponent,
+  Integer: IntegerComponent,
+  Percentage: PercentageComponent,
+  TextInput: TextInputComponent,
+  TextArea: TextAreaComponent
 };
 
 export default localSdkComponentMap;

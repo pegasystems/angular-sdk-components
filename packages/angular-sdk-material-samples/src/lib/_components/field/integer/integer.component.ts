@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { TextAreaBase } from '../../base/field/text-area.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+import { ComponentMapperComponent, IntegerBase } from '@pega/angular-sdk-components';
 
 @Component({
-  selector: 'app-text-area',
-  templateUrl: './text-area.component.html',
-  styleUrls: ['./text-area.component.scss'],
+  selector: 'app-integer',
+  templateUrl: './integer.component.html',
+  styleUrls: ['./integer.component.scss'],
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class TextAreaComponent extends TextAreaBase {}
+export class IntegerComponent extends IntegerBase {}

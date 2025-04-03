@@ -5,8 +5,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 
-import { CheckBoxBase } from '../../base/field/check-box.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { CheckBoxBase, ComponentMapperComponent } from '@pega/angular-sdk-components';
 
 @Component({
   selector: 'app-check-box',

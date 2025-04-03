@@ -7,10 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 
-import { DateBase } from '../../base/field/date.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { getDateFormatInfo } from '../../../_helpers/date-format-utils';
-import { handleEvent } from '../../../_helpers/event-util';
+import { ComponentMapperComponent, DateBase, getDateFormatInfo, handleEvent } from '@pega/angular-sdk-components';
 
 class MyFormat {
   theDateFormat = getDateFormatInfo();

@@ -5,8 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 
-import { CurrencyBase } from '../../base/field/currency.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { ComponentMapperComponent, CurrencyBase } from '@pega/angular-sdk-components';
 
 @Component({
   selector: 'app-currency',

@@ -6,9 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 
-import { DateTimeBase } from '../../base/field/date-time.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { handleEvent } from '../../../_helpers/event-util';
+import { ComponentMapperComponent, DateTimeBase, handleEvent } from '@pega/angular-sdk-components';
 
 @Component({
   selector: 'app-date-time',

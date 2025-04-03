@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { IntegerBase } from '../../base/field/integer.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+
+import { ComponentMapperComponent, EmailBase } from '@pega/angular-sdk-components';
 
 @Component({
-  selector: 'app-integer',
-  templateUrl: './integer.component.html',
-  styleUrls: ['./integer.component.scss'],
+  selector: 'app-email',
+  templateUrl: './email.component.html',
+  styleUrls: ['./email.component.scss'],
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class IntegerComponent extends IntegerBase {}
+export class EmailComponent extends EmailBase {}

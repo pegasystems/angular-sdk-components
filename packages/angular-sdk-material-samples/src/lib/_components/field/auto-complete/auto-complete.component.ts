@@ -6,8 +6,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
-import { AutoCompleteBase } from '../../base/field/auto-complete.base';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { AutoCompleteBase, ComponentMapperComponent } from '@pega/angular-sdk-components';
 
 @Component({
   selector: 'app-auto-complete',

@@ -18,23 +18,13 @@ import { ViewComponent } from '../../_components/infra/view/view.component';
 import { ViewContainerComponent } from '../../_components/infra/Containers/view-container/view-container.component';
 
 // Field components
-import { AutoCompleteComponent } from '../../_components/field/auto-complete/auto-complete.component';
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
-import { CheckBoxComponent } from '../../_components/field/check-box/check-box.component';
-import { CurrencyComponent } from '../../_components/field/currency/currency.component';
-import { DateComponent } from '../../_components/field/date/date.component';
-import { DateTimeComponent } from '../../_components/field/date-time/date-time.component';
-import { DecimalComponent } from '../../_components/field/decimal/decimal.component';
 import { DropdownComponent } from '../../_components/field/dropdown/dropdown.component';
-import { EmailComponent } from '../../_components/field/email/email.component';
 import { GroupComponent } from '../../_components/field/group/group.component';
-import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
-import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
 import { SemanticLinkComponent } from '../../_components/field/semantic-link/semantic-link.component';
-import { TextAreaComponent } from '../../_components/field/text-area/text-area.component';
 import { TextComponent } from '../../_components/field/text/text.component';
 import { TextContentComponent } from '../../_components/field/text-content/text-content.component';
 import { TimeComponent } from '../../_components/field/time/time.component';
@@ -134,7 +124,6 @@ const pegaSdkComponentMap = {
   Assignment: AssignmentComponent,
   AssignmentCard: AssignmentCardComponent,
   Attachment: AttachmentComponent,
-  AutoComplete: AutoCompleteComponent,
   Banner: BannerComponent,
   BannerPage: BannerPageComponent,
   CancelAlert: CancelAlertComponent,
@@ -144,14 +133,9 @@ const pegaSdkComponentMap = {
   CaseSummaryFields: MaterialCaseSummaryComponent,
   CaseView: CaseViewComponent,
   //   'CaseViewActionsMenu': CaseViewActionsMenu,
-  Checkbox: CheckBoxComponent,
   Confirmation: ConfirmationComponent,
-  Currency: CurrencyComponent,
   DashboardFilter: DashboardFilterComponent,
   DataReference: DataReferenceComponent,
-  Date: DateComponent,
-  DateTime: DateTimeComponent,
-  Decimal: DecimalComponent,
   DefaultForm: DefaultFormComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
@@ -162,7 +146,6 @@ const pegaSdkComponentMap = {
   DetailsTwoColumn: DetailsTwoColumnComponent,
   Dropdown: DropdownComponent,
   DynamicTabs: DynamicTabsComponent,
-  Email: EmailComponent,
   ErrorBoundary: ErrorBoundaryComponent,
   FeedContainer: FeedContainerComponent,
   FieldGroup: FieldGroupComponent,
@@ -175,7 +158,6 @@ const pegaSdkComponentMap = {
   //   'Followers': Followers,
   InlineDashboard: InlineDashboardComponent,
   InlineDashboardPage: InlineDashboardPageComponent,
-  Integer: IntegerComponent,
   //   'LeftAlignVerticalTabs': LeftAlignVerticalTabs,
   ListPage: ListPageComponent,
   ListUtility: ListUtilityComponent,
@@ -197,7 +179,6 @@ const pegaSdkComponentMap = {
   OneColumnTab: OneColumnTabComponent,
   Operator: OperatorComponent,
   Page: PageComponent,
-  Percentage: PercentageComponent,
   Phone: PhoneComponent,
   PromotedFilters: PromotedFiltersComponent,
   Pulse: PulseComponent,
@@ -219,7 +200,6 @@ const pegaSdkComponentMap = {
   SummaryItem: MaterialSummaryItemComponent,
   SummaryList: MaterialSummaryListComponent,
   Text: TextComponent,
-  TextArea: TextAreaComponent,
   TextContent: TextContentComponent,
   ThreeColumn: ThreeColumnComponent,
   ThreeColumnPage: ThreeColumnPageComponent,
