@@ -7,11 +7,16 @@ import {
   DateComponent,
   DateTimeComponent,
   DecimalComponent,
+  DropdownComponent,
   EmailComponent,
   IntegerComponent,
   PercentageComponent,
+  PhoneComponent,
   TextAreaComponent,
-  TextInputComponent
+  TextInputComponent,
+  TimeComponent,
+  UrlComponent,
+  UserReferenceComponent
 } from '@pega/angular-sdk-material-samples';
 
 /* import end - DO NOT REMOVE */
@@ -28,11 +33,16 @@ const localSdkComponentMap = {
   Date: DateComponent,
   DateTime: DateTimeComponent,
   Decimal: DecimalComponent,
+  Dropdown: DropdownComponent,
   Email: EmailComponent,
   Integer: IntegerComponent,
   Percentage: PercentageComponent,
+  Phone: PhoneComponent,
   TextInput: TextInputComponent,
-  TextArea: TextAreaComponent
+  TextArea: TextAreaComponent,
+  Time: TimeComponent,
+  URL: UrlComponent,
+  UserReference: UserReferenceComponent
 };
 
 export default localSdkComponentMap;

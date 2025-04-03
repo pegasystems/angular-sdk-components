@@ -19,17 +19,12 @@ import { ViewContainerComponent } from '../../_components/infra/Containers/view-
 
 // Field components
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
-import { DropdownComponent } from '../../_components/field/dropdown/dropdown.component';
 import { GroupComponent } from '../../_components/field/group/group.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
-import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
 import { SemanticLinkComponent } from '../../_components/field/semantic-link/semantic-link.component';
 import { TextComponent } from '../../_components/field/text/text.component';
 import { TextContentComponent } from '../../_components/field/text-content/text-content.component';
-import { TimeComponent } from '../../_components/field/time/time.component';
-import { UrlComponent } from '../../_components/field/url/url.component';
-import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';
 import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 
@@ -144,7 +139,6 @@ const pegaSdkComponentMap = {
   DetailsSubTabs: DetailsSubTabsComponent,
   DetailsThreeColumn: DetailsThreeColumnComponent,
   DetailsTwoColumn: DetailsTwoColumnComponent,
-  Dropdown: DropdownComponent,
   DynamicTabs: DynamicTabsComponent,
   ErrorBoundary: ErrorBoundaryComponent,
   FeedContainer: FeedContainerComponent,
@@ -179,7 +173,6 @@ const pegaSdkComponentMap = {
   OneColumnTab: OneColumnTabComponent,
   Operator: OperatorComponent,
   Page: PageComponent,
-  Phone: PhoneComponent,
   PromotedFilters: PromotedFiltersComponent,
   Pulse: PulseComponent,
   QuickCreate: QuickCreateComponent,
@@ -203,13 +196,10 @@ const pegaSdkComponentMap = {
   TextContent: TextContentComponent,
   ThreeColumn: ThreeColumnComponent,
   ThreeColumnPage: ThreeColumnPageComponent,
-  Time: TimeComponent,
   Todo: TodoComponent,
   TwoColumn: TwoColumnComponent,
   TwoColumnPage: TwoColumnPageComponent,
   TwoColumnTab: TwoColumnTabComponent,
-  URL: UrlComponent,
-  UserReference: UserReferenceComponent,
   VerticalTabs: MaterialVerticalTabsComponent,
   View: ViewComponent,
   ViewContainer: ViewContainerComponent,

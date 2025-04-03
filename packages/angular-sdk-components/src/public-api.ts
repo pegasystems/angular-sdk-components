@@ -9,17 +9,11 @@ export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
 
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
-export * from './lib/_components/field/dropdown/dropdown.component';
-export * from './lib/_components/field/phone/phone.component';
 export * from './lib/_components/field/radio-buttons/radio-buttons.component';
 export * from './lib/_components/field/rich-text/rich-text.component';
 export * from './lib/_components/field/semantic-link/semantic-link.component';
 export * from './lib/_components/field/text/text.component';
 export * from './lib/_components/field/text-content/text-content.component';
-export * from './lib/_components/field/time/time.component';
-export * from './lib/_components/field/url/url.component';
-export * from './lib/_components/field/user-reference/user-reference.component';
-
 export * from './lib/_components/infra/action-buttons/action-buttons.component';
 export * from './lib/_components/infra/assignment/assignment.component';
 export * from './lib/_components/infra/assignment-card/assignment-card.component';
@@ -145,11 +139,16 @@ export * from './lib/_components/base/field/currency.base';
 export * from './lib/_components/base/field/date-time.base';
 export * from './lib/_components/base/field/date.base';
 export * from './lib/_components/base/field/decimal.base';
+export * from './lib/_components/base/field/dropdown.base';
 export * from './lib/_components/base/field/email.base';
 export * from './lib/_components/base/field/integer.base';
 export * from './lib/_components/base/field/percentage.base';
+export * from './lib/_components/base/field/phone.base';
 export * from './lib/_components/base/field/text-area.base';
 export * from './lib/_components/base/field/text-input.base';
+export * from './lib/_components/base/field/time.base';
+export * from './lib/_components/base/field/url.base';
+export * from './lib/_components/base/field/user-reference.base';
 
 export * from './lib/_types/PConnProps.interface';
 
