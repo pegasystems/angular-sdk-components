@@ -2,9 +2,9 @@ import { Directive, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
 
-import { FieldBase } from './field.base';
-import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { handleEvent } from '../../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 /**
  * Flattens an object of parameters into a single-level object.

@@ -133,22 +133,26 @@ export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/update-worklist.service';
 
 export * from './lib/_components/base/field/field.base';
-export * from './lib/_components/base/field/auto-complete.base';
-export * from './lib/_components/base/field/check-box.base';
-export * from './lib/_components/base/field/currency.base';
-export * from './lib/_components/base/field/date-time.base';
-export * from './lib/_components/base/field/date.base';
-export * from './lib/_components/base/field/decimal.base';
-export * from './lib/_components/base/field/dropdown.base';
-export * from './lib/_components/base/field/email.base';
-export * from './lib/_components/base/field/integer.base';
-export * from './lib/_components/base/field/percentage.base';
-export * from './lib/_components/base/field/phone.base';
-export * from './lib/_components/base/field/text-area.base';
-export * from './lib/_components/base/field/text-input.base';
-export * from './lib/_components/base/field/time.base';
-export * from './lib/_components/base/field/url.base';
-export * from './lib/_components/base/field/user-reference.base';
+export * from './lib/_components/base/field/auto-complete/auto-complete.base';
+export * from './lib/_components/base/field/check-box/check-box.base';
+export * from './lib/_components/base/field/currency/currency.base';
+export * from './lib/_components/base/field/date-time/date-time.base';
+export * from './lib/_components/base/field/date/date.base';
+export * from './lib/_components/base/field/decimal/decimal.base';
+export * from './lib/_components/base/field/dropdown/dropdown.base';
+export * from './lib/_components/base/field/email/email.base';
+export * from './lib/_components/base/field/integer/integer.base';
+export * from './lib/_components/base/field/multiselect/multiselect.base';
+export * from './lib/_components/base/field/percentage/percentage.base';
+export * from './lib/_components/base/field/phone/phone.base';
+export * from './lib/_components/base/field/text-area/text-area.base';
+export * from './lib/_components/base/field/text-input/text-input.base';
+export * from './lib/_components/base/field/time/time.base';
+export * from './lib/_components/base/field/url/url.base';
+export * from './lib/_components/base/field/user-reference/user-reference.base';
+
+// utils specific to the field components
+export * from './lib/_components/base/field/multiselect/utils';
 
 export * from './lib/_types/PConnProps.interface';
 

@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FieldBase } from './field.base';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 interface IntegerProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Integer here

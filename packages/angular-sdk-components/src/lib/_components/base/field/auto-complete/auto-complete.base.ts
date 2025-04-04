@@ -1,10 +1,10 @@
 import { Directive, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
-import { FieldBase } from './field.base';
-import { DatapageService } from '../../../_services/datapage.service';
-import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { DatapageService } from '../../../../_services/datapage.service';
+import { handleEvent } from '../../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 interface AutoCompleteProps extends PConnFieldProps {
   // If any, enter additional props that only exist on AutoComplete here

@@ -1,9 +1,9 @@
 import { Directive, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FieldBase } from './field.base';
-import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
-import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../../_helpers/instructions-utils';
+import { handleEvent } from '../../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on Checkbox here

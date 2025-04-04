@@ -1,9 +1,9 @@
 import { Directive } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { FieldBase } from './field.base';
-import { format } from '../../../_helpers/formatters';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { format } from '../../../../_helpers/formatters';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 interface TimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Time here

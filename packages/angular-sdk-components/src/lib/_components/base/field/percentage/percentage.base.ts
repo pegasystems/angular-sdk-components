@@ -1,10 +1,10 @@
 import { Directive } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FieldBase } from './field.base';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
-import { format } from '../../../_helpers/formatters';
-import { handleEvent } from '../../../_helpers/event-util';
+import { FieldBase } from '../field.base';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
+import { getCurrencyCharacters } from '../../../../_helpers/currency-utils';
+import { format } from '../../../../_helpers/formatters';
+import { handleEvent } from '../../../../_helpers/event-util';
 
 interface PercentageProps extends Omit<PConnFieldProps, 'value'> {
   value: number;

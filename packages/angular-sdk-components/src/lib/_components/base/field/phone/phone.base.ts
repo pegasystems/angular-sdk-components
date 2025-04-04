@@ -1,8 +1,8 @@
 import { Directive } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { FieldBase } from './field.base';
-import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { handleEvent } from '../../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 interface PhoneProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Phone here

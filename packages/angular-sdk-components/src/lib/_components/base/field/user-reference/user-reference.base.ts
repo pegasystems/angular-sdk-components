@@ -1,9 +1,9 @@
 import { Directive, OnInit, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { map, Observable, startWith } from 'rxjs';
-import { FieldBase } from './field.base';
-import { handleEvent } from '../../../_helpers/event-util';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
+import { handleEvent } from '../../../../_helpers/event-util';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
