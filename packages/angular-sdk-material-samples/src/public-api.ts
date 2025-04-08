@@ -12,6 +12,7 @@ export * from './lib/_components/field/date-time/date-time.component';
 export * from './lib/_components/field/decimal/decimal.component';
 export * from './lib/_components/field/dropdown/dropdown.component';
 export * from './lib/_components/field/email/email.component';
+export * from './lib/_components/field/group/group.component';
 export * from './lib/_components/field/integer/integer.component';
 export * from './lib/_components/field/multiselect/multiselect.component';
 export * from './lib/_components/field/percentage/percentage.component';

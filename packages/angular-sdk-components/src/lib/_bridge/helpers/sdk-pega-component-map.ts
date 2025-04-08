@@ -19,7 +19,6 @@ import { ViewContainerComponent } from '../../_components/infra/Containers/view-
 
 // Field components
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
-import { GroupComponent } from '../../_components/field/group/group.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
 import { SemanticLinkComponent } from '../../_components/field/semantic-link/semantic-link.component';
@@ -147,7 +146,6 @@ const pegaSdkComponentMap = {
   FieldValueList: FieldValueListComponent,
   FileUtility: FileUtilityComponent,
   FlowContainer: FlowContainerComponent,
-  Group: GroupComponent,
   //   'Followers': Followers,
   InlineDashboard: InlineDashboardComponent,
   InlineDashboardPage: InlineDashboardPageComponent,

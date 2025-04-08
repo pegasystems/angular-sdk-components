@@ -1,10 +1,8 @@
-import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Directive, inject, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
+import { ReferenceComponent } from '../../../infra/reference/reference.component';
+import { PConnFieldProps } from '../../../../_types/PConnProps.interface';
 
 interface GroupProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Group here
@@ -14,16 +12,16 @@ interface GroupProps extends PConnFieldProps {
   collapsible: boolean;
 }
 
-@Component({
-  selector: 'app-group',
-  templateUrl: './group.component.html',
-  styleUrls: ['./group.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
-})
-export class GroupComponent implements OnInit {
+@Directive()
+export class GroupBase implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+
+  protected angularPConnect = inject(AngularPConnectService);
+
+  // Used with AngularPConnect
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: GroupProps;
 
   arChildren$: any[];
   visibility$?: boolean;
@@ -31,12 +29,6 @@ export class GroupComponent implements OnInit {
   heading$: string;
   instructions$: string;
   collapsible$: boolean;
-
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
-  configProps$: GroupProps;
-
-  constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);

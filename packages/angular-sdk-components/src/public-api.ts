@@ -141,6 +141,7 @@ export * from './lib/_components/base/field/date/date.base';
 export * from './lib/_components/base/field/decimal/decimal.base';
 export * from './lib/_components/base/field/dropdown/dropdown.base';
 export * from './lib/_components/base/field/email/email.base';
+export * from './lib/_components/base/field/group/group.base';
 export * from './lib/_components/base/field/integer/integer.base';
 export * from './lib/_components/base/field/multiselect/multiselect.base';
 export * from './lib/_components/base/field/percentage/percentage.base';
