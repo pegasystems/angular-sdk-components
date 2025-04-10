@@ -11,6 +11,7 @@ import { IntegerComponent } from './lib/_components/field/integer/integer.compon
 import { MultiselectComponent } from './lib/_components/field/multiselect/multiselect.component';
 import { PercentageComponent } from './lib/_components/field/percentage/percentage.component';
 import { PhoneComponent } from './lib/_components/field/phone/phone.component';
+import { RadioButtonsComponent } from './lib/_components/field/radio-buttons/radio-buttons.component';
 import { TextAreaComponent } from './lib/_components/field/text-area/text-area.component';
 import { TextInputComponent } from './lib/_components/field/text-input/text-input.component';
 import { TimeComponent } from './lib/_components/field/time/time.component';
@@ -31,6 +32,7 @@ export const localMaterialComponents = {
   Multiselect: MultiselectComponent,
   Percentage: PercentageComponent,
   Phone: PhoneComponent,
+  RadioButtons: RadioButtonsComponent,
   TextInput: TextInputComponent,
   TextArea: TextAreaComponent,
   Time: TimeComponent,

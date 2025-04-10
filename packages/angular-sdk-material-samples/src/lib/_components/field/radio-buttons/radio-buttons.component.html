@@ -23,7 +23,7 @@
       >
         <mat-radio-button
           *ngFor="let opt of options$"
-          [checked]="isSelected(opt.key)"
+          [checked]="opt.key === value$"
           [disabled]="bReadonly$"
           [value]="opt.key"
           class="psdk-radio-button"

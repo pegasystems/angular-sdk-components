@@ -9,7 +9,6 @@ export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
 
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
-export * from './lib/_components/field/radio-buttons/radio-buttons.component';
 export * from './lib/_components/field/rich-text/rich-text.component';
 export * from './lib/_components/field/semantic-link/semantic-link.component';
 export * from './lib/_components/field/text/text.component';
@@ -146,6 +145,7 @@ export * from './lib/_components/base/field/integer/integer.base';
 export * from './lib/_components/base/field/multiselect/multiselect.base';
 export * from './lib/_components/base/field/percentage/percentage.base';
 export * from './lib/_components/base/field/phone/phone.base';
+export * from './lib/_components/base/field/radio-buttons/radio-buttons.base';
 export * from './lib/_components/base/field/text-area/text-area.base';
 export * from './lib/_components/base/field/text-input/text-input.base';
 export * from './lib/_components/base/field/time/time.base';
