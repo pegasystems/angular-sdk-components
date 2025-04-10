@@ -13,6 +13,7 @@ import { PercentageComponent } from './lib/_components/field/percentage/percenta
 import { PhoneComponent } from './lib/_components/field/phone/phone.component';
 import { RadioButtonsComponent } from './lib/_components/field/radio-buttons/radio-buttons.component';
 import { RichTextComponent } from './lib/_components/field/rich-text/rich-text.component';
+import { ScalarListComponent } from './lib/_components/field/scalar-list/scalar-list.component';
 import { TextAreaComponent } from './lib/_components/field/text-area/text-area.component';
 import { TextInputComponent } from './lib/_components/field/text-input/text-input.component';
 import { TimeComponent } from './lib/_components/field/time/time.component';
@@ -35,6 +36,7 @@ export const localMaterialComponents = {
   Phone: PhoneComponent,
   RadioButtons: RadioButtonsComponent,
   RichText: RichTextComponent,
+  ScalarList: ScalarListComponent,
   TextInput: TextInputComponent,
   TextArea: TextAreaComponent,
   Time: TimeComponent,

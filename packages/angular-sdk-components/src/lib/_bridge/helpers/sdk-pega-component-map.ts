@@ -23,7 +23,6 @@ import { ListViewActionButtonsComponent } from '../../_components/field/list-vie
 import { SemanticLinkComponent } from '../../_components/field/semantic-link/semantic-link.component';
 import { TextComponent } from '../../_components/field/text/text.component';
 import { TextContentComponent } from '../../_components/field/text-content/text-content.component';
-import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
 
 // Template components
 import { AppShellComponent } from '../../_components/template/app-shell/app-shell.component';
@@ -174,7 +173,6 @@ const pegaSdkComponentMap = {
   Region: RegionComponent,
   RichTextEditor: RichTextEditorComponent,
   RootContainer: RootContainerComponent,
-  ScalarList: ScalarListComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,

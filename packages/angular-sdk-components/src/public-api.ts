@@ -146,6 +146,7 @@ export * from './lib/_components/base/field/percentage/percentage.base';
 export * from './lib/_components/base/field/phone/phone.base';
 export * from './lib/_components/base/field/radio-buttons/radio-buttons.base';
 export * from './lib/_components/base/field/rich-text/rich-text.base';
+export * from './lib/_components/base/field/scalar-list/scalar-list.base';
 export * from './lib/_components/base/field/text-area/text-area.base';
 export * from './lib/_components/base/field/text-input/text-input.base';
 export * from './lib/_components/base/field/time/time.base';
