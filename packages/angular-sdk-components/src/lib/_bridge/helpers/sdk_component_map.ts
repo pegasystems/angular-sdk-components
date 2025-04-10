@@ -8,8 +8,15 @@ import pegaSdkComponentMap from './sdk-pega-component-map';
 // Create a singleton for this class (with async loading of components map file) and export it
 // Note: Initializing SdkComponentMap to null seems to cause lots of compile issues with references
 //  within other components and the value potentially being null (so try to leave it undefined)
-// eslint-disable-next-line import/no-mutable-exports
-export let SdkComponentMap;
+
+// export let SdkComponentMap;
+declare global {
+  interface Window {
+    SdkComponentMap: any;
+  }
+}
+
+window.SdkComponentMap = null;
 let SdkComponentMapCreateInProgress = false;
 
 interface ISdkComponentMap {
@@ -19,14 +26,10 @@ interface ISdkComponentMap {
 
 class ComponentMap {
   sdkComponentMap: ISdkComponentMap; // Top level object
-  isComponentMapLoaded: boolean;
 
   constructor() {
     // sdkComponentMap is top-level object
     this.sdkComponentMap = { localComponentMap: {}, pegaProvidedComponentMap: {} };
-
-    // isCoComponentMapLoaded will be updated to true after the async load is complete
-    this.isComponentMapLoaded = false;
 
     // pegaSdkComponents.local is the JSON object where we'll store the components that are
     // found locally or can be found in the Pega-provided repo
@@ -112,33 +115,33 @@ async function createSdkComponentMap(inLocalComponentMap = {}) {
 export async function getSdkComponentMap(inLocalComponentMap = {}) {
   return new Promise(resolve => {
     let idNextCheck;
-    if (!SdkComponentMap && !SdkComponentMapCreateInProgress) {
+    if (!window.SdkComponentMap && !SdkComponentMapCreateInProgress) {
       SdkComponentMapCreateInProgress = true;
       createSdkComponentMap(inLocalComponentMap).then(theComponentMap => {
         // debugger;
         // Key initialization of SdkComponentMap
-        SdkComponentMap = theComponentMap;
+        window.SdkComponentMap = theComponentMap;
         SdkComponentMapCreateInProgress = false;
         console.log(`getSdkComponentMap: created SdkComponentMap singleton`);
         // Create and dispatch the SdkConfigAccessReady event
         //  Not used anyplace yet but putting it in place in case we need it.
         const event = new CustomEvent('SdkComponentMapReady', {});
         document.dispatchEvent(event);
-        return resolve(SdkComponentMap /* .sdkComponentMap */);
+        return resolve(window.SdkComponentMap /* .sdkComponentMap */);
       });
     } else {
       const fnCheckForConfig = () => {
-        if (SdkComponentMap) {
+        if (window.SdkComponentMap) {
           if (idNextCheck) {
             clearInterval(idNextCheck);
           }
-          return resolve(SdkComponentMap.sdkComponentMap);
+          return resolve(window.SdkComponentMap.sdkComponentMap);
         }
         idNextCheck = setInterval(fnCheckForConfig, 500);
       };
-      if (SdkComponentMap) {
+      if (window.SdkComponentMap) {
         // eslint-disable-next-line no-promise-executor-return
-        return resolve(SdkComponentMap.sdkComponentMap);
+        return resolve(window.SdkComponentMap.sdkComponentMap);
       }
       idNextCheck = setInterval(fnCheckForConfig, 500);
     }
@@ -147,12 +150,12 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
 
 export function getComponentFromMap(inComponentName: string): any {
   let theComponentImplementation = null;
-  const theLocalComponent = SdkComponentMap.getLocalComponentMap()[inComponentName];
+  const theLocalComponent = window.SdkComponentMap.getLocalComponentMap()[inComponentName];
   if (theLocalComponent !== undefined) {
     console.log(`Requested component found ${inComponentName}: Local`);
     theComponentImplementation = theLocalComponent;
   } else {
-    const thePegaProvidedComponent = SdkComponentMap.getPegaProvidedComponentMap()[inComponentName];
+    const thePegaProvidedComponent = window.SdkComponentMap.getPegaProvidedComponentMap()[inComponentName];
     if (thePegaProvidedComponent !== undefined) {
       // console.log(`Requested component found ${inComponentName}: Pega-provided`);
       theComponentImplementation = thePegaProvidedComponent;
