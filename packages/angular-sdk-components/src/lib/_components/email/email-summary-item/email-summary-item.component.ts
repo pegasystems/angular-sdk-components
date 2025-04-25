@@ -6,6 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EmailService } from '../email-service/email.service';
 import { Utils } from '../../../_helpers/utils';
 import { format } from '../../../_helpers/formatters';
+
 const SENTIMENT_ICONS = {
   negative: 'sentiment_dissatisfied',
   positive: 'sentiment_satisfied',

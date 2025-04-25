@@ -122,6 +122,9 @@ export class EmailComposerComponent implements OnInit, OnChanges {
   isMaximized: boolean;
   menuIconOverrideAction$: any;
   initialFormData: any;
+  filterValue: any;
+  emailTemplatesToRender: any;
+  selectedTemplateId: string;
 
   protected _onDestroy = new Subject<void>();
 
@@ -133,7 +136,8 @@ export class EmailComposerComponent implements OnInit, OnChanges {
       subject: ['', [Validators.required]],
       emailBody: [''],
       responseTemplates: [[]],
-      responseType: ['']
+      responseType: [''],
+      selectedTemplate: ''
     });
   }
 
@@ -215,12 +219,60 @@ export class EmailComposerComponent implements OnInit, OnChanges {
           subject: this.data.subject.value,
           emailBody: this.data.bodyContent.defaultValue,
           responseType: this.data.responseType,
-          responseTemplates: []
+          responseTemplates: this.templates,
+          selectedTemplate: this.data.selectedTemplateId || ''
         });
         this.initialFormData = this.emailForm.value;
         this.isProgress = this.progress;
       }
     }
+
+    if (changes['templates'] || changes['filterValue'] || changes['selectedTemplateId']) {
+      this.updateEmailTemplatesToRender();
+    }
+  }
+
+  onTemplateChange(e) {
+    this.updateEmailTemplatesToRender();
+    this.onChange('selectedTemplateId', e.value);
+  }
+
+  updateEmailTemplatesToRender(): void {
+    const filterRegex = new RegExp(this.filterValue, 'i');
+
+    const emailTemplates = this.createEmailTemplates(this.selectedTemplateId, this.templates);
+
+    const newItems = this.filterValue ? this.flatten(emailTemplates).filter(item => filterRegex.test(item.primary)) : emailTemplates;
+
+    this.emailTemplatesToRender = this.mapTree(newItems, item => ({
+      ...item,
+      selected: item.items ? undefined : item.selected
+    }));
+  }
+
+  createEmailTemplates(selectedTemplateId: string, templates: any): any {
+    return templates?.map(template => ({
+      id: template.id,
+      primary: template.primary,
+      items: template.items ? this.createEmailTemplates(selectedTemplateId, template.items) : undefined,
+      selected: template.id === selectedTemplateId
+    }));
+  }
+
+  flatten(items: any): any {
+    return items.reduce((acc, item) => {
+      if (item.items) {
+        return acc.concat(item, this.flatten(item.items));
+      }
+      return acc.concat(item);
+    }, [] as any);
+  }
+
+  mapTree(items: any, callback: (item: any) => any): any {
+    return items?.map(item => ({
+      ...callback(item),
+      items: item.items ? this.mapTree(item.items, callback) : undefined
+    }));
   }
 
   getText(val) {
@@ -254,6 +306,7 @@ export class EmailComposerComponent implements OnInit, OnChanges {
     this.data.subject.value = this.emailForm.value.subject;
     this.data.bodyContent = { defaultValue: this.emailForm.value.emailBody };
     this.data.responseType = this.emailForm.value.responseType;
+    this.data.responseTemplates = this.emailForm.value.responseTemplates;
   }
 
   discardChanges() {

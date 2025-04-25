@@ -49,9 +49,7 @@ export class EmailConversationComponent implements OnInit {
   timeStamp: string;
   drafts: boolean;
   @ViewChild('headerRef') headerRef: ElementRef;
-  constructor(
-    private utils: Utils,
-  ) {}
+  constructor(private utils: Utils) {}
 
   ngOnInit(): void {
     const { id, emails, from, to, unReadEmailCount, timeStamp, isForwarded, isCollapsed, undelivered, drafts } = this.conversation;

@@ -76,12 +76,17 @@
         </div>
         <div class="form-group">
           <mat-form-field class="psdk-full-width response-template" subscriptSizing="dynamic">
-            <mat-select formControlName="responseTemplates" multiple>
-              <mat-option *ngFor="let opt of responseTemplateOptions" [value]="opt.key">
-                {{ opt.value }}
-              </mat-option>
-            </mat-select>
             <mat-label>Response templates</mat-label>
+            <mat-select formControlName="selectedTemplate" (selectionChange)="onTemplateChange($event)">
+              <mat-option>Select...</mat-option>
+              @for (group of templates; track group) {
+                <mat-optgroup [label]="group.title" [disabled]="group.disabled">
+                  @for (template of group.templates; track template.title) {
+                    <mat-option [value]="template.id">{{ template.title }}</mat-option>
+                  }
+                </mat-optgroup>
+              }
+            </mat-select>
           </mat-form-field>
         </div>
         <div class="form-group" class="psdk-full-width" style="flex-grow: 1">

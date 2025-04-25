@@ -10,8 +10,9 @@ import { updateImageSrcsWithAbsoluteURLs } from '../common/utils';
 import { getCanPerform, isContextEmail } from '../common/EmailContainerContext';
 import { EMAIL_ACTIONS } from '../common/Constants';
 import { EmailComposerContainerComponent } from '../email-composer-container/email-composer-container.component';
-import { format } from '../../../_helpers/formatters';
 import download from 'downloadjs';
+
+const SUGGEST_REPLY_USING_AI = 'SUGGESTREPLYUSINGAI';
 
 @Component({
   selector: 'app-delete-draft-confirmation-dialog',
@@ -94,6 +95,36 @@ export class EmailService {
   constructor(private psService: ProgressSpinnerService) {
     console.log('EmailService');
   }
+
+  loadReplyTemplates = data => {
+    const tempReplyCategories: any = [];
+
+    if (data?.data?.length) {
+      let i = 1;
+      data.data.forEach(templateCategory => {
+        const tempReplyCatgory = {
+          id: i,
+          title: templateCategory.pyValueLabel
+        };
+        const tempReplyTemplates: any = [];
+        if (templateCategory?.pxResults?.length) {
+          templateCategory.pxResults.forEach(templateObj => {
+            if (!templateObj.pyTemplateInsId.includes(SUGGEST_REPLY_USING_AI)) {
+              const template = {
+                id: templateObj.pyTemplateInsId,
+                title: templateObj.pyLanguage ? `${templateObj.pyName}(${templateObj.pyLanguage})` : templateObj.pyName
+              };
+              tempReplyTemplates.push(template);
+            }
+          });
+        }
+        (tempReplyCatgory as any).templates = tempReplyTemplates;
+        if (tempReplyTemplates.length) tempReplyCategories.push(tempReplyCatgory);
+        i++;
+      });
+    }
+    return tempReplyCategories;
+  };
 
   clear() {
     this.emails = [];
@@ -503,7 +534,8 @@ export class EmailService {
         ActionType: actionType,
         CaseID: this.caseInsKey,
         GUID: email.pyGUID,
-        hasSavedDraft: email.status === 'draft'
+        hasSavedDraft: email.status === 'draft',
+        Replies: this.loadReplyTemplates(this.replyTemplates)
       },
       hasBackdrop: false,
       position: { bottom: '10px', right: '10px' },

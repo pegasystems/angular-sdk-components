@@ -125,6 +125,7 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
     this.emptyRecipient = this.data.pConn.getLocalizedValue('Please specify at least one recipient');
     this.emailUtilityContext.setUtilitySummaryDetails = this.setUtilitySummaryDetails.bind(this);
     this.externalValidator = this.utilityService.handleExternalEntry;
+    this.Replies = this.data.Replies;
     this.getMetadata();
   }
 
@@ -705,11 +706,48 @@ export class EmailComposerContainerComponent implements OnInit, OnDestroy {
   //   }
   // }
 
+  getReplyTemplate = async (replyTemplateID, Replies, CaseID, isCaseInSharedContext) => {
+    // To handle if the templateID is not vaid or blank.
+    let idExists = false;
+    for (let i = 0; i < Replies.length; i += 1) {
+      for (let j = 0; j < Replies[i].templates.length; j += 1) {
+        if (Replies[i].templates[j].id === replyTemplateID) {
+          idExists = true;
+          break;
+        }
+      }
+    }
+    if (!idExists) {
+      return '';
+    }
+    const payload = {
+      TemplateID: replyTemplateID,
+      CaseID,
+      WrapperCaseID: this.getWrapperCaseID()
+    };
+    const { data } = await PCore.getDataApiUtils().getData('D_pxTemplateCorrespondence', {
+      dataViewParameters: payload
+    });
+
+    if (data?.data?.length) {
+      return data.data[0].pyBody;
+    }
+    return '';
+  };
+
   handleOnChange(field: any, value: any): void {
     if (this.initialLoad) this.emailContentChanged = true;
     const hasStateChanged = false;
     // this.composerData = { ...this.composerData };
     this.handleComposerOnChange(this.composerData, field, value);
+    if (field === 'selectedTemplateId') {
+      this.composerData.selectedTemplateId = value;
+      this.getReplyTemplate(value, this.Replies, this.CaseID, this.isCaseInSharedContext()).then((templateBody: any) => {
+        this.composerData.bodyContent.defaultValue = templateBody;
+        this.composerData = { ...this.composerData };
+        this.composerHandle?.replaceBodyContent(templateBody);
+      });
+    }
     if (field === 'bodyContent') {
       const parser = new DOMParser();
       const currentMessage = parser.parseFromString('', 'text/html');
