@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { ServerConfigService } from '../../../_services/server-config.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
@@ -37,6 +38,8 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   @Input() displayOnlyFA$: boolean;
   @Input() isMashup$: boolean;
 
+  scService = inject(ServerConfigService);
+
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
@@ -62,8 +65,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const myContext = 'app';
-
     const { containers } = PCore.getStore().getState();
     const items = Object.keys(containers).filter(item => item.includes('root'));
 
@@ -84,23 +85,10 @@ export class RootContainerComponent implements OnInit, OnDestroy {
 
     this.pvConn$ = configObjPreview.getPConnect();
 
-    const configObjModal = PCore.createPConnect({
-      meta: {
-        type: 'ModalViewContainer',
-        config: {
-          name: 'modal'
-        }
-      },
-      options: {
-        pageReference: 'pyPortal',
-        context: myContext
-      }
-    });
+    this.configureModalContainer();
 
     // clear out hasViewContainer
     sessionStorage.setItem('hasViewContainer', 'false');
-
-    this.mConn$ = configObjModal.getPConnect();
 
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
@@ -125,16 +113,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
 
     if (bUpdateSelf) {
       this.updateSelf();
-    }
-  }
-
-  modalVisibleChanged(isVisible) {
-    if (this.displayOnlyFA$) {
-      if (isVisible) {
-        this.bShowRoot$ = false;
-      } else {
-        this.bShowRoot$ = true;
-      }
     }
   }
 
@@ -188,6 +166,25 @@ export class RootContainerComponent implements OnInit, OnDestroy {
       // haven't resolved to here
     } else if (skeleton !== undefined) {
       // TODO: need to update once skeletons are available;
+    }
+  }
+
+  async configureModalContainer() {
+    const sdkConfig = await this.scService.getSdkConfig();
+    const showModalsInEmbedMode = sdkConfig.serverConfig.showModalsInEmbedMode;
+
+    if (!this.displayOnlyFA$ || showModalsInEmbedMode) {
+      const configObjModal = PCore.createPConnect({
+        meta: {
+          type: 'ModalViewContainer',
+          config: {
+            name: 'modal'
+          }
+        },
+        options
+      });
+
+      this.mConn$ = configObjModal.getPConnect();
     }
   }
 
