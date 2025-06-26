@@ -1,10 +1,22 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
 import { FormTemplateBase } from '../base/form-template-base';
+
+function areViewsChanged(oldViews: any[], newViews: any[]): boolean {
+  if (oldViews?.length !== newViews?.length) {
+    return true;
+  }
+
+  return !oldViews?.every((oldView, index) => {
+    const newView = newViews[index];
+    return oldView.getPConnect().viewName === newView.getPConnect().viewName;
+  });
+}
 
 interface DefaultFormProps {
   // If any, enter additional props that only exist on this component
@@ -23,15 +35,32 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit {
   @Input() override pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
+  // Used with AngularPConnect
+  override angularPConnectData: AngularPConnectData = {};
+
   arChildren$: any[];
   divClass$: string;
   instructions: string;
 
-  constructor(private templateUtils: TemplateUtils) {
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private templateUtils: TemplateUtils
+  ) {
     super();
   }
 
   ngOnInit(): void {
+    // First thing in initialization is registering and subscribing to the AngularPConnect service
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+
+    this.updateSelf();
+  }
+
+  onStateChange() {
+    this.updateSelf();
+  }
+
+  updateSelf() {
     const configProps = this.pConn$.getConfigProps() as DefaultFormProps;
     const kids = this.pConn$.getChildren();
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
@@ -55,6 +84,12 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit {
     // repoint children before getting templateArray
     // Children may contain 'reference' component, so we need to
     //  normalize them
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
+    const children = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
+
+    const visibleChildren = children.filter(child => child !== undefined);
+
+    if (areViewsChanged(this.arChildren$, visibleChildren)) {
+      this.arChildren$ = visibleChildren;
+    }
   }
 }

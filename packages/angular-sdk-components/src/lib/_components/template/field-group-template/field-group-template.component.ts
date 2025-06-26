@@ -117,7 +117,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
       this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     }
     this.referenceList = this.configProps$.referenceList;
-    if (this.prevRefLength != this.referenceList.length) {
+    if (this.prevRefLength != this.referenceList?.length) {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (!this.readonlyMode) {
         if (this.referenceList?.length === 0 && this.allowAddEdit !== false) {
