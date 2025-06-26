@@ -117,6 +117,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
+      this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;
 

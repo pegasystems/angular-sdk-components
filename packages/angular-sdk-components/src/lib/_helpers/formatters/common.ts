@@ -7,6 +7,8 @@ export function getLocale(locale: string = '') {
   return Intl.DateTimeFormat().resolvedOptions().locale;
 }
 
-export function getCurrentTimezone() {
-  return PCore?.getEnvironmentInfo?.().getTimeZone?.();
+export function getCurrentTimezone(timezone?: string) {
+  // use timezone if specified
+  if (timezone) return timezone;
+  return PCore?.getLocaleUtils?.().getTimeZoneInUse?.();
 }
