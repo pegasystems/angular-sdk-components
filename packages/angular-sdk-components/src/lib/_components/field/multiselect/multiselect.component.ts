@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -13,6 +13,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { Utils } from '../../../_helpers/utils';
 import { doSearch, getDisplayFieldsMetaData, getGroupDataForItemsTree, preProcessColumns } from './utils';
 import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
+import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
   selector: 'app-multiselect',
@@ -73,6 +74,8 @@ export class MultiselectComponent implements OnInit, OnDestroy {
   dataApiObj: any;
   itemsTree: any[] = [];
   trigger: any;
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -181,7 +184,9 @@ export class MultiselectComponent implements OnInit, OnDestroy {
       listType: this.listType,
       maxResultsDisplay: this.maxResultsDisplay || '100',
       columns: preProcessColumns(columns),
-      groupColumnsConfig: preProcessColumns(this.groupColumnsConfig)
+      groupColumnsConfig: preProcessColumns(this.groupColumnsConfig),
+      associationFilter: undefined,
+      ignoreCase: undefined
     };
 
     const groupsDisplayFieldMeta = this.listType !== 'associated' ? getDisplayFieldsMetaData(dataConfig.groupColumnsConfig) : null;
@@ -209,6 +214,9 @@ export class MultiselectComponent implements OnInit, OnDestroy {
     } else {
       this.fieldControl.enable();
     }
+
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
 
     if (this.listType !== 'associated') {
       PCore.getDataApi()
@@ -283,8 +291,10 @@ export class MultiselectComponent implements OnInit, OnDestroy {
     this.getCaseListBasedOnParams(this.value$, '', [...this.selectedItems], [...this.itemsTree], true);
   }
 
-  optionChanged(event: MatAutocompleteSelectedEvent) {
-    this.angularPConnectData.actions?.onChange(this, event);
+  optionChanged(event: any) {
+    let value = event?.target?.value;
+    value = value?.substring(1);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   optionClicked = (event: Event, data: any): void => {
@@ -326,7 +336,7 @@ export class MultiselectComponent implements OnInit, OnDestroy {
 
   setSelectedItemsForReferenceList(data: any) {
     // Clear error messages if any
-    const propName = (this.pConn$.getStateProps() as any).selectionList;
+    const propName = this.pConn$.getStateProps().selectionList;
     this.pConn$.clearErrorMessages({
       property: propName,
       category: '',

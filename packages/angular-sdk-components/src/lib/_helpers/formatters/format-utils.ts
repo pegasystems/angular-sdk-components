@@ -27,7 +27,14 @@ function CurrencyFormatter(
       currency
     });
 
-    let countryCode = currentLocale?.split('-')[1].toUpperCase();
+    // For currency other than EUR, we need to determine the country code from currency code
+    // If currency is EUR, we use the locale to determine the country code
+    let countryCode: string | undefined;
+    if (currency !== 'EUR') {
+      countryCode = currency.substring(0, 2);
+    } else {
+      countryCode = currentLocale?.split('-')[1].toUpperCase();
+    }
 
     // If countryCode is still undefined, setting it as US
     if (!countryCode) {

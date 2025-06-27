@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { BundleSwatchComponent } from './bundle-swatch.component';
+import { FullPortalComponent } from './full-portal.component';
 
-describe('BundleSwatchComponent', () => {
-  let component: BundleSwatchComponent;
-  let fixture: ComponentFixture<BundleSwatchComponent>;
+describe('FullPortalComponent', () => {
+  let component: FullPortalComponent;
+  let fixture: ComponentFixture<FullPortalComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [BundleSwatchComponent]
+      declarations: [FullPortalComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BundleSwatchComponent);
+    fixture = TestBed.createComponent(FullPortalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

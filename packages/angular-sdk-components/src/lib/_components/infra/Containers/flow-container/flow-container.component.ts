@@ -104,6 +104,8 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     this.initContainer();
 
+    this.checkAndUpdate();
+
     PCore.getPubSubUtils().subscribe(
       PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL,
       () => {
@@ -198,7 +200,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   }
 
   initContainer() {
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
     const baseContext = this.pConn$.getContextName();
     const containerName = this.pConn$.getContainerName();
     const containerType = 'single';
@@ -237,7 +239,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     // when true, update arChildren from pConn, otherwise, arChilren will be updated in updateSelf()
     if (bLoadChildren) {
-      this.arChildren$ = this.pConn$.getChildren() as any[];
+      this.arChildren$ = this.pConn$.getChildren();
     }
 
     // const oData = this.pConn$.getDataObject();
@@ -277,7 +279,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
   hasAssignments() {
     let hasAssignments = false;
-    const assignmentsList: any[] = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
+    const assignmentsList = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.D_CASE_ASSIGNMENTS_RESULTS);
     // const thisOperator = PCore.getEnvironmentInfo().getOperatorIdentifier();
     // 8.7 includes assignments in Assignments List that may be assigned to
     //  a different operator. So, see if there are any assignments for
@@ -312,7 +314,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
   isCaseWideLocalAction() {
     const actionID = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.ACTIVE_ACTION_ID);
-    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS) as any[];
+    const caseActions = this.pConn$.getValue(this.pCoreConstants.CASE_INFO.AVAILABLEACTIONS);
     let bCaseWideAction = false;
     if (caseActions && actionID) {
       const actionObj = caseActions.find(caseAction => caseAction.ID === actionID);
@@ -457,7 +459,9 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
   showCaseMessages() {
     this.caseMessages$ = this.localizedVal(this.pConn$.getValue('caseMessages'), this.localeCategory);
-    if (this.caseMessages$ || !this.hasAssignments()) {
+    // caseMessages's behavior has changed in 24.2, and hence it doesn't let Optional Action work.
+    // Changing the below condition for now. Was: (theCaseMessages || !hasAssignments())
+    if (!this.hasAssignments()) {
       this.bHasCaseMessages$ = true;
       this.bShowConfirm = true;
       this.checkSvg$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
@@ -480,6 +484,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   updateFlowContainerChildren() {
     // routingInfo was added as component prop in populateAdditionalProps
     const routingInfo = this.angularPConnect.getComponentProp(this, 'routingInfo');
+    this.confirm_pconn = null;
 
     let loadingInfo: any;
     try {
@@ -593,7 +598,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     });
   }
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   topViewRefresh(): void {
     Object.values(this.formGroup$.controls).forEach(control => {
       control.markAsTouched();

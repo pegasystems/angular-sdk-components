@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } fr
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval, Observable } from 'rxjs';
@@ -71,6 +71,8 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   hideLabel: boolean;
   filteredOptions: Observable<any[]>;
   filterValue = '';
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -102,7 +104,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
     this.filteredOptions = this.fieldControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(value || ''))
+      map(value => this._filter((value as string) || ''))
     );
   }
 
@@ -151,6 +153,9 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
     this.setPropertyValuesFromProps();
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     const context = this.pConn$.getContextName();
     const { columns, datasource } = this.generateColumnsAndDataSource();
 
@@ -184,7 +189,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
     if (this.listType === 'associated') {
       this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
     }
@@ -220,7 +225,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     let datasource = this.configProps$.datasource;
     let columns = this.configProps$.columns;
     // const { deferDatasource, datasourceMetadata } = this.configProps$;
-    const { deferDatasource, datasourceMetadata }: any = this.pConn$.getConfigProps();
+    const { deferDatasource, datasourceMetadata } = this.pConn$.getConfigProps();
     // convert associated to datapage listtype and transform props
     // Process deferDatasource when datapage name is present. WHhen tableType is promptList / localList
     if (deferDatasource && datasourceMetadata?.datasource?.name) {
@@ -299,13 +304,14 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     // this works - this.pConn$.setValue( this.componentReference, this.fieldControl.value);
     // PConnect wants to use changeHandler for onChange
     // this.angularPConnect.changeHandler( this, event);
-    this.filterValue = (event.target as HTMLInputElement).value;
-
-    this.angularPConnectData.actions?.onChange(this, event);
+    const value = (event.target as HTMLInputElement).value;
+    this.filterValue = value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
-  optionChanged(event: MatAutocompleteSelectedEvent) {
-    this.angularPConnectData.actions?.onChange(this, event);
+  optionChanged(event: any) {
+    const value = event?.option?.value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
   fieldOnBlur(event: Event) {
@@ -315,11 +321,8 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       const index = this.options$?.findIndex(element => element.value === el.value);
       key = index > -1 ? (key = this.options$[index].key) : el.value;
     }
-
     const value = key;
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
-    handleEvent(actionsApi, 'changeNblur', propName, value);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     if (this.configProps$?.onRecordChange) {
       el.value = value;
       this.configProps$.onRecordChange(event);

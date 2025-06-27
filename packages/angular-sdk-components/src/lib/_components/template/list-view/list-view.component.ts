@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -22,13 +21,15 @@ import { getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { getLocale, getSeconds } from '../../../_helpers/common';
 import { formatters } from '../../../_helpers/formatters/format-utils';
 
-import { useInit } from './listViewHelpers';
+import { init } from './listViewHelpers';
 
 declare const window: any;
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
 interface ListViewProps {
+  inheritedProps: any;
+  title: string | undefined;
   // If any, enter additional props that only exist on this component
   globalSearch?: boolean;
   referenceList?: any;
@@ -42,6 +43,7 @@ interface ListViewProps {
   grouping: string | boolean;
   value: any;
   readonlyContextList: any;
+  label?: string;
 }
 
 export class Group {
@@ -159,6 +161,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   xRayApis = PCore.getDebugger().getXRayRuntime();
   xRayUid = this.xRayApis.startXRay();
   checkBoxValue: string;
+  label?: string = '';
 
   constructor(
     private psService: ProgressSpinnerService,
@@ -192,6 +195,18 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.arFilterMainButtons$.push({ actionID: 'submit', jsAction: 'submit', name: 'Submit' });
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
 
+    let title = this.configProps$?.title || this.configProps$?.label || 'List';
+    const inheritedProps = this.configProps$?.inheritedProps;
+    if (title === 'List' && inheritedProps) {
+      for (const inheritedProp of inheritedProps) {
+        if (inheritedProp?.prop === 'label') {
+          title = inheritedProp?.value;
+          break;
+        }
+      }
+    }
+    this.label = title;
+
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
     setTimeout(() => {
       PCore.getPubSubUtils().subscribe(
@@ -218,7 +233,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
       if (!this.payload) {
         this.payload = { referenceList: this.configProps$.referenceList };
       }
-      useInit({
+      init({
         pConn$: this.pConn$,
         bInForm$: this.bInForm$,
         ...this.payload,
@@ -961,7 +976,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   filterDataWithDate(item, filterObj, filterValue) {
     let bKeep;
-    let value = item[filterObj.ref] != null ?? item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
+    let value = item[filterObj.ref] != null || item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
     filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
 
     switch (filterObj.containsFilter) {
@@ -1378,6 +1393,11 @@ export class ListViewComponent implements OnInit, OnDestroy {
       }
     });
     return listFields;
+  }
+
+  getResultsText() {
+    const recordsCount = this.repeatList$?.paginator?.length || 0;
+    return `${recordsCount || 0} result${recordsCount > 1 ? 's' : ''}`;
   }
 
   getField(fieldDefs, columnId) {

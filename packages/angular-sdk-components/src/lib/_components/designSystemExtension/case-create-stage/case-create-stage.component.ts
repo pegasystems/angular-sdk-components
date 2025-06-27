@@ -53,6 +53,6 @@ export class CaseCreateStageComponent implements OnInit, OnDestroy {
   }
 
   updateSelf() {
-    this.arChildren$ = this.pConn$.getChildren() as any[];
+    this.arChildren$ = this.pConn$.getChildren();
   }
 }

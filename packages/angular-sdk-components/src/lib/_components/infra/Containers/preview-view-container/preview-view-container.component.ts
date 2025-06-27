@@ -18,7 +18,7 @@ export class PreviewViewContainerComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
   ngOnInit(): void {
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'

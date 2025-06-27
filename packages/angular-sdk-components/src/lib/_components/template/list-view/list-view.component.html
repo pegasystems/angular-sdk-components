@@ -1,5 +1,8 @@
 <div class="psdk-list-header">
   <div>
+    <h3 *ngIf="label" class="label" style="font-weight: bold">
+      {{ label }} <span class="results-count">{{ getResultsText() }}</span>
+    </h3>
     <mat-form-field class="psdk-search" *ngIf="bShowSearch$">
       <mat-label><img class="psdk-icon-search" src="{{ searchIcon$ }}" /> <span class="psdk-search-label">Search</span> </mat-label>
       <input matInput id="search" (keyup)="applySearch($event)" placeholder="" />

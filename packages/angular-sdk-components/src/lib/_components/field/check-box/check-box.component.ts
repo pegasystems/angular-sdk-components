@@ -69,8 +69,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   selectedvalues: any;
   referenceList: string;
   listOfCheckboxes: any[] = [];
-  actionsApi: any;
-  propName: any;
+  actionsApi: Object;
+  propName: string;
 
   fieldControl = new FormControl('', null);
 
@@ -146,7 +146,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = (this.pConn$.getStateProps() as any).value;
+    this.propName = this.pConn$.getStateProps().value;
 
     // multi case
     this.selectionMode = this.configProps$.selectionMode;
@@ -159,7 +159,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
       this.datasource = this.configProps$.datasource;
       this.selectionKey = this.configProps$.selectionKey;
       const listSourceItems = this.datasource?.source ?? [];
-      const dataField: any = this.selectionKey?.split?.('.')[1];
+      const dataField = this.selectionKey?.split?.('.')[1] ?? '';
       const listToDisplay: any[] = [];
       listSourceItems.forEach(element => {
         element.selected = this.selectedvalues?.some?.(data => data[dataField] === element.key);
@@ -173,8 +173,8 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
       this.caption$ = this.configProps$.caption;
       this.helperText = this.configProps$.helperText;
-      this.trueLabel$ = this.configProps$.trueLabel;
-      this.falseLabel$ = this.configProps$.falseLabel;
+      this.trueLabel$ = this.configProps$.trueLabel || 'Yes';
+      this.falseLabel$ = this.configProps$.falseLabel || 'No';
 
       // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
       setTimeout(() => {
@@ -203,7 +203,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
         this.fieldControl.enable();
       }
 
-      this.componentReference = (this.pConn$.getStateProps() as any).value;
+      this.componentReference = this.pConn$.getStateProps().value;
 
       // eslint-disable-next-line sonarjs/no-redundant-boolean
       if (this.value$ === 'true' || this.value$ == true) {
@@ -225,16 +225,17 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
   fieldOnChange(event: any) {
     event.value = event.checked;
-
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.checked);
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
     if (this.selectionMode === 'multi') {
       this.pConn$.getValidationApi().validate(this.selectedvalues, this.selectionList);
     } else {
-      event.value = event.checked;
-      this.angularPConnectData.actions?.onBlur(this, event);
+      this.pConn$.getValidationApi().validate(event.target.checked);
     }
   }
 

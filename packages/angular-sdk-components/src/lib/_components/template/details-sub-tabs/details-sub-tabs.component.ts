@@ -1,10 +1,9 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tab-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { DetailsTemplateBase } from '../base/details-template-base';
 
 @Component({
   selector: 'app-details-sub-tabs',
@@ -13,45 +12,14 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   standalone: true,
   imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DetailsSubTabsComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
-  @Input() formGroup$: FormGroup;
+export class DetailsSubTabsComponent extends DetailsTemplateBase {
+  override pConn$: typeof PConnect;
 
-  angularPConnectData: AngularPConnectData = {};
   currentTabId = '0';
   tabItems: any[];
   availableTabs: any[];
 
-  constructor(private angularPConnect: AngularPConnectService) {}
-
-  ngOnInit(): void {
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.checkAndUpdate();
-  }
-
-  ngOnDestroy() {
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
-  updateSelf() {
+  override updateSelf() {
     const children = this.pConn$?.getChildren();
     const deferLoadedTabs = children[0];
     this.availableTabs = getVisibleTabs(deferLoadedTabs, 'tabsSubs');

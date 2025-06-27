@@ -11,9 +11,10 @@
           matInput
           currencyMask
           [options]="{
-            prefix: bReadonly$ && formatter === 'Currency' ? currSym : '',
-            thousands: currSep,
-            decimal: currDec,
+            prefix: currencySymbol,
+            suffix: suffix,
+            thousands: thousandSeparator,
+            decimal: decimalSeparator,
             align: 'left',
             nullable: true,
             precision: decimalPrecision,

@@ -1,5 +1,5 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$: formattedValue, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="bHasForm$; else noEdit">
@@ -13,8 +13,8 @@
           [options]="{
             prefix: '',
             suffix: '%',
-            thousands: currSep,
-            decimal: currDec,
+            thousands: thousandSeparator,
+            decimal: decimalSeparator,
             align: 'left',
             nullable: true,
             precision: decimalPrecision,
@@ -26,7 +26,7 @@
           [required]="bRequired$"
           [formControl]="fieldControl"
           [attr.data-test-id]="testId"
-          (change)="fieldOnChange($event)"
+          (change)="fieldOnChange()"
           (blur)="fieldOnBlur($event)"
           [readonly]="bReadonly$"
         />

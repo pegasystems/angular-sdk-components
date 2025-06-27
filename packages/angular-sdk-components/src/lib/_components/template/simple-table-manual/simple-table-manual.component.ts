@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
@@ -45,6 +44,7 @@ interface SimpleTableManualProps {
   displayMode?: string;
   useSeparateViewForEdit: any;
   viewForEditModal: any;
+  targetClassLabel: string;
 }
 
 class Group {
@@ -158,6 +158,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   settingsSvgIcon$: string;
 
   isInitialized = false;
+  targetClassLabel: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -219,7 +220,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  but getRawMetadata() has each child.config with datasource and value showing their unresolved values (ex: "@P thePropName")
     //  We need to use the prop name as the "glue" to tie the Angular Material table dataSource, displayColumns and data together.
     //  So, in the code below, we'll use the unresolved config.value (but replacing the space with an underscore to keep things happy)
-    const rawMetadata: any = this.pConn$.getRawMetadata();
+    const rawMetadata = this.pConn$.getRawMetadata();
 
     // Adapted from Nebula
     const {
@@ -237,13 +238,14 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       editModeConfig,
       displayMode,
       useSeparateViewForEdit,
-      viewForEditModal
+      viewForEditModal,
+      targetClassLabel
     } = this.configProps$;
 
     this.referenceListStr = getContext(this.pConn$).referenceListStr;
     this.label = labelProp || propertyLabel;
     this.parameters = fieldMetadata?.datasource?.parameters;
-
+    this.targetClassLabel = targetClassLabel;
     const hideAddRow = allowTableEdit === false;
     const hideDeleteRow = allowTableEdit === false;
     let { contextClass } = this.configProps$;
@@ -262,7 +264,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //    config.value (ex: "@P .DeclarantChoice") or
     //    config.datasource (ex: "@ASSOCIATED .DeclarantChoice")
     //  Neither of these appear in the resolved (this.configProps$)
-    const rawConfig = rawMetadata?.config;
+    const rawConfig: any = rawMetadata?.config;
     const rawFields = rawConfig?.children?.[0]?.children || rawConfig?.presets?.[0].children?.[0]?.children;
     this.rawFields = rawFields;
     // At this point, fields has resolvedFields and rawFields we can use
@@ -355,7 +357,6 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     if (this.isInitialized) {
       this.isInitialized = false;
       if (this.allowEditingInModal) {
-        // @ts-ignore - An argument for 'uniqueField' was not provided.
         this.pConn$.getListActions().initDefaultPageInstructions(
           this.pConn$.getReferenceList(),
           this.fieldDefs.filter(item => item.name).map(item => item.name)
@@ -918,19 +919,19 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
         .getActionsApi()
         .openEmbeddedDataModal(
           this.defaultView,
-          this.pConn$,
+          this.pConn$ as any,
           this.referenceListStr,
           this.referenceList.length,
-          PCore.getConstants().RESOURCE_STATUS.CREATE
+          PCore.getConstants().RESOURCE_STATUS.CREATE,
+          this.targetClassLabel
         );
     } else {
-      // @ts-ignore - second parameter "pageRef" is optional for insert method
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
     }
 
     this.pConn$.clearErrorMessages({
-      property: (this.pConn$.getStateProps() as any)?.referenceList?.substring(1)
-    } as any);
+      property: this.pConn$.getStateProps()?.referenceList?.substring(1)
+    });
   }
 
   editRecord(data, index) {
@@ -939,16 +940,16 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
         .getActionsApi()
         .openEmbeddedDataModal(
           this.bUseSeparateViewForEdit ? this.editView : this.defaultView,
-          this.pConn$,
+          this.pConn$ as any,
           this.referenceListStr,
           index,
-          PCore.getConstants().RESOURCE_STATUS.UPDATE
+          PCore.getConstants().RESOURCE_STATUS.UPDATE,
+          this.targetClassLabel
         );
     }
   }
 
   deleteRecord(index) {
-    // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
     this.pConn$.getListActions().deleteEntry(index);
   }
 

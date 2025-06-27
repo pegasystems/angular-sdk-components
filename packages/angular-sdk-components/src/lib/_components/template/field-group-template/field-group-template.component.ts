@@ -105,7 +105,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
 
     const renderMode = this.configProps$.renderMode;
     const displayMode = this.configProps$.displayMode;
-    this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'LABELS_LEFT';
+    this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'DISPLAY_ONLY';
     this.contextClass = this.configProps$.contextClass;
     const lookForChildInConfig = this.configProps$.lookForChildInConfig;
     this.heading = this.configProps$.heading ?? 'Row';
@@ -114,10 +114,10 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
     if (this.readonlyMode) {
-      this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
+      this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     }
     this.referenceList = this.configProps$.referenceList;
-    if (this.prevRefLength != this.referenceList.length) {
+    if (this.prevRefLength != this.referenceList?.length) {
       // eslint-disable-next-line sonarjs/no-collapsible-if
       if (!this.readonlyMode) {
         if (this.referenceList?.length === 0 && this.allowAddEdit !== false) {
@@ -149,12 +149,10 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   };
 
   addFieldGroupItem() {
-    // @ts-ignore - second parameter "pageRef" is optional for insert method
     this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
   }
 
   deleteFieldGroupItem(index) {
-    // @ts-ignore - second parameter "pageRef" is optional for deleteEntry method
     this.pConn$.getListActions().deleteEntry(index);
   }
 }

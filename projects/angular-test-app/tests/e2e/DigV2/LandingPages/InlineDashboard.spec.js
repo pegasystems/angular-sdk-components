@@ -49,11 +49,11 @@ test.describe('E2E test', () => {
     await expect(inlineDashboardTitle).toBeVisible();
 
     /** Testing Complex Fields list presence */
-    const complexFieldsList = page.locator('span:has-text("Complex  Fields - List")');
+    const complexFieldsList = page.locator('h3:has-text("Complex  Fields - List")');
     await expect(complexFieldsList).toBeVisible();
 
     /** Testing My Work List presence */
-    const myworkList = page.locator('span:has-text("My Work List")');
+    const myworkList = page.locator('h3:has-text("My Work List")');
     await expect(myworkList).toBeVisible();
 
     await expect(page.getByRole('button', { name: ' Case ID ' })).toBeVisible();

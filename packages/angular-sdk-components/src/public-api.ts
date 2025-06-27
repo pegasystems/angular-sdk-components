@@ -52,6 +52,9 @@ export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
 export * from './lib/_components/infra/Containers/base-components/flow-container-base.component';
 
+export * from './lib/_components/template/base/form-template-base';
+export * from './lib/_components/template/base/details-template-base';
+
 export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
@@ -128,6 +131,7 @@ export * from './lib/_services/endpoints';
 export * from './lib/_helpers/case-utils';
 export * from './lib/_helpers/currency-utils';
 export * from './lib/_helpers/common';
+export * from './lib/_helpers/createstage-utils';
 export * from './lib/_helpers/date-format-utils';
 export * from './lib/_helpers/event-util';
 export * from './lib/_helpers/field-group-utils';
@@ -142,10 +146,7 @@ export * from './lib/_helpers/filter-utils';
 export * from './lib/_helpers/instructions-utils';
 
 export * from './lib/_messages/error-messages.service';
-export * from './lib/_messages/get-login-status.service';
-export * from './lib/_messages/oauth-response.service';
 export * from './lib/_messages/progress-spinner.service';
-export * from './lib/_messages/reset-pconnect.service';
 export * from './lib/_messages/update-worklist.service';
 
 export * from './lib/_types/PConnProps.interface';

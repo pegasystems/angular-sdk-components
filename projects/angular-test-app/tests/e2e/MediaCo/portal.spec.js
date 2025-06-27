@@ -116,6 +116,7 @@ test.describe('E2E test', () => {
     const todo = page.locator('div[id="worklist"]');
     await expect(todo.getByText('To do')).toBeVisible();
 
+    await page.waitForTimeout(5000);
     const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
     await expect(Number(attachmentCount)).toBeGreaterThan(0);
   }, 10000);

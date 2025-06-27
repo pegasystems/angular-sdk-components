@@ -27,7 +27,6 @@ interface CaseViewProps {
 export class CaseViewComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() displayOnlyFA$: boolean;
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -120,7 +119,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     if (hasNewAttachments !== this.bHasNewAttachments) {
       this.bHasNewAttachments = hasNewAttachments;
       if (this.bHasNewAttachments) {
-        PCore.getPubSubUtils().publish((PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
+        PCore.getPubSubUtils().publish(PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
       }
     }
 
@@ -161,19 +160,15 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
     this.svgCase$ = this.utils.getImageSrc(this.configProps$.icon, this.utils.getSDKStaticContentUrl());
 
-    // this.utils.consoleKidDump(this.pConn$);
-
-    if (!this.displayOnlyFA$) {
-      for (const kid of this.arChildren$) {
-        const kidPConn = kid.getPConnect();
-        if (kidPConn.getRawMetadata().name == 'Tabs') {
-          this.mainTabs = kid;
-          this.mainTabData = this.mainTabs.getPConnect().getChildren();
-        }
+    for (const kid of this.arChildren$) {
+      const kidPConn = kid.getPConnect();
+      if (kidPConn.getRawMetadata().name == 'Tabs') {
+        this.mainTabs = kid;
+        this.mainTabData = this.mainTabs.getPConnect().getChildren();
       }
-
-      this.generateTabsData();
     }
+
+    this.generateTabsData();
   }
 
   generateTabsData() {

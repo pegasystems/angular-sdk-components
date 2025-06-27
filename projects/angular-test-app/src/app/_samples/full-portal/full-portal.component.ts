@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { loginIfNecessary, logout, getAvailablePortals } from '@pega/auth/lib/sdk-auth-manager';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
-import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
-import { ServerConfigService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/server-config.service';
-import { compareSdkPCoreVersions } from '../../../../../../../packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
-import { ComponentMapperComponent } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
+import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { ServerConfigService } from 'packages/angular-sdk-components/src/lib/_services/server-config.service';
+import { compareSdkPCoreVersions } from 'packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
+import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 
-import { getSdkComponentMap } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../../../../packages/angular-sdk-components/src/sdk-local-component-map';
+import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
+import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
 
 declare global {
   interface Window {
@@ -19,16 +19,16 @@ declare global {
 }
 
 @Component({
-  selector: 'app-top-app-mashup',
-  templateUrl: './top-app-mashup.component.html',
-  styleUrls: ['./top-app-mashup.component.scss'],
+  selector: 'app-full-portal',
+  templateUrl: './full-portal.component.html',
+  styleUrls: ['./full-portal.component.scss'],
   standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, ComponentMapperComponent]
 })
-export class TopAppMashupComponent implements OnInit, OnDestroy {
+export class FullPortalComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;
 
-  sComponentName$: string;
+  sComponentName$: string | undefined;
   bPCoreReady$ = false;
 
   bLoggedIn$ = false;
@@ -40,7 +40,7 @@ export class TopAppMashupComponent implements OnInit, OnDestroy {
 
   portalSelectionScreen = false;
   availablePortals: string[];
-  defaultPortalName: string;
+  defaultPortalName: string | undefined;
 
   constructor(
     private psservice: ProgressSpinnerService,
@@ -135,25 +135,7 @@ export class TopAppMashupComponent implements OnInit, OnDestroy {
     // Need to register the callback function for PCore.registerComponentCreator
     // This callback is invoked if/when you call a PConnect createComponent
     PCore.registerComponentCreator(c11nEnv => {
-      // experiment with returning a PConnect that has deferenced the
-      // referenced View if the c11n is a 'reference' component
-      // const compType = c11nEnv.getPConnect().getComponentName();
-      // console.log( `top-app-mashup: startPortal - registerComponentCreator c11nEnv type: ${compType}`);
-
       return c11nEnv;
-
-      // REACT implementaion:
-      // const PConnectComp = createPConnectComponent();
-      // return (
-      //     <PConnectComp {
-      //       ...{
-      //         ...c11nEnv,
-      //         ...c11nEnv.getPConnect().getConfigProps(),
-      //         ...c11nEnv.getPConnect().getActions(),
-      //         additionalProps
-      //       }}
-      //     />
-      //   );
     });
 
     // Change to reflect new use of arg in the callback:

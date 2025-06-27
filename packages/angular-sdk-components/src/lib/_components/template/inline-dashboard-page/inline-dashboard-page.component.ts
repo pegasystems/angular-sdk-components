@@ -45,8 +45,8 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
 
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as InlineDashboardPageProps;
-    const arChildren$ = this.pConn$.getChildren() as any[];
-    const allFilters = (this.pConn$.getRawMetadata() as any).children[1];
+    const arChildren$ = this.pConn$.getChildren();
+    const allFilters = this.pConn$.getRawMetadata()?.children[1];
     const filterComponents = buildFilterComponents(this.pConn$, allFilters);
     this.inlineProps = this.configProps$;
     this.children[0] = arChildren$[0];

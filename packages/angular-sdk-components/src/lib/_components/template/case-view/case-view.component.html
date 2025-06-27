@@ -1,5 +1,5 @@
 <div class="psdk-case-view" id="case-view">
-  <div *ngIf="!displayOnlyFA$" class="psdk-case-view-info">
+  <div class="psdk-case-view-info">
     <mat-toolbar color="primary" class="psdk-case-view-toolbar">
       <mat-toolbar-row style="padding-left: 1rem">
         <div class="psdk-case-icon-div">
@@ -47,7 +47,7 @@
     ></component-mapper>
   </div>
   <div class="psdk-case-view-main">
-    <div *ngIf="!displayOnlyFA$">
+    <div>
       <div *ngFor="let kid of arChildren$">
         <div
           *ngIf="
@@ -73,11 +73,11 @@
       </div>
     </div>
 
-    <div *ngIf="!displayOnlyFA$">
+    <div>
       <component-mapper name="DeferLoad" [props]="{ pConn$, loadData$: tabData$, name: tabData$?.config?.name }"></component-mapper>
     </div>
   </div>
-  <div *ngIf="!displayOnlyFA$">
+  <div>
     <div *ngIf="arChildren$" class="psdk-case-view-utilities">
       <div *ngFor="let kid of arChildren$">
         <div *ngIf="kid.getPConnect().getRawMetadata()?.type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata()?.name == 'Utilities'">

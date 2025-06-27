@@ -106,7 +106,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     this.createModalButtons();
 
     PCore.getPubSubUtils().subscribe(
-      (PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
+      PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
       this.updateSelf.bind(this),
       'caseAttachmentsUpdateFromCaseview'
     );
@@ -117,10 +117,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    PCore.getPubSubUtils().unsubscribe(
-      (PCore.getEvents().getCaseEvent() as any).CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
-      'caseAttachmentsUpdateFromCaseview'
-    );
+    PCore.getPubSubUtils().unsubscribe(PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, 'caseAttachmentsUpdateFromCaseview');
   }
 
   // Callback passed when subscribing to store change

@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
-import { TopAppMashupComponent } from './top-app-mashup.component';
+import { EmbeddedComponent } from './embedded.component';
 
-describe('TopAppMashupComponent', () => {
-  let component: TopAppMashupComponent;
-  let fixture: ComponentFixture<TopAppMashupComponent>;
+describe('EmbeddedComponent', () => {
+  let component: EmbeddedComponent;
+  let fixture: ComponentFixture<EmbeddedComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TopAppMashupComponent]
+      declarations: [EmbeddedComponent]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TopAppMashupComponent);
+    fixture = TestBed.createComponent(EmbeddedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

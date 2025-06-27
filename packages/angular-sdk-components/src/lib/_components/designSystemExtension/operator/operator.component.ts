@@ -53,7 +53,7 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   updateSelf(): void {
-    const configProps$ = this.pConn$.getConfigProps() as any;
+    const configProps$ = this.pConn$.getConfigProps();
     this.displayLabel = this.displayLabel?.toLowerCase();
     const label = configProps$?.label?.toLowerCase();
     if (label === 'create operator' || this.displayLabel === 'create operator') {

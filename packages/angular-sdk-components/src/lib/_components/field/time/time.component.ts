@@ -8,6 +8,8 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
+import { format } from '../../../_helpers/formatters';
 
 interface TimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Time here
@@ -43,6 +45,9 @@ export class TimeComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl('', null);
+  actionsApi: Object;
+  propName: string;
+  formattedValue$: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -111,6 +116,9 @@ export class TimeComponent implements OnInit, OnDestroy {
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
 
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -118,6 +126,12 @@ export class TimeComponent implements OnInit, OnDestroy {
       }
       this.cdRef.detectChanges();
     });
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      this.formattedValue$ = format(this.value$, 'timeonly', {
+        format: 'hh:mm A'
+      });
+    }
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
@@ -138,7 +152,7 @@ export class TimeComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
@@ -151,15 +165,15 @@ export class TimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange(event: any) {
-    event.value = event.target.value;
-    this.angularPConnectData.actions?.onChange(this, event);
+  fieldOnChange() {
+    this.pConn$.clearErrorMessages({
+      property: this.propName
+    });
   }
 
   fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    event.value = event.target.value;
-    this.angularPConnectData.actions?.onBlur(this, event);
+    const value = event?.target?.value;
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {

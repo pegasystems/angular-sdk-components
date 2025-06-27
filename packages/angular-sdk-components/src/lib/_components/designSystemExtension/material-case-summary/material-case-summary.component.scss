@@ -49,7 +49,7 @@
 }
 
 .psdk-case-summary-fields {
-  padding: calc(2 * 0.5rem);
+  // padding: calc(2 * 0.5rem);
   display: grid;
   grid-row-gap: calc(2 * 0.5rem);
 }
@@ -90,6 +90,7 @@
   grid-template-columns: 1fr;
   grid-column-gap: calc(2 * 0.5rem);
   grid-row-gap: calc(1 * 0.5rem);
+  margin: 0;
 }
 
 .psdk-csf-secondary-field {

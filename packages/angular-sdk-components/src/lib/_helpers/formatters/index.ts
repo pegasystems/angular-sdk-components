@@ -10,8 +10,6 @@ export default {
 };
 
 function getDateObject(text): Date {
-  if (text instanceof Date) return text;
-
   // TODO - cleanup formatters util functions as DX APIs are returning values per ISO std now.
   const timeStamp = text.replace(/-/g, '');
   const isDateTime = timeStamp.indexOf('GMT') !== -1;
@@ -75,6 +73,13 @@ export function format(value, type, options = {}): string {
       break;
     }
 
+    case 'percentage': {
+      const defaultOptions = { locale: getLocale(), decPlaces: 2 };
+      const params = { ...defaultOptions, ...options };
+      formattedValue = Currency.Percentage(value, params);
+      break;
+    }
+
     case 'decimal': {
       const defaultOptions = { locale: getLocale(), decPlaces: 2 };
       const params = { ...defaultOptions, ...options };
@@ -117,6 +122,17 @@ export function format(value, type, options = {}): string {
 
     case 'userreference': {
       formattedValue = value.userName;
+      break;
+    }
+
+    case 'timeonly': {
+      const defaultOptions = {
+        locale: getLocale(),
+        format: 'hh:mm A',
+        timezone: getCurrentTimezone()
+      };
+      const params = { ...defaultOptions, ...options };
+      formattedValue = DateFormatter['Time-Only'](value, params);
       break;
     }
 

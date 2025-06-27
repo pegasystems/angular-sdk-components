@@ -9,13 +9,15 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
-import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
+import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { format } from '../../../_helpers/formatters';
 
 interface CurrrencyProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Currency here
   currencyISOCode?: string;
   allowDecimals: boolean;
+  formatter?: string;
 }
 
 @Component({
@@ -50,11 +52,13 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   currencyOptions: Object = {};
 
   fieldControl = new FormControl<number | null>(null, { updateOn: 'blur' });
-  currSym: string;
-  currSep: string;
-  currDec: string;
+  currencySymbol: string;
+  thousandSeparator: string;
+  decimalSeparator: string;
   inputMode: any;
   decimalPrecision: number | undefined;
+  formattedValue: string;
+  formatter;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -126,15 +130,26 @@ export class CurrencyComponent implements OnInit, OnDestroy {
         nValue = parseFloat(nValue);
       }
       this.value$ = nValue;
+      this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
-    const currencyISOCode: any = this.configProps$?.currencyISOCode;
+    const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
     const theSymbols = getCurrencyCharacters(currencyISOCode);
-    this.currSym = theSymbols.theCurrencySymbol;
-    this.currSep = theSymbols.theDigitGroupSeparator;
-    this.currDec = theSymbols.theDecimalIndicator;
+    this.currencySymbol = theSymbols.theCurrencySymbol;
+    this.thousandSeparator = theSymbols.theDigitGroupSeparator;
+    this.decimalSeparator = theSymbols.theDecimalIndicator;
+    this.formatter = this.configProps$.formatter;
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
+      if (this.formatter) {
+        this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
+      } else {
+        this.formattedValue = format(this.value$, 'currency', theCurrencyOptions);
+      }
+    }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -169,7 +184,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
     this.decimalPrecision = this.configProps$?.allowDecimals ? 2 : 0;
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
@@ -184,14 +199,17 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
     value = value?.substring(1);
-    if (this.currSep === ',') {
-      value = value.replace(/,/g, '');
-    } else {
-      value = value?.replace(/\./g, '');
-      value = value?.replace(/,/g, '.');
+    // replacing thousand separator with empty string as not required in api call
+    const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+    let regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+    value = value?.replace(regExp, '');
+    // replacing decimal separator with '.'
+    if (this.decimalSeparator !== '.') {
+      regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
+      value = value.replace(regExp, '.');
     }
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }

@@ -50,6 +50,9 @@ export class PhoneComponent implements OnInit, OnDestroy {
     phone: new FormControl<string | null>(null)
   });
 
+  actionsApi: Object;
+  propName: string;
+
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
@@ -114,8 +117,12 @@ export class PhoneComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
+      this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;
+
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
@@ -159,25 +166,16 @@ export class PhoneComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange() {
-    if (this.formGroup$.controls[this.controlName$].value) {
-      const actionsApi = this.pConn$?.getActionsApi();
-      const propName = (this.pConn$?.getStateProps() as any).value;
-      const value = this.formGroup$.controls[this.controlName$].value;
-      const eventObj = {
-        target: {
-          value
-        }
-      };
-      this.afterBlur = true;
-      this.angularPConnectData.actions?.onChange(this, eventObj);
-      handleEvent(actionsApi, 'blur', propName, value);
-    }
+  fieldOnBlur() {
+    // 'blur' isn't getting fired
   }
 
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+  fieldOnChange() {
+    if (this.formGroup$.controls[this.controlName$].value) {
+      const value = this.formGroup$.controls[this.controlName$].value;
+      this.afterBlur = true;
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
   }
 
   getErrorMessage() {

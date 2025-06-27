@@ -11,6 +11,7 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { map, Observable, startWith } from 'rxjs';
+import { handleEvent } from '../../../_helpers/event-util';
 
 const OPERATORS_DP = 'D_pyGetOperatorsForCurrentApplication';
 const DROPDOWN_LIST = 'Drop-down list';
@@ -22,6 +23,7 @@ interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
   value?: any;
   showAsFormattedText?: boolean;
   additionalProps?: object;
+  onRecordChange?: any;
 }
 
 @Component({
@@ -63,6 +65,9 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   filterValue = '';
 
   fieldControl = new FormControl('', null);
+  actionsApi: Object;
+  propName: string;
+  onRecordChange: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -80,11 +85,11 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      this.fieldControl.setValue(this.value$);
+      this.fieldControl.setValue(this.getValue(this.value$));
     }
 
     this.filteredOptions = this.fieldControl.valueChanges.pipe(
-      startWith(''),
+      startWith(this.getValue(this.value$) || ''),
       map(value => this._filter(value || ''))
     );
   }
@@ -123,6 +128,21 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     return this.options$?.filter(option => option.value?.toLowerCase().includes(filterVal));
   }
 
+  isUserNameAvailable = user => {
+    return typeof user === 'object' && user !== null && user.userName;
+  };
+
+  getUserName = user => {
+    return user.userName;
+  };
+
+  getValue = user => {
+    if (this.displayAs$ === DROPDOWN_LIST) {
+      return this.utils.getUserId(user) || this.getUserName(user);
+    }
+    return this.isUserNameAvailable(user) ? this.getUserName(user) : this.utils.getUserId(user);
+  };
+
   async checkAndUpdate() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
@@ -137,6 +157,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   async updateSelf() {
     const props = this.pConn$.getConfigProps() as UserReferenceProps;
     this.testId = props.testId;
+    this.onRecordChange = props?.onRecordChange;
 
     const { label, displayAs, value, showAsFormattedText, helperText, placeholder, displayMode } = props;
 
@@ -147,17 +168,18 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     this.placeholder = placeholder || '';
     this.displayMode$ = displayMode;
 
+    this.value$ = this.pConn$.getConfigProps()?.value;
+
     const { readOnly, required } = props;
     [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
 
-    const isUserNameAvailable = user => {
-      return typeof user === 'object' && user !== null && user.userName;
-    };
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
 
     this.userID$ = this.utils.getUserId(value);
 
     if (this.userID$ && this.bReadonly$ && this.showAsFormattedText$) {
-      if (isUserNameAvailable(value)) {
+      if (this.isUserNameAvailable(value)) {
         this.userName$ = value.userName;
       } else {
         // if same user ref field is referred in view as editable & readonly formatted text
@@ -174,7 +196,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
         dataViewName: OPERATORS_DP
       };
       try {
-        const resp: any = await PCore.getRestClient().invokeRestApi('getListData', { queryPayload } as any, ''); // 3rd arg empty string until typedef marked correctly
+        const resp = await PCore.getRestClient().invokeRestApi('getListData', { queryPayload }, ''); // 3rd arg empty string until typedef marked correctly
         if (resp?.data) {
           const ddDataSource = resp.data.data.map(listItem => ({
             key: listItem.pyUserIdentifier,
@@ -195,7 +217,13 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     if (event?.target) {
       this.filterValue = (event.target as HTMLInputElement).value;
     }
-    this.angularPConnectData.actions?.onChange(this, event);
+    const value = event?.value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
+  }
+
+  optionChanged(event: any) {
+    const value = event?.option?.value;
+    handleEvent(this.actionsApi, 'change', this.propName, value);
   }
 
   fieldOnBlur(event: any) {
@@ -204,12 +232,12 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       const index = this.options$?.findIndex(element => element.value === event.target.value);
       key = index > -1 ? (key = this.options$[index].key) : event.target.value;
     }
-
-    const eve = {
-      value: key
-    };
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onChange(this, eve);
+    const value = key;
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    if (this.onRecordChange) {
+      event.target.value = value;
+      this.onRecordChange(event);
+    }
   }
 
   getErrorMessage() {

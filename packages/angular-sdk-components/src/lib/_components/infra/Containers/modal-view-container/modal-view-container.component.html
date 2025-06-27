@@ -1,4 +1,4 @@
-<div id="dialog" *ngIf="bShowModal$ && bShowAsModal$" class="psdk-dialog-background">
+<div id="dialog" *ngIf="bShowModal$" class="psdk-dialog-background">
   <div class="psdk-modal-view-container-top" id="{{ buildName$ }}">
     <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
     <component-mapper
@@ -12,16 +12,6 @@
         [outputEvents]="{ closeActionsDialog: closeActionsDialog }"
       ></component-mapper>
     </div>
-  </div>
-</div>
-
-<div *ngIf="bShowModal$ && !bShowAsModal$">
-  <div id="{{ buildName$ }}">
-    <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
-    <component-mapper
-      name="Assignment"
-      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$ }"
-    ></component-mapper>
   </div>
 </div>
 

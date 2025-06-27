@@ -6,11 +6,16 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { interval } from 'rxjs';
+import dayjs from 'dayjs';
+import moment from 'moment';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
+import { format } from '../../../_helpers/formatters';
+import DateFormatter from '../../../_helpers/formatters/date';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here
@@ -61,8 +66,12 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   // Start with default dateFormatInfo
   dateFormatInfo = dateFormatInfoDefault;
   // and then update, as needed, based on locale, etc.
-  theDateFormat: any = getDateFormatInfo();
+  theDateFormat = getDateFormatInfo();
   placeholder: string;
+  actionsApi: Object;
+  propName: string;
+  formattedValue$: any;
+  timezone = PCore.getEnvironmentInfo()?.getTimeZone();
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -71,7 +80,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm a`;
+    this.placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm A`;
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.controlName$ = this.angularPConnect.getComponentID(this);
@@ -83,7 +92,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      this.fieldControl.setValue(this.value$);
+      this.fieldControl.setValue(dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString());
       this.bHasForm$ = true;
     } else {
       this.bReadonly$ = true;
@@ -127,7 +136,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     this.helperText = this.configProps$.helperText;
     this.value$ = this.configProps$?.value;
-    this.fieldControl.setValue(this.value$);
+    this.fieldControl.setValue(dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString());
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
@@ -135,6 +144,12 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       }
       this.cdRef.detectChanges();
     });
+
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      this.formattedValue$ = format(this.value$, 'datetime', {
+        format: `${this.theDateFormat.dateFormatString} hh:mm A`
+      });
+    }
 
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
@@ -155,7 +170,10 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
+
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
 
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
@@ -172,18 +190,11 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     // this comes from the date pop up
     if (typeof event.value === 'object') {
       // convert date to pega "date" format
-      event.value = event.value?.toISOString();
+      const dateTime = moment(event.value?.toISOString());
+      const timeZoneDateTime = dayjs.tz(dateTime.format('YYYY-MM-DDTHH:mm:ss'), this.timezone);
+      event.value = timeZoneDateTime && timeZoneDateTime.isValid() ? timeZoneDateTime.toISOString() : '';
     }
-    this.angularPConnectData.actions?.onChange(this, { value: event.value });
-  }
-
-  fieldOnBlur(event: any) {
-    if (typeof event.value === 'object') {
-      // convert date to pega "date" format
-      event.value = event.value?.toISOString();
-    }
-
-    this.angularPConnectData.actions?.onBlur(this, event);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
   }
 
   getErrorMessage() {

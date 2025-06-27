@@ -4,6 +4,7 @@
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
+  padding-block: 8px;
 }
 .psdk-value {
   margin: 8px 0px;
@@ -14,5 +15,5 @@
   font-size: 1.25rem;
 }
 .psdk-val-labels-left {
-  margin: 8px 0px;
+  white-space: break-spaces;
 }

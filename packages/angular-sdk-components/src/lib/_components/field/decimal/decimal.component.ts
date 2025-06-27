@@ -58,13 +58,14 @@ export class DecimalComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
-  currDec: string;
-  currSep: string;
-  currSym: string;
+  decimalSeparator: string;
+  thousandSeparator: string;
+  currencySymbol = '';
   decimalPrecision: number | undefined;
   formatter;
   formattedValue: any;
   inputMode: any;
+  suffix = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -136,23 +137,24 @@ export class DecimalComponent implements OnInit, OnDestroy {
         nValue = parseFloat(nValue);
       }
       this.value$ = nValue;
+      this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
     const showGroupSeparators = this.configProps$.showGroupSeparators;
-    const currencyISOCode: any = this.configProps$?.currencyISOCode;
+    const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
     const theSymbols = getCurrencyCharacters(currencyISOCode);
-    this.currDec = theSymbols.theDecimalIndicator;
-    this.currSep = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
+    this.decimalSeparator = theSymbols.theDecimalIndicator;
+    this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
 
     const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
     this.formatter = this.configProps$.formatter;
 
-    if (this.formatter === 'Currency') {
+    if (this.formatter) {
       this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
     } else {
-      this.formattedValue = format(this.value$, this.pConn$.getComponentName().toLowerCase(), theCurrencyOptions);
+      this.formattedValue = format(this.value$, 'decimal', theCurrencyOptions);
     }
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
@@ -183,24 +185,32 @@ export class DecimalComponent implements OnInit, OnDestroy {
     }
 
     if (this.bReadonly$ && this.formatter === 'Currency') {
-      this.currSym = theSymbols.theCurrencySymbol;
-    } else {
-      this.currSym = '';
+      this.currencySymbol = theSymbols.theCurrencySymbol;
     }
+
+    if (this.bReadonly$ && this.formatter === 'Percentage') {
+      this.suffix = '%';
+    }
+
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
   }
 
   fieldOnBlur(event: any) {
     const actionsApi = this.pConn$?.getActionsApi();
-    const propName = (this.pConn$?.getStateProps() as any).value;
+    const propName = this.pConn$?.getStateProps().value;
     let value = event?.target?.value;
-    if (this.currSep === ',') {
-      value = value.replace(/,/g, '');
-    } else {
-      value = value?.replace(/\./g, '');
-      value = value?.replace(/,/g, '.');
+    // replacing thousand separator with empty string as not required in api call
+    if (this.configProps$.showGroupSeparators) {
+      const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+      const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+      value = value?.replace(regExp, '');
+    }
+    // replacing decimal separator with '.'
+    if (this.decimalSeparator !== '.') {
+      const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
+      value = value.replace(regExp, '.');
     }
     handleEvent(actionsApi, 'changeNblur', propName, value);
   }

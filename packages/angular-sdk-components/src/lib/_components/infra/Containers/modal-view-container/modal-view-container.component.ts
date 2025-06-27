@@ -23,7 +23,6 @@ import { ReferenceComponent } from '../../reference/reference.component';
 })
 export class ModalViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
-  @Input() displayOnlyFA$: boolean;
 
   // for when non modal
   @Output() modalVisibleChange = new EventEmitter<boolean>();
@@ -39,7 +38,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   context$: string;
   title$ = '';
   bShowModal$ = false;
-  bShowAsModal$ = true;
   itemKey$: string;
   formGroup$: FormGroup;
   oCaseInfo: Object = {};
@@ -73,11 +71,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.displayOnlyFA$) {
-      // for when non modal
-      this.bShowAsModal$ = false;
-    }
-
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
@@ -89,7 +82,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       this.itemKey$ = baseContext.concat('/').concat(acName);
     }
 
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'

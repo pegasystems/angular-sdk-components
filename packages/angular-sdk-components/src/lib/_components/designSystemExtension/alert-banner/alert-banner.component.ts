@@ -22,6 +22,6 @@ export class AlertBannerComponent {
   onAlertClose(config) {
     const { PAGE, type, target } = config;
     const { clearMessages } = PCore.getMessageManager();
-    clearMessages({ category: PAGE, type, context: target } as any);
+    clearMessages({ category: PAGE, type, context: target });
   }
 }

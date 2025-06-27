@@ -89,6 +89,11 @@
               },
               {
                 "glob": "*.*",
+                "input": "./node_modules/@pega/constellationjs/dist/js",
+                "output": "./constellation/prerequisite/js"
+              },
+              {
+                "glob": "*.*",
                 "input": "./projects/angular-test-app/src/assets/",
                 "output": "./constellation/assets"
               },

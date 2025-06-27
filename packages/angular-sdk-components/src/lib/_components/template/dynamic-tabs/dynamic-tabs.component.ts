@@ -9,6 +9,8 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 interface DynamicTabsProps {
   referenceList: string;
   template: string;
+  label?: string;
+  showLabel?: boolean;
 }
 
 @Component({
@@ -24,6 +26,7 @@ export class DynamicTabsComponent implements OnInit, OnDestroy {
 
   angularPConnectData: AngularPConnectData = {};
   tabsItems: any[];
+  propsToUse: any;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -54,15 +57,17 @@ export class DynamicTabsComponent implements OnInit, OnDestroy {
   }
 
   updateSelf() {
-    const { referenceList } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DynamicTabsProps;
+    const { referenceList, label, showLabel } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DynamicTabsProps;
+
+    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
 
     const { tablabel } = this.pConn$.getComponentConfig();
     const tablabelProp = PCore.getAnnotationUtils().getPropertyName(tablabel);
 
-    this.pConn$.setInheritedProp('displayMode', 'LABELS_LEFT');
+    this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     this.pConn$.setInheritedProp('readOnly', true);
 
-    const referenceListData: any = this.pConn$.getValue(`${referenceList}.pxResults`, ''); // 2nd arg empty string until typedefs properly allow optional
+    const referenceListData = this.pConn$.getValue(`${referenceList}.pxResults`, ''); // 2nd arg empty string until typedefs properly allow optional
 
     this.tabsItems =
       referenceListData?.map((item, i) => {

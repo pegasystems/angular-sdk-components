@@ -5,6 +5,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../../reference/reference.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
+import { configureBrowserBookmark } from './helper';
 
 /**
  * WARNING:  It is not expected that this file should be modified.  It is part of infrastructure code that works with
@@ -86,7 +87,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
 
     this.pConn$.isBoundToState();
 
-    const containerMgr: any = this.pConn$.getContainerManager();
+    const containerMgr = this.pConn$.getContainerManager();
 
     this.prepareDispatchObject = this.prepareDispatchObject.bind(this);
 
@@ -96,20 +97,10 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
     //    And expose less via ui-bootstrap.js
     this.state = {
       dispatchObject: this.dispatchObject,
-      // PCore is defined in pxBootstrapShell - eventually will be exported in place of constellationCore
-
       visible: !PCore.checkIfSemanticURL()
     };
 
-    // here, to match Nebula/Constellation, the constructor of ViewContainer is only called once, and thus init/add container is only
-    // called once.  Because of Angular creating and destroy components if the parent changes a lot, this component will be
-    // created and destroyed more than once.  So the sessionStore "hasViewContainer" is set to false in rootContainer and then
-    // after first round is true here.  Subsequent ViewContainer creation will not init/add more containers.
-
     if (sessionStorage.getItem('hasViewContainer') == 'false') {
-      // unlike Nebula/Constellation, have to initializeContainer after we create a dispatcObject and state, otherwise, when calling
-      // initializeContainer before, code will get executed that needs state that wasn't defined.
-
       containerMgr.initializeContainers({
         type: mode === CONTAINER_TYPE.MULTIPLE ? CONTAINER_TYPE.MULTIPLE : CONTAINER_TYPE.SINGLE
       });
@@ -118,12 +109,9 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
         /* NOTE: setContainerLimit use is temporary. It is a non-public, unsupported API. */
         PCore.getContainerUtils().setContainerLimit(`${APP.APP}/${name}`, limit);
       }
-    }
 
-    if (sessionStorage.getItem('hasViewContainer') == 'false') {
-      if (this.pConn$.getMetadata().children) {
-        containerMgr.addContainerItem(this.dispatchObject);
-      }
+      if (!PCore.checkIfSemanticURL()) containerMgr.addContainerItem(this.pConn$ as any);
+      if (!this.displayOnlyFA$) configureBrowserBookmark(this.pConn$);
 
       sessionStorage.setItem('hasViewContainer', 'true');
     }
@@ -254,7 +242,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
               console.error(`ViewContainer has a newComp that is NOT a reference!`);
 
               this.createdViewPConn$ = newComp;
-              const newConfigProps: any = newComp.getConfigProps();
+              const newConfigProps = newComp.getConfigProps();
               this.templateName$ = newConfigProps.template || '';
               this.title$ = newConfigProps.title || '';
               // update children with new view's children

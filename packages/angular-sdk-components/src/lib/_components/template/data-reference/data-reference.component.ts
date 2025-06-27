@@ -45,19 +45,18 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.children = this.pConn$.getChildren() as any[];
+    this.children = this.pConn$.getChildren();
     this.updateSelf();
     if (this.firstChildMeta?.type === 'Dropdown' && this.rawViewMetadata.config?.parameters) {
       const { value, key, text } = this.firstChildMeta.config.datasource.fields;
-      (
-        PCore.getDataApiUtils().getData(
+      PCore.getDataApiUtils()
+        .getData(
           this.refList,
           {
             dataViewParameters: this.parameters
-          } as any,
+          },
           ''
-        ) as Promise<any>
-      )
+        )
         .then(res => {
           if (res.data.data !== null) {
             const ddDataSource = res.data.data
@@ -103,7 +102,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
 
   updateSelf() {
     // Update properties based on configProps
-    const theConfigProps: any = this.pConn$.getConfigProps();
+    const theConfigProps = this.pConn$.getConfigProps();
     this.updatePropertiesFromProps(theConfigProps);
 
     const displayAs = theConfigProps.displayAs;
@@ -114,7 +113,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.refList = this.rawViewMetadata.config.referenceList;
     this.canBeChangedInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
     // this.childrenToRender = this.children;
-    this.isDisplayModeEnabled = ['LABELS_LEFT', 'STACKED_LARGE_VAL'].includes(displayMode);
+    this.isDisplayModeEnabled = ['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(displayMode);
 
     if (this.firstChildMeta?.type !== 'Region') {
       this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;
@@ -187,41 +186,38 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     // AutoComplete sets value on event.id whereas Dropdown sets it on event.target.value
     const propValue = event?.id || event?.target?.value;
     if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
-      (PCore.getDataApiUtils().getCaseEditLock(caseKey, '') as Promise<any>).then(caseResponse => {
-        const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
-        let curr = {};
-        const commitData = curr;
+      PCore.getDataApiUtils()
+        .getCaseEditLock(caseKey, '')
+        .then(caseResponse => {
+          const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
+          let curr = {};
+          const commitData = curr;
 
-        pageTokens.forEach(el => {
-          if (el !== '') {
-            curr[el] = {};
-            curr = curr[el];
-          }
-        });
+          pageTokens.forEach(el => {
+            if (el !== '') {
+              curr[el] = {};
+              curr = curr[el];
+            }
+          });
 
-        // expecting format like {Customer: {pyID:"C-100"}}
-        const propArr = this.propName.split('.');
-        propArr.forEach((element, idx) => {
-          if (idx + 1 === propArr.length) {
-            curr[element] = propValue;
-          } else {
-            curr[element] = {};
-            curr = curr[element];
-          }
-        });
+          // expecting format like {Customer: {pyID:"C-100"}}
+          const propArr = this.propName.split('.');
+          propArr.forEach((element, idx) => {
+            if (idx + 1 === propArr.length) {
+              curr[element] = propValue;
+            } else {
+              curr[element] = {};
+              curr = curr[element];
+            }
+          });
 
-        (
-          PCore.getCaseUtils().updateCaseEditFieldsData(
-            caseKey,
-            { [caseKey]: commitData },
-            caseResponse.headers.etag,
-            this.pConn$.getContextName()
-          ) as Promise<any>
-        ).then(response => {
-          PCore.getContainerUtils().updateParentLastUpdateTime(this.pConn$.getContextName(), response.data.data.caseInfo.lastUpdateTime);
-          PCore.getContainerUtils().updateRelatedContextEtag(this.pConn$.getContextName(), response.headers.etag);
+          PCore.getCaseUtils()
+            .updateCaseEditFieldsData(caseKey, { [caseKey]: commitData }, caseResponse.headers.etag, this.pConn$.getContextName())
+            .then(response => {
+              PCore.getContainerUtils().updateParentLastUpdateTime(this.pConn$.getContextName(), response.data.data.caseInfo.lastUpdateTime);
+              PCore.getContainerUtils().updateRelatedContextEtag(this.pConn$.getContextName(), response.headers.etag);
+            });
         });
-      });
     }
   }
 
@@ -235,7 +231,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
         property: this.propName,
         category: '',
         context: ''
-      } as any);
+      });
       if (!this.canBeChangedInReviewMode && this.isDisplayModeEnabled && this.selectionMode === SELECTION_MODE.SINGLE) {
         this.displaySingleRef = true;
       }

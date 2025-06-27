@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { ServerConfigService } from '../../../_services/server-config.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
@@ -37,6 +38,8 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   @Input() displayOnlyFA$: boolean;
   @Input() isMashup$: boolean;
 
+  scService = inject(ServerConfigService);
+
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
@@ -62,12 +65,10 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const myContext = 'app';
-
     const { containers } = PCore.getStore().getState();
     const items = Object.keys(containers).filter(item => item.includes('root'));
 
-    (PCore.getContainerUtils().getContainerAPI() as any).addContainerItems(items);
+    PCore.getContainerUtils().getContainerAPI().addContainerItems(items);
 
     // add preview and modalview containers to redux
     // keep local copies of the the pConnect that is related
@@ -84,23 +85,10 @@ export class RootContainerComponent implements OnInit, OnDestroy {
 
     this.pvConn$ = configObjPreview.getPConnect();
 
-    const configObjModal = PCore.createPConnect({
-      meta: {
-        type: 'ModalViewContainer',
-        config: {
-          name: 'modal'
-        }
-      },
-      options: {
-        pageReference: 'pyPortal',
-        context: myContext
-      }
-    });
+    this.configureModalContainer();
 
     // clear out hasViewContainer
     sessionStorage.setItem('hasViewContainer', 'false');
-
-    this.mConn$ = configObjModal.getPConnect();
 
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
@@ -128,16 +116,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  modalVisibleChanged(isVisible) {
-    if (this.displayOnlyFA$) {
-      if (isVisible) {
-        this.bShowRoot$ = false;
-      } else {
-        this.bShowRoot$ = true;
-      }
-    }
-  }
-
   updateSelf() {
     // need to call this.getCurrentCompleteProps (not this.thePConn.getConfigProps)
     //  to get full set of props that affect this component in Redux
@@ -156,7 +134,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
         if (items[key] && items[key].view && Object.keys(items[key].view).length > 0) {
           const itemView = items[key].view;
 
-          const rootObject: any = PCore.createPConnect({
+          const rootObject = PCore.createPConnect({
             meta: itemView,
             options: {
               context: items[key].context
@@ -191,6 +169,25 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     }
   }
 
+  async configureModalContainer() {
+    const sdkConfig = await this.scService.getSdkConfig();
+    const showModalsInEmbedMode = sdkConfig.serverConfig.showModalsInEmbedMode;
+
+    if (!this.displayOnlyFA$ || showModalsInEmbedMode) {
+      const configObjModal = PCore.createPConnect({
+        meta: {
+          type: 'ModalViewContainer',
+          config: {
+            name: 'modal'
+          }
+        },
+        options
+      });
+
+      this.mConn$ = configObjModal.getPConnect();
+    }
+  }
+
   generateViewContainerForNoPortal() {
     // bootstrap loadMashup resolves to here
     const arChildren = this.pConn$.getChildren() as any[];
@@ -202,7 +199,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
 
           this.componentName$ = localPConn.getComponentName();
           if (this.componentName$ === 'ViewContainer') {
-            const configProps: any = this.pConn$.getConfigProps();
+            const configProps = this.pConn$.getConfigProps();
             const viewContConfig = {
               meta: {
                 type: 'ViewContainer',

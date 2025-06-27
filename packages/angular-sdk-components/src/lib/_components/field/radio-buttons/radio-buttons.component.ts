@@ -9,6 +9,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { handleEvent } from '../../../_helpers/event-util';
 
 interface IOption {
   key: string;
@@ -60,6 +61,8 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
   localeName = '';
   localePath = '';
   localizedValue = '';
+  actionsApi: Object;
+  propName: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -164,13 +167,15 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
       this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
     }
 
-    this.componentReference = (this.pConn$.getStateProps() as any).value;
+    this.componentReference = this.pConn$.getStateProps().value;
 
     this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
 
-    const propName = (this.pConn$.getStateProps() as any).value;
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     const className = this.pConn$.getCaseInfo().getClassName();
-    const refName = propName?.slice(propName.lastIndexOf('.') + 1);
+    const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);
 
     this.fieldMetadata = this.configProps$.fieldMetadata;
     const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter(field => field?.classID === className)[0] : this.fieldMetadata;
@@ -203,12 +208,7 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    this.angularPConnectData.actions?.onChange(this, event);
-  }
-
-  fieldOnBlur(event: any) {
-    // PConnect wants to use eventHandler for onBlur
-    this.angularPConnectData.actions?.onBlur(this, event);
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
   }
 
   getLocalizedOptionValue(opt: IOption) {

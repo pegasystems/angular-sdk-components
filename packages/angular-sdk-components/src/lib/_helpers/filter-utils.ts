@@ -45,7 +45,6 @@ export const createFilterComponent = (getPConnect, filterMeta, index) => {
   }
   let propInfo: any = PCore.getMetadataUtils().getPropertyMetadata(cleanedName, filterMeta.config.ruleClass);
   if (!propInfo) {
-    // @ts-ignore - PCore.getMetadataUtils().getPropertyMetadata - An argument for 'currentClassID' was not provided.
     propInfo = PCore.getMetadataUtils().getPropertyMetadata(cleanedName);
   }
   const { type: propertyType } = propInfo || { type: 'Text' };

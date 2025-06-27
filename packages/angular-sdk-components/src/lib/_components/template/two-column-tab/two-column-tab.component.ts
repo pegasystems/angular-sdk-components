@@ -29,6 +29,6 @@ export class TwoColumnTabComponent implements OnInit, OnChanges {
   }
 
   updateSelf() {
-    this.arChildren$ = this.pConn$.getChildren() as any[];
+    this.arChildren$ = this.pConn$.getChildren();
   }
 }
