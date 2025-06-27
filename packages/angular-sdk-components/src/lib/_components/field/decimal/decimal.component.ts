@@ -65,6 +65,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
   formatter;
   formattedValue: any;
   inputMode: any;
+  suffix = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -136,6 +137,7 @@ export class DecimalComponent implements OnInit, OnDestroy {
         nValue = parseFloat(nValue);
       }
       this.value$ = nValue;
+      this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
@@ -185,6 +187,11 @@ export class DecimalComponent implements OnInit, OnDestroy {
     if (this.bReadonly$ && this.formatter === 'Currency') {
       this.currencySymbol = theSymbols.theCurrencySymbol;
     }
+
+    if (this.bReadonly$ && this.formatter === 'Percentage') {
+      this.suffix = '%';
+    }
+
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
     this.componentReference = this.pConn$.getStateProps().value;

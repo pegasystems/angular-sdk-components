@@ -130,6 +130,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
         nValue = parseFloat(nValue);
       }
       this.value$ = nValue;
+      this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
