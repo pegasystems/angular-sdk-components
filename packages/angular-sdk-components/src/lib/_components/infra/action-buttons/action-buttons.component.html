@@ -1,4 +1,4 @@
-<mat-grid-list cols="2" rowHeight="6.25rem">
+<mat-grid-list *ngIf="arMainButtons$ && arSecondaryButtons$" cols="2" rowHeight="6.25rem">
   <mat-grid-tile>
     <button *ngFor="let aButton of arSecondaryButtons$" mat-raised-button color="secondary" (click)="buttonClick(aButton.jsAction, 'secondary')">
       {{ localizedVal(aButton.name, localeCategory) }}
