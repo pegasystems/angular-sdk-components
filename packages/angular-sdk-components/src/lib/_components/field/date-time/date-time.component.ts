@@ -92,7 +92,11 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      this.fieldControl.setValue(dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString());
+      let dateTimeValue = this.value$ ?? '';
+      if (this.value$ && this.value$ !== '') {
+        dateTimeValue = dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
+      }
+      this.fieldControl.setValue(dateTimeValue);
       this.bHasForm$ = true;
     } else {
       this.bReadonly$ = true;
@@ -136,7 +140,11 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     this.helperText = this.configProps$.helperText;
     this.value$ = this.configProps$?.value;
-    this.fieldControl.setValue(dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString());
+    let dateTimeValue = this.configProps$?.value ?? '';
+    if (this.value$ && this.value$ !== '') {
+      dateTimeValue = dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
+    }
+    this.fieldControl.setValue(dateTimeValue);
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
