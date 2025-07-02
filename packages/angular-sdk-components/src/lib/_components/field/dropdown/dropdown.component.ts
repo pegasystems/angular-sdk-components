@@ -103,6 +103,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   localizedValue = '';
   actionsApi: Object;
   propName: string;
+  displayModeValue: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -239,6 +240,9 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.localePath,
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
+
+    this.displayModeValue = this.options$?.find(opt => opt.key === this.value$)?.value || this.localizedValue;
+
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       const timer = interval(100).subscribe(() => {
