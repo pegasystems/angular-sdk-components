@@ -71,8 +71,7 @@ export class MainScreenComponent implements OnInit, OnDestroy {
     this.scservice.getSdkConfig().then(sdkConfig => {
       let mashupCaseType = sdkConfig.serverConfig.appMashupCaseType;
       if (!mashupCaseType) {
-        // @ts-ignore - Object is possibly 'null'
-        const caseTypes: any = PCore.getEnvironmentInfo().environmentInfoObject.pyCaseTypeList;
+        const caseTypes: any = PCore.getEnvironmentInfo().environmentInfoObject?.pyCaseTypeList;
         mashupCaseType = caseTypes[0].pyWorkTypeImplementationClassName;
       }
 

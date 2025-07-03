@@ -469,7 +469,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   registerForRefresh() {
-    // @ts-ignore - Property 'getActionRefreshConditions' is private and only accessible within class 'CaseInfo'
     const refreshConditions = this.pConn$.getCaseInfo()?.getActionRefreshConditions();
     const pageReference = this.pConn$.getPageReference();
     const context = this.pConn$.getContextName();
