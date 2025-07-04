@@ -2,7 +2,7 @@
   <component-mapper
     *ngIf="bVisible$ !== false"
     name="FieldValueList"
-    [props]="{ label$, value$: this.displayModeValue, displayMode$ }"
+    [props]="{ label$, value$: this.localizedValue, displayMode$ }"
   ></component-mapper>
 </div>
 <ng-template #noDisplayMode>
