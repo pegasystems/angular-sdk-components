@@ -17,6 +17,8 @@ export class Utils {
 
   viewContainerCount = 0;
 
+  timezone = PCore.getEnvironmentInfo()?.getTimeZone();
+
   constructor(private scService: ServerConfigService) {}
 
   getSDKStaticContentUrl() {
@@ -271,61 +273,61 @@ export class Utils {
     switch (dateFormat) {
       case 'DateTime-Short':
         // 1/1/01 1:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('M/D/YY h:mm A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('M/D/YY h:mm A');
         break;
       case 'DateTime-Short-Custom':
         // 01/01/01 01:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('MM/DD/YY hh:mm A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('MM/DD/YY hh:mm A');
         break;
       case 'DateTime-Short-YYYY-Custom':
         // 01/01/2001 01:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('M/D/YYYY hh:mm A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('M/D/YYYY hh:mm A');
         break;
       case 'DateTime-Long-YYYY-Custom':
         // 01/01/01 01:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('MM/DD/YYYY, hh:mm A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('MM/DD/YYYY, hh:mm A');
         break;
       case 'DateTime-Short-YYYY':
         // 1/1/2001 1:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('M/D/YYYY h:mm A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('M/D/YYYY h:mm A');
         break;
       case 'DateTime-Medium':
         // Jan 1, 2001 1:00:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('MMM D, YYYY h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('MMM D, YYYY h:mm:ss A');
         break;
       case 'DateTime-Long':
         // January 1, 2001 1:00:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('MMMM D, YYYY h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('MMMM D, YYYY h:mm:ss A');
         break;
       case 'DateTime-DayMonthYear-Custom':
         // 01-Jan-2001 1:00:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('DD-MMM-YYYY h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('DD-MMM-YYYY h:mm:ss A');
         break;
       case 'DateTime-Full':
         // Monday, January 1, 2001 1:00 AM EDT
-        sReturnDate = dayjs(dateTimeVal).format('dddd, MMMM D, YYYY h:mm A z');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('dddd, MMMM D, YYYY h:mm A z');
         break;
       case 'DateTime-Frame':
       case 'DateTime-Frame-Short':
       case 'DateTime-Since':
         // 2 days, 5 hours ago
-        sReturnDate = dayjs(dateTimeVal).fromNow();
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).fromNow();
         break;
       case 'DateTime-ISO-8601':
         // 2001/01/01 1:00:00 AM     y/m/d
-        sReturnDate = dayjs(dateTimeVal).format('YYYY/MM/DD h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('YYYY/MM/DD h:mm:ss A');
         break;
       case 'DateTime-Gregorian-1':
         // 01 January, 2001 1:00:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('DD MMMM, YYYY h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('DD MMMM, YYYY h:mm:ss A');
         break;
       case 'DateTime-Gregorian-2':
         // January 01, 2001 1:00:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('MMMM DD, YYYY h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('MMMM DD, YYYY h:mm:ss A');
         break;
       case 'DateTime-Gregorian-3':
         // 2001, January 01 1:00:00 AM
-        sReturnDate = dayjs(dateTimeVal).format('YYYY, MMMM DD h:mm:ss A');
+        sReturnDate = dayjs(dateTimeVal).tz(this.timezone).format('YYYY, MMMM DD h:mm:ss A');
         break;
       case 'DateTime-Custom':
         break;

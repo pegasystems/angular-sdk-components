@@ -144,7 +144,7 @@ export class TextComponent implements OnInit, OnDestroy {
   generateDateTime(sVal): string {
     if (!sVal) return '';
     if (sVal.length === 10) return this.generateDate(sVal);
-    const value = sVal.substring(0, sVal.length - 1);
+    // const value = sVal.substring(0, sVal.length - 1);
     // value = new Intl.DateTimeFormat('default', {
     //   year: 'numeric',
     //   month: 'numeric',
@@ -155,6 +155,6 @@ export class TextComponent implements OnInit, OnDestroy {
     //   hour12: true,
     // }).format(new Date(value))
 
-    return this.utils.generateDateTime(value, 'DateTime-Long-YYYY-Custom');
+    return this.utils.generateDateTime(sVal, 'DateTime-Long-YYYY-Custom');
   }
 }
