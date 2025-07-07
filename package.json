@@ -95,7 +95,7 @@
     "@pega/configs": "^0.16.2",
     "@pega/constellationjs": "~0.242.7",
     "@pega/eslint-config": "^0.16.2",
-    "@pega/pcore-pconnect-typedefs": "3.2.2",
+    "@pega/pcore-pconnect-typedefs": "~3.2.2",
     "@pega/prettier-config": "^0.16.2",
     "@playwright/test": "^1.40.1",
     "@types/jasmine": "~5.1.4",
