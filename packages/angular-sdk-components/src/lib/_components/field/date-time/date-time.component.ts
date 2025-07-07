@@ -93,7 +93,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       let dateTimeValue = this.value$ ?? '';
-      if (this.value$ && this.value$ !== '') {
+      if (this.value$) {
         dateTimeValue = dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
       }
       this.fieldControl.setValue(dateTimeValue);
@@ -141,7 +141,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     this.helperText = this.configProps$.helperText;
     this.value$ = this.configProps$?.value;
     let dateTimeValue = this.configProps$?.value ?? '';
-    if (this.value$ && this.value$ !== '') {
+    if (this.value$) {
       dateTimeValue = dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
     }
     this.fieldControl.setValue(dateTimeValue);
