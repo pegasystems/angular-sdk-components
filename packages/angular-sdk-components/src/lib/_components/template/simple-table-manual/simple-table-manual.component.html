@@ -57,7 +57,9 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       <tr class="mat-row psdk-no-records" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length">No Records Found.</td>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          {{ utils.getGenericFieldsLocalizedValue('CosmosFields.fields.lists', 'No records found.') }}
+        </td>
       </tr>
     </table>
     <table *ngIf="editableMode && !allowEditingInModal" mat-table [dataSource]="elementsData" class="mat-elevation-z8" id="editable-table">
@@ -87,11 +89,15 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       <tr class="mat-row psdk-no-records" *matNoDataRow>
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length">No Records Found.</td>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          {{ utils.getGenericFieldsLocalizedValue('CosmosFields.fields.lists', 'No records found.') }}
+        </td>
       </tr>
     </table>
   </div>
-  <button *ngIf="showAddRowButton" mat-button color="primary" style="font-size: 16px" (click)="addRecord()">+ Add</button>
+  <button *ngIf="showAddRowButton" mat-button color="primary" style="font-size: 16px" (click)="addRecord()">
+    + {{ localizedVal('Add', localeCategory) }}
+  </button>
 </ng-container>
 
 <!-- pop overs for filters-->

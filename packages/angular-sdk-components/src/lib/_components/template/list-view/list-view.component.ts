@@ -165,7 +165,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   constructor(
     private psService: ProgressSpinnerService,
-    private utils: Utils
+    public utils: Utils
   ) {}
 
   ngOnInit(): void {
