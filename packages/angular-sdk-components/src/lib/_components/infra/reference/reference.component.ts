@@ -13,49 +13,42 @@ import { Component } from '@angular/core';
   standalone: true
 })
 export class ReferenceComponent {
-  referencedComponent: any = null;
-
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
 
-  constructor() {
-    // With new static method approach, this shouldn't be called any more
-    window.alert(`in ReferenceComponent constructor!`);
-
-    console.error(`in ReferenceComponent constructor!`);
-  }
-
-  // onStateChange and updateSelf methods removed from original implementation
-  //  when we moved to the static method implementation.
-
-  // STATIC method to create a normalized PConn (a fully realized View that the 'reference'
-  //  component refers to) from the given pConn. Has to add in some stuff as in the constructor
-  static createFullReferencedViewFromRef(inPConn: any) {
-    // BAIL and ERROR if inPConn is NOT a reference!
+  /**
+   * Creates a normalized PConn from a reference component.
+   * Resolves the reference to its fully realized View with proper configuration.
+   *
+   * @param inPConn - The PConn object that represents a reference component
+   * @returns The dereferenced PConnect object, or null if reference can't be resolved
+   */
+  static createFullReferencedViewFromRef(inPConn: any): any {
+    // Validate that inPConn is a reference component
     if (inPConn.getComponentName() !== 'reference') {
       console.error(`Reference component: createFullReferencedViewFromRef inPConn is NOT a reference! ${inPConn.getComponentName()}`);
+      return null;
     }
 
+    // Get reference configuration and make a copy
     const referenceConfig = { ...inPConn.getComponentConfig() };
 
-    // Since SDK-A implements Reference as static methods and we don't rely on
-    //  the Reference component's handling of the visibility prop, we leave it in
-    //  (and also leaving the others in for now) so the referenced View can act on
-    //  the visibility prop. (The following 3 lines were carried over from React SDK)
+    // Remove properties that should not be inherited by the referenced view
+    // (Maintained from React SDK implementation)
     delete referenceConfig?.name;
     delete referenceConfig?.type;
     delete referenceConfig?.visibility;
 
+    // Get the metadata for the referenced view
     const viewMetadata = inPConn.getReferencedView();
 
+    // Return null if view metadata is not found
     if (!viewMetadata) {
       console.log('View not found ', inPConn.getComponentConfig());
       return null;
     }
 
-    // If we get here, we have metadata for a View component...
-    // const referencedComponentName = viewMetadata.type;
-
+    // Create the view object by merging metadata with reference config
     const viewObject = {
       ...viewMetadata,
       config: {
@@ -64,26 +57,31 @@ export class ReferenceComponent {
       }
     };
 
-    const theResolvedConfigProps = inPConn.resolveConfigProps(inPConn.getConfigProps());
-    const { visibility = true, context, readOnly = false, displayMode = '' } = theResolvedConfigProps;
+    // Resolve configuration properties
+    const resolvedConfigProps = inPConn.resolveConfigProps(inPConn.getConfigProps());
+    const { visibility = true, context, readOnly = false, displayMode = '' } = resolvedConfigProps;
 
+    // Log debug information if logging is enabled
     if (ReferenceComponent.bLogging) {
       console.log(`Reference: about to call createComponent with pageReference: context: ${inPConn.getContextName()}`);
     }
 
+    // Create the component with the right context
     const viewComponent = inPConn.createComponent(viewObject, null, null, {
       pageReference: context && context.startsWith('@CLASS') ? '' : context
     });
 
-    // updating the referencedComponent should trigger a render
+    // Get the PConnect object from the created component
     const newCompPConnect = viewComponent.getPConnect();
 
+    // Set inherited configuration on the new component
     newCompPConnect.setInheritedConfig({
       ...referenceConfig,
       readOnly,
       displayMode
     });
 
+    // Log debug information if logging is enabled
     if (ReferenceComponent.bLogging) {
       console.log(
         `Angular Reference component: createFullReferencedViewFromRef -> newCompPConnect configProps: ${JSON.stringify(
@@ -92,81 +90,63 @@ export class ReferenceComponent {
       );
     }
 
-    if (visibility !== false) {
-      return newCompPConnect;
-    }
-
-    return null;
+    // Return the component if it should be visible, otherwise null
+    return visibility !== false ? newCompPConnect : null;
   }
 
-  // STATIC method that other components can call to normalize
-  //  a pConn object that might be a 'reference'. If the incoming
-  //  pConn is a reference, return its dereferenced View PConnect's
-  //  getPConnect. Otherwise, return the passed in pConn unchanged
-  //  inPConn = a PConn object (ex: { getPConnect()} )
-  static normalizePConn(inPConn: any) {
-    // debugger;
-
-    let returnObj = false;
-    let thePConnType = '';
-
-    if (inPConn.getPConnect) {
-      // inPConn is an object (ex: { getPConnect()} ), so we want to return
-      //  any referenced view as the object containing the
-      //  the getPConnect function
-      returnObj = true;
-      thePConnType = inPConn.getPConnect().getComponentName();
-    } else {
-      // inPConn is an object with the PConnect function, so we want
-      //  to return any referenced view as the object containing the
-      //  the c11n function
-      returnObj = false;
-      thePConnType = inPConn.getComponentName();
+  /**
+   * Normalizes a PConn object that might be a 'reference'.
+   * If the incoming PConn is a reference, returns its dereferenced View.
+   * Otherwise, returns the passed in PConn unchanged.
+   *
+   * @param inPConn - A PConn object (ex: { getPConnect() } or direct PConnect)
+   * @returns The normalized PConn object with references resolved
+   */
+  static normalizePConn(inPConn: any): any {
+    // Early return for null or undefined input
+    if (!inPConn) {
+      return inPConn;
     }
 
-    if (thePConnType === 'reference') {
-      if (returnObj) {
-        //  WAS...
-        // const theRefViewPConn = inPConn.getPConnect().getReferencedViewPConnect(true);
-        // Now: ALWAYS calling createFullReferencedViewFromRef to have options, PageReference, etc.
-        //  set correctly in the C11nEnv (PConnect) object
-        // debugger;
-        let theRefViewPConn = this.createFullReferencedViewFromRef(inPConn.getPConnect());
-        // now return its PConnect
-        theRefViewPConn = theRefViewPConn?.getComponent();
+    // Determine if we have an object with getPConnect method or direct PConnect
+    const hasGetPConnectMethod = !!inPConn.getPConnect;
 
-        // const theFullReference = theRefViewPConn.getPConnect().getFullReference();
-        // console.log(`theFullReference: ${theFullReference}`);
+    // Get the component name in the appropriate way based on the object type
+    const componentName = hasGetPConnectMethod ? inPConn.getPConnect().getComponentName() : inPConn.getComponentName();
 
-        return theRefViewPConn;
+    // Only process if this is a reference component
+    if (componentName === 'reference') {
+      if (hasGetPConnectMethod) {
+        // For objects with getPConnect method, get the referenced view and its component
+        const refViewPConn = this.createFullReferencedViewFromRef(inPConn.getPConnect());
+        return refViewPConn?.getComponent();
       }
-      // console.log(`created theFullRefView full reference: ${theFullRefView.getFullReference()}`);
-      // debugger;
 
+      // For direct PConnect objects, just create the referenced view
       return this.createFullReferencedViewFromRef(inPConn);
     }
+
+    // Not a reference component, return unchanged
     return inPConn;
   }
 
-  // STATIC method that other components can call to normalize
-  //  an array of pConn objects where any of the children might
-  //  be a 'reference'. The array returns an array of children
-  //  where any 'reference' is replaced with its ReferencedView
-  //  inPConnArray is an array of PConn objects or functions.
-  //    Its value is passed to normalizePConn
-
-  static normalizePConnArray(inPConnArray: any) {
-    if (!(inPConnArray?.length > 0)) {
-      // null or empty array, return what was passed in
-      return inPConnArray;
+  /**
+   * Normalizes an array of PConn objects by replacing any 'reference' components
+   * with their referenced views.
+   *
+   * @param inPConnArray - Array of PConn objects to normalize
+   * @returns Normalized array with references resolved, or empty array if input is invalid
+   */
+  static normalizePConnArray(inPConnArray: any[]): any[] {
+    // Handle null, undefined, or empty array case
+    if (!inPConnArray?.length) {
+      return inPConnArray || [];
     }
 
-    return (
-      inPConnArray
-        .map(child => {
-          return ReferenceComponent.normalizePConn(child);
-        })
-        .filter(Boolean) || []
-    ); // Ensure we return an empty array if all children are filtered out
+    // Process array: normalize each item and filter out any null/undefined results
+    const normalizedArray = inPConnArray.map(child => ReferenceComponent.normalizePConn(child)).filter(Boolean);
+
+    // Ensure we always return an array (even if filter removes all items)
+    return normalizedArray || [];
   }
 }
