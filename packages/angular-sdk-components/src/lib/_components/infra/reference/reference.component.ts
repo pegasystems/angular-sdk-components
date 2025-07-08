@@ -161,8 +161,12 @@ export class ReferenceComponent {
       return inPConnArray;
     }
 
-    return inPConnArray.map(child => {
-      return ReferenceComponent.normalizePConn(child);
-    });
+    return (
+      inPConnArray
+        .map(child => {
+          return ReferenceComponent.normalizePConn(child);
+        })
+        .filter(Boolean) || []
+    ); // Ensure we return an empty array if all children are filtered out
   }
 }
