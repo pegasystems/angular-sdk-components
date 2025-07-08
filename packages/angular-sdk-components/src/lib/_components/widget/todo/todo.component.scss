@@ -1,5 +1,12 @@
+.psdk-todo-assignments > *:last-child {
+  .psdk-display-divider {
+    display: none;
+  }
+}
+
 .psdk-display-divider {
   border-bottom: 0.0625rem solid var(--app-neutral-light-color);
+  margin-block: 0.5rem;
 }
 
 .psdk-todo {
@@ -12,6 +19,7 @@
 
 .psdk-todo-header {
   display: inline-flex;
+  margin-bottom: 1rem;
 }
 
 .psdk-todo-text {
