@@ -6,6 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { BannerService } from '../../../_services/banner.service';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -37,7 +38,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isCreateStage$: boolean;
   @Input() updateToken$: number;
   @Input() isInModal$ = false;
-  @Input() banners;
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -77,12 +77,15 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   localeCategory = 'Assignment';
   localeReference;
 
+  snackBarRef;
+
   constructor(
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
     private erService: ErrorMessagesService,
     private ngZone: NgZone,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    public bannerService: BannerService
   ) {}
 
   ngOnInit(): void {
@@ -112,6 +115,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   checkAndUpdate() {
     // Should always check the bridge to see if the component should update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    this.bannerService.updateBanners(this.itemKey$);
 
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
@@ -295,6 +300,9 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   buttonClick(sAction, sButtonType) {
+    this.snackBarRef?.dismiss();
+    this.bannerService.clearBanners();
+    PCore.getPubSubUtils().publish('clearBannerMessages');
     // right now, done on an individual basis, setting bReInit to true
     // upon the next flow container state change, will cause the flow container
     // to re-initialize
@@ -318,21 +326,21 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       switch (sAction) {
         case 'navigateToStep':
           this.erService.sendMessage('publish', '');
-          if (this.formValid()) {
-            this.bReInit = true;
-            this.psService.sendMessage(true);
 
-            const navigatePromise = this.navigateToStep('previous', this.itemKey$);
-            navigatePromise
-              .then(() => {
-                this.updateChanges();
-                this.psService.sendMessage(false);
-              })
-              .catch(() => {
-                this.psService.sendMessage(false);
-                this.snackBar.open(`${this.localizedVal('Navigation failed!', this.localeCategory)}`, 'Ok');
-              });
-          }
+          this.bReInit = true;
+          this.psService.sendMessage(true);
+
+          const navigatePromise = this.navigateToStep('previous', this.itemKey$);
+          navigatePromise
+            .then(() => {
+              this.updateChanges();
+              this.psService.sendMessage(false);
+            })
+            .catch(() => {
+              this.psService.sendMessage(false);
+              this.snackBarRef = this.snackBar.open(`${this.localizedVal('Navigation failed!', this.localeCategory)}`, 'Ok');
+            });
+
           break;
 
         case 'saveAssignment': {
@@ -348,7 +356,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
             })
             .catch(() => {
               this.psService.sendMessage(false);
-              this.snackBar.open(`${this.localizedVal('Save failed', this.localeCategory)}`, 'Ok');
+              this.snackBarRef = this.snackBar.open(`${this.localizedVal('Save failed', this.localeCategory)}`, 'Ok');
             });
 
           break;
@@ -372,7 +380,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
               })
               .catch(() => {
                 this.psService.sendMessage(false);
-                this.snackBar.open(`${this.localizedVal('Cancel failed!', this.localeCategory)}`, 'Ok');
+                this.snackBarRef = this.snackBar.open(`${this.localizedVal('Cancel failed!', this.localeCategory)}`, 'Ok');
               });
           } else {
             this.psService.sendMessage(true);
@@ -389,7 +397,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
               })
               .catch(() => {
                 this.psService.sendMessage(false);
-                this.snackBar.open(`${this.localizedVal('Cancel failed!', this.localeCategory)}`, 'Ok');
+                this.snackBarRef = this.snackBar.open(`${this.localizedVal('Cancel failed!', this.localeCategory)}`, 'Ok');
               });
           }
           break;
@@ -401,7 +409,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
             .then(() => {})
             .catch(() => {
               this.psService.sendMessage(false);
-              this.snackBar.open(`${this.localizedVal('Rejection failed!', this.localeCategory)}`, 'Ok');
+              this.snackBarRef = this.snackBar.open(`${this.localizedVal('Rejection failed!', this.localeCategory)}`, 'Ok');
             });
 
           break;
@@ -414,23 +422,18 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       switch (sAction) {
         case 'finishAssignment':
           this.erService.sendMessage('publish', '');
-          if (this.formValid()) {
-            this.bReInit = true;
-            this.psService.sendMessage(true);
-            const finishPromise = this.finishAssignment(this.itemKey$); // JA - was itemID but Nebula/Constellation uses itemKey
-            finishPromise
-              .then(() => {
-                this.psService.sendMessage(false);
-                this.updateChanges();
-              })
-              .catch(() => {
-                this.psService.sendMessage(false);
-                this.snackBar.open(`${this.localizedVal('Submit failed!', this.localeCategory)}`, 'Ok');
-              });
-          } else {
-            // let snackBarRef = this.snackBar.open("Please fix errors on form.",  "Ok");
-            this.erService.sendMessage('show', this.localizedVal('Please fix errors on form.', this.localeCategory));
-          }
+          this.bReInit = true;
+          this.psService.sendMessage(true);
+          const finishPromise = this.finishAssignment(this.itemKey$); // JA - was itemID but Nebula/Constellation uses itemKey
+          finishPromise
+            .then(() => {
+              this.psService.sendMessage(false);
+              this.updateChanges();
+            })
+            .catch(() => {
+              this.psService.sendMessage(false);
+              this.snackBarRef = this.snackBar.open(`${this.localizedVal('Submit failed!', this.localeCategory)}`, 'Ok');
+            });
           break;
 
         case 'approveCase': {
@@ -440,7 +443,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
             .then(() => {})
             .catch(() => {
               this.psService.sendMessage(false);
-              this.snackBar.open(`${this.localizedVal('Approve failed!', this.localeCategory)}`, 'Ok');
+              this.snackBarRef = this.snackBar.open(`${this.localizedVal('Approve failed!', this.localeCategory)}`, 'Ok');
             });
 
           break;
