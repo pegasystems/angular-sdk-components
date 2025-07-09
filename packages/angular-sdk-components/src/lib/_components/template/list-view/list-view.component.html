@@ -180,7 +180,9 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns$"></tr>
             </table>
           </div>
-          <div class="psdk-no-records" *ngIf="repeatListData?.length === 0">No Records Found.</div>
+          <div class="psdk-no-records" *ngIf="repeatListData?.length === 0">
+            {{ utils.getGenericFieldsLocalizedValue('CosmosFields.fields.lists', 'No records found.') }}
+          </div>
         </div>
       </div>
     </div>

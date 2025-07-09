@@ -189,7 +189,7 @@ export const createMetaForTable = (fields, renderMode) => {
 };
 
 export const filterDataByDate = (item, filterObj) => {
-  let bKeep;
+  let bKeep = true;
   let value = item[filterObj.ref] != null || item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
   let filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
 
@@ -237,7 +237,7 @@ export const filterDataByDate = (item, filterObj) => {
 };
 
 export const filterDataByCommonFields = (item, filterObj) => {
-  let bKeep;
+  let bKeep = true;
   const value = item[filterObj.ref].toLowerCase();
   const filterValue = filterObj.containsFilterValue.toLowerCase();
 

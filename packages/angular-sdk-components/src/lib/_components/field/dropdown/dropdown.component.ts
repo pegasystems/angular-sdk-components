@@ -134,6 +134,18 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
   }
 
+  set options(options: IOption[]) {
+    this.options$ = options;
+    if (this.displayMode$) {
+      this.value$ = this.options$?.find(option => option.key === this.value$)?.value || this.value$;
+      this.localizedValue = this.pConn$.getLocalizedValue(
+        this.value$ === 'Select...' ? '' : this.value$,
+        this.localePath,
+        this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
+      );
+    }
+  }
+
   ngOnDestroy(): void {
     if (this.formGroup$) {
       this.formGroup$.removeControl(this.controlName$);
@@ -215,7 +227,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     if (this.theDatasource) {
       const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
       optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-      this.options$ = optionsList;
+      this.options = optionsList;
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
@@ -281,7 +293,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
 
     columns = preProcessColumns(columns) || [];
-    if (!this.displayMode$ && listType !== 'associated' && typeof datasource === 'string') {
+    if (listType !== 'associated' && typeof datasource === 'string') {
       this.getData(datasource, parameters, columns, context, listType);
     }
   }
@@ -312,7 +324,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
             optionsData.push(obj);
           });
           optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-          this.options$ = optionsData;
+          this.options = optionsData;
         });
       });
   }

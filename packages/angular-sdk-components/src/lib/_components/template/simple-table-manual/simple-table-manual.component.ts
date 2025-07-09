@@ -103,6 +103,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   showAddRowButton: boolean;
   prevReferenceList: any[] = [];
   elementsData: MatTableDataSource<any>;
+  originalElementsData: MatTableDataSource<any>;
   rawFields: any;
   label?: string = '';
   searchIcon$: string;
@@ -159,14 +160,16 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   isInitialized = false;
   targetClassLabel: string;
-
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeCategory = 'SimpleTable';
   constructor(
     private angularPConnect: AngularPConnectService,
-    private utils: Utils,
+    public utils: Utils,
     private dataPageService: DatapageService
   ) {}
 
   ngOnInit(): void {
+    this.elementsData = new MatTableDataSource<any>([]);
     this.isInitialized = true;
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
@@ -326,7 +329,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     });
 
     // for adding rows to table when editable and not modal view
-    if (this.prevReferenceList.length !== this.referenceList.length && this.editableMode && !this.allowEditingInModal) {
+    if (this.prevReferenceList.length !== this.referenceList.length) {
       this.buildElementsForTable();
     }
 
@@ -374,8 +377,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   sortCompare(a, b): number {
-    let aValue = a[this.compareRef];
-    let bValue = b[this.compareRef];
+    let aValue = a[0][this.compareRef];
+    let bValue = b[0][this.compareRef];
 
     if (this.compareType == 'Date' || this.compareType == 'DateTime') {
       aValue = getSeconds(aValue);
@@ -498,17 +501,20 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     // run through list of elements in path, if menu not in th path, then want to
     // hide (toggle) the menu
     const eventPath = event.path;
-    for (let eventIndex = 0; eventIndex < eventPath.length; eventIndex++) {
-      if (
-        eventPath[eventIndex].className == 'psdk-modal-file-top' ||
-        eventPath[eventIndex].tagName == 'BUTTON' ||
-        eventPath[eventIndex].tagName == 'MAT-OPTION' ||
-        eventPath[eventIndex].tagName == 'MAT-INPUT'
-      ) {
-        bInPopUp = true;
-        break;
+    if (eventPath) {
+      for (let eventIndex = 0; eventIndex < eventPath.length; eventIndex++) {
+        if (
+          eventPath[eventIndex].className == 'psdk-modal-file-top' ||
+          eventPath[eventIndex].tagName == 'BUTTON' ||
+          eventPath[eventIndex].tagName == 'MAT-OPTION' ||
+          eventPath[eventIndex].tagName == 'MAT-INPUT'
+        ) {
+          bInPopUp = true;
+          break;
+        }
       }
     }
+
     if (!bInPopUp) {
       // this.bShowFilterPopover$ = false;
 
@@ -627,7 +633,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     }
   }
 
-  filterData(item: any) {
+  filterData(element: any) {
+    const item = element[0];
     let bKeep = true;
     for (const filterObj of this.filterByColumns) {
       if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
@@ -641,6 +648,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
             bKeep = filterDataByCommonFields(item, filterObj);
             break;
         }
+      } else if (filterObj.containsFilterValue === '') {
+        bKeep = true;
       }
 
       // if don't keep stop filtering
@@ -653,14 +662,22 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   filterSortGroupBy() {
-    let theData = this.originalData.slice();
+    let theData = this.originalData.slice().map((item, index) => {
+      return [item, index];
+    });
 
     // last filter config data is global
     theData = theData.filter(this.filterData.bind(this));
 
     // last sort config data is global
     theData.sort(this.sortCompare.bind(this));
-    this.rowData.data = theData;
+    this.rowData.data = theData.map(item => item[0]);
+
+    const newElements: any = new Array(this.rowData.data.length);
+    theData.forEach((item, index) => {
+      newElements[index] = this.originalElementsData[item[1]];
+    });
+    this.elementsData = newElements;
   }
 
   _headerSortClick(event, columnData) {
@@ -959,6 +976,10 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.referenceList.forEach((element, index) => {
       const data: any = [];
       this.rawFields?.forEach(item => {
+        item = {
+          ...item,
+          config: { ...item.config, label: '', displayMode: this.readOnlyMode || this.allowEditingInModal ? 'DISPLAY_ONLY' : undefined }
+        };
         const referenceListData = getReferenceList(this.pConn$);
         const isDatapage = referenceListData.startsWith('D_');
         const pageReferenceValue = isDatapage ? `${referenceListData}[${index}]` : `${this.pConn$.getPageReference()}${referenceListData}[${index}]`;
@@ -976,6 +997,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       });
       eleData.push(data);
     });
+    this.originalElementsData = eleData;
     this.elementsData = eleData;
   }
 }

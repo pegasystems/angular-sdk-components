@@ -24,6 +24,12 @@ td.mat-mdc-cell,
 td.mat-mdc-footer-cell {
   border-right: 1px solid var(--app-neutral-light-color);
   padding: 8px !important;
+  min-width: 10rem;
+}
+
+::ng-deep th.mat-mdc-header-cell:last-child,
+td.mat-mdc-cell:last-child {
+  min-width: 2rem;
 }
 
 ::ng-deep .mat-mdc-button {
@@ -160,9 +166,7 @@ tr.mat-mdc-header-row {
 
 .psdk-no-records {
   height: 56px;
-  justify-content: center;
-  display: flex;
-  align-items: center;
+  text-align: center;
   border: 1px solid var(--app-neutral-light-color);
   border-top: none;
   background: var(--app-form-color);
