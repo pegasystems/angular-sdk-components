@@ -160,10 +160,11 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   isInitialized = false;
   targetClassLabel: string;
-
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeCategory = 'SimpleTable';
   constructor(
     private angularPConnect: AngularPConnectService,
-    private utils: Utils,
+    public utils: Utils,
     private dataPageService: DatapageService
   ) {}
 

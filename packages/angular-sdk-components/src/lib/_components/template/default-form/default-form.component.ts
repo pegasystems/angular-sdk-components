@@ -86,10 +86,8 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit {
     //  normalize them
     const children = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
 
-    const visibleChildren = children.filter(child => child !== undefined);
-
-    if (areViewsChanged(this.arChildren$, visibleChildren)) {
-      this.arChildren$ = visibleChildren;
+    if (areViewsChanged(this.arChildren$, children)) {
+      this.arChildren$ = children;
     }
   }
 }
