@@ -1,8 +1,8 @@
-<div class="psdk-user-reference">
+<div>
   <div *ngIf="displayMode$; else noDisplayMode">
     <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
   </div>
-  <ng-template #noDisplayMode>
+  <ng-template class="psdk-user-reference" #noDisplayMode>
     <div *ngIf="type === 'operator'">
       <component-mapper name="Operator" [props]="{ pConn$ }"></component-mapper>
     </div>
