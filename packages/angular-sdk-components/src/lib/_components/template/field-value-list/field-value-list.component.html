@@ -1,4 +1,4 @@
-<div *ngIf="displayMode$ === 'DISPLAY_ONLY'; else STACKED_LARGE_VAL" class="${label$ ? 'psdk-container-labels-left' : 'psdk-container-nolabels'}">
+<div *ngIf="displayMode$ === 'DISPLAY_ONLY'; else STACKED_LARGE_VAL" [ngClass]="label$ ? 'psdk-container-labels-left' : 'psdk-container-nolabels'">
   <div *ngIf="label$" class="psdk-grid-label">{{ label$ }}</div>
   <div class="psdk-val-labels-left">
     <ng-container *ngTemplateOutlet="valueTemplate"></ng-container>
