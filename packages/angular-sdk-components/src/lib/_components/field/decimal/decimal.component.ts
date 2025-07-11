@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
+import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -195,6 +196,16 @@ export class DecimalComponent implements OnInit, OnDestroy {
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
 
     this.componentReference = this.pConn$.getStateProps().value;
+
+    // trigger display of error message with field control
+    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
+      const timer = interval(100).subscribe(() => {
+        this.fieldControl.setErrors({ message: true });
+        this.fieldControl.markAsTouched();
+
+        timer.unsubscribe();
+      });
+    }
   }
 
   fieldOnBlur(event: any) {
