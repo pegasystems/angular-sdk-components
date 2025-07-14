@@ -2,44 +2,46 @@
   <div *ngIf="displayMode$; else noDisplayMode">
     <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
   </div>
-  <ng-template class="psdk-user-reference" #noDisplayMode>
-    <div *ngIf="type === 'operator'">
-      <component-mapper name="Operator" [props]="{ pConn$ }"></component-mapper>
-    </div>
-    <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
-      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
-        <mat-select [required]="bRequired$" [formControl]="fieldControl" [attr.data-test-id]="testId" (selectionChange)="fieldOnChange($event)">
-          <mat-option *ngFor="let opt of options$" [value]="opt.key">
-            {{ opt.value }}
-          </mat-option>
-        </mat-select>
-        <mat-label>{{ label$ }}</mat-label>
-        <mat-error *ngIf="fieldControl.invalid">
-          {{ getErrorMessage() }}
-        </mat-error>
-      </mat-form-field>
-    </div>
-    <div [formGroup]="formGroup$" *ngIf="type === 'searchbox'">
-      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
-        <mat-label>{{ label$ }}</mat-label>
-        <input
-          matInput
-          [placeholder]="placeholder"
-          [formControl]="fieldControl"
-          [required]="bRequired$"
-          [matAutocomplete]="auto"
-          [attr.data-test-id]="testId"
-          (blur)="fieldOnBlur($event)"
-        />
-        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="optionChanged($event)">
-          <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
-            <span>{{ opt.value }}</span>
-          </mat-option>
-        </mat-autocomplete>
-        <mat-error *ngIf="fieldControl.invalid">
-          {{ getErrorMessage() }}
-        </mat-error>
-      </mat-form-field>
+  <ng-template #noDisplayMode>
+    <div class="psdk-user-reference">
+      <div *ngIf="type === 'operator'">
+        <component-mapper name="Operator" [props]="{ pConn$ }"></component-mapper>
+      </div>
+      <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+          <mat-select [required]="bRequired$" [formControl]="fieldControl" [attr.data-test-id]="testId" (selectionChange)="fieldOnChange($event)">
+            <mat-option *ngFor="let opt of options$" [value]="opt.key">
+              {{ opt.value }}
+            </mat-option>
+          </mat-select>
+          <mat-label>{{ label$ }}</mat-label>
+          <mat-error *ngIf="fieldControl.invalid">
+            {{ getErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div [formGroup]="formGroup$" *ngIf="type === 'searchbox'">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+          <mat-label>{{ label$ }}</mat-label>
+          <input
+            matInput
+            [placeholder]="placeholder"
+            [formControl]="fieldControl"
+            [required]="bRequired$"
+            [matAutocomplete]="auto"
+            [attr.data-test-id]="testId"
+            (blur)="fieldOnBlur($event)"
+          />
+          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="optionChanged($event)">
+            <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
+              <span>{{ opt.value }}</span>
+            </mat-option>
+          </mat-autocomplete>
+          <mat-error *ngIf="fieldControl.invalid">
+            {{ getErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+      </div>
     </div>
   </ng-template>
 </div>

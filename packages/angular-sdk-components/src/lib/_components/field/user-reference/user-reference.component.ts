@@ -168,12 +168,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     this.placeholder = placeholder || '';
     this.displayMode$ = displayMode;
 
-    const user = this.pConn$.getConfigProps()?.value;
-    if (typeof user === 'object' && user !== null && user.userName) {
-      this.value$ = user.userName;
-    } else {
-      this.value$ = user || '';
-    }
+    this.value$ = value && typeof value === 'object' && value.userName ? value.userName : value ?? '';
 
     const { readOnly, required } = props;
     [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
