@@ -4,8 +4,8 @@
   </div>
   <ng-template #noDisplayMode>
     <div class="psdk-user-reference">
-      <div *ngIf="type === 'operator'">
-        <component-mapper name="Operator" [props]="{ pConn$ }"></component-mapper>
+      <div *ngIf="this.userID$ && type === 'operator'">
+        <component-mapper name="Operator" [props]="{ pConn$, name$: userName$ }"></component-mapper>
       </div>
       <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
         <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">

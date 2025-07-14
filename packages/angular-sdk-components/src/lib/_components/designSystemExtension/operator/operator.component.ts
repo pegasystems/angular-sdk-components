@@ -13,10 +13,11 @@ import { Utils } from '../../../_helpers/utils';
 export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() displayLabel;
+  @Input() name$?: string;
+
   fields$: any[] = [];
   bShowPopover$: boolean;
   date$: string;
-  name$: string;
   label$: string;
   id$: string;
   constructor(
@@ -40,7 +41,7 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges): void {
     const { pConn$ } = changes;
-    if (pConn$.previousValue !== pConn$.currentValue) {
+    if (pConn$ && pConn$.previousValue !== pConn$.currentValue) {
       this.updateSelf();
     }
   }
@@ -69,7 +70,7 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
       this.id$ = configProps$.resolveOperator.userId;
       this.label$ = configProps$.resolveLabel;
     } else {
-      this.name$ = configProps$?.value.userName;
+      this.name$ = this.name$ || configProps$?.value.userName;
       this.id$ = configProps$?.value.userId;
       this.label$ = configProps$.label;
     }

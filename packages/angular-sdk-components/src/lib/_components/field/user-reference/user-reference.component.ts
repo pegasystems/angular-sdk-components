@@ -184,12 +184,8 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       } else {
         // if same user ref field is referred in view as editable & readonly formatted text
         // referenced users won't be available, so get user details from dx api
-        const { getOperatorDetails } = PCore.getUserApi();
-        getOperatorDetails(this.userID$).then((resp: any) => {
-          if (resp.data && resp.data.pyOperatorInfo && resp.data.pyOperatorInfo.pyUserName) {
-            this.userName$ = resp.data.pyOperatorInfo.pyUserName;
-          }
-        });
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        this.userName$ = await getUserName(this.pConn$, this.userID$);
       }
     } else if (displayAs === DROPDOWN_LIST || displayAs === SEARCH_BOX) {
       const queryPayload = {
@@ -256,4 +252,67 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
 
     return errMessage;
   }
+}
+
+const buildColumnForDisplayValue = dataObj => {
+  if (dataObj.columns) {
+    dataObj.columns = dataObj.columns.map(column => {
+      const tempColObj = { ...column };
+      if (tempColObj.key === 'true') {
+        tempColObj.useForSearch = true;
+      } else {
+        tempColObj.useForSearch = false;
+      }
+      return tempColObj;
+    });
+  }
+};
+
+function getUserName(pConn, userId = ''): Promise<string> {
+  return new Promise(resolve => {
+    const { parameters = {}, referenceList } = pConn.getConfigProps();
+    const contextName = pConn.getContextName();
+
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    const OPERATORS_DP = referenceList || PCore.getEnvironmentInfo().getDefaultOperatorDP() || '';
+
+    const columns = [
+      {
+        value: 'pyUserName',
+        display: 'true',
+        useForSearch: true,
+        primary: 'true'
+      },
+      {
+        value: 'pyUserIdentifier',
+        setProperty: 'Associated property',
+        key: 'true',
+        display: 'true',
+        secondary: 'true',
+        useForSearch: true
+      }
+    ];
+
+    const dataConfig: any = {
+      dataSource: OPERATORS_DP,
+      parameters,
+      matchPosition: 'equals',
+      listType: 'datapage',
+      columns,
+      cacheLifeSpan: 'form',
+      deferDatasource: false,
+      maxResultsDisplay: '1',
+      ignoreCase: true
+    };
+
+    PCore.getDataApi()
+      .init(dataConfig, contextName)
+      .then(dataApiObj => {
+        buildColumnForDisplayValue(dataApiObj);
+        dataApiObj.registerForBufferedCall({ waitTime: 50 });
+        dataApiObj.fetchData(userId).then((response: any) => {
+          resolve(response.data?.[0]?.pyUserName || userId);
+        });
+      });
+  });
 }
