@@ -57,8 +57,8 @@ test.describe('E2E test', () => {
     await editModeType.click();
     await page.locator('mat-option > span:has-text("Table rows")').click();
 
-    const noRecordsMsg = page.locator('div[id="no-records"]');
-    await expect(noRecordsMsg.locator('text="No Records Found."')).toBeVisible();
+    const noRecordsMsg = page.locator('td[id="no-records"]');
+    await expect(noRecordsMsg.locator('text="No records found."')).toBeVisible();
 
     /** Creating row by clicking on `+Add` button */
     await page.locator('button:has-text("+ Add")').click();
@@ -202,7 +202,7 @@ test.describe('E2E test', () => {
     editMenu = await page.locator('div[role="menu"]');
     await editMenu.locator('button:has-text("Delete")').click();
 
-    await expect(page.locator('div[id="no-records"]:has-text("No Records Found.")')).toBeVisible();
+    await expect(page.locator('td[id="no-records"]:has-text("No Records Found.")')).toBeVisible();
 
     await page.locator('button:has-text("Next")').click();
 
