@@ -136,6 +136,17 @@ export function format(value, type, options = {}): string {
       break;
     }
 
+    case 'converttotimezone': {
+      const defaultOptions = {
+        type: 'customFormat',
+        format: 'YYYY-MM-DDTHH:mm:ss',
+        timezone: getCurrentTimezone()
+      };
+      const params = { ...defaultOptions, ...options };
+      formattedValue = DateFormatter.convertToTimezone(value, params);
+      break;
+    }
+
     default:
       formattedValue = value;
   }

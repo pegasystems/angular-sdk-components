@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { interval } from 'rxjs';
 import dayjs from 'dayjs';
-import moment from 'moment';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -15,7 +14,6 @@ import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { handleEvent } from '../../../_helpers/event-util';
 import { format } from '../../../_helpers/formatters';
-import DateFormatter from '../../../_helpers/formatters/date';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here
@@ -94,7 +92,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       let dateTimeValue = this.value$ ?? '';
       if (this.value$) {
-        dateTimeValue = dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
+        dateTimeValue = dayjs(format(this.value$, 'convertToTimezone', { timezone: this.timezone }))?.toISOString();
       }
       this.fieldControl.setValue(dateTimeValue);
       this.bHasForm$ = true;
@@ -142,7 +140,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     this.value$ = this.configProps$?.value;
     let dateTimeValue = this.configProps$?.value ?? '';
     if (this.value$) {
-      dateTimeValue = dayjs(DateFormatter?.convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
+      dateTimeValue = dayjs(format(this.value$, 'convertToTimezone', { timezone: this.timezone }))?.toISOString();
     }
     this.fieldControl.setValue(dateTimeValue);
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
@@ -198,7 +196,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     // this comes from the date pop up
     if (typeof event.value === 'object') {
       // convert date to pega "date" format
-      const dateTime = moment(event.value?.toISOString());
+      const dateTime = dayjs(event.value?.toISOString());
       const timeZoneDateTime = dayjs.tz(dateTime.format('YYYY-MM-DDTHH:mm:ss'), this.timezone);
       event.value = timeZoneDateTime && timeZoneDateTime.isValid() ? timeZoneDateTime.toISOString() : '';
     }
