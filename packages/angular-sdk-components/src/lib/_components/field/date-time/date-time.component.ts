@@ -13,7 +13,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { dateFormatInfoDefault, getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { handleEvent } from '../../../_helpers/event-util';
-import { format } from '../../../_helpers/formatters';
+import { format, convertToTimezone } from '../../../_helpers/formatters';
 
 interface DateTimeProps extends PConnFieldProps {
   // If any, enter additional props that only exist on DateTime here
@@ -92,7 +92,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
       let dateTimeValue = this.value$ ?? '';
       if (this.value$) {
-        dateTimeValue = dayjs(format(this.value$, 'convertToTimezone', { timezone: this.timezone }))?.toISOString();
+        dateTimeValue = dayjs(convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
       }
       this.fieldControl.setValue(dateTimeValue);
       this.bHasForm$ = true;
@@ -140,7 +140,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     this.value$ = this.configProps$?.value;
     let dateTimeValue = this.configProps$?.value ?? '';
     if (this.value$) {
-      dateTimeValue = dayjs(format(this.value$, 'convertToTimezone', { timezone: this.timezone }))?.toISOString();
+      dateTimeValue = dayjs(convertToTimezone(this.value$, { timezone: this.timezone }))?.toISOString();
     }
     this.fieldControl.setValue(dateTimeValue);
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
