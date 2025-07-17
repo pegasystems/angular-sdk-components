@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,11 +6,14 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { buildView, getReferenceList } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { evaluateAllowRowAction } from './utils';
 
 interface FieldGroupTemplateProps {
   // If any, enter additional props that only exist on this component
   label?: string;
-  showLabel?: boolean;
+  hideLabel?: boolean;
+  allowActions?: any;
+  allowRowDelete?: any;
   referenceList?: any[];
   contextClass: string;
   renderMode?: string;
@@ -19,6 +22,7 @@ interface FieldGroupTemplateProps {
   displayMode?: string;
   fieldHeader?: string;
   allowTableEdit: boolean;
+  targetClassLabel?: string;
 }
 
 @Component({
@@ -28,25 +32,26 @@ interface FieldGroupTemplateProps {
   standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges {
+export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @Input() configProps$: FieldGroupTemplateProps;
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   angularPConnectData: AngularPConnectData = {};
-  inheritedProps$: object;
+
   showLabel$?: boolean = true;
   label$?: string;
   readonlyMode: boolean;
   contextClass: any;
-  referenceList: any;
-  pageReference: any;
   heading: any;
   children: any;
   menuIconOverride$: any;
-  prevRefLength: number;
-  allowAddEdit: boolean;
+  referenceListLength: number;
   fieldHeader: any;
+
+  allowAdd = true;
+  allowEdit = true;
+  allowDelete = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -58,9 +63,21 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.updateSelf();
 
-    const menuIconOverride$ = 'trash';
-    if (menuIconOverride$) {
-      this.menuIconOverride$ = this.utils.getImageSrc(menuIconOverride$, this.utils.getSDKStaticContentUrl());
+    this.menuIconOverride$ = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
+
+    const { allowActions, allowTableEdit, referenceList } = this.configProps$;
+
+    if (allowActions && Object.keys(allowActions).length > 0) {
+      this.allowAdd = allowActions.allowAdd ?? allowTableEdit ?? true;
+      this.allowEdit = allowActions.allowEdit ?? true;
+      this.allowDelete = allowActions.allowDelete ?? allowTableEdit ?? true;
+    } else {
+      this.allowAdd = allowTableEdit ?? true;
+      this.allowDelete = allowTableEdit ?? true;
+    }
+
+    if (referenceList?.length === 0 && (this.allowAdd || this.allowEdit)) {
+      this.pConn$.getListActions().insert({ classID: this.contextClass }, referenceList.length);
     }
   }
 
@@ -85,56 +102,57 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
       const props = changes.configProps$;
       if (props.currentValue !== props.previousValue) {
         this.configProps$ = props.currentValue;
+
         if (changes?.pConn$?.currentValue) {
           this.pConn$ = changes?.pConn$?.currentValue;
         }
+
         this.updateSelf();
       }
     }
   }
 
-  updateSelf() {
-    this.inheritedProps$ = this.pConn$.getInheritedProps();
-    this.label$ = this.configProps$.label;
-    this.showLabel$ = this.configProps$.showLabel;
-    // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = (this.inheritedProps$ as any).label || this.label$;
-    this.showLabel$ = (this.inheritedProps$ as any).showLabel || this.showLabel$;
-
-    this.allowAddEdit = this.configProps$.allowTableEdit;
-
-    const renderMode = this.configProps$.renderMode;
-    const displayMode = this.configProps$.displayMode;
-    this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'DISPLAY_ONLY';
-    this.contextClass = this.configProps$.contextClass;
-    const lookForChildInConfig = this.configProps$.lookForChildInConfig;
-    this.heading = this.configProps$.heading ?? 'Row';
-    this.fieldHeader = this.configProps$.fieldHeader;
+  ngAfterViewInit() {
     const resolvedList = getReferenceList(this.pConn$);
-    this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
+    // @ts-ignore - Expected 3 arguments, but got 1
+    this.pConn$.getListActions().initDefaultPageInstructions(resolvedList);
+  }
+
+  updateSelf() {
+    const inheritedProps: any = this.pConn$.getInheritedProps();
+
+    const { label, hideLabel, allowRowDelete, referenceList, fieldHeader, renderMode, displayMode, heading, contextClass, lookForChildInConfig } =
+      this.configProps$;
+
+    // label within inheritedProps takes precedence over configProps
+    this.label$ = inheritedProps.label || label;
+
+    this.showLabel$ = referenceList?.length === 0 || !hideLabel;
+
+    this.readonlyMode = renderMode === 'ReadOnly' || displayMode === 'DISPLAY_ONLY';
+
+    this.contextClass = contextClass;
+    this.heading = heading ?? 'Row';
+    this.fieldHeader = fieldHeader;
+
+    const resolvedList = getReferenceList(this.pConn$);
     this.pConn$.setReferenceList(resolvedList);
+
     if (this.readonlyMode) {
       this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     }
-    this.referenceList = this.configProps$.referenceList;
-    if (this.prevRefLength != this.referenceList?.length) {
-      // eslint-disable-next-line sonarjs/no-collapsible-if
-      if (!this.readonlyMode) {
-        if (this.referenceList?.length === 0 && this.allowAddEdit !== false) {
-          this.addFieldGroupItem();
-        }
-      }
-      const children: any = [];
-      this.referenceList?.forEach((item, index) => {
-        children.push({
+
+    if (this.referenceListLength != referenceList?.length) {
+      this.children = referenceList?.map((item, index) => {
+        return {
           id: index,
           name: this.fieldHeader === 'propertyRef' ? this.getDynamicHeader(item, index) : this.getStaticHeader(this.heading, index),
-          children: buildView(this.pConn$, index, lookForChildInConfig)
-        });
+          children: buildView(this.pConn$, index, lookForChildInConfig),
+          allowRowDelete: evaluateAllowRowAction(allowRowDelete, item)
+        };
       });
-      this.children = children;
     }
-    this.prevRefLength = this.referenceList.length;
+    this.referenceListLength = referenceList?.length || 0;
   }
 
   getStaticHeader = (heading, index) => {
@@ -149,10 +167,15 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   };
 
   addFieldGroupItem() {
-    this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
+    this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceListLength);
   }
 
   deleteFieldGroupItem(index) {
     this.pConn$.getListActions().deleteEntry(index);
+  }
+
+  getAddBtnLabel() {
+    const { targetClassLabel } = this.configProps$;
+    return targetClassLabel ? `+ Add ${targetClassLabel}` : '+ Add';
   }
 }
