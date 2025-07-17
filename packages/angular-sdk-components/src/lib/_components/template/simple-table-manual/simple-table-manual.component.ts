@@ -16,7 +16,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { getReferenceList } from '../../../_helpers/field-group-utils';
-import { buildFieldsForTable, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
+import { buildFieldsForTable, evaluateAllowRowAction, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
 import { Utils } from '../../../_helpers/utils';
 import { getSeconds } from '../../../_helpers/common';
 
@@ -36,7 +36,9 @@ interface SimpleTableManualProps {
   contextClass?: string;
   propertyLabel?: string;
   fieldMetadata?: any;
+  allowActions?: any;
   allowTableEdit?: boolean;
+  allowRowDelete?: any;
   editMode?: string;
   addAndEditRowsWithin?: any;
   viewForAddAndEditModal?: any;
@@ -231,7 +233,9 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       renderMode,
       children, // destructure children into an array var: "resolvedFields"
       presets,
+      allowActions,
       allowTableEdit,
+      allowRowDelete,
       label: labelProp,
       propertyLabel,
       fieldMetadata,
@@ -245,12 +249,22 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       targetClassLabel
     } = this.configProps$;
 
+    const simpleTableManualProps: any = {};
+    if (this.checkIfAllowActionsOrRowEditingExist(allowActions) && editMode) {
+      simpleTableManualProps.hideAddRow = allowActions?.allowAdd === false;
+      simpleTableManualProps.hideDeleteRow = allowActions?.allowDelete === false;
+      simpleTableManualProps.hideEditRow = allowActions?.allowEdit === false;
+      simpleTableManualProps.disableDragDrop = allowActions?.allowDragDrop === false;
+    } else if (allowTableEdit === false) {
+      simpleTableManualProps.hideAddRow = true;
+      simpleTableManualProps.hideDeleteRow = true;
+      simpleTableManualProps.disableDragDrop = true;
+    }
+
     this.referenceListStr = getContext(this.pConn$).referenceListStr;
     this.label = labelProp || propertyLabel;
     this.parameters = fieldMetadata?.datasource?.parameters;
     this.targetClassLabel = targetClassLabel;
-    const hideAddRow = allowTableEdit === false;
-    const hideDeleteRow = allowTableEdit === false;
     let { contextClass } = this.configProps$;
     this.referenceList = referenceList;
     if (!contextClass) {
@@ -287,10 +301,10 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.readOnlyMode = renderMode === 'ReadOnly';
     this.editableMode = renderMode === 'Editable';
     const isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
-    this.showAddRowButton = !this.readOnlyMode && !hideAddRow;
+    this.showAddRowButton = !this.readOnlyMode && !simpleTableManualProps.hideAddRow;
     this.allowEditingInModal =
       (editMode ? editMode === 'modal' : addAndEditRowsWithin === 'modal') && !(renderMode === 'ReadOnly' || isDisplayModeEnabled);
-    const showDeleteButton = this.editableMode && !hideDeleteRow;
+    const showDeleteButton = this.editableMode && !simpleTableManualProps.hideDeleteRow && evaluateAllowRowAction(allowRowDelete, this.rowData);
     this.defaultView = editModeConfig ? editModeConfig.defaultView : viewForAddAndEditModal;
     this.bUseSeparateViewForEdit = editModeConfig ? editModeConfig.useSeparateViewForEdit : useSeparateViewForEdit;
     this.editView = editModeConfig ? editModeConfig.editView : viewForEditModal;
@@ -354,6 +368,10 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //
     //  Note that the "property" shown in the column ("FirstName" in the above examples) is what
     //  ties the 3 data structures together.
+  }
+
+  checkIfAllowActionsOrRowEditingExist(newflagobject) {
+    return (newflagobject && Object.keys(newflagobject).length > 0) || this.pConn$.getComponentConfig().allowRowEdit;
   }
 
   initializeDefaultPageInstructions() {
