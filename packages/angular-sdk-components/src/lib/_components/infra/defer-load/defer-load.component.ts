@@ -38,6 +38,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   CASE: any;
   PAGE: any;
   DATA: any;
+  lastUpdateCaseTime;
   constructor(private angularPConnect: AngularPConnectService) {
     this.constants = PCore.getConstants();
   }
@@ -58,8 +59,10 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
     const theRequestedAssignment = this.pConn$.getValue(PCore.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
-    if (theRequestedAssignment !== this.currentLoadedAssignment) {
+    const lastUpdateCaseTime = this.pConn$.getValue('caseInfo.lastUpdateTime');
+    if (theRequestedAssignment !== this.currentLoadedAssignment || (lastUpdateCaseTime && lastUpdateCaseTime !== this.lastUpdateCaseTime)) {
       this.currentLoadedAssignment = theRequestedAssignment;
+      this.lastUpdateCaseTime = lastUpdateCaseTime;
       this.loadActiveTab();
     }
   }
