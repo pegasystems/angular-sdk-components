@@ -29,4 +29,10 @@ export class MaterialDetailsFieldsComponent {
   _formatDate(dateValue: string, dateFormat: string): string {
     return this.utils.generateDate(dateValue, dateFormat);
   }
+
+  getVisibility(config): boolean {
+    const { visibility = true } = config;
+
+    return this.utils.getBooleanValue(visibility);
+  }
 }

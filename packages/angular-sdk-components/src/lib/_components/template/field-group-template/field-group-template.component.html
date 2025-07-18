@@ -1,5 +1,5 @@
 <div id="field-group">
-  <h3 *ngIf="showLabel$" className="label" style="font-weight: bold">
+  <h3 *ngIf="showLabel$" class="field-group-template-header" style="font-weight: bold">
     {{ label$ }}
   </h3>
   <div *ngIf="readonlyMode; else editable">
@@ -11,23 +11,23 @@
   </div>
   <ng-template #editable>
     <div *ngIf="children && children.length > 0">
-      <div *ngFor="let kid of children; let i = index">
+      <div class="field-group-template-item" *ngFor="let child of children; let i = index">
         <div class="header-div">
           <div style="width: 80%">
-            <b>{{ kid.name }}</b>
+            <b>{{ child.name }}</b>
           </div>
-          <div *ngIf="allowAddEdit !== false" style="width: 20%; text-align: right">
+          <div *ngIf="allowDelete && child.allowRowDelete" style="width: 20%; text-align: right">
             <button id="delete-button" mat-icon-button (click)="deleteFieldGroupItem(i)">
               <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
             </button>
           </div>
         </div>
 
-        <div *ngIf="kid.children.getPConnect().getRawMetadata().type.toLowerCase() == 'region'">
-          <component-mapper name="Region" [props]="{ pConn$: kid.children.getPConnect(), formGroup$ }"></component-mapper>
+        <div *ngIf="child.children.getPConnect().getRawMetadata().type.toLowerCase() == 'region'">
+          <component-mapper name="Region" [props]="{ pConn$: child.children.getPConnect(), formGroup$ }"></component-mapper>
         </div>
       </div>
-      <button *ngIf="allowAddEdit !== false" mat-button color="primary" style="font-size: 16px" (click)="addFieldGroupItem()">+ Add</button>
     </div>
+    <button *ngIf="allowAdd" mat-button color="primary" style="font-size: 16px" (click)="addFieldGroupItem()">{{ getAddBtnLabel() }}</button>
   </ng-template>
 </div>

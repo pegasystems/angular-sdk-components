@@ -10,7 +10,7 @@
     </ng-template>
 
     <ng-template #showDetails>
-      <div class="psdk-grid-filter" *ngIf="field.config.label">
+      <div class="psdk-grid-filter" *ngIf="field.config.label && getVisibility(field.config)">
         <div class="psdk-details-fields-label">
           {{ field.config.label }}
         </div>
