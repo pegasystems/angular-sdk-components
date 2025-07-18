@@ -161,15 +161,25 @@ export class IntegerComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange() {
-    this.pConn$.clearErrorMessages({
-      property: this.propName
-    });
+  fieldOnChange(event: any) {
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      this.pConn$.clearErrorMessages({
+        property: this.propName
+      });
+    }
   }
 
   fieldOnBlur(event: any) {
-    const value = event?.target?.value;
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      const value = event?.target?.value;
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
   }
 
   getErrorMessage() {

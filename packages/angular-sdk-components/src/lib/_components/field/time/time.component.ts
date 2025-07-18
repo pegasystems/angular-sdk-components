@@ -165,20 +165,30 @@ export class TimeComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange() {
-    this.pConn$.clearErrorMessages({
-      property: this.propName
-    });
+  fieldOnChange(event: any) {
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      this.pConn$.clearErrorMessages({
+        property: this.propName
+      });
+    }
   }
 
   fieldOnBlur(event: any) {
-    let value = event?.target?.value;
-    const hhmmPattern = /^\d{2}:\d{2}$/;
-    if (hhmmPattern.test(value)) {
-      value = `${value}:00`; // append ":00"
-    }
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event?.target?.value.toString() !== oldVal.toString();
 
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    if (isValueChanged) {
+      let value = event?.target?.value;
+      const hhmmPattern = /^\d{2}:\d{2}$/;
+      if (hhmmPattern.test(value)) {
+        value = `${value}:00`; // append ":00"
+      }
+
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
   }
 
   getErrorMessage() {

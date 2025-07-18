@@ -159,16 +159,26 @@ export class EmailComponent implements OnInit, OnDestroy {
   }
 
   fieldOnChange(event: any) {
-    const value = event?.target?.value;
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
-    this.pConn$.clearErrorMessages({
-      property: this.propName
-    });
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      const value = event?.target?.value;
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+      this.pConn$.clearErrorMessages({
+        property: this.propName
+      });
+    }
   }
 
   fieldOnBlur(event: any) {
-    const value = event?.target?.value;
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      const value = event?.target?.value;
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
   }
 
   getErrorMessage() {
