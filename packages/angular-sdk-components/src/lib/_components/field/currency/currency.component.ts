@@ -198,20 +198,25 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(event: any) {
-    const actionsApi = this.pConn$?.getActionsApi();
-    const propName = this.pConn$?.getStateProps().value;
-    let value = event?.target?.value;
-    value = value?.substring(1);
-    // replacing thousand separator with empty string as not required in api call
-    const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
-    let regExp = new RegExp(String.raw`${thousandSep}`, 'g');
-    value = value?.replace(regExp, '');
-    // replacing decimal separator with '.'
-    if (this.decimalSeparator !== '.') {
-      regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
-      value = value.replace(regExp, '.');
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      const actionsApi = this.pConn$?.getActionsApi();
+      const propName = this.pConn$?.getStateProps().value;
+      let value = event?.target?.value;
+      value = value?.substring(1);
+      // replacing thousand separator with empty string as not required in api call
+      const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+      let regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+      value = value?.replace(regExp, '');
+      // replacing decimal separator with '.'
+      if (this.decimalSeparator !== '.') {
+        regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
+        value = value.replace(regExp, '.');
+      }
+      handleEvent(actionsApi, 'changeNblur', propName, value);
     }
-    handleEvent(actionsApi, 'changeNblur', propName, value);
   }
 
   getErrorMessage() {

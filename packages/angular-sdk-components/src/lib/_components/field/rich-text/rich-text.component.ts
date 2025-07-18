@@ -116,8 +116,12 @@ export class RichTextComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange() {
-    if (this.status === 'error') {
+  fieldOnChange(editorValue: any) {
+    const oldVal = this.value$ ?? '';
+    const newVal = editorValue?.editor?.getBody()?.innerHTML ?? '';
+    const isValueChanged = newVal.toString() !== oldVal.toString();
+
+    if (isValueChanged || this.status === 'error') {
       const property = this.propName;
       this.pConn$.clearErrorMessages({
         property,
@@ -128,6 +132,11 @@ export class RichTextComponent implements OnInit, OnDestroy {
   }
 
   fieldOnBlur(editorValue: any) {
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, editorValue);
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = editorValue.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, editorValue);
+    }
   }
 }

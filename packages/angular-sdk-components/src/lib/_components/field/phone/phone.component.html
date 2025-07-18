@@ -11,7 +11,7 @@
           [preferredCountries]="['us']"
           [enablePlaceholder]="true"
           [enableSearch]="true"
-          (change)="fieldOnChange()"
+          (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur()"
         >
         </ngx-mat-intl-tel-input>

@@ -179,27 +179,37 @@ export class PercentageComponent implements OnInit, OnDestroy {
     }
   }
 
-  fieldOnChange() {
-    this.pConn$.clearErrorMessages({
-      property: this.propName
-    });
+  fieldOnChange(event: any) {
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      this.pConn$.clearErrorMessages({
+        property: this.propName
+      });
+    }
   }
 
   fieldOnBlur(event: any) {
-    let value = event?.target?.value;
-    value = value ? value.replace(/%/g, '') : '';
-    // replacing thousand separator with empty string as not required in api call
-    if (this.configProps$.showGroupSeparators) {
-      const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
-      const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
-      value = value?.replace(regExp, '');
+    const oldVal = this.value$ ?? '';
+    const isValueChanged = event.target.value.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
+      let value = event?.target?.value;
+      value = value ? value.replace(/%/g, '') : '';
+      // replacing thousand separator with empty string as not required in api call
+      if (this.configProps$.showGroupSeparators) {
+        const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
+        const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
+        value = value?.replace(regExp, '');
+      }
+      // replacing decimal separator with '.'
+      if (this.decimalSeparator !== '.') {
+        const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
+        value = value.replace(regExp, '.');
+      }
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     }
-    // replacing decimal separator with '.'
-    if (this.decimalSeparator !== '.') {
-      const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
-      value = value.replace(regExp, '.');
-    }
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
   }
 
   getErrorMessage() {
