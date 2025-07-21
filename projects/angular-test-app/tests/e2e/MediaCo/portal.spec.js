@@ -113,8 +113,8 @@ test.describe('E2E test', () => {
 
     await page.locator('button:has-text("submit")').click();
 
-    const todo = page.locator('div[id="worklist"]');
-    await expect(todo.getByText('To do')).toBeVisible();
+    const todo = await page.locator('div[class="psdk-todo-assignments"]');
+    await expect(todo).toBeVisible();
 
     await page.waitForTimeout(5000);
     const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
@@ -139,7 +139,7 @@ test.describe('E2E test', () => {
 
     await page.locator('button:has-text("submit")').click();
 
-    const todo = await page.locator('div[id="worklist"]:has-text("To do")');
+    const todo = await page.locator('div[class="psdk-todo-assignments"]');
     await expect(todo).toBeVisible();
   }, 10000);
 
