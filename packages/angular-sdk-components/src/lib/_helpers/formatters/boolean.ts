@@ -11,7 +11,7 @@ function Boolean(value, { allowEmpty = true, tick = '', cross = '' } = {}) {
   return value;
 }
 
-export default {
+export const BooleanFormatters = {
   TrueFalse: (value, options) =>
     Boolean(value, {
       ...options,

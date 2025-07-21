@@ -1,12 +1,12 @@
-import Boolean from './boolean';
-import Currency from './currency';
-import DateFormatter from './date';
+import { BooleanFormatters } from './boolean';
+import { CurrencyFormatters } from './currency';
+import { DateFormatters } from './date';
 import { getCurrentTimezone, getLocale } from './common';
 
-export default {
-  ...Boolean,
-  ...Currency,
-  ...DateFormatter
+export const CommonFormatters = {
+  ...BooleanFormatters,
+  ...CurrencyFormatters,
+  ...DateFormatters
 };
 
 function getDateObject(text): Date {
@@ -69,28 +69,28 @@ export function format(value, type, options = {}): string {
         decPlaces: 2
       };
       const params = { ...defaultOptions, ...options };
-      formattedValue = Currency.Currency(value, params);
+      formattedValue = CurrencyFormatters.Currency(value, params);
       break;
     }
 
     case 'percentage': {
       const defaultOptions = { locale: getLocale(), decPlaces: 2 };
       const params = { ...defaultOptions, ...options };
-      formattedValue = Currency.Percentage(value, params);
+      formattedValue = CurrencyFormatters.Percentage(value, params);
       break;
     }
 
     case 'decimal': {
       const defaultOptions = { locale: getLocale(), decPlaces: 2 };
       const params = { ...defaultOptions, ...options };
-      formattedValue = Currency.Decimal(value, params);
+      formattedValue = CurrencyFormatters.Decimal(value, params);
       break;
     }
 
     case 'integer': {
       const defaultOptions = { locale: getLocale() };
       const params = { ...defaultOptions, ...options };
-      formattedValue = Currency.Integer(value, params);
+      formattedValue = CurrencyFormatters.Integer(value, params);
       break;
     }
 
@@ -100,7 +100,7 @@ export function format(value, type, options = {}): string {
         timezone: getCurrentTimezone()
       };
       const params = { ...defaultOptions, ...options };
-      formattedValue = DateFormatter.Date(parseDateInISO(value), params);
+      formattedValue = DateFormatters.Date(parseDateInISO(value), params);
       break;
     }
 
@@ -110,13 +110,13 @@ export function format(value, type, options = {}): string {
         timezone: getCurrentTimezone()
       };
       const params = { ...defaultOptions, ...options };
-      formattedValue = DateFormatter.Date(parseDateInISO(value), params);
+      formattedValue = DateFormatters.Date(parseDateInISO(value), params);
       break;
     }
 
     case 'boolean':
     case 'checkbox': {
-      formattedValue = Boolean.TrueFalse(value, { allowEmpty: false, ...options });
+      formattedValue = BooleanFormatters.TrueFalse(value, { allowEmpty: false, ...options });
       break;
     }
 
@@ -132,7 +132,7 @@ export function format(value, type, options = {}): string {
         timezone: getCurrentTimezone()
       };
       const params = { ...defaultOptions, ...options };
-      formattedValue = DateFormatter['Time-Only'](value, params);
+      formattedValue = DateFormatters['Time-Only'](value, params);
       break;
     }
 
@@ -140,17 +140,4 @@ export function format(value, type, options = {}): string {
       formattedValue = value;
   }
   return formattedValue;
-}
-
-export function convertToTimezone(value, options) {
-  if (value && options) {
-    const defaultOptions = {
-      type: 'customFormat',
-      format: 'YYYY-MM-DDTHH:mm:ss',
-      timezone: getCurrentTimezone()
-    };
-    const params = { ...defaultOptions, ...options };
-    return DateFormatter.convertToTimezone(value, params);
-  }
-  return value;
 }

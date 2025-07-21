@@ -1,6 +1,6 @@
 {
   "name": "@pega/angular-sdk-components",
-  "version": "24.2.10",
+  "version": "24.2.11",
   "peerDependencies": {
     "@angular/common": "^18.2.12",
     "@angular/core": "^18.2.12"

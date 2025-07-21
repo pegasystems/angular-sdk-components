@@ -63,7 +63,7 @@ function SymbolFormatter(value, { symbol = '$', suffix = true, locale = 'en-US' 
   return formattedValue;
 }
 
-export default {
+export const CurrencyFormatters = {
   Currency: (value, options) => CurrencyFormatter(value, options),
   'Currency-Code': (value, options) => CurrencyFormatter(value, { ...options, symbol: false }),
   Decimal: (value, options) => NumberFormatter(value, options),

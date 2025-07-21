@@ -42,7 +42,7 @@ function TimeFormatter(value, options) {
   return DateFormatter(value, options);
 }
 
-export default {
+export const DateFormatters = {
   'DateTime-Long': (value, options) => DateFormatter(value, { ...options, type: 'customFormat', format: 'LLL' }),
   'DateTime-Short': (value, options) =>
     DateFormatter(value, {
