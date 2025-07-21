@@ -170,12 +170,13 @@ export class PhoneComponent implements OnInit, OnDestroy {
     // 'blur' isn't getting fired
   }
 
-  fieldOnChange(event: any) {
+  fieldOnChange() {
     const oldVal = this.value$ ?? '';
-    const isValueChanged = event?.target?.value.toString() !== oldVal.toString();
+    const newVal = this.formGroup$.controls[this.controlName$].value;
+    const isValueChanged = newVal?.toString() !== oldVal.toString();
 
-    if (isValueChanged) {
-      const value = event?.target?.value || event?.value || '';
+    if (isValueChanged && newVal) {
+      const value = this.formGroup$.controls[this.controlName$].value;
       this.afterBlur = true;
       handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     }
