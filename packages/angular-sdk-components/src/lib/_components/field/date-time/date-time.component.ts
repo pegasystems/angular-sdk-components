@@ -199,7 +199,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
     if (typeof event.value === 'object') {
       // convert date to pega "date" format
       const dateTime = dayjs(event.value?.toISOString());
-      const timeZoneDateTime = dayjs.tz(dateTime.format('YYYY-MM-DDTHH:mm:ss'), this.timezone);
+      const timeZoneDateTime = (dayjs as any).tz(dateTime.format('YYYY-MM-DDTHH:mm:ss'), this.timezone);
       event.value = timeZoneDateTime && timeZoneDateTime.isValid() ? timeZoneDateTime.toISOString() : '';
     }
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
