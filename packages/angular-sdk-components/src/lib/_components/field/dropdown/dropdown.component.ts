@@ -121,7 +121,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     // call updateSelf when initializing
     this.checkAndUpdate();
     // this should get called afer checkAndUpdate
-    this.getDatapageData();
 
     if (this.formGroup$) {
       // add control to formGroup
@@ -253,7 +252,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     );
 
     this.localizedValue = this.options$?.find(opt => opt.key === this.value$)?.value || this.localizedValue;
-
+    this.getDatapageData();
     // trigger display of error message with field control
     if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
       const timer = interval(100).subscribe(() => {
