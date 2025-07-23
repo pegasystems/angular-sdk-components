@@ -171,9 +171,9 @@ export class RootContainerComponent implements OnInit, OnDestroy {
 
   async configureModalContainer() {
     const sdkConfig = await this.scService.getSdkConfig();
-    const showModalsInEmbedMode = sdkConfig.serverConfig.showModalsInEmbedMode;
+    const showModalsInEmbeddedMode = sdkConfig.serverConfig.showModalsInEmbeddedMode;
 
-    if (!this.displayOnlyFA$ || showModalsInEmbedMode) {
+    if (!this.displayOnlyFA$ || showModalsInEmbeddedMode) {
       const configObjModal = PCore.createPConnect({
         meta: {
           type: 'ModalViewContainer',
