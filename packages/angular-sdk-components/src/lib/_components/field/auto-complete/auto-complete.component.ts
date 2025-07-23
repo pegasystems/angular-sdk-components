@@ -14,6 +14,10 @@ import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
+interface IOption {
+  key: string;
+  value: string;
+}
 interface AutoCompleteProps extends PConnFieldProps {
   // If any, enter additional props that only exist on AutoComplete here
   deferDatasource?: boolean;
@@ -108,6 +112,13 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     );
   }
 
+  set options(options: IOption[]) {
+    this.options$ = options;
+    const index = this.options$?.findIndex(element => element.key === this.configProps$.value);
+    this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
+    this.fieldControl.setValue(this.value$);
+  }
+
   ngOnDestroy(): void {
     if (this.formGroup$) {
       this.formGroup$.removeControl(this.controlName$);
@@ -149,6 +160,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     if (this.configProps$.value != undefined) {
       const index = this.options$?.findIndex(element => element.key === this.configProps$.value);
       this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
+      this.fieldControl.setValue(this.value$);
     }
 
     this.setPropertyValuesFromProps();
@@ -191,7 +203,8 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
 
     this.componentReference = this.pConn$.getStateProps().value;
     if (this.listType === 'associated') {
-      this.options$ = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
+      const optionsList = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
+      this.options = optionsList;
     }
 
     if (!this.displayMode$ && this.listType !== 'associated') {
@@ -263,7 +276,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       };
       optionsData.push(obj);
     });
-    this.options$ = optionsData;
+    this.options = optionsData;
   }
 
   flattenParameters(params = {}) {

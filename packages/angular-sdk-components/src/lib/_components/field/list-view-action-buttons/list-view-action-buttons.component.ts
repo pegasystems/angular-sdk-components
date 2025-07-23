@@ -31,10 +31,11 @@ export class ListViewActionButtonsComponent {
     this.pConn$
       .getActionsApi()
       .submitEmbeddedDataModal(this.context$)
-      .then(() => {})
+      .then(() => {
+        this.closeActionsDialog.emit();
+      })
       .finally(() => {
         this.isDisabled = false;
       });
-    this.closeActionsDialog.emit();
   }
 }
