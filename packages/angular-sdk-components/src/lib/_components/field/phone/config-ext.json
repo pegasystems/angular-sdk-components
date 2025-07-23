@@ -3,6 +3,6 @@
   "label": "Phone",
   "description": "Phone",
   "type": "Field",
-  "subtype": "DATA_CAPTURE",
+  "subtype": "Text-Phone",
   "properties": []
 }
