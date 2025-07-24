@@ -168,7 +168,11 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     this.placeholder = placeholder || '';
     this.displayMode$ = displayMode;
 
-    this.value$ = value && typeof value === 'object' && value.userName ? value.userName : '';
+    if (value && typeof value === 'object') {
+      this.value$ = value.userName ? value.userName : '';
+    } else {
+      this.value$ = value || '';
+    }
 
     const { readOnly, required } = props;
     [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
