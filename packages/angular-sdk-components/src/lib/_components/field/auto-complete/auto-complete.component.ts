@@ -112,7 +112,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     );
   }
 
-  set options(options: IOption[]) {
+  setOptions(options: IOption[]) {
     this.options$ = options;
     const index = this.options$?.findIndex(element => element.key === this.configProps$.value);
     this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
@@ -204,7 +204,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
     this.componentReference = this.pConn$.getStateProps().value;
     if (this.listType === 'associated') {
       const optionsList = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
-      this.options = optionsList;
+      this.setOptions(optionsList);
     }
 
     if (!this.displayMode$ && this.listType !== 'associated') {
@@ -276,7 +276,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
       };
       optionsData.push(obj);
     });
-    this.options = optionsData;
+    this.setOptions(optionsData);
   }
 
   flattenParameters(params = {}) {
