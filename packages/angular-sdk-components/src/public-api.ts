@@ -4,6 +4,8 @@
  * Public API Surface of angular-sdk-components
  */
 
+export * from './sdk-local-component-map';
+
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
@@ -84,6 +86,7 @@ export * from './lib/_components/template/page/page.component';
 export * from './lib/_components/template/promoted-filters/promoted-filters.component';
 export * from './lib/_components/template/repeating-structures/repeating-structures.component';
 export * from './lib/_components/template/simple-table/simple-table.component';
+export * from './lib/_components/template/simple-table-manual/helpers';
 export * from './lib/_components/template/simple-table-manual/simple-table-manual.component';
 export * from './lib/_components/template/simple-table-select/simple-table-select.component';
 export * from './lib/_components/template/single-reference-readonly/single-reference-readonly.component';
@@ -96,7 +99,6 @@ export * from './lib/_components/template/two-column-tab/two-column-tab.componen
 export * from './lib/_components/template/wide-narrow-form/wide-narrow-form.component';
 export * from './lib/_components/template/wide-narrow-page/wide-narrow-page.component';
 export * from './lib/_components/template/utils';
-export * from './lib/_components/template/simple-table-manual/helpers';
 
 export * from './lib/_components/widget/app-announcement/app-announcement.component';
 export * from './lib/_components/widget/attachment/attachment.component';
@@ -123,36 +125,34 @@ export * from './lib/_components/designSystemExtension/rich-text-editor/rich-tex
 
 export * from './lib/_directives/thousand-seperator.directive';
 
-export * from './lib/_services/server-config.service';
+export * from './lib/_services/banner.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
-export * from './lib/_services/banner.service';
 export * from './lib/_services/endpoints';
+export * from './lib/_services/server-config.service';
 
 export * from './lib/_helpers/case-utils';
-export * from './lib/_helpers/currency-utils';
 export * from './lib/_helpers/common';
 export * from './lib/_helpers/createstage-utils';
+export * from './lib/_helpers/currency-utils';
 export * from './lib/_helpers/date-format-utils';
 export * from './lib/_helpers/event-util';
 export * from './lib/_helpers/field-group-utils';
-export * from './lib/_helpers/formatters/format-utils';
-export * from './lib/_helpers/formatters/currency-map';
-export * from './lib/_helpers/formatters/date';
+export * from './lib/_helpers/filter-utils';
 export * from './lib/_helpers/formatters/boolean';
 export * from './lib/_helpers/formatters/currency';
+export * from './lib/_helpers/formatters/currency-map';
+export * from './lib/_helpers/formatters/date';
+export * from './lib/_helpers/formatters/format-utils';
 export * from './lib/_helpers/formatters/index';
+export * from './lib/_helpers/instructions-utils';
 export * from './lib/_helpers/tab-utils';
 export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
 export * from './lib/_helpers/versionHelpers';
-export * from './lib/_helpers/filter-utils';
-export * from './lib/_helpers/instructions-utils';
 
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/update-worklist.service';
 
 export * from './lib/_types/PConnProps.interface';
-
-export * from './sdk-local-component-map';

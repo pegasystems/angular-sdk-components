@@ -16,7 +16,8 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { getReferenceList } from '../../../_helpers/field-group-utils';
-import { buildFieldsForTable, evaluateAllowRowAction, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
+import { buildFieldsForTable, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
+import { evaluateAllowRowAction } from '../utils';
 import { Utils } from '../../../_helpers/utils';
 import { getSeconds } from '../../../_helpers/common';
 

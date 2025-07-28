@@ -6,7 +6,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { buildView, getReferenceList } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { evaluateAllowRowAction } from './utils';
+import { evaluateAllowRowAction } from '../utils';
 
 interface FieldGroupTemplateProps {
   // If any, enter additional props that only exist on this component
