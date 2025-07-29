@@ -11,6 +11,7 @@
           [preferredCountries]="['us']"
           [enablePlaceholder]="true"
           [enableSearch]="true"
+          [disabled]="bDisabled$"
           (change)="fieldOnChange()"
           (blur)="fieldOnBlur()"
         >

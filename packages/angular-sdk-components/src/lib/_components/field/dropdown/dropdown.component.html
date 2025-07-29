@@ -12,6 +12,7 @@
         <mat-select
           [value]="value$"
           [required]="bRequired$"
+          [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
           (selectionChange)="fieldOnChange($event)"
           [formControl]="fieldControl"

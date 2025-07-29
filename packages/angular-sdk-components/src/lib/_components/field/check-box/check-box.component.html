@@ -18,6 +18,8 @@
           <mat-checkbox
             [labelPosition]="'after'"
             [checked]="item.selected"
+            [disabled]="bDisabled$ || bReadonly$"
+            [required]="bRequired$"
             [attr.data-test-id]="testId + ':' + item.value"
             (change)="handleChangeMultiMode($event, item)"
             (blur)="fieldOnBlur($event)"
@@ -29,6 +31,8 @@
         <mat-checkbox
           [labelPosition]="'after'"
           [checked]="isChecked$"
+          [disabled]="bDisabled$ || bReadonly$"
+          [required]="bRequired$"
           [attr.data-test-id]="testId"
           [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
