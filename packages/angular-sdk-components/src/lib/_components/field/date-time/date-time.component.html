@@ -14,9 +14,10 @@
           [formControl]="fieldControl"
           (dateTimeChange)="fieldOnDateChange($event)"
           [required]="bRequired$"
+          [readonly]="bDisabled$"
         />
         <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="dtPicker"></mat-datepicker-toggle>
-        <owl-date-time #dtPicker></owl-date-time>
+        <owl-date-time #dtPicker [disabled]="bDisabled$"></owl-date-time>
         <mat-error *ngIf="fieldControl?.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
