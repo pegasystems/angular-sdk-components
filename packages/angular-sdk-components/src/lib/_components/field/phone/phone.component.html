@@ -11,6 +11,7 @@
           [preferredCountries]="['us']"
           [enablePlaceholder]="true"
           [enableSearch]="true"
+          [required]="bRequired$"
           [disabled]="bDisabled$ || bReadonly$"
           (change)="fieldOnChange()"
           (blur)="fieldOnBlur()"

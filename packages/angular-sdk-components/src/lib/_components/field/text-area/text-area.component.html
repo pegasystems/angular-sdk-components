@@ -6,6 +6,7 @@
     <div [formGroup]="formGroup$">
       <div *ngIf="bVisible$">
         <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+          <mat-label>{{ label$ }}</mat-label>
           <textarea
             matInput
             rows="5"
