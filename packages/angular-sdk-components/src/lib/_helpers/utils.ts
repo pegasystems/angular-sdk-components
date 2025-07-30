@@ -213,6 +213,10 @@ export class Utils {
         // 05/22/2021
         sReturnDate = dayjs(dateVal).format('MM/DD/YYYY');
         break;
+      case 'Date-Long-Custom-DD/MM/YYYY':
+        // 22/05/2021
+        sReturnDate = dayjs(dateVal).format('DD/MM/YYYY');
+        break;
       case 'Date':
       case 'Date-Medium':
         // Jan 1, 2001
