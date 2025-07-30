@@ -138,7 +138,7 @@ export class TextComponent implements OnInit, OnDestroy {
     //   day: 'numeric'
     // }).format(new Date(sVal + "T00:00"));
 
-    return this.utils.generateDate(sVal, 'Date-Long-Custom-YYYY');
+    return this.utils.generateDate(sVal, 'Date-DayMonthYear-Custom');
   }
 
   generateDateTime(sVal): string {

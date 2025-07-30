@@ -2,7 +2,7 @@
   <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
-  <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
+  <div *ngIf="bHasForm$; else noEdit">
     <div #f="ngForm" [formGroup]="formGroup$" *ngIf="bVisible$">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
         <ngx-mat-intl-tel-input
@@ -11,7 +11,7 @@
           [preferredCountries]="['us']"
           [enablePlaceholder]="true"
           [enableSearch]="true"
-          [disabled]="bDisabled$"
+          [disabled]="bDisabled$ || bReadonly$"
           (change)="fieldOnChange()"
           (blur)="fieldOnBlur()"
         >

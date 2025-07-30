@@ -9,10 +9,10 @@
   <div [formGroup]="formGroup$" *ngIf="bVisible$">
     <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic" [hintLabel]="helperText">
       <span class="psdk-label-wrapper-readonly">
-        <label class="psdk-label-readonly">{{ label$ }}</label>
+        <mat-label class="psdk-label-readonly">{{ label$ }}</mat-label>
       </span>
       <!-- <mat-label>{{label$}}</mat-label> -->
-      <input matInput [placeholder]="placeholder" style="display: none" />
+      <input matInput [placeholder]="placeholder" style="display: none" [required]="bRequired$" />
       <mat-radio-group
         [value]="value$"
         [required]="bRequired$"
