@@ -5,6 +5,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { format } from '../../../_helpers/formatters';
 
 interface TextProps extends PConnFieldProps {
   // If any, enter additional props that only exist on Text here
@@ -99,8 +100,9 @@ export class TextComponent implements OnInit, OnDestroy {
         break;
       case 'time':
         if (this.value$) {
-          const timeParts = this.value$.split(':');
-          this.formattedValue$ = `${timeParts[0]}:${timeParts[1]}`;
+          this.formattedValue$ = format(this.value$, 'timeonly', {
+            format: 'hh:mm A'
+          });
         } else {
           this.formattedValue$ = '';
         }
