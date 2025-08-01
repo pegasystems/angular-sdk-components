@@ -1,8 +1,5 @@
 import { getContext, readContextResponse } from './utils';
 
-// Remove this and use "real" PCore type once .d.ts is fixed (currently shows 1 error)
-declare const PCore: any;
-
 export function init(props) {
   const {
     referenceList,
@@ -25,9 +22,9 @@ export function init(props) {
   let selectionCountThreshold;
 
   // promise to fetch metadata
-  const metaDataPromise = PCore.getAnalyticsUtils().getDataViewMetadata(referenceList, showDynamicFields);
+  const metaDataPromise = PCore.getAnalyticsUtils().getDataViewMetadata(referenceList, showDynamicFields, null);
 
-  const promisesArray = [metaDataPromise];
+  const promisesArray: any = [metaDataPromise];
 
   // promise to fetch report configured columns
   const reportColumnsPromise = PCore.getAnalyticsUtils()

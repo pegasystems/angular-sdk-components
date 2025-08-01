@@ -21,8 +21,6 @@ import { evaluateAllowRowAction } from '../utils';
 import { Utils } from '../../../_helpers/utils';
 import { getSeconds } from '../../../_helpers/common';
 
-declare const window: any;
-
 interface SimpleTableManualProps {
   // If any, enter additional props that only exist on this component
   visibility?: boolean;

@@ -23,8 +23,6 @@ import { formatters } from '../../../_helpers/formatters/format-utils';
 
 import { init } from './listViewHelpers';
 
-declare const window: any;
-
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
 interface ListViewProps {

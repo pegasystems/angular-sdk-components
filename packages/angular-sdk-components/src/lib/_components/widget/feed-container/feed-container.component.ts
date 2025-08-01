@@ -9,8 +9,6 @@ import isEqual from 'fast-deep-equal';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
-
 @Component({
   selector: 'app-feed-container',
   templateUrl: './feed-container.component.html',

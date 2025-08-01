@@ -7,8 +7,6 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 
-declare const window: any;
-
 interface NavBarProps {
   // If any, enter additional props that only exist on this component
   showAppName?: boolean;
