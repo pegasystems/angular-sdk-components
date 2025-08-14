@@ -8,11 +8,10 @@ interface CaseHistoryProps {
 }
 
 @Component({
-  selector: 'app-case-history',
-  templateUrl: './case-history.component.html',
-  styleUrls: ['./case-history.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatTableModule]
+    selector: 'app-case-history',
+    templateUrl: './case-history.component.html',
+    styleUrls: ['./case-history.component.scss'],
+    imports: [CommonModule, MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

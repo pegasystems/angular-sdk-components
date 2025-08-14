@@ -16,22 +16,21 @@ import { deleteInstruction, insertInstruction } from '../../../_helpers/instruct
 import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
-  selector: 'app-multiselect',
-  templateUrl: './multiselect.component.html',
-  styleUrls: ['./multiselect.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatOptionModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatChipsModule,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+    selector: 'app-multiselect',
+    templateUrl: './multiselect.component.html',
+    styleUrls: ['./multiselect.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatOptionModule,
+        MatCheckboxModule,
+        MatIconModule,
+        MatChipsModule,
+        forwardRef(() => ComponentMapperComponent)
+    ]
 })
 export class MultiselectComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -3,11 +3,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { DetailsTemplateBase } from '../base/details-template-base';
 
 @Component({
-  selector: 'app-details-wide-narrow',
-  templateUrl: './details-wide-narrow.component.html',
-  styleUrls: ['./details-wide-narrow.component.scss'],
-  standalone: true,
-  imports: [forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-details-wide-narrow',
+    templateUrl: './details-wide-narrow.component.html',
+    styleUrls: ['./details-wide-narrow.component.scss'],
+    imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsWideNarrowComponent extends DetailsTemplateBase {
   override pConn$: typeof PConnect;

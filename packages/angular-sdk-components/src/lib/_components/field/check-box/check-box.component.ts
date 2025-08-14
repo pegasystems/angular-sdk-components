@@ -29,11 +29,10 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
 }
 
 @Component({
-  selector: 'app-check-box',
-  templateUrl: './check-box.component.html',
-  styleUrls: ['./check-box.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-check-box',
+    templateUrl: './check-box.component.html',
+    styleUrls: ['./check-box.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CheckBoxComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

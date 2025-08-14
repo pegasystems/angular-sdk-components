@@ -12,11 +12,10 @@ interface RichTextProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-rich-text',
-  templateUrl: './rich-text.component.html',
-  styleUrls: ['./rich-text.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-rich-text',
+    templateUrl: './rich-text.component.html',
+    styleUrls: ['./rich-text.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RichTextComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

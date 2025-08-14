@@ -3,11 +3,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { DetailsTemplateBase } from '../base/details-template-base';
 
 @Component({
-  selector: 'app-details-three-column',
-  templateUrl: './details-three-column.component.html',
-  styleUrls: ['./details-three-column.component.scss'],
-  standalone: true,
-  imports: [forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-details-three-column',
+    templateUrl: './details-three-column.component.html',
+    styleUrls: ['./details-three-column.component.scss'],
+    imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsThreeColumnComponent extends DetailsTemplateBase {
   override pConn$: typeof PConnect;

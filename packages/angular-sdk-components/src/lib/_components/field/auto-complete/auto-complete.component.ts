@@ -31,19 +31,18 @@ interface AutoCompleteProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-auto-complete',
-  templateUrl: './auto-complete.component.html',
-  styleUrls: ['./auto-complete.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatOptionModule,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+    selector: 'app-auto-complete',
+    templateUrl: './auto-complete.component.html',
+    styleUrls: ['./auto-complete.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        MatOptionModule,
+        forwardRef(() => ComponentMapperComponent)
+    ]
 })
 export class AutoCompleteComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

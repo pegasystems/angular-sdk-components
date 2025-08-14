@@ -7,11 +7,10 @@ interface PulseProps {
 }
 
 @Component({
-  selector: 'app-pulse',
-  templateUrl: './pulse.component.html',
-  styleUrls: ['./pulse.component.scss'],
-  standalone: true,
-  imports: [forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-pulse',
+    templateUrl: './pulse.component.html',
+    styleUrls: ['./pulse.component.scss'],
+    imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class PulseComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

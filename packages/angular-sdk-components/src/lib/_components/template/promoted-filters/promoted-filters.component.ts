@@ -23,11 +23,10 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
 ];
 
 @Component({
-  selector: 'app-promoted-filters',
-  templateUrl: './promoted-filters.component.html',
-  styleUrls: ['./promoted-filters.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-promoted-filters',
+    templateUrl: './promoted-filters.component.html',
+    styleUrls: ['./promoted-filters.component.scss'],
+    imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PromotedFiltersComponent implements OnInit, OnDestroy {
   @Input() viewName;

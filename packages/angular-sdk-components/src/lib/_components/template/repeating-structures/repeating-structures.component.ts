@@ -15,11 +15,10 @@ interface RepeatingStructuresProps {
 }
 
 @Component({
-  selector: 'app-repeating-structures',
-  templateUrl: './repeating-structures.component.html',
-  styleUrls: ['./repeating-structures.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule]
+    selector: 'app-repeating-structures',
+    templateUrl: './repeating-structures.component.html',
+    styleUrls: ['./repeating-structures.component.scss'],
+    imports: [CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule]
 })
 export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;

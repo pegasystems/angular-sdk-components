@@ -12,11 +12,10 @@ interface AppAnnouncementProps {
 }
 
 @Component({
-  selector: 'app-app-announcement',
-  templateUrl: './app-announcement.component.html',
-  styleUrls: ['./app-announcement.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatButtonModule]
+    selector: 'app-app-announcement',
+    templateUrl: './app-announcement.component.html',
+    styleUrls: ['./app-announcement.component.scss'],
+    imports: [CommonModule, MatButtonModule]
 })
 export class AppAnnouncementComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

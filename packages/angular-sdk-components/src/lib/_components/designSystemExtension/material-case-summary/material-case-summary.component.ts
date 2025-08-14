@@ -4,11 +4,10 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'app-material-case-summary',
-  templateUrl: './material-case-summary.component.html',
-  styleUrls: ['./material-case-summary.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-material-case-summary',
+    templateUrl: './material-case-summary.component.html',
+    styleUrls: ['./material-case-summary.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
   @Input() status$: string;

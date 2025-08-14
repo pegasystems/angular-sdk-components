@@ -4,11 +4,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-field-group',
-  templateUrl: './field-group.component.html',
-  styleUrls: ['./field-group.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatGridListModule, MatIconModule]
+    selector: 'app-field-group',
+    templateUrl: './field-group.component.html',
+    styleUrls: ['./field-group.component.scss'],
+    imports: [CommonModule, MatGridListModule, MatIconModule]
 })
 export class FieldGroupComponent {
   @Input() name?: string;

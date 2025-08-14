@@ -60,12 +60,11 @@ interface ToDoProps {
 }
 
 @Component({
-  selector: 'app-todo',
-  templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss'],
-  providers: [Utils],
-  standalone: true,
-  imports: [CommonModule, MatButtonModule]
+    selector: 'app-todo',
+    templateUrl: './todo.component.html',
+    styleUrls: ['./todo.component.scss'],
+    providers: [Utils],
+    imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

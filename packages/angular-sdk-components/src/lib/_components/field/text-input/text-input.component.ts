@@ -16,11 +16,10 @@ interface TextInputProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-text-input',
-  templateUrl: './text-input.component.html',
-  styleUrls: ['./text-input.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-text-input',
+    templateUrl: './text-input.component.html',
+    styleUrls: ['./text-input.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextInputComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -15,11 +15,10 @@ interface PhoneProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-phone',
-  templateUrl: './phone.component.html',
-  styleUrls: ['./phone.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-phone',
+    templateUrl: './phone.component.html',
+    styleUrls: ['./phone.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -11,11 +11,10 @@ interface TextContentProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-text-content',
-  templateUrl: './text-content.component.html',
-  styleUrls: ['./text-content.component.scss'],
-  standalone: true,
-  imports: [CommonModule]
+    selector: 'app-text-content',
+    templateUrl: './text-content.component.html',
+    styleUrls: ['./text-content.component.scss'],
+    imports: [CommonModule]
 })
 export class TextContentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

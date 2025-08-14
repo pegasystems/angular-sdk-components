@@ -3,11 +3,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { DetailsTemplateBase } from '../base/details-template-base';
 
 @Component({
-  selector: 'app-details',
-  templateUrl: './details.component.html',
-  styleUrls: ['./details.component.scss'],
-  standalone: true,
-  imports: [forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-details',
+    templateUrl: './details.component.html',
+    styleUrls: ['./details.component.scss'],
+    imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsComponent extends DetailsTemplateBase {
   override pConn$: typeof PConnect;

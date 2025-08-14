@@ -15,11 +15,10 @@ interface URLProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-url',
-  templateUrl: './url.component.html',
-  styleUrls: ['./url.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-url',
+    templateUrl: './url.component.html',
+    styleUrls: ['./url.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class UrlComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

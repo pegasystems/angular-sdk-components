@@ -13,11 +13,10 @@ interface CaseSummaryProps {
 }
 
 @Component({
-  selector: 'app-case-summary',
-  templateUrl: './case-summary.component.html',
-  styleUrls: ['./case-summary.component.scss'],
-  standalone: true,
-  imports: [forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-case-summary',
+    templateUrl: './case-summary.component.html',
+    styleUrls: ['./case-summary.component.scss'],
+    imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

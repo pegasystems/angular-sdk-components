@@ -21,20 +21,19 @@ interface DateTimeProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-date-time',
-  templateUrl: './date-time.component.html',
-  styleUrls: ['./date-time.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+    selector: 'app-date-time',
+    templateUrl: './date-time.component.html',
+    styleUrls: ['./date-time.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDatepickerModule,
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule,
+        forwardRef(() => ComponentMapperComponent)
+    ]
 })
 export class DateTimeComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

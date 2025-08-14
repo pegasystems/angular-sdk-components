@@ -27,20 +27,19 @@ interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
 }
 
 @Component({
-  selector: 'app-user-reference',
-  templateUrl: './user-reference.component.html',
-  styleUrls: ['./user-reference.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+    selector: 'app-user-reference',
+    templateUrl: './user-reference.component.html',
+    styleUrls: ['./user-reference.component.scss'],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatInputModule,
+        MatAutocompleteModule,
+        forwardRef(() => ComponentMapperComponent)
+    ]
 })
 export class UserReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -16,11 +16,10 @@ interface TextAreaProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-text-area',
-  templateUrl: './text-area.component.html',
-  styleUrls: ['./text-area.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-text-area',
+    templateUrl: './text-area.component.html',
+    styleUrls: ['./text-area.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextAreaComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

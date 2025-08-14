@@ -12,11 +12,10 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
  */
 
 @Component({
-  selector: 'app-defer-load',
-  templateUrl: './defer-load.component.html',
-  styleUrls: ['./defer-load.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-defer-load',
+    templateUrl: './defer-load.component.html',
+    styleUrls: ['./defer-load.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

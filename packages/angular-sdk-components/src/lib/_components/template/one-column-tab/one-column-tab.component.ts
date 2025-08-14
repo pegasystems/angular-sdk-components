@@ -4,11 +4,10 @@ import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'app-one-column-tab',
-  templateUrl: './one-column-tab.component.html',
-  styleUrls: ['./one-column-tab.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-one-column-tab',
+    templateUrl: './one-column-tab.component.html',
+    styleUrls: ['./one-column-tab.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

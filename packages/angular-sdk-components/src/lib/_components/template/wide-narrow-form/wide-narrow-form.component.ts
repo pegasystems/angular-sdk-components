@@ -5,11 +5,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { FormTemplateBase } from '../base/form-template-base';
 
 @Component({
-  selector: 'app-wide-narrow-form',
-  templateUrl: './wide-narrow-form.component.html',
-  styleUrls: ['./wide-narrow-form.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-wide-narrow-form',
+    templateUrl: './wide-narrow-form.component.html',
+    styleUrls: ['./wide-narrow-form.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowFormComponent extends FormTemplateBase implements OnInit, OnChanges {
   @Input() override pConn$: typeof PConnect;

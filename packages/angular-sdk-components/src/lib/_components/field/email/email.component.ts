@@ -15,11 +15,10 @@ interface EmailProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-email',
-  templateUrl: './email.component.html',
-  styleUrls: ['./email.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-email',
+    templateUrl: './email.component.html',
+    styleUrls: ['./email.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class EmailComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

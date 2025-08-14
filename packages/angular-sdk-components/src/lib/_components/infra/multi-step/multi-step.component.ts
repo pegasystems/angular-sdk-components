@@ -5,12 +5,11 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'app-multi-step',
-  templateUrl: './multi-step.component.html',
-  styleUrls: ['./multi-step.component.scss'],
-  providers: [Utils],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-multi-step',
+    templateUrl: './multi-step.component.html',
+    styleUrls: ['./multi-step.component.scss'],
+    providers: [Utils],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiStepComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

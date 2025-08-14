@@ -4,11 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 
 @Component({
-  selector: 'app-action-buttons',
-  templateUrl: './action-buttons.component.html',
-  styleUrls: ['./action-buttons.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+    selector: 'app-action-buttons',
+    templateUrl: './action-buttons.component.html',
+    styleUrls: ['./action-buttons.component.scss'],
+    imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class ActionButtonsComponent {
   @Input() arMainButtons$: any[];

@@ -14,11 +14,10 @@ interface DynamicTabsProps {
 }
 
 @Component({
-  selector: 'app-dynamic-tabs',
-  templateUrl: './dynamic-tabs.component.html',
-  styleUrls: ['./dynamic-tabs.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatTabsModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-dynamic-tabs',
+    templateUrl: './dynamic-tabs.component.html',
+    styleUrls: ['./dynamic-tabs.component.scss'],
+    imports: [CommonModule, MatTabsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DynamicTabsComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

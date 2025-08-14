@@ -10,11 +10,10 @@ interface StagesProps {
 }
 
 @Component({
-  selector: 'app-stages',
-  templateUrl: './stages.component.html',
-  styleUrls: ['./stages.component.scss'],
-  standalone: true,
-  imports: [CommonModule]
+    selector: 'app-stages',
+    templateUrl: './stages.component.html',
+    styleUrls: ['./stages.component.scss'],
+    imports: [CommonModule]
 })
 export class StagesComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

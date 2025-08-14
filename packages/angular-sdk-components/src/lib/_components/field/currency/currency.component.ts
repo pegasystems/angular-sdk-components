@@ -21,11 +21,10 @@ interface CurrrencyProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-currency',
-  templateUrl: './currency.component.html',
-  styleUrls: ['./currency.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-currency',
+    templateUrl: './currency.component.html',
+    styleUrls: ['./currency.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class CurrencyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

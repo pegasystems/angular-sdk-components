@@ -24,11 +24,10 @@ interface AssignmentProps {
 }
 
 @Component({
-  selector: 'app-assignment',
-  templateUrl: './assignment.component.html',
-  styleUrls: ['./assignment.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-assignment',
+    templateUrl: './assignment.component.html',
+    styleUrls: ['./assignment.component.scss'],
+    imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

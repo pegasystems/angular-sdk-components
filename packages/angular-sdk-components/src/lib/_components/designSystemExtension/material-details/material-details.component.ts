@@ -4,11 +4,10 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'app-material-details',
-  templateUrl: './material-details.component.html',
-  styleUrls: ['./material-details.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-material-details',
+    templateUrl: './material-details.component.html',
+    styleUrls: ['./material-details.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialDetailsComponent {
   constructor(private utils: Utils) {}

@@ -6,12 +6,11 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 declare let tinymce: any;
 
 @Component({
-  selector: 'app-rich-text-editor',
-  templateUrl: './rich-text-editor.component.html',
-  styleUrls: ['./rich-text-editor.component.scss'],
-  standalone: true,
-  imports: [CommonModule, EditorModule, ReactiveFormsModule],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
+    selector: 'app-rich-text-editor',
+    templateUrl: './rich-text-editor.component.html',
+    styleUrls: ['./rich-text-editor.component.scss'],
+    imports: [CommonModule, EditorModule, ReactiveFormsModule],
+    providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
 })
 export class RichTextEditorComponent implements OnChanges {
   @Input() placeholder;

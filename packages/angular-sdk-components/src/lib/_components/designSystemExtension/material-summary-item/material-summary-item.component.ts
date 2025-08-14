@@ -5,11 +5,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
-  selector: 'app-material-summary-item',
-  templateUrl: './material-summary-item.component.html',
-  styleUrls: ['./material-summary-item.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatButtonModule, MatMenuModule]
+    selector: 'app-material-summary-item',
+    templateUrl: './material-summary-item.component.html',
+    styleUrls: ['./material-summary-item.component.scss'],
+    imports: [CommonModule, MatButtonModule, MatMenuModule]
 })
 export class MaterialSummaryItemComponent implements OnInit {
   @Input() item$: any;

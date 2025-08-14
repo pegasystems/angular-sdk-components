@@ -21,11 +21,10 @@ interface PercentageProps extends PConnFieldProps {
 }
 
 @Component({
-  selector: 'app-percentage',
-  templateUrl: './percentage.component.html',
-  styleUrls: ['./percentage.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-percentage',
+    templateUrl: './percentage.component.html',
+    styleUrls: ['./percentage.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class PercentageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

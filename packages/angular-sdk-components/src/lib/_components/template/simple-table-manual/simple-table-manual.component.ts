@@ -59,23 +59,22 @@ class Group {
 }
 
 @Component({
-  selector: 'app-simple-table-manual',
-  templateUrl: './simple-table-manual.component.html',
-  styleUrls: ['./simple-table-manual.component.scss'],
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatButtonModule,
-    MatSortModule,
-    MatMenuModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatOptionModule,
-    MatSelectModule,
-    MatInputModule,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+    selector: 'app-simple-table-manual',
+    templateUrl: './simple-table-manual.component.html',
+    styleUrls: ['./simple-table-manual.component.scss'],
+    imports: [
+        CommonModule,
+        MatTableModule,
+        MatButtonModule,
+        MatSortModule,
+        MatMenuModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatOptionModule,
+        MatSelectModule,
+        MatInputModule,
+        forwardRef(() => ComponentMapperComponent)
+    ]
 })
 export class SimpleTableManualComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;

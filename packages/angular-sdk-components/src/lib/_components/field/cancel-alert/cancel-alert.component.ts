@@ -5,11 +5,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 
 @Component({
-  selector: 'app-cancel-alert',
-  templateUrl: './cancel-alert.component.html',
-  styleUrls: ['./cancel-alert.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+    selector: 'app-cancel-alert',
+    templateUrl: './cancel-alert.component.html',
+    styleUrls: ['./cancel-alert.component.scss'],
+    imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;

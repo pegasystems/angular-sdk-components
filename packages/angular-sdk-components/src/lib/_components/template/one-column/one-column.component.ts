@@ -5,11 +5,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { FormTemplateBase } from '../base/form-template-base';
 
 @Component({
-  selector: 'app-one-column',
-  templateUrl: './one-column.component.html',
-  styleUrls: ['./one-column.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-one-column',
+    templateUrl: './one-column.component.html',
+    styleUrls: ['./one-column.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnComponent extends FormTemplateBase implements OnInit, OnChanges {
   @Input() override pConn$: typeof PConnect;

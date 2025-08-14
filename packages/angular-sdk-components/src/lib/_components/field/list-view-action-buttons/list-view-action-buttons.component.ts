@@ -4,11 +4,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 
 @Component({
-  selector: 'app-list-view-action-buttons',
-  templateUrl: './list-view-action-buttons.component.html',
-  styleUrls: ['./list-view-action-buttons.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+    selector: 'app-list-view-action-buttons',
+    templateUrl: './list-view-action-buttons.component.html',
+    styleUrls: ['./list-view-action-buttons.component.scss'],
+    imports: [CommonModule, MatGridListModule, MatButtonModule]
 })
 export class ListViewActionButtonsComponent {
   @Input() pConn$: typeof PConnect;

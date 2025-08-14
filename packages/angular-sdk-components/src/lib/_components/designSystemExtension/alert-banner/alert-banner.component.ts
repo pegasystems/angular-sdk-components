@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-  selector: 'app-alert-banner',
-  templateUrl: './alert-banner.component.html',
-  styleUrls: ['./alert-banner.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-alert-banner',
+    templateUrl: './alert-banner.component.html',
+    styleUrls: ['./alert-banner.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AlertBannerComponent {
   @Input() banners: any[];

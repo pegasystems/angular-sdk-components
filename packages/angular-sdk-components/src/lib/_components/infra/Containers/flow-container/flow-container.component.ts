@@ -25,12 +25,11 @@ interface FlowContainerProps {
 }
 
 @Component({
-  selector: 'app-flow-container',
-  templateUrl: './flow-container.component.html',
-  styleUrls: ['./flow-container.component.scss'],
-  providers: [Utils],
-  standalone: true,
-  imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-flow-container',
+    templateUrl: './flow-container.component.html',
+    styleUrls: ['./flow-container.component.scss'],
+    providers: [Utils],
+    imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

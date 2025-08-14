@@ -79,11 +79,10 @@ interface ViewProps {
 }
 
 @Component({
-  selector: 'app-view',
-  templateUrl: './view.component.html',
-  styleUrls: ['./view.component.scss'],
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+    selector: 'app-view',
+    templateUrl: './view.component.html',
+    styleUrls: ['./view.component.scss'],
+    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
