@@ -17,11 +17,11 @@ interface CaseViewProps {
 }
 
 @Component({
-    selector: 'app-case-view',
-    templateUrl: './case-view.component.html',
-    styleUrls: ['./case-view.component.scss'],
-    providers: [Utils],
-    imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-case-view',
+  templateUrl: './case-view.component.html',
+  styleUrls: ['./case-view.component.scss'],
+  providers: [Utils],
+  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

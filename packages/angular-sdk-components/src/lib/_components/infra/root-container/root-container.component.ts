@@ -20,17 +20,17 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 const options = { context: 'app' };
 
 @Component({
-    selector: 'app-root-container',
-    templateUrl: './root-container.component.html',
-    styleUrls: ['./root-container.component.scss'],
-    imports: [
-        CommonModule,
-        MatProgressSpinnerModule,
-        HybridViewContainerComponent,
-        ModalViewContainerComponent,
-        PreviewViewContainerComponent,
-        forwardRef(() => ComponentMapperComponent)
-    ]
+  selector: 'app-root-container',
+  templateUrl: './root-container.component.html',
+  styleUrls: ['./root-container.component.scss'],
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    HybridViewContainerComponent,
+    ModalViewContainerComponent,
+    PreviewViewContainerComponent,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class RootContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

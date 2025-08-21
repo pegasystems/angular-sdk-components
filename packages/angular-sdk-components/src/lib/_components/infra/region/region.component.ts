@@ -5,10 +5,10 @@ import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-region',
-    templateUrl: './region.component.html',
-    styleUrls: ['./region.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-region',
+  templateUrl: './region.component.html',
+  styleUrls: ['./region.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RegionComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

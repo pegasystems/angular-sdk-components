@@ -11,10 +11,10 @@ import { FormGroup } from '@angular/forms';
 // Right this is a skeleton, as Hybrid ViewContainer hasn't been implemented
 
 @Component({
-    selector: 'app-hybrid-view-container',
-    templateUrl: './hybrid-view-container.component.html',
-    styleUrls: ['./hybrid-view-container.component.scss'],
-    imports: [CommonModule]
+  selector: 'app-hybrid-view-container',
+  templateUrl: './hybrid-view-container.component.html',
+  styleUrls: ['./hybrid-view-container.component.scss'],
+  imports: [CommonModule]
 })
 export class HybridViewContainerComponent {
   @Input() pConn$: typeof PConnect;

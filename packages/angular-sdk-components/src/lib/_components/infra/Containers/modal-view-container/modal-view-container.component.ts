@@ -15,10 +15,10 @@ import { ReferenceComponent } from '../../reference/reference.component';
  */
 
 @Component({
-    selector: 'app-modal-view-container',
-    templateUrl: './modal-view-container.component.html',
-    styleUrls: ['./modal-view-container.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-modal-view-container',
+  templateUrl: './modal-view-container.component.html',
+  styleUrls: ['./modal-view-container.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

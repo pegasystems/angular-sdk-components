@@ -23,11 +23,11 @@ interface RadioButtonsProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-radio-buttons',
-    templateUrl: './radio-buttons.component.html',
-    styleUrls: ['./radio-buttons.component.scss'],
-    providers: [Utils],
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-radio-buttons',
+  templateUrl: './radio-buttons.component.html',
+  styleUrls: ['./radio-buttons.component.scss'],
+  providers: [Utils],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RadioButtonsComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -65,10 +65,10 @@ interface DropdownProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-dropdown',
-    templateUrl: './dropdown.component.html',
-    styleUrls: ['./dropdown.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-dropdown',
+  templateUrl: './dropdown.component.html',
+  styleUrls: ['./dropdown.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DropdownComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

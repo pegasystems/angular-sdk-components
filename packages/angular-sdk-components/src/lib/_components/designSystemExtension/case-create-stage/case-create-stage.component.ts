@@ -5,10 +5,10 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-case-create-stage',
-    templateUrl: './case-create-stage.component.html',
-    styleUrls: ['./case-create-stage.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-case-create-stage',
+  templateUrl: './case-create-stage.component.html',
+  styleUrls: ['./case-create-stage.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseCreateStageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

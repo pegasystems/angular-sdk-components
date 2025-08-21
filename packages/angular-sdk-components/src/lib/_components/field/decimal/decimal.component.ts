@@ -22,18 +22,18 @@ interface DecimalProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-decimal',
-    templateUrl: './decimal.component.html',
-    styleUrls: ['./decimal.component.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        NgxCurrencyDirective,
-        forwardRef(() => ComponentMapperComponent)
-    ]
+  selector: 'app-decimal',
+  templateUrl: './decimal.component.html',
+  styleUrls: ['./decimal.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgxCurrencyDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class DecimalComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

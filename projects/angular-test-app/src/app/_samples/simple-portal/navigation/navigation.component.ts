@@ -24,19 +24,19 @@ declare global {
 }
 
 @Component({
-    selector: 'app-navigation',
-    templateUrl: './navigation.component.html',
-    styleUrls: ['./navigation.component.scss'],
-    imports: [
-        CommonModule,
-        MatProgressSpinnerModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        SideBarComponent,
-        MainContentComponent
-    ]
+  selector: 'app-navigation',
+  templateUrl: './navigation.component.html',
+  styleUrls: ['./navigation.component.scss'],
+  imports: [
+    CommonModule,
+    MatProgressSpinnerModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    SideBarComponent,
+    MainContentComponent
+  ]
 })
 export class NavigationComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;

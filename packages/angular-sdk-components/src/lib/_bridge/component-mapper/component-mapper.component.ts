@@ -6,10 +6,10 @@ import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/e
 const componentsRequireDisplayOnlyFAProp: string[] = ['HybridViewContainer', 'ModalViewContainer', 'ViewContainer', 'RootContainer', 'View'];
 
 @Component({
-    selector: 'component-mapper',
-    templateUrl: './component-mapper.component.html',
-    styleUrls: ['./component-mapper.component.scss'],
-    imports: [CommonModule]
+  selector: 'component-mapper',
+  templateUrl: './component-mapper.component.html',
+  styleUrls: ['./component-mapper.component.scss'],
+  imports: [CommonModule]
 })
 export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('dynamicComponent', { read: ViewContainerRef, static: true })

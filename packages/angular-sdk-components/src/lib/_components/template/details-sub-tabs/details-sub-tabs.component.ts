@@ -6,10 +6,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { DetailsTemplateBase } from '../base/details-template-base';
 
 @Component({
-    selector: 'app-details-sub-tabs',
-    templateUrl: './details-sub-tabs.component.html',
-    styleUrls: ['./details-sub-tabs.component.scss'],
-    imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-details-sub-tabs',
+  templateUrl: './details-sub-tabs.component.html',
+  styleUrls: ['./details-sub-tabs.component.scss'],
+  imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsSubTabsComponent extends DetailsTemplateBase {
   override pConn$: typeof PConnect;

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
-import { NgxMatIntlTelInputComponent } from 'ngx-mat-intl-tel-input';
+import { MatTelInput } from 'mat-tel-input';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Utils } from '../../../_helpers/utils';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -15,10 +16,10 @@ interface PhoneProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-phone',
-    templateUrl: './phone.component.html',
-    styleUrls: ['./phone.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, NgxMatIntlTelInputComponent, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-phone',
+  templateUrl: './phone.component.html',
+  styleUrls: ['./phone.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatTelInput, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -44,6 +45,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
 
   actionsApi: Object;
   propName: string;
+  preferredCountries: string[] = ['us'];
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -65,6 +67,11 @@ export class PhoneComponent implements OnInit, OnDestroy {
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
+      const phoneNumber = parsePhoneNumberFromString(this.value$);
+      this.preferredCountries =
+        phoneNumber?.country && !this.preferredCountries.includes(phoneNumber?.country.toLowerCase())
+          ? [phoneNumber?.country?.toLowerCase(), ...this.preferredCountries]
+          : this.preferredCountries;
       this.fieldControl.setValue(this.value$);
       this.bHasForm$ = true;
     } else {
@@ -109,6 +116,11 @@ export class PhoneComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
+      const phoneNumber = parsePhoneNumberFromString(this.value$);
+      this.preferredCountries =
+        phoneNumber?.country && !this.preferredCountries.includes(phoneNumber?.country.toLowerCase())
+          ? [phoneNumber?.country?.toLowerCase(), ...this.preferredCountries]
+          : this.preferredCountries;
       this.fieldControl.setValue(this.value$);
     }
     this.helperText = this.configProps$.helperText;

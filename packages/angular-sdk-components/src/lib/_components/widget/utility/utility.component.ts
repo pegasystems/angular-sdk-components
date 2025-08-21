@@ -10,10 +10,10 @@ interface UtilityProps {
 }
 
 @Component({
-    selector: 'app-utility',
-    templateUrl: './utility.component.html',
-    styleUrls: ['./utility.component.scss'],
-    imports: [forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-utility',
+  templateUrl: './utility.component.html',
+  styleUrls: ['./utility.component.scss'],
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class UtilityComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

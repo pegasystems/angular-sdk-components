@@ -5,10 +5,10 @@
   <div *ngIf="bHasForm$; else noEdit">
     <div #f="ngForm" [formGroup]="formGroup$" *ngIf="bVisible$">
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
-        <ngx-mat-intl-tel-input
+        <mat-tel-input
           [attr.data-test-id]="testId"
           [formControl]="fieldControl"
-          [preferredCountries]="['us']"
+          [preferredCountries]="preferredCountries"
           [enablePlaceholder]="true"
           [enableSearch]="true"
           [required]="bRequired$"
@@ -16,7 +16,7 @@
           (change)="fieldOnChange()"
           (blur)="fieldOnBlur()"
         >
-        </ngx-mat-intl-tel-input>
+        </mat-tel-input>
         <mat-label>{{ label$ }}</mat-label>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>

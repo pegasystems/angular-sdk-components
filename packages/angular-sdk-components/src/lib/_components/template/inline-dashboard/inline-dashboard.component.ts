@@ -10,10 +10,10 @@ interface InlineDashboardProps {
 }
 
 @Component({
-    selector: 'app-inline-dashboard',
-    templateUrl: './inline-dashboard.component.html',
-    styleUrls: ['./inline-dashboard.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-inline-dashboard',
+  templateUrl: './inline-dashboard.component.html',
+  styleUrls: ['./inline-dashboard.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardComponent {
   @Input() pConn$: typeof PConnect;

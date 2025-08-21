@@ -9,10 +9,10 @@ import { CaseService } from '../../../../../../../packages/angular-sdk-component
 import { DatapageService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/datapage.service';
 
 @Component({
-    selector: 'app-side-bar',
-    templateUrl: './side-bar.component.html',
-    styleUrls: ['./side-bar.component.scss'],
-    imports: [CommonModule, MatButtonModule]
+  selector: 'app-side-bar',
+  templateUrl: './side-bar.component.html',
+  styleUrls: ['./side-bar.component.scss'],
+  imports: [CommonModule, MatButtonModule]
 })
 export class SideBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

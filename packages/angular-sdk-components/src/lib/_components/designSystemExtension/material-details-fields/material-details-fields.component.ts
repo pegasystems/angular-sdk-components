@@ -4,10 +4,10 @@ import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-material-details-fields',
-    templateUrl: './material-details-fields.component.html',
-    styleUrls: ['./material-details-fields.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-material-details-fields',
+  templateUrl: './material-details-fields.component.html',
+  styleUrls: ['./material-details-fields.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialDetailsFieldsComponent {
   constructor(private utils: Utils) {}

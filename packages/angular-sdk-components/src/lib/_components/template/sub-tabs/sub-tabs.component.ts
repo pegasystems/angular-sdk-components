@@ -7,10 +7,10 @@ import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-sub-tabs',
-    templateUrl: './sub-tabs.component.html',
-    styleUrls: ['./sub-tabs.component.scss'],
-    imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-sub-tabs',
+  templateUrl: './sub-tabs.component.html',
+  styleUrls: ['./sub-tabs.component.scss'],
+  imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SubTabsComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

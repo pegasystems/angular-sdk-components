@@ -7,10 +7,10 @@ import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-list-utility',
-    templateUrl: './list-utility.component.html',
-    styleUrls: ['./list-utility.component.scss'],
-    imports: [CommonModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-list-utility',
+  templateUrl: './list-utility.component.html',
+  styleUrls: ['./list-utility.component.scss'],
+  imports: [CommonModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ListUtilityComponent implements OnInit {
   @Input() name$ = '';

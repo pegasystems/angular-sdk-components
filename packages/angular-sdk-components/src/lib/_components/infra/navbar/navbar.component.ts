@@ -13,11 +13,11 @@ interface NavBarProps {
 }
 
 @Component({
-    selector: 'app-navbar',
-    templateUrl: './navbar.component.html',
-    styleUrls: ['./navbar.component.scss'],
-    providers: [Utils],
-    imports: [CommonModule, MatListModule, MatMenuModule]
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.scss'],
+  providers: [Utils],
+  imports: [CommonModule, MatListModule, MatMenuModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

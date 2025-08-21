@@ -12,10 +12,10 @@ interface InlineDashboardPageProps {
 }
 
 @Component({
-    selector: 'app-inline-dashboard-page',
-    templateUrl: './inline-dashboard-page.component.html',
-    styleUrls: ['./inline-dashboard-page.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-inline-dashboard-page',
+  templateUrl: './inline-dashboard-page.component.html',
+  styleUrls: ['./inline-dashboard-page.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardPageComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

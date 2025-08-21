@@ -11,10 +11,10 @@ interface PageProps {
 }
 
 @Component({
-    selector: 'app-page',
-    templateUrl: './page.component.html',
-    styleUrls: ['./page.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-page',
+  templateUrl: './page.component.html',
+  styleUrls: ['./page.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

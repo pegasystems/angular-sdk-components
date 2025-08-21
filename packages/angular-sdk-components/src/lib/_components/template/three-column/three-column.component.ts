@@ -5,10 +5,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { FormTemplateBase } from '../base/form-template-base';
 
 @Component({
-    selector: 'app-three-column',
-    templateUrl: './three-column.component.html',
-    styleUrls: ['./three-column.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-three-column',
+  templateUrl: './three-column.component.html',
+  styleUrls: ['./three-column.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ThreeColumnComponent extends FormTemplateBase implements OnInit, OnChanges {
   @Input() override pConn$: typeof PConnect;

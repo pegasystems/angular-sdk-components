@@ -40,20 +40,20 @@ class MyFormat {
 }
 
 @Component({
-    selector: 'app-date',
-    templateUrl: './date.component.html',
-    styleUrls: ['./date.component.scss'],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MomentDateModule,
-        forwardRef(() => ComponentMapperComponent)
-    ],
-    providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
+  selector: 'app-date',
+  templateUrl: './date.component.html',
+  styleUrls: ['./date.component.scss'],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MomentDateModule,
+    forwardRef(() => ComponentMapperComponent)
+  ],
+  providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

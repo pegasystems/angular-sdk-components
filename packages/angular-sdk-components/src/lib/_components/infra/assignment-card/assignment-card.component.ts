@@ -5,10 +5,10 @@ import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-assignment-card',
-    templateUrl: './assignment-card.component.html',
-    styleUrls: ['./assignment-card.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-assignment-card',
+  templateUrl: './assignment-card.component.html',
+  styleUrls: ['./assignment-card.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentCardComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

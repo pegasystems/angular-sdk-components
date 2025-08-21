@@ -15,10 +15,10 @@ interface GroupProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-group',
-    templateUrl: './group.component.html',
-    styleUrls: ['./group.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-group',
+  templateUrl: './group.component.html',
+  styleUrls: ['./group.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class GroupComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

@@ -28,10 +28,10 @@ interface AppShellProps {
 }
 
 @Component({
-    selector: 'app-app-shell',
-    templateUrl: './app-shell.component.html',
-    styleUrls: ['./app-shell.component.scss'],
-    imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-app-shell',
+  templateUrl: './app-shell.component.html',
+  styleUrls: ['./app-shell.component.scss'],
+  imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AppShellComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

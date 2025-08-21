@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-    selector: 'app-alert',
-    templateUrl: './alert.component.html',
-    styleUrls: ['./alert.component.scss'],
-    imports: [CommonModule, MatIconModule]
+  selector: 'app-alert',
+  templateUrl: './alert.component.html',
+  styleUrls: ['./alert.component.scss'],
+  imports: [CommonModule, MatIconModule]
 })
 export class AlertComponent {
   @Input() message: any[];

@@ -11,18 +11,18 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { getFilterExpression, getFormattedDate, createFilter, combineFilters } from '../../../_helpers/filter-utils';
 
 @Component({
-    selector: 'app-dashboard-filter',
-    templateUrl: './dashboard-filter.component.html',
-    styleUrls: ['./dashboard-filter.component.scss'],
-    imports: [
-        CommonModule,
-        MatFormFieldModule,
-        ReactiveFormsModule,
-        MatDatepickerModule,
-        MatButtonModule,
-        MatNativeDateModule,
-        forwardRef(() => ComponentMapperComponent)
-    ]
+  selector: 'app-dashboard-filter',
+  templateUrl: './dashboard-filter.component.html',
+  styleUrls: ['./dashboard-filter.component.scss'],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatNativeDateModule,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class DashboardFilterComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

@@ -16,10 +16,10 @@ interface TimeProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-time',
-    templateUrl: './time.component.html',
-    styleUrls: ['./time.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-time',
+  templateUrl: './time.component.html',
+  styleUrls: ['./time.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TimeComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

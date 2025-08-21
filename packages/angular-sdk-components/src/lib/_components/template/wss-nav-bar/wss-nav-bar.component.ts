@@ -15,11 +15,11 @@ interface WssNavBarProps {
 }
 
 @Component({
-    selector: 'app-wss-nav-bar',
-    templateUrl: './wss-nav-bar.component.html',
-    styleUrls: ['./wss-nav-bar.component.scss'],
-    providers: [Utils],
-    imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
+  selector: 'app-wss-nav-bar',
+  templateUrl: './wss-nav-bar.component.html',
+  styleUrls: ['./wss-nav-bar.component.scss'],
+  providers: [Utils],
+  imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
 })
 export class WssNavBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

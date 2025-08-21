@@ -4,10 +4,10 @@ import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-two-column-tab',
-    templateUrl: './two-column-tab.component.html',
-    styleUrls: ['./two-column-tab.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-two-column-tab',
+  templateUrl: './two-column-tab.component.html',
+  styleUrls: ['./two-column-tab.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnTabComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

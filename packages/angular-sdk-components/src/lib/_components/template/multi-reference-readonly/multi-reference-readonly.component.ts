@@ -9,10 +9,10 @@ interface MultiReferenceReadOnlyProps {
 }
 
 @Component({
-    selector: 'app-multi-reference-readonly',
-    templateUrl: './multi-reference-readonly.component.html',
-    styleUrls: ['./multi-reference-readonly.component.scss'],
-    imports: [forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-multi-reference-readonly',
+  templateUrl: './multi-reference-readonly.component.html',
+  styleUrls: ['./multi-reference-readonly.component.scss'],
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiReferenceReadonlyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

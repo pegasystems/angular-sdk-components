@@ -13,10 +13,10 @@ interface BannerPageProps {
 }
 
 @Component({
-    selector: 'app-banner-page',
-    templateUrl: './banner-page.component.html',
-    styleUrls: ['./banner-page.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-banner-page',
+  templateUrl: './banner-page.component.html',
+  styleUrls: ['./banner-page.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class BannerPageComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

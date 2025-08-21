@@ -15,10 +15,10 @@ interface IntegerProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-integer',
-    templateUrl: './integer.component.html',
-    styleUrls: ['./integer.component.scss'],
-    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-integer',
+  templateUrl: './integer.component.html',
+  styleUrls: ['./integer.component.scss'],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class IntegerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -5,10 +5,10 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-wide-narrow-page',
-    templateUrl: './wide-narrow-page.component.html',
-    styleUrls: ['./wide-narrow-page.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-wide-narrow-page',
+  templateUrl: './wide-narrow-page.component.html',
+  styleUrls: ['./wide-narrow-page.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowPageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

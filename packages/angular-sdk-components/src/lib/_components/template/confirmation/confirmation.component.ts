@@ -15,10 +15,10 @@ interface ConfirmationProps {
 }
 
 @Component({
-    selector: 'app-confirmation',
-    templateUrl: './confirmation.component.html',
-    styleUrls: ['./confirmation.component.scss'],
-    imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-confirmation',
+  templateUrl: './confirmation.component.html',
+  styleUrls: ['./confirmation.component.scss'],
+  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ConfirmationComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

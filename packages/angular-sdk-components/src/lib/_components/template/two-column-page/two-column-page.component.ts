@@ -4,10 +4,10 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
-    selector: 'app-two-column-page',
-    templateUrl: './two-column-page.component.html',
-    styleUrls: ['./two-column-page.component.scss'],
-    imports: [forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-two-column-page',
+  templateUrl: './two-column-page.component.html',
+  styleUrls: ['./two-column-page.component.scss'],
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnPageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

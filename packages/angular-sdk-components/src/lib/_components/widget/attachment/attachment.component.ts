@@ -19,10 +19,10 @@ interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
 }
 
 @Component({
-    selector: 'app-attachment',
-    templateUrl: './attachment.component.html',
-    styleUrls: ['./attachment.component.scss'],
-    imports: [CommonModule, MatProgressSpinnerModule, MatMenuModule, MatIconModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-attachment',
+  templateUrl: './attachment.component.html',
+  styleUrls: ['./attachment.component.scss'],
+  imports: [CommonModule, MatProgressSpinnerModule, MatMenuModule, MatIconModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AttachmentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

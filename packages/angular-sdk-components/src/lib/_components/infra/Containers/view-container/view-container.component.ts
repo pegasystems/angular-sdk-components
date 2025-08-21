@@ -25,10 +25,10 @@ interface ViewContainerProps {
 }
 
 @Component({
-    selector: 'app-view-container',
-    templateUrl: './view-container.component.html',
-    styleUrls: ['./view-container.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-view-container',
+  templateUrl: './view-container.component.html',
+  styleUrls: ['./view-container.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

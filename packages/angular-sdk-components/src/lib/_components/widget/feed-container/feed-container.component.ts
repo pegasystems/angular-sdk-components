@@ -10,11 +10,11 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
-    selector: 'app-feed-container',
-    templateUrl: './feed-container.component.html',
-    styleUrls: ['./feed-container.component.scss'],
-    providers: [Utils],
-    imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
+  selector: 'app-feed-container',
+  templateUrl: './feed-container.component.html',
+  styleUrls: ['./feed-container.component.scss'],
+  providers: [Utils],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

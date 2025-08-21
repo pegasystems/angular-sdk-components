@@ -5,10 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss'],
-    imports: [CommonModule, MatToolbarModule, MatIconModule, MatButtonModule]
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss'],
+  imports: [CommonModule, MatToolbarModule, MatIconModule, MatButtonModule]
 })
 export class HeaderComponent implements OnInit {
   applicationLabel: string | undefined;

@@ -55,29 +55,29 @@ export class Group {
 }
 
 @Component({
-    selector: 'app-list-view',
-    templateUrl: './list-view.component.html',
-    styleUrls: ['./list-view.component.scss'],
-    imports: [
-        CommonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatTableModule,
-        MatSortModule,
-        DragDropModule,
-        CdkDropList,
-        CdkDrag,
-        MatButtonModule,
-        MatMenuModule,
-        MatIconModule,
-        MatRadioModule,
-        MatCheckboxModule,
-        MatPaginatorModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatDatepickerModule,
-        forwardRef(() => ComponentMapperComponent)
-    ]
+  selector: 'app-list-view',
+  templateUrl: './list-view.component.html',
+  styleUrls: ['./list-view.component.scss'],
+  imports: [
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    DragDropModule,
+    CdkDropList,
+    CdkDrag,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatPaginatorModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatDatepickerModule,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class ListViewComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;

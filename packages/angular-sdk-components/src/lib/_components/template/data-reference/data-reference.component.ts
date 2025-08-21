@@ -7,10 +7,10 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
 @Component({
-    selector: 'app-data-reference',
-    templateUrl: './data-reference.component.html',
-    styleUrls: ['./data-reference.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-data-reference',
+  templateUrl: './data-reference.component.html',
+  styleUrls: ['./data-reference.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DataReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

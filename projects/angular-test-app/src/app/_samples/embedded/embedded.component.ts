@@ -24,11 +24,11 @@ declare global {
 }
 
 @Component({
-    selector: 'app-embedded',
-    templateUrl: './embedded.component.html',
-    styleUrls: ['./embedded.component.scss'],
-    providers: [Utils],
-    imports: [CommonModule, MatProgressSpinnerModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent, MainScreenComponent]
+  selector: 'app-embedded',
+  templateUrl: './embedded.component.html',
+  styleUrls: ['./embedded.component.scss'],
+  providers: [Utils],
+  imports: [CommonModule, MatProgressSpinnerModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent, MainScreenComponent]
 })
 export class EmbeddedComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;

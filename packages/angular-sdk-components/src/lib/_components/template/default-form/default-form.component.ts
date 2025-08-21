@@ -25,10 +25,10 @@ interface DefaultFormProps {
 }
 
 @Component({
-    selector: 'app-default-form',
-    templateUrl: './default-form.component.html',
-    styleUrls: ['./default-form.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-default-form',
+  templateUrl: './default-form.component.html',
+  styleUrls: ['./default-form.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DefaultFormComponent extends FormTemplateBase implements OnInit {
   @Input() override pConn$: typeof PConnect;

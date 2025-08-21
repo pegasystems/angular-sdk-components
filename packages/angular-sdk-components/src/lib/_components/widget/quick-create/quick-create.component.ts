@@ -11,10 +11,10 @@ interface QuickCreateProps {
 }
 
 @Component({
-    selector: 'app-quick-create',
-    templateUrl: './quick-create.component.html',
-    styleUrls: ['./quick-create.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-quick-create',
+  templateUrl: './quick-create.component.html',
+  styleUrls: ['./quick-create.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class QuickCreateComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

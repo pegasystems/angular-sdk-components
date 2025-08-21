@@ -12,10 +12,10 @@ interface SemanticLinkProps extends PConnFieldProps {
 }
 
 @Component({
-    selector: 'app-semantic-link',
-    templateUrl: './semantic-link.component.html',
-    styleUrls: ['./semantic-link.component.scss'],
-    imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  selector: 'app-semantic-link',
+  templateUrl: './semantic-link.component.html',
+  styleUrls: ['./semantic-link.component.scss'],
+  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SemanticLinkComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
