@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, NgZone, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import download from 'downloadjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
@@ -22,7 +21,7 @@ interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
   selector: 'app-attachment',
   templateUrl: './attachment.component.html',
   styleUrls: ['./attachment.component.scss'],
-  imports: [CommonModule, MatProgressSpinnerModule, MatMenuModule, MatIconModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatProgressSpinnerModule, MatMenuModule, MatIconModule, MatButtonModule]
 })
 export class AttachmentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

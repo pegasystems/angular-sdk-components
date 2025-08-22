@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
@@ -9,7 +9,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
 import { doSearch, getDisplayFieldsMetaData, getGroupDataForItemsTree, preProcessColumns } from './utils';
 import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
@@ -28,8 +27,7 @@ import { handleEvent } from '../../../_helpers/event-util';
     MatOptionModule,
     MatCheckboxModule,
     MatIconModule,
-    MatChipsModule,
-    forwardRef(() => ComponentMapperComponent)
+    MatChipsModule
   ]
 })
 export class MultiselectComponent implements OnInit, OnDestroy {

@@ -67,11 +67,6 @@ export class PhoneComponent implements OnInit, OnDestroy {
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      const phoneNumber = parsePhoneNumberFromString(this.value$);
-      this.preferredCountries =
-        phoneNumber?.country && !this.preferredCountries.includes(phoneNumber?.country.toLowerCase())
-          ? [phoneNumber?.country?.toLowerCase(), ...this.preferredCountries]
-          : this.preferredCountries;
       this.fieldControl.setValue(this.value$);
       this.bHasForm$ = true;
     } else {
@@ -116,12 +111,8 @@ export class PhoneComponent implements OnInit, OnDestroy {
     this.testId = this.configProps$.testId;
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
-      const phoneNumber = parsePhoneNumberFromString(this.value$);
-      this.preferredCountries =
-        phoneNumber?.country && !this.preferredCountries.includes(phoneNumber?.country.toLowerCase())
-          ? [phoneNumber?.country?.toLowerCase(), ...this.preferredCountries]
-          : this.preferredCountries;
       this.fieldControl.setValue(this.value$);
+      this.updatePreferredCountries();
     }
     this.helperText = this.configProps$.helperText;
 
@@ -178,6 +169,16 @@ export class PhoneComponent implements OnInit, OnDestroy {
     if (isValueChanged && newVal) {
       const value = this.formGroup$.controls[this.controlName$].value;
       handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    }
+  }
+
+  updatePreferredCountries() {
+    if (this.value$ && typeof this.value$ === 'string') {
+      const phoneNumber = parsePhoneNumberFromString(this.value$);
+      this.preferredCountries =
+        phoneNumber?.country && !this.preferredCountries.includes(phoneNumber?.country.toLowerCase())
+          ? [phoneNumber?.country?.toLowerCase(), ...this.preferredCountries]
+          : this.preferredCountries;
     }
   }
 
