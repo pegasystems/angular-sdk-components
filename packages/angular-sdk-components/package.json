@@ -2,8 +2,8 @@
   "name": "@pega/angular-sdk-components",
   "version": "24.2.12",
   "peerDependencies": {
-    "@angular/common": "^19.2.14",
-    "@angular/core": "^19.2.14"
+    "@angular/common": "^19.0.0",
+    "@angular/core": "^19.0.0"
   },
   "dependencies": {
     "tslib": "^2.8.1"
