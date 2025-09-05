@@ -16,7 +16,7 @@
   cursor: pointer;
   padding-right: 1rem;
   &:hover {
-    background-color: var(--app-neutral-color);
+    //background-color: var(--app-neutral-color);
   }
   align-items: center;
 }
@@ -111,7 +111,7 @@
   color: var(--app-nav-color);
 
   &:hover {
-    background-color: var(--app-neutral-color);
+    //background-color: var(--app-neutral-color);
   }
 }
 
@@ -127,8 +127,8 @@
   align-items: center;
   text-align: center;
   display: inline-flex;
-  background: var(--app-neutral-color);
-  color: var(--app-form-color);
+  //background: var(--app-neutral-color);
+  //color: var(--app-form-color);
   font-weight: normal;
   font-size: 1rem;
 }
