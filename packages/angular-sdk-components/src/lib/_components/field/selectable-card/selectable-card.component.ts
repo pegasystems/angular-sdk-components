@@ -122,13 +122,8 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
 
     this.disabled = this.configProps$.disabled;
     this.readOnly = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
-    // const imagePosition = this.configProps$.imagePosition;
-    let imagePosition = 'block-start'; // need to remove this after demo
-    if (this.readOnly) {
-      imagePosition = 'inline-end';
-    } else if (this.type === 'checkbox') {
-      imagePosition = 'inline-start';
-    }
+    const imagePosition = this.configProps$.imagePosition;
+
     // dynamic styling based on image position and readOnly option
     let imageWidth = '100%';
     this.cardStyle = { display: 'flex', flexDirection: 'column', height: '100%' };
