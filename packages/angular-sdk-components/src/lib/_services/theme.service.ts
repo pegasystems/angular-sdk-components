@@ -5,14 +5,11 @@ import { Theme } from '../_types/Theme.interface';
   providedIn: 'root'
 })
 export class ThemeService {
-
-  constructor() { }
-
   private readonly themes: Theme[] = [
     {
       id: 'default-theme',
       primary: '#8F00FF',
-      displayName: 'Default Theme',
+      displayName: 'Default Theme'
     },
     { id: 'dark-theme', primary: '#FF00FF', displayName: 'Dark Theme' },
     { id: 'red-theme', primary: '#FF0000', displayName: 'Red Theme' },
@@ -29,9 +26,9 @@ export class ThemeService {
   }
 
   setTheme(themeId: string): void {
-    const theme = this.themes.find((t) => t.id === themeId);
+    const theme = this.themes.find(t => t.id === themeId);
     if (theme) {
-      document.body.classList.remove(...this.themes.map((t) => t.id));
+      document.body.classList.remove(...this.themes.map(t => t.id));
       document.body.classList.add(theme.id);
       sessionStorage.setItem('activeTheme', theme.id);
     }

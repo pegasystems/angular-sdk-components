@@ -26,7 +26,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   @Input() pages$: any[];
   @Input() caseTypes$: any[];
 
-
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
   configProps$: NavBarProps;
