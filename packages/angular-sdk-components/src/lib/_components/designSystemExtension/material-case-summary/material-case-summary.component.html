@@ -14,8 +14,8 @@
         <dd class="psdk-csf-primary-field-data" [ngSwitch]="field.type.toLowerCase()">
           <span *ngSwitchCase="'textinput'" class="psdk-csf-text-style">{{ field.config.value }}</span>
           <span *ngSwitchCase="'status'" class="psdk-csf-status-style">{{ field.config.value }}</span>
-          <a *ngSwitchCase="'phone'" as="a" href="tel: {{ field.config.value }}">{{ field.config.value }}</a>
-          <a *ngSwitchCase="'email'" href="mailto: {{ field.config.value }}">{{ field.config.value }}</a>
+          <a *ngSwitchCase="'phone'" class="details-communication-field" as="a" href="tel: {{ field.config.value }}">{{ field.config.value }}</a>
+          <a *ngSwitchCase="'email'" class="details-communication-field" href="mailto: {{ field.config.value }}">{{ field.config.value }}</a>
           <span *ngSwitchCase="'date'" class="psdk-csf-text-style">{{ field.config.value }}</span>
           <label *ngSwitchCase="'caseoperator'">operator</label>
           <span *ngSwitchDefault class="psdk-csf-text-style">{{ field.config.value }}</span>

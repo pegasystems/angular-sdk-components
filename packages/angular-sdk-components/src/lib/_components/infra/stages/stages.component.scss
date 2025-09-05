@@ -8,43 +8,16 @@
   font-size: 1.5rem;
 }
 
-.psdk-stages-div {
-  display: inline-flex;
-  padding: 0.3125rem;
-  font-weight: bold;
-  font-size: 1.3rem;
-  color: var(--app-neutral-color);
-}
-
-.psdk-stages-past {
-  color: var(--app-primary-color);
-  padding-right: 0.3125rem;
-}
-
-.psdk-stages-present {
-  color: var(--app-secondary-color);
-  padding-right: 0.3125rem;
-}
-
-.psdk-stages-future {
-  color: var(--app-neutral-color);
-  padding-right: 0.3125rem;
-}
-
 .psdk-stages-full {
   display: block;
 }
 
 .psdk-stages-divider {
-  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
+  border-bottom: 0.0625rem solid var(--mat-sys-outline-variant);
 }
 
 .psdk-stages-full {
   display: block;
-}
-
-.psdk-stages-divider {
-  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
 }
 
 .psdk-stages-icon {
@@ -55,9 +28,9 @@
 
 .psdk-stages-bar {
   margin: 1rem 0rem;
-  background-color: var(--app-form-color);
+  background-color: var(--mat-sys-surface-container);
   border-radius: 0.5rem;
-  border: 0.0625rem solid var(--app-neutral-light-color);
+  border: 0.0625rem solid var(--mat-sys-outline-variant);
   overflow: hidden;
   display: flex;
   flex-wrap: wrap;
@@ -84,7 +57,7 @@
   right: calc(-0.4375rem);
   background: inherit;
   border-style: solid;
-  border-color: rgb(207, 207, 207);
+  border-color: var(--mat-sys-outline-variant);
   border-width: 0.0625rem 0.0625rem 0px 0px;
   border-radius: 0px calc(0.3125rem) 0px 0px;
   transform: rotateZ(45deg) skew(15deg, 15deg);
@@ -92,17 +65,17 @@
 }
 
 .psdk-stages-inner-past {
-  color: var(--app-inverse-form-color);
+  color: var(--mat-sys-outline-variant);
   font-size: 1rem;
 }
 
 .psdk-stages-inner-present {
-  color: var(--app-primary-color);
+  color: var(--mat-sys-primary);
   font-weight: bold;
   font-size: 1rem;
 }
 
 .psdk-stages-inner-future {
-  color: var(--app-neutral-color);
+  color: var(--mat-sys-on-surface);
   font-size: 1rem;
 }

@@ -15,7 +15,7 @@
 </div>
 
 <div *ngIf="bShowFileModal$" class="psdk-dialog-background">
-  <div class="psdk-modal-file-top">
+  <div class="psdk-modal-top">
     <h3>{{ pConn$.getLocalizedValue('Add local files', '', '') }}</h3>
     <div class="psdk-modal-body">
       <div class="psdk-modal-file-selector">
@@ -40,7 +40,7 @@
 </div>
 
 <div *ngIf="bShowLinkModal$" class="psdk-dialog-background">
-  <div class="psdk-modal-link-top">
+  <div class="psdk-modal-top">
     <h3>{{ pConn$.getLocalizedValue('Add links', '', '') }}</h3>
     <div class="psdk-modal-link-entry">
       <div class="psdk-modal-body">
@@ -82,7 +82,7 @@
 </div>
 
 <div *ngIf="bShowViewAllModal$" class="psdk-dialog-background">
-  <div class="psdk-modal-file-top">
+  <div class="psdk-modal-top">
     <div class="psdk-view-all-header">
       <div>
         <h3>{{ pConn$.getLocalizedValue('Attachments', '', '') }}</h3>

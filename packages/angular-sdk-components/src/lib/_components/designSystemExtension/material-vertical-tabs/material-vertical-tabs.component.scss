@@ -9,7 +9,7 @@ mat-button-toggle-group ::ng-deep .mat-button-toggle-appearance-standard {
 
 mat-button-toggle-group ::ng-deep .mat-button-toggle.mat-button-toggle-checked.mat-button-toggle-appearance-standard {
   background-color: transparent;
-  border-right: 0.1875rem solid var(--app-primary-color);
+  border-right: 0.1875rem solid var(--mat-sys-primary);
 }
 
 mat-button-toggle-group ::ng-deep .mat-button-toggle.mat-focus-indicator.mat-button-toggle-appearance-standard {

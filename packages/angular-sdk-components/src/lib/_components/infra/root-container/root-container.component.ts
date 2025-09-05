@@ -5,6 +5,7 @@ import { interval, Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { ThemeService } from '../../../_services/theme.service';
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
@@ -58,10 +59,13 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit(): void {
+    const themeClass = this.themeService.getDefaultTheme();
+    this.themeService.setTheme(themeClass);
     const { containers } = PCore.getStore().getState();
     const items = Object.keys(containers).filter(item => item.includes('root'));
 

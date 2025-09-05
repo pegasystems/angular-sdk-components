@@ -6,6 +6,7 @@ import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
+import { ThemeService } from '../../../_services/theme.service';
 
 interface NavBarProps {
   // If any, enter additional props that only exist on this component
@@ -55,7 +56,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private chRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private ngZone: NgZone,
-    private utils: Utils
+    private utils: Utils,
+    public themeService: ThemeService
   ) {}
 
   ngOnInit(): void {

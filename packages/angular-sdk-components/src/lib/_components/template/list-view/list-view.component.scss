@@ -1,6 +1,6 @@
 .psdk-list-header {
-  border: 1px solid var(--app-neutral-light-color);
-  background-color: var(--app-form-color);
+  border: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--mat-sys-surface-container);
   padding: 0.5rem 0rem;
 }
 
@@ -110,11 +110,11 @@ td.mat-mdc-footer-cell {
   display: table;
   margin: auto;
   min-width: 100px;
-  background-color: var(--app-form-color);
-  border: 1px solid var(--app-inverse-form-color);
+  background-color: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
+  box-shadow: 0 0 10px 3px var(--mat-sys-level3);
   position: absolute;
   z-index: 99;
 }
@@ -126,7 +126,7 @@ td.mat-mdc-footer-cell {
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color: var(--app-dialog-background-color);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   z-index: 999;
   top: 0px;
@@ -137,11 +137,11 @@ td.mat-mdc-footer-cell {
   display: table;
   margin: auto;
   min-width: 150px;
-  background-color: var(--app-form-color);
-  border: 1px solid var(--app-inverse-form-color);
+  background-color: var(--mat-sys-surface-container);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
+  box-shadow: 0 0 10px 3px var(--mat-sys-level3);
 }
 
 tr.mat-mdc-row {
@@ -153,17 +153,8 @@ tr.mat-mdc-row {
   justify-content: center;
   display: flex;
   align-items: center;
-  border: 1px solid var(--app-neutral-light-color);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-top: none;
-}
-
-.psdk-table-field-link {
-  color: var(--app-primary-color);
-  padding: 0;
-  cursor: pointer;
-  border: 0;
-  background-color: transparent;
-  align-items: center;
 }
 
 .results-count {

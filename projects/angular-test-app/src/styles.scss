@@ -1,23 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons';
-// @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
-/*@import "@angular/material/prebuilt-themes/pink-bluegrey.css";*/
-@import './containerStyles.scss';
-@import 'theme';
 @import '@danielmoncada/angular-datetime-picker/assets/style/picker.min.css';
-
-html,
-body {
-  @include generate-theme-vars($my-theme);
-}
+@import 'containerStyles';
+@import 'themes';
 
 html,
 body {
   height: 100%;
-}
-body {
+  background-color: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  @include generate-theme-vars();
 }
 
 button.mat-mdc-menu-item {
@@ -81,4 +75,91 @@ a.mat-mdc-menu-item > mat-icon {
 
 .mat-mdc-form-field {
   margin: 8px 0;
+}
+
+.details-communication-field {
+  color: var(--mat-sys-primary);
+}
+
+:root {
+  --primary-bg: #100a2a;
+  --header-bg: #100a2a;
+  --card-bg: #211649;
+  --accent-pink: #d43592;
+  --accent-purple: #8a2be2;
+  --accent-green: #34d399;
+  --text-light: #e0e0e0;
+  --text-white: #ffffff;
+  --text-muted: #8e8e9c;
+  --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--primary-bg);
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.container {
+  width: 90%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-light);
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--text-white);
+}
+
+h1,
+h2,
+h3 {
+  color: var(--text-white);
+  font-weight: 600;
+}
+
+.btn {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--accent-pink), #a445b2, var(--accent-pink));
+  background-size: 200% auto;
+  color: var(--text-white) !important;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  text-align: center;
+  font-weight: 600;
+  border: none;
+  transition:
+    background-position 0.4s ease-in-out,
+    transform 0.3s ease;
+}
+
+.btn:hover {
+  background-position: right center;
+  transform: scale(1.05);
+  color: var(--text-white);
+}
+
+.psdk-flow-container-top {
+  max-width: 1400px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5%;
+  padding: 0;
 }
