@@ -12,7 +12,7 @@
   <div *ngIf="bShowPopover$" class="psdk-operator-popover">
     <dl>
       <div *ngFor="let field of fields$; let i = index">
-        <dt class="psdk-operator-name">{{ field.name }}</dt>
+        <dt>{{ field.name }}</dt>
         <dd class="psdk-operator-value">{{ field.value }}</dd>
       </div>
     </dl>
