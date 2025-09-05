@@ -20,6 +20,7 @@ interface RadioButtonsProps extends PConnFieldProps {
   // If any, enter additional props that only exist on RadioButtons here
   inline: boolean;
   fieldMetadata?: any;
+  variant?: string;
 }
 
 @Component({
@@ -62,6 +63,7 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
   localizedValue = '';
   actionsApi: Object;
   propName: string;
+  variant?: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -131,6 +133,8 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
     this.displayMode$ = this.configProps$.displayMode;
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
+
+    this.variant = this.configProps$.variant;
 
     // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {

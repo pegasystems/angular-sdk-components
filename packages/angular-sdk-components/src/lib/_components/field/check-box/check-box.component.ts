@@ -26,6 +26,7 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   primaryField: string;
   readonlyContextList: any;
   referenceList: string;
+  variant?: string;
 }
 
 @Component({
@@ -70,6 +71,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   listOfCheckboxes: any[] = [];
   actionsApi: Object;
   propName: string;
+  variant?: string;
 
   fieldControl = new FormControl('', null);
 
@@ -146,6 +148,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;
+    this.variant = this.configProps$.variant;
 
     // multi case
     this.selectionMode = this.configProps$.selectionMode;
