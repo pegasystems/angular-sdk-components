@@ -7,6 +7,7 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { CommonModule } from '@angular/common';
 import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
+import { Utils } from '../../../_helpers/utils';
 
 interface SelectableCardProps extends PConnFieldProps {
   selectionList: any;
@@ -63,7 +64,10 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
   actionsApi: Object;
   propName: string;
 
-  constructor(private angularPConnect: AngularPConnectService) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -184,7 +188,7 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
     const cardDataSource = this.readOnly || this.displayMode$ == 'DISPLAY_ONLY' ? this.selectedvalues || [] : this.commonProps?.datasource?.source;
 
     this.contentList = cardDataSource.map(item => {
-      const resolvedFields = this.resolveReferenceFields(item, this.commonProps.hideFieldLabels, this.commonProps.recordKey, this.pConn$);
+      const resolvedFields = this.utils.resolveReferenceFields(item, this.commonProps.hideFieldLabels, this.commonProps.recordKey, this.pConn$);
       const commonCardProps = {
         id: item[this.commonProps.recordKey],
         key: item[this.commonProps.recordKey],
@@ -205,7 +209,7 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
               maxHeight: '100%',
               objectFit: 'contain',
               maxWidth: '100%',
-              height: this.readOnly ? '5rem' : ''
+              height: this.readOnly && imagePosition !== 'block-start' ? '5rem' : ''
             }
           }
         : undefined;
@@ -247,75 +251,5 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
     } else if (this.type === 'checkbox') {
       this.handleChangeMultiMode(event, element);
     }
-  }
-
-  prepareComponentInCaseSummary(pConnectMeta, getPConnect) {
-    const { config, children } = pConnectMeta;
-    const pConnect = getPConnect();
-
-    const caseSummaryComponentObject: any = {};
-
-    caseSummaryComponentObject.name = pConnect.resolveConfigProps({ label: config.label }).label;
-
-    const { type } = pConnectMeta;
-    const createdComponent = pConnect.createComponent({
-      type,
-      children: children ? [...children] : [],
-      config: {
-        ...config
-      }
-    });
-
-    caseSummaryComponentObject.value = createdComponent;
-    return caseSummaryComponentObject;
-  }
-
-  resolveReferenceFields(
-    item: {
-      [key: string]: unknown;
-    },
-    hideFieldLabels: boolean,
-    recordKey: string,
-    pConnect: typeof PConnect
-  ) {
-    const presets: {
-      children?: {
-        children?: {
-          config;
-          type;
-        };
-        config?;
-      };
-    } = (pConnect.getRawMetadata()?.config as any).presets ?? [];
-
-    const presetChildren = presets[0]?.children?.[0]?.children ?? [];
-
-    const maxFields = 5;
-    return presetChildren.slice(0, maxFields).map((preset, index) => {
-      const fieldMeta = {
-        meta: {
-          ...preset,
-          config: {
-            ...preset.config,
-            displayMode: 'DISPLAY_ONLY'
-          }
-        },
-        useCustomContext: item
-      };
-      const configObj = PCore.createPConnect(fieldMeta);
-      const meta = configObj.getPConnect().getMetadata();
-      const fieldInfo: {
-        name?: string;
-        value?: any;
-      } = meta ? this.prepareComponentInCaseSummary(meta, configObj.getPConnect) : {};
-      return hideFieldLabels
-        ? { id: `${item[recordKey]} - ${index}`, value: fieldInfo.value }
-        : {
-            id: `${item[recordKey]} - ${index}`,
-            name: fieldInfo.name,
-            value: fieldInfo.value,
-            type: preset.type
-          };
-    });
   }
 }

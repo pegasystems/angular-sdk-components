@@ -40,6 +40,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
   bHasForm$ = true;
   testId: string;
   helperText: string;
+  placeholder: string;
 
   fieldControl = new FormControl('', null);
 
@@ -115,7 +116,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
       this.updatePreferredCountries();
     }
     this.helperText = this.configProps$.helperText;
-
+    this.placeholder = this.configProps$.placeholder || '';
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;
 

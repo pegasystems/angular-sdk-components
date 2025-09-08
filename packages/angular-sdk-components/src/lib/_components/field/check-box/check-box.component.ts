@@ -27,6 +27,7 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   readonlyContextList: any;
   referenceList: string;
   variant?: string;
+  renderMode: string;
 }
 
 @Component({
@@ -92,7 +93,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     // this.updateSelf();
     this.checkAndUpdate();
 
-    if (this.selectionMode === 'multi' && this.referenceList?.length > 0) {
+    if (this.selectionMode === 'multi' && this.referenceList?.length > 0 && !this.bReadonly$) {
       this.pConn$.setReferenceList(this.selectionList);
       updateNewInstructions(this.pConn$, this.selectionList);
     }
@@ -157,6 +158,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
       this.selectionList = this.configProps$.selectionList;
       this.selectedvalues = this.configProps$.readonlyContextList;
       this.primaryField = this.configProps$.primaryField;
+      this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
 
       this.datasource = this.configProps$.datasource;
       this.selectionKey = this.configProps$.selectionKey;
