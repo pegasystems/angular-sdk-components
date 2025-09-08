@@ -1,12 +1,12 @@
 .psdk-list-header {
+  border: 1px solid var(--app-neutral-light-color);
   background-color: var(--app-form-color);
-  padding: 1rem;
-  margin: 0.5rem;
-  border-radius: 0.6125rem;
+  padding: 0.5rem 0rem;
 }
 
 table {
   width: 100%;
+  border-bottom: 1px solid var(--app-neutral-light-color);
 }
 
 ::ng-deep .mat-sort-header-content {
@@ -175,4 +175,16 @@ tr.mat-mdc-row {
 
 .label {
   margin: 8px;
+}
+
+tr.mat-mdc-header-row {
+  background: var(--app-table-header-background-color);
+}
+
+::ng-deep th.mat-mdc-header-cell,
+td.mat-mdc-cell,
+td.mat-mdc-footer-cell {
+  border-right: 1px solid var(--app-neutral-light-color);
+  padding: 8px !important;
+  // min-width: 10rem;
 }

@@ -19,6 +19,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 })
 export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
+  @Input() formGroup$;
   @Input() loadData$: any;
   @Input() name;
 
@@ -121,6 +122,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
       configObject.getPConnect().setInheritedProp('displayMode', 'DISPLAY_ONLY');
       this.loadedPConn$ = ReferenceComponent.normalizePConn(configObject.getPConnect());
       this.componentName$ = this.loadedPConn$.getComponentName();
+      console.log('this.componentName$', this.componentName$);
       if (this.deferLoadId) {
         PCore.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
       }

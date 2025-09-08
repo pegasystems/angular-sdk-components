@@ -165,7 +165,7 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
-
+    // console.log(' view this.arChildren$', this.arChildren$);
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 
     /**

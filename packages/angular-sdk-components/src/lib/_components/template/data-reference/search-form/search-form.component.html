@@ -1,0 +1,39 @@
+<div class="search-form" style="display: flex; flex-direction: column">
+  <h5>{{ propsToUse.label }}</h5>
+  <div *ngIf="searchCategoriesComp === 'dropdown'">
+    <mat-form-field class="psdk-full-width">
+      <mat-select [value]="currentTabId" (selectionChange)="handleTabClick($event.value)">
+        <mat-option *ngFor="let tab of tabItems" [value]="tab.id">{{ tab.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div *ngIf="searchCategoriesComp === 'radio'">
+    <mat-radio-group [value]="currentTabId" (change)="handleTabClick($event.value)">
+      <mat-radio-button *ngFor="let tab of tabItems" [value]="tab.id">{{ tab.name }}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <!-- Tab Content -->
+  <mat-tab-group [selectedIndex]="getSelectedIndex()">
+    <mat-tab *ngFor="let tab of tabItems; let index = index" [label]="tab.name">
+      <div *ngIf="tab.id === currentTabId" class="psdk-sub-tabs">
+        <component-mapper
+          *ngIf="tab.content?.getPConnect() as tabPConn"
+          [name]="tabPConn.getComponentName()"
+          [props]="{ pConn$: tabPConn, formGroup$ }"
+        ></component-mapper>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <!-- Dialog -->
+  <ng-template #dialogTemplate>
+    <h2 mat-dialog-title>Discard selections?</h2>
+    <mat-dialog-content>
+      <p>When changing search categories, any previous selections will be lost.</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="onDialogClose()">Go back</button>
+      <button mat-raised-button color="primary" (click)="clearSelectionAndSwitchTab()">Discard</button>
+    </mat-dialog-actions>
+  </ng-template>
+</div>
