@@ -337,10 +337,15 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  from from the fieldDefs. This "name" is the value that
     //  we'll share to connect things together in the table.
 
+    const labelsMap = this.fieldDefs.reduce((acc, curr) => {
+      return { ...acc, [curr.name]: curr.label };
+    }, {});
+
     this.processedFields = [];
 
     this.processedFields = resolvedFields.map((field, i) => {
       field.config.name = this.displayedColumns[i]; // .config["value"].replace(/ ./g,"_");   // replace space dot with underscore
+      field.config.label = labelsMap[field.config.name] || field.config.label;
       return field;
     });
 
