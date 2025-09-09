@@ -14,7 +14,7 @@
   </div>
 
   <!-- Tab Content -->
-  <mat-tab-group [selectedIndex]="getSelectedIndex()">
+  <!-- <mat-tab-group [selectedIndex]="getSelectedIndex()">
     <mat-tab *ngFor="let tab of tabItems; let index = index" [label]="tab.name">
       <div *ngIf="tab.id === currentTabId" class="psdk-sub-tabs">
         <component-mapper
@@ -24,7 +24,18 @@
         ></component-mapper>
       </div>
     </mat-tab>
-  </mat-tab-group>
+  </mat-tab-group> -->
+  <div>
+    <div *ngFor="let tab of tabItems; let index = index">
+      <div *ngIf="tab.id === currentTabId" class="psdk-sub-tabs">
+        <component-mapper
+          *ngIf="tab.content?.getPConnect() as tabPConn"
+          [name]="tabPConn.getComponentName()"
+          [props]="{ pConn$: tabPConn, formGroup$ }"
+        ></component-mapper>
+      </div>
+    </div>
+  </div>
   <!-- Dialog -->
   <ng-template #dialogTemplate>
     <h2 mat-dialog-title>Discard selections?</h2>

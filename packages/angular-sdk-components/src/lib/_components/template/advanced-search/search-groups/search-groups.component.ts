@@ -18,6 +18,23 @@ const listViewConstants = {
   }
 };
 
+export function flattenObj(obj: any): any {
+  const result: any = {};
+  Object.keys(obj).forEach(key => {
+    if (!['context_data', 'pageInstructions'].includes(key)) {
+      if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+        const temp = flattenObj(obj[key]);
+        Object.keys(temp).forEach(nestedKey => {
+          result[`${key}.${nestedKey}`] = temp[nestedKey];
+        });
+      } else {
+        result[key] = obj[key];
+      }
+    }
+  });
+  return result;
+}
+
 export const initializeSearchFields = (searchFields, getPConnect, referenceListClassID, searchFieldRestoreValues = {}) => {
   const filtersProperties = {};
   searchFields?.forEach(field => {
@@ -97,43 +114,12 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
   groups: any;
   state: any = {};
   rawGroupsConfig: any;
+  initialSearchFields: {};
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
-    // this.updateSelf();
-    // this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    // this.checkAndUpdate();
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    console.log('searchGroupsProps', this.searchGroupsProps);
-    const { getPConnect, editableField, localeReference, setShowRecords, searchSelectCacheKey, cache } = this.searchGroupsProps;
-    this.cache = cache;
-    this.getPConnect = getPConnect;
-    console.log('this.getPConnect', this.getPConnect);
-    this.setShowRecords = setShowRecords;
-    this.searchSelectCacheKey = searchSelectCacheKey;
-    this.referenceFieldName = editableField.replaceAll('.', '_');
-
-    const { searchGroups: groups, referenceList } = getPConnect.getConfigProps();
-    this.groups = groups;
-    const { useCache, initialActiveGroupId } = getCacheInfo(cache, groups);
-    this.useCache = useCache;
-    this.viewName = getPConnect.getCurrentView();
-    this.activeGroupId = initialActiveGroupId;
-    this.rawGroupsConfig = getPConnect.getRawConfigProps().searchGroups;
-    const activeGroupIndex = groups.findIndex(group => group.config.id === this.activeGroupId);
-    const { children: searchFieldsChildren = [] } = activeGroupIndex !== -1 ? this.rawGroupsConfig[activeGroupIndex] : {};
-    this.searchFields = searchFieldsChildren.map(field => ({
-      ...field,
-      config: { ...field.config, isSearchField: true }
-    }));
-    this.isValidatorField = this.searchFields.some(field => field.config.validator);
-    const { classID } = PCore.getMetadataUtils().getDataPageMetadata(referenceList) as any;
-    this.referenceListClassID = classID;
-    this.initializeTransientData();
-    this.setupCacheReplayOnListViewReady();
-    // this.computeSearchFieldsForActiveGroup();
-    // this.mountTransientItemWithInitialData();
-    // this.setupCacheReplayOnListViewReady();
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+    this.checkAndUpdate();
   }
 
   onStateChange() {
@@ -153,230 +139,67 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
 
   // updateSelf
   updateSelf(): void {
-    // this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
-    // console.log('searchGroupsProps', this.searchGroupsProps);
-    // const { getPConnect, editableField, localeReference, setShowRecords, searchSelectCacheKey, cache } = this.searchGroupsProps;
-    // this.cache = cache;
-    // this.getPConnect = getPConnect;
-    // this.setShowRecords = setShowRecords;
-    // this.searchSelectCacheKey = searchSelectCacheKey;
-    // this.referenceFieldName = editableField.replaceAll('.', '_');
-    // const { searchGroups: groups, referenceList } = getPConnect.getConfigProps();
-    // this.groups = groups;
-    // const { useCache, initialActiveGroupId } = getCacheInfo(cache, groups);
-    // this.useCache = useCache;
-    // this.viewName = getPConnect.getCurrentView();
-    // this.activeGroupId = initialActiveGroupId;
-    // const rawGroupsConfig = getPConnect.getRawConfigProps().searchGroups;
-    // const activeGroupIndex = groups.findIndex(group => group.config.id === this.activeGroupId);
-    // const { children: searchFieldsChildren = [] } = activeGroupIndex !== -1 ? rawGroupsConfig[activeGroupIndex] : {};
-    // this.searchFields = searchFieldsChildren.map(field => ({
-    //   ...field,
-    //   config: { ...field.config, isSearchField: true }
-    // }));
-    // this.isValidatorField = this.searchFields.some(field => field.config.validator);
-    // const { classID } = PCore.getMetadataUtils().getDataPageMetadata(referenceList) as any;
-    // this.referenceListClassID = classID;
-    // this.computeSearchFieldsForActiveGroup();
-    // this.mountTransientItemWithInitialData();
-    // this.setupCacheReplayOnListViewReady();
-  }
-
-  private computeSearchFieldsForActiveGroup(): void {
-    // const rawGroupsConfig = this.getPConnect().getRawConfigProps().searchGroups;
-    // const activeGroupIndex = this.groups.findIndex(g => g.config.id === this.activeGroupId);
-    // const { children: searchFieldsChildren = [] } =
-    //   activeGroupIndex !== -1 ? rawGroupsConfig[activeGroupIndex] : {};
-
-    // this.searchFields = (searchFieldsChildren || []).map((field: any) => ({
-    //   ...field,
-    //   config: { ...field.config, isSearchField: true }
-    // }));
-
-    // this.isValidatorField = this.searchFields.some(f => f.config.validator);
-
-    const initialSearchFields = initializeSearchFields(
-      this.searchFields,
-      this.getPConnect,
-      this.referenceListClassID,
-      this.useCache && this.cache.activeGroupId === this.activeGroupId ? this.cache.searchFields : {}
-    );
-
-    // Build the PCore view config (same as React)
-    const searchFieldsViewConfig = {
-      name: 'SearchFields',
-      type: 'View',
-      config: {
-        template: 'DefaultForm',
-        NumCols: '3',
-        contextName: this.transientItemID, // can be null initially; will be replaced after transient creation
-        readOnly: false,
-        context: this.transientItemID,
-        localeReference: this.searchGroupsProps.localeReference
-      },
-      children: [
-        {
-          name: 'Fields',
-          type: 'Region',
-          children: this.searchFields
-        }
-      ]
-    };
-
-    // Create c11n env (Angular will render this via the SDK host component)
-    this.searchFieldsC11nEnv = PCore.createPConnect({
-      meta: searchFieldsViewConfig,
-      options: {
-        hasForm: true,
-        contextName: this.transientItemID
-      }
-    });
-    console.log('searchFieldsC11nEnv', this.searchFieldsC11nEnv);
-    // If transient already exists (e.g., after active group change), push new defaults
-    if (this.transientItemID) {
-      const filtersWithClassID = { ...initialSearchFields, classID: this.referenceListClassID };
-      PCore.getContainerUtils().replaceTransientData({
-        transientItemID: this.transientItemID,
-        data: filtersWithClassID
-      });
-    }
-
-    // this.cdr.markForCheck();
-  }
-
-  private mountTransientItemWithInitialData(): void {
-    const initialSearchFields = initializeSearchFields(
-      this.searchFields,
-      this.getPConnect,
-      this.referenceListClassID,
-      this.useCache && this.cache.activeGroupId === this.activeGroupId ? this.cache.searchFields : {}
-    );
-
-    const filtersWithClassID = {
-      ...initialSearchFields,
-      classID: this.referenceListClassID
-    };
-
-    const transientId = this.getPConnect.getContainerManager().addTransientItem({
-      id: `${this.referenceFieldName}-${this.viewName}`,
-      data: filtersWithClassID
-    });
-
-    this.transientItemID = transientId;
-
-    // Update searchFieldsC11nEnv with the now-known transient context
-    if (this.searchFieldsC11nEnv?.setContextName) {
-      this.searchFieldsC11nEnv.setContextName(this.transientItemID);
-    }
-
-    // this.cdr.markForCheck();
-  }
-
-  initializeTransientData() {
-    const filtersWithClassID = {
-      ...this.getInitialSearchFields(),
-      classID: this.referenceListClassID
-    };
-
-    const viewName = this.getPConnect.getCurrentView();
-    const transientId = this.getPConnect
-      .getContainerManager()
-      .addTransientItem({ id: `${this.referenceFieldName}-${viewName}`, data: filtersWithClassID });
-
-    this.transientItemID = transientId;
-
-    // Build the PCore view config (same as React)
-    const searchFieldsViewConfig = {
-      name: 'SearchFields',
-      type: 'View',
-      config: {
-        template: 'DefaultForm',
-        NumCols: '3',
-        contextName: this.transientItemID, // can be null initially; will be replaced after transient creation
-        readOnly: false,
-        context: this.transientItemID,
-        localeReference: this.searchGroupsProps.localeReference
-      },
-      children: [
-        {
-          name: 'Fields',
-          type: 'Region',
-          children: this.searchFields
-        }
-      ]
-    };
-
-    // Create c11n env (Angular will render this via the SDK host component)
-    this.searchFieldsC11nEnv = PCore.createPConnect({
-      meta: searchFieldsViewConfig,
-      options: {
-        hasForm: true,
-        contextName: this.transientItemID
-      }
-    });
-  }
-
-  getInitialSearchFields() {
-    const restoreValues = this.useCache && this.cache?.activeGroupId === this.activeGroupId ? this.cache.searchFields : {};
-    return initializeSearchFields(this.searchFields, this.getPConnect, this.referenceListClassID, restoreValues);
-  }
-
-  /** NEW: update existing transient data when active group changes */
-  updateTransientDataForActiveGroup() {
-    const filtersWithClassID = {
-      ...this.getInitialSearchFields(),
-      classID: this.referenceListClassID
-    };
-
-    if (this.transientItemID) {
-      // this mirrors the React: PCore.getContainerUtils().replaceTransientData(...)
-      PCore.getContainerUtils().replaceTransientData({ transientItemID: this.transientItemID, data: filtersWithClassID });
-    } else {
-      // fallback: if no transient exists, add one (safe guard)
-      const id = this.getPConnect().getCurrentView();
-      const transientId = this.getPConnect()
-        .getContainerManager()
-        .addTransientItem({ id: `${this.referenceFieldName}-${id}`, data: filtersWithClassID });
-      this.transientItemID = transientId;
-    }
-  }
-
-  onActiveGroupChange(event: any) {
-    this.activeGroupId = event.value;
-    // update searchFields for the newly selected group (mirror how React recalculates)
-    const activeGroupIndex = this.groups.findIndex(g => g.config.id === this.activeGroupId);
-    const searchFieldsChildren = activeGroupIndex !== -1 ? this.rawGroupsConfig[activeGroupIndex]?.children || [] : [];
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const { searchGroups: groups, referenceList } = this.configProps$;
+    const { getPConnect, editableField, searchSelectCacheKey, cache } = this.searchGroupsProps;
+    this.searchSelectCacheKey = searchSelectCacheKey;
+    const referenceFieldName = editableField.replaceAll('.', '_');
+    const { classID: referenceListClassID } = PCore.getMetadataUtils().getDataPageMetadata(referenceList) as any;
+    const { useCache, initialActiveGroupId } = getCacheInfo(cache, groups);
+    this.activeGroupId = initialActiveGroupId;
+    const rawGroupsConfig = this.pConn$.getRawConfigProps().searchGroups;
+    const activeGroupIndex = groups.findIndex(group => group.config.id === this.activeGroupId);
+    const { children: searchFieldsChildren = [] } = activeGroupIndex !== -1 ? rawGroupsConfig[activeGroupIndex] : {};
     this.searchFields = searchFieldsChildren.map(field => ({
       ...field,
       config: { ...field.config, isSearchField: true }
     }));
-
-    // IMPORTANT: call replaceTransientData to update the transient with the new group's search fields
-    this.updateTransientDataForActiveGroup();
+    this.initialSearchFields = initializeSearchFields(
+      this.searchFields,
+      getPConnect,
+      referenceListClassID,
+      useCache && cache.activeGroupId === this.activeGroupId ? cache.searchFields : {}
+    );
+    const filtersWithClassID = {
+      ...this.initialSearchFields,
+      classID: referenceListClassID
+    };
+    const viewName = this.pConn$.getCurrentView();
+    const transientId = getPConnect.getContainerManager().addTransientItem({ id: `${referenceFieldName}-${viewName}`, data: filtersWithClassID });
+    this.transientItemID = transientId;
+    this.createSearchFields();
   }
 
-  flattenObj(obj: any): any {
-    const result: any = {};
-    Object.keys(obj).forEach(key => {
-      if (!['context_data', 'pageInstructions'].includes(key)) {
-        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-          const temp = this.flattenObj(obj[key]);
-          Object.keys(temp).forEach(nestedKey => {
-            result[`${key}.${nestedKey}`] = temp[nestedKey];
-          });
-        } else {
-          result[key] = obj[key];
+  createSearchFields() {
+    const searchFieldsViewConfig = {
+      name: 'SearchFields',
+      type: 'View',
+      config: {
+        template: 'DefaultForm',
+        NumCols: '3',
+        contextName: this.transientItemID, // can be null initially; will be replaced after transient creation
+        readOnly: false,
+        context: this.transientItemID,
+        localeReference: this.searchGroupsProps.localeReference
+      },
+      children: [
+        {
+          name: 'Fields',
+          type: 'Region',
+          children: this.searchFields
         }
+      ]
+    };
+
+    // Create c11n env (Angular will render this via the SDK host component)
+    this.searchFieldsC11nEnv = PCore.createPConnect({
+      meta: searchFieldsViewConfig,
+      options: {
+        hasForm: true,
+        contextName: this.transientItemID
       }
     });
-    return result;
   }
-
-  // onActiveGroupChange(newGroupId: string): void {
-  //   this.activeGroupId = newGroupId;
-  //   // Recompute fields and reset transient data for the new group
-  //   // this.computeSearchFieldsForActiveGroup();
-  // }
 
   getFilterData(): void {
     let changes = PCore.getFormUtils().getSubmitData(this.transientItemID, {
@@ -388,7 +211,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
       changes = this.cache.searchFields;
     }
 
-    const formValues = this.flattenObj(changes);
+    const formValues = flattenObj(changes);
 
     if (
       !PCore.isDeepEqual(this.previousFormValues, formValues) &&
@@ -429,6 +252,33 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
       options: { reset: true }
     };
     PCore.getContainerUtils().updateTransientData(resetPayload);
+  }
+
+  /** NEW: update existing transient data when active group changes */
+  updateTransientDataForActiveGroup() {
+    const filtersWithClassID = {
+      ...this.initialSearchFields,
+      classID: this.referenceListClassID
+    };
+
+    if (this.transientItemID) {
+      // this mirrors the React: PCore.getContainerUtils().replaceTransientData(...)
+      PCore.getContainerUtils().replaceTransientData({ transientItemID: this.transientItemID, data: filtersWithClassID });
+    }
+  }
+
+  onActiveGroupChange(event: any) {
+    this.activeGroupId = event.value;
+    // update searchFields for the newly selected group (mirror how React recalculates)
+    const activeGroupIndex = this.groups.findIndex(g => g.config.id === this.activeGroupId);
+    const searchFieldsChildren = activeGroupIndex !== -1 ? this.rawGroupsConfig[activeGroupIndex]?.children || [] : [];
+    this.searchFields = searchFieldsChildren.map(field => ({
+      ...field,
+      config: { ...field.config, isSearchField: true }
+    }));
+
+    // IMPORTANT: call replaceTransientData to update the transient with the new group's search fields
+    this.updateTransientDataForActiveGroup();
   }
 
   private setupCacheReplayOnListViewReady(): void {

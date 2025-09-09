@@ -159,15 +159,16 @@ export class SearchFormComponent implements OnInit, OnChanges {
     } else {
       // @ts-ignore
       this.publishEvent({ viewName, tabId });
-      searchtabsClick(tabId, this.tabData, this.currentTabId);
+      // searchtabsClick(tabId, this.tabData, this.currentTabId);
       this.currentTabId = tabId;
       this.tabData = getData(this.deferLoadedTabs, this.tabCountSources, this.currentTabId, this.tabData);
-      const index = this.tabData.findIndex(tab => tab.id === tabId);
-      console.log('this.tabData after click', this.tabData);
-      const i = this.tabItems.findIndex(tab => tab.id === tabId);
-      this.tabItems[i].content = this.tabData[index].content;
-      // this.tabItems = this.tabData?.filter(tab => tab.visibility()) || [];
-      console.log('this.tabItems', this.tabItems);
+      this.tabItems = this.tabData?.filter(tab => tab.visibility()) || [];
+      // const index = this.tabData.findIndex(tab => tab.id === tabId);
+      // console.log('this.tabData after click', this.tabData);
+      // const i = this.tabItems.findIndex(tab => tab.id === tabId);
+      // this.tabItems[i].content = this.tabData[index].content;
+      // // this.tabItems = this.tabData?.filter(tab => tab.visibility()) || [];
+      // console.log('this.tabItems', this.tabItems);
       // this.tabsService.updateCurrentTabId(tabId, '');
     }
   }
@@ -204,23 +205,6 @@ export class SearchFormComponent implements OnInit, OnChanges {
 
     PCore.getPubSubUtils().publish('update-advanced-search-selections', payload);
   }
-
-  // checkIfSelectionsExist(getPConnect: any): boolean {
-  //   const { MULTI } = PCore.getConstants().LIST_SELECTION_MODE;
-  //   const { selectionMode, readonlyContextList, contextPage, contextClass, name } = getPConnect.getConfigProps();
-  //   const isMultiSelectMode = selectionMode === MULTI;
-
-  //   const dataRelationshipContext = contextClass && name ? name : null;
-  //   const { compositeKeys } = getFieldMeta(getPConnect, dataRelationshipContext);
-
-  //   if (isMultiSelectMode) {
-  //     return readonlyContextList?.length > 0;
-  //   }
-  //   if (contextPage) {
-  //     return compositeKeys?.filter((key: any) => !['', null, undefined].includes(contextPage[key]))?.length > 0;
-  //   }
-  //   return false;
-  // }
 
   checkIfSelectionsExist(getPConnect) {
     const { MULTI } = PCore.getConstants().LIST_SELECTION_MODE;

@@ -64,7 +64,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.children = this.pConn$.getChildren();
-    this.updateSelf();
+    this.checkAndUpdate();
     if (
       this.rawViewMetadata.config?.parameters &&
       !this.isDDSourceDeferred &&
@@ -108,39 +108,6 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
           });
       }
     }
-    // if (this.firstChildMeta?.type === 'Dropdown' && this.rawViewMetadata.config?.parameters) {
-    //   const { value, key, text } = this.firstChildMeta.config.datasource.fields;
-    //   PCore.getDataApiUtils()
-    //     .getData(
-    //       this.refList,
-    //       {
-    //         dataViewParameters: this.parameters
-    //       },
-    //       ''
-    //     )
-    //     .then(res => {
-    //       if (res.data.data !== null) {
-    //         const ddDataSource = res.data.data
-    //           .map(listItem => ({
-    //             key: listItem[key.split(' .', 2)[1]],
-    //             text: listItem[text.split(' .', 2)[1]],
-    //             value: listItem[value.split(' .', 2)[1]]
-    //           }))
-    //           .filter(item => item.key);
-    //         // Filtering out undefined entries that will break preview
-    //         this.dropDownDataSource = ddDataSource;
-    //         this.updateSelf();
-    //       } else {
-    //         const ddDataSource: any = [];
-    //         this.dropDownDataSource = ddDataSource;
-    //       }
-    //     })
-    //     .catch(() => {
-    //       return Promise.resolve({
-    //         data: { data: [] }
-    //       });
-    //     });
-    // }
   }
 
   ngOnDestroy(): void {
@@ -149,8 +116,11 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Callback passed when subscribing to store change
   onStateChange() {
+    this.checkAndUpdate();
+  }
+
+  checkAndUpdate() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
