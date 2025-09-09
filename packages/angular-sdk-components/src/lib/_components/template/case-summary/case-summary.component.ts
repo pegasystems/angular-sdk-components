@@ -104,25 +104,6 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  // prepareComponentInCaseSummary(pConnectMeta, getPConnect) {
-  //   const { config, children } = pConnectMeta;
-  //   const pConnect = getPConnect();
-
-  //   const caseSummaryComponentObject: any = {};
-
-  //   const { type } = pConnectMeta;
-  //   const createdComponent = pConnect.createComponent({
-  //     type,
-  //     children: children ? [...children] : [],
-  //     config: {
-  //       ...config
-  //     }
-  //   });
-
-  //   caseSummaryComponentObject.value = createdComponent;
-  //   return caseSummaryComponentObject;
-  // }
-
   prepareCaseSummaryData(summaryFieldChildren) {
     const convertChildrenToSummaryData = kid => {
       return kid?.map((childItem, index) => {
