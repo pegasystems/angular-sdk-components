@@ -166,7 +166,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
   uniqueId = crypto.randomUUID();
   displayAs: any;
   showRecords: any;
-  subscription: any;
+  identifier: string;
+  promotedFiltersId: string;
   constructor(
     private psService: ProgressSpinnerService,
     public utils: Utils
@@ -213,7 +214,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.label = title;
 
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
-    const identifier = `promoted-filters-queryable-${this.uniqueId}`;
+    this.promotedFiltersId = `promoted-filters-queryable-${this.uniqueId}`;
     setTimeout(() => {
       PCore.getPubSubUtils().subscribe(
         PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
@@ -241,7 +242,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
           const filterData = this.prepareFilters(data);
           this.processFilterChange(filterData);
         },
-        identifier
+        this.promotedFiltersId
       );
     }, 0);
     if (this.configProps$) {
@@ -282,10 +283,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
       }
     };
 
-    const identifier = `clear-and-update-advanced-search-selections-${uniqueId}`;
+    this.identifier = `clear-and-update-advanced-search-selections-${uniqueId}`;
 
-    // Subscribe
-    this.subscription = PCore.getPubSubUtils().subscribe('update-advanced-search-selections', clearSelectionsAndRefreshList, identifier);
+    PCore.getPubSubUtils().subscribe('update-advanced-search-selections', clearSelectionsAndRefreshList, this.identifier);
   }
 
   getFieldFromFilter(filter, dateRange = false) {
@@ -575,9 +575,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
       `dashboard-component-${'id'}`,
       this.pConn$.getContextName()
     );
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    PCore.getPubSubUtils().unsubscribe('update-advanced-search-selections', this.identifier);
+    PCore.getPubSubUtils().unsubscribe(PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS, this.promotedFiltersId);
   }
 
   // ngAfterViewInit() {

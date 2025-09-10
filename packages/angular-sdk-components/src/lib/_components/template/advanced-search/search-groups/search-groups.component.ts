@@ -143,6 +143,8 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
     const { searchGroups: groups, referenceList } = this.configProps$;
     const { getPConnect, editableField, searchSelectCacheKey, cache } = this.searchGroupsProps;
     this.searchSelectCacheKey = searchSelectCacheKey;
+    this.getPConnect = getPConnect;
+    this.cache = cache || {};
     const referenceFieldName = editableField.replaceAll('.', '_');
     const { classID: referenceListClassID } = PCore.getMetadataUtils().getDataPageMetadata(referenceList) as any;
     const { useCache, initialActiveGroupId } = getCacheInfo(cache, groups);
@@ -165,6 +167,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
       classID: referenceListClassID
     };
     const viewName = this.pConn$.getCurrentView();
+    console.log('In addTransientItem');
     const transientId = getPConnect.getContainerManager().addTransientItem({ id: `${referenceFieldName}-${viewName}`, data: filtersWithClassID });
     this.transientItemID = transientId;
     this.createSearchFields();
@@ -224,7 +227,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
       }
 
       this.previousFormValues = formValues;
-      this.setShowRecords(true);
+      // this.setShowRecords(true);
 
       PCore.getPubSubUtils().publish(PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS, {
         payload: formValues,
@@ -256,6 +259,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
 
   /** NEW: update existing transient data when active group changes */
   updateTransientDataForActiveGroup() {
+    console.log('In replaceTransientData');
     const filtersWithClassID = {
       ...this.initialSearchFields,
       classID: this.referenceListClassID
