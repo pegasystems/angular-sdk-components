@@ -1002,15 +1002,11 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       const data: any = [];
       this.rawFields?.forEach(item => {
         if (!item?.config?.hide) {
-          let label = '';
-          if (!this.readOnlyMode) {
-            label = item.config.readOnly ? '' : item.config.label;
-          }
           item = {
             ...item,
             config: {
               ...item.config,
-              label,
+              label: '',
               displayMode: this.readOnlyMode || this.allowEditingInModal ? 'DISPLAY_ONLY' : undefined
             }
           };
