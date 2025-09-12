@@ -1,9 +1,11 @@
-<div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper
-    *ngIf="bVisible$ !== false"
-    name="FieldValueList"
-    [props]="{ label$: caption$, value$: value$ ? trueLabel$ : falseLabel$, displayMode$ }"
-  ></component-mapper>
+<div *ngIf="variant !== 'card'; else cardMode">
+  <div *ngIf="displayMode$; else noDisplayMode">
+    <component-mapper
+      *ngIf="bVisible$ !== false"
+      name="FieldValueList"
+      [props]="{ label$: caption$, value$: value$ ? trueLabel$ : falseLabel$, displayMode$ }"
+    ></component-mapper>
+  </div>
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="bHasForm$; else noEdit">
@@ -47,4 +49,10 @@
 </ng-template>
 <ng-template #noEdit>
   <component-mapper *ngIf="bVisible$ !== false" name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
+</ng-template>
+<ng-template #cardMode>
+  <h4>{{ label$ }}</h4>
+  <div>
+    <component-mapper name="SelectableCard" [props]="{ pConn$: pConn$, type: 'checkbox' }" [parent]="this"></component-mapper>
+  </div>
 </ng-template>

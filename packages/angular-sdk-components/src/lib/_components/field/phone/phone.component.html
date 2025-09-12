@@ -4,13 +4,14 @@
 <ng-template #noDisplayMode>
   <div *ngIf="bHasForm$; else noEdit">
     <div #f="ngForm" [formGroup]="formGroup$" *ngIf="bVisible$">
-      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText" floatLabel="always">
         <mat-tel-input
           [attr.data-test-id]="testId"
           [formControl]="fieldControl"
           [preferredCountries]="preferredCountries"
           [enablePlaceholder]="true"
           [enableSearch]="true"
+          [placeholder]="placeholder"
           [required]="bRequired$"
           [disabled]="bDisabled$ || bReadonly$"
           (change)="fieldOnChange()"

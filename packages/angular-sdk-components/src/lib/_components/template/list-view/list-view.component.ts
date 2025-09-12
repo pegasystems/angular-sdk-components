@@ -155,8 +155,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
   query: any = null;
   paging: any;
   fieldDefs: any;
-  xRayApis = PCore.getDebugger().getXRayRuntime();
-  xRayUid = this.xRayApis.startXRay();
   checkBoxValue: string;
   label?: string = '';
 
@@ -237,7 +235,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
         listContext: this.listContext,
         ref: this.ref,
         showDynamicFields: this.showDynamicFields,
-        xRayUid: this.xRayUid,
         cosmosTableRef: this.cosmosTableRef,
         selectionMode: this.selectionMode
       }).then(response => {
