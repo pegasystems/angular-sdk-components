@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import componentCachePersistUtils from '../advanced-search/search-group/persist-utils';
 import { getMappedKey } from '../advanced-search/search-group/persist-utils';
-import { DataReferenceAdvancedSearchService } from './data-reference-advanced-search.service';
+import componentCachePersistUtils from '../advanced-search/search-group/persist-utils';
 import { getFirstChildConfig } from '../data-reference/utils';
+import { DataReferenceAdvancedSearchService } from './data-reference-advanced-search.service';
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
@@ -42,18 +42,18 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   displaySingleRef: boolean;
   displayMultiRef: boolean;
   refList: any;
-  isDDSourceDeferred: any;
-  allowImplicitRefresh: any;
   displayAs: any;
-  displayMode: any;
+  isDDSourceDeferred: any;
   showPromotedFilters: any;
+  displayMode: any;
   refFieldMetadata: any;
   contextClass: any;
-  disableStartingFieldsForReference = false;
   selectionList: any;
   inline: any;
-  searchSelectCacheKey: string;
+  isCreationOfNewRecordAllowedForReference: any;
+  showAdvancedSearch: boolean;
   pyID: any;
+  allowImplicitRefresh: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -64,23 +64,20 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.children = this.pConn$.getChildren();
-    this.checkAndUpdate();
+    this.updateSelf();
+
     if (
       this.rawViewMetadata.config?.parameters &&
       !this.isDDSourceDeferred &&
       ['Checkbox', 'Dropdown', 'RadioButtons'].includes(this.firstChildMeta?.type)
     ) {
       const { value, key, text } = this.firstChildMeta.config.datasource.fields;
+
       if (this.firstChildMeta.config.variant !== 'card' || this.firstChildMeta.config.variant === 'card') {
-        (
-          PCore.getDataApiUtils().getData(
-            this.refList,
-            {
-              dataViewParameters: this.parameters
-            } as any,
-            ''
-          ) as Promise<any>
-        )
+        PCore.getDataApiUtils()
+          .getData(this.refList, {
+            dataViewParameters: this.parameters
+          })
           .then(res => {
             if (res.data.data !== null) {
               const ddDataSource = this.firstChildMeta.config.datasource.filterDownloadedFields
@@ -91,8 +88,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
                       text: listItem[text.split(' .', 2)[1]],
                       value: listItem[value.split(' .', 2)[1]]
                     }))
-                    .filter(item => item.key);
-              // Filtering out undefined entries that will break preview
+                    .filter(item => item.key); // Filtering out undefined entries
               this.dropDownDataSource = ddDataSource;
               this.updateSelf();
             } else {
@@ -116,11 +112,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Callback passed when subscribing to store change
   onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
@@ -131,43 +124,29 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
-  localizedPlaceholderOption(placeholder) {
-    const { GENERIC_BUNDLE_KEY } = PCore.getLocaleUtils?.() ?? {};
-    const localizedDefaultPlaceholder = this.pConn$.getLocalizedValue('select_placeholder_default', 'CosmosFields', GENERIC_BUNDLE_KEY);
-    // If we have a placeholder, push that option in the list of items
-    if (placeholder === 'Select...' && localizedDefaultPlaceholder !== 'select_placeholder_default') {
-      return localizedDefaultPlaceholder;
-    }
-    return this.pConn$.getLocalizedValue(placeholder);
-  }
-
   updateSelf() {
     // Update properties based on configProps
     const theConfigProps = this.pConn$.getConfigProps();
     this.updatePropertiesFromProps(theConfigProps);
+
+    const displayAs = theConfigProps.displayAs;
+    const displayMode = theConfigProps.displayMode;
     this.rawViewMetadata = this.pConn$.getRawMetadata();
     this.viewName = this.rawViewMetadata.name;
     this.firstChildMeta = this.rawViewMetadata.children[0];
     this.refList = this.rawViewMetadata.config.referenceList;
-    this.canBeChangedInReviewMode =
-      theConfigProps.allowAndPersistChangesInReviewMode && (this.displayAs === 'autocomplete' || this.displayAs === 'dropdown');
-    this.isDisplayModeEnabled = ['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(this.displayMode);
-    const rawViewMetadata: any = this.pConn$.getRawMetadata();
-    this.refFieldMetadata = this.pConn$.getFieldMetadata(rawViewMetadata.config?.authorContext);
+    this.canBeChangedInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
+    // this.childrenToRender = this.children;
+    this.isDisplayModeEnabled = ['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(displayMode);
+    this.refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.authorContext);
+    this.pyID = getMappedKey('pyID');
+    // @ts-ignore
+    const { allowImplicitRefresh } = PCore.getFieldDefaultUtils().fieldDefaults?.DataReference || {};
 
+    this.allowImplicitRefresh = allowImplicitRefresh;
     this.isDDSourceDeferred =
       (this.firstChildMeta?.type === 'Dropdown' && this.selectionMode === SELECTION_MODE.SINGLE && this.refFieldMetadata?.descriptors) ||
       this.firstChildMeta.config.deferDatasource;
-    this.pyID = getMappedKey('pyID');
-    const isInfinity = this.pyID === 'pyID';
-    const { allowImplicitRefresh } = isInfinity
-      ? // @ts-ignore
-        PCore.getFieldDefaultUtils().fieldDefaults?.DataReference || {}
-      : {
-          allowImplicitRefresh: true
-        };
-
-    this.allowImplicitRefresh = allowImplicitRefresh;
     if (this.firstChildMeta?.type !== 'Region') {
       this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;
 
@@ -189,7 +168,12 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       }
       // set displayMode conditionally
       if (!this.canBeChangedInReviewMode) {
-        this.firstChildMeta.config.displayMode = this.displayMode;
+        this.firstChildMeta.config.displayMode = displayMode;
+      }
+      if (this.firstChildMeta.type === 'SimpleTableSelect' && this.selectionMode === SELECTION_MODE.MULTI) {
+        this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.selectionList);
+      } else {
+        this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.value);
       }
 
       this.generateChildrenToRender();
@@ -204,12 +188,13 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.parameters = theConfigProps.parameters;
     this.hideLabel = theConfigProps.hideLabel;
     this.displayAs = theConfigProps.displayAs;
-    this.displayMode = theConfigProps.displayMode;
-    this.contextClass = theConfigProps.contextClass;
     this.showPromotedFilters = theConfigProps.showPromotedFilters;
+    this.displayMode = theConfigProps.displayMode;
+    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
+    this.contextClass = theConfigProps.contextClass;
     this.selectionList = theConfigProps.selectionList;
     this.inline = theConfigProps.inline;
-    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
+    this.isCreationOfNewRecordAllowedForReference = theConfigProps.isCreationOfNewRecordAllowedForReference;
     if (this.propsToUse.showLabel === false) {
       this.propsToUse.label = '';
     }
@@ -217,20 +202,34 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
 
   generateChildrenToRender() {
     const theRecreatedFirstChild = this.recreatedFirstChild();
-    const viewsRegion = this.rawViewMetadata.children[1];
-    if (viewsRegion?.name === 'Views' && viewsRegion.children.length) {
-      this.childrenToRender = [theRecreatedFirstChild, ...this.children.slice(1)];
-    } else {
+    if (this.firstChildMeta?.type !== 'Region') {
+      const viewsRegion = this.rawViewMetadata.children[1];
+
+      if (viewsRegion?.name === 'Views' && viewsRegion.children.length) {
+        viewsRegion.children.map(child => {
+          child.config.isEmbeddedInDataReference = true;
+          return child;
+        });
+        this.childrenToRender = [theRecreatedFirstChild, ...this.children.slice(1)];
+      } else {
+        this.childrenToRender = [theRecreatedFirstChild];
+      }
+    } else if (this.displayAs === 'advancedSearch') {
       this.childrenToRender = [theRecreatedFirstChild];
+    }
+
+    // Render
+    if (this.childrenToRender.length === 1) {
+      return this.childrenToRender[0] ?? null;
     }
   }
 
   handleSelection(event) {
     const caseKey = this.pConn$.getCaseInfo().getKey();
-    const refreshOptions: any = { autoDetectRefresh: true };
+    const refreshOptions: any = { autoDetectRefresh: true, propertyName: '' };
 
-    if (this.pConn$.getRawMetadata()?.children?.length > 0 && this.pConn$.getRawMetadata()?.children[0].config?.value) {
-      refreshOptions.propertyName = this.pConn$.getRawMetadata()?.children[0].config.value;
+    if (this.pConn$?.getRawMetadata()?.children?.length > 0 && this.pConn$?.getRawMetadata()?.children[0].config?.value) {
+      refreshOptions.propertyName = this.pConn$?.getRawMetadata()?.children[0].config.value;
       refreshOptions.classID = (this.pConn$.getRawMetadata() as any).classID;
     }
 
@@ -260,7 +259,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
           .catch(() => {});
       }
     } else if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
-      PCore.getDataApiUtils()
+      PCore.getCaseUtils()
         .getCaseEditLock(caseKey, '')
         .then(caseResponse => {
           const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
@@ -295,33 +294,14 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
-  createNewRecord() {
-    const startingFields: any = {};
-    if (this.referenceType === 'Case' || this.firstChildMeta?.config?.referenceType === 'Case') {
-      if (!this.disableStartingFieldsForReference) {
-        startingFields.pyAddCaseContextPage = { pyID: this.pConn$.getCaseInfo().getKey()?.split(' ')?.pop() };
-      }
-      // @ts-ignore
-      return this.pConn$.getActionsApi().createWork(contextClass, {
-        openCaseViewAfterCreate: false,
-        startingFields
-      });
-    }
-    if (this.referenceType === 'Data' || this.firstChildMeta?.config?.referenceType === 'Data') {
-      return getPConnect().getActionsApi().showDataObjectCreateView(this.contextClass);
-    }
-  }
-
-  // Re-create first child with overridden props
-  // Memoized child in order to stop unmount and remount of the child component when data reference
-  // rerenders without any actual change
   recreatedFirstChild() {
-    const { type } = this.firstChildMeta;
-
     if (this.firstChildMeta?.type === 'Region' && this.displayAs !== 'advancedSearch') {
       return;
     }
-
+    const { type } = this.firstChildMeta;
+    this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;
+    // this.pConn$.getChildren()[0].getPConnect
+    /* Read-only variants */
     if (
       (this.displayAs === 'readonly' || this.isDisplayModeEnabled) &&
       !this.canBeChangedInReviewMode &&
@@ -340,6 +320,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       return null;
     }
 
+    // Meta prep
+    // 1) Cleanup
     if (this.firstChildMeta.config?.readOnly) {
       delete this.firstChildMeta.config.readOnly;
     }
@@ -350,8 +332,14 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       !this.firstChildMeta.config.deferDatasource &&
       this.firstChildMeta.config.datasource
     ) {
+      // If data page doesn't exist within shared object when card component is mounted, then we need to set source to dropdownDataSource
+      const isDeferDataPageCallEnabled =
+        this.rawViewMetadata.config?.parameters &&
+        this.firstChildMeta.config.variant === 'card' &&
+        // @ts-ignore
+        !firstChildPConnect()?.getSharedDataPageForReferenceList();
       this.firstChildMeta.config.datasource.source =
-        (this.firstChildMeta.config.variant === 'card' && this.dropDownDataSource) ||
+        (this.firstChildMeta.config.variant === 'card' && (this.dropDownDataSource || isDeferDataPageCallEnabled)) ||
         (this.firstChildMeta.config.variant !== 'card' && this.rawViewMetadata.config?.parameters)
           ? this.dropDownDataSource
           : '@DATASOURCE '.concat(this.refList).concat('.pxResults');
@@ -388,15 +376,35 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
         : this.firstChildMeta?.config?.datasource?.fields?.value;
       fieldMetaData.datasourceMetadata.datasource.name = this.rawViewMetadata.config?.referenceList;
     }
-    // @ts-ignore
-    const disableStartingFieldsForReference = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || {};
-    // @ts-ignore
-    let { isCreateNewReferenceEnabled = false } = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || {};
 
-    if (isCreateNewReferenceEnabled) {
-      // @ts-ignore
-      isCreateNewReferenceEnabled = isCreationOfNewRecordAllowedForReference && PCore.getAccessPrivilege().hasCreateAccess(contextClass);
-    }
+    const { disableStartingFieldsForReference = false } = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || ({} as any);
+
+    const isEnvLP: any = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form;
+    // Create Link in Reference Field: For legacy views where isCreationOfNewRecordAllowedForReference is absent, Infinity should treat it as turned off. However, in LP, it should be considered as turned on by default.
+    const isCreateNewRefEnabledInAuthoring = this.isCreationOfNewRecordAllowedForReference ?? isEnvLP?.isCreateNewReferenceEnabled;
+    const isCaseRef = this.referenceType === 'Case' || this.firstChildMeta?.config?.referenceType === 'Case';
+    // In infinity supported only for case reference @todo add user access check. For LP case and data both are supported given user has access.
+    const isCreateNewRefEnabledForUser = isEnvLP
+      ? isEnvLP.isCreateNewReferenceEnabled && PCore.getAccessPrivilege().hasCreateAccess(this.contextClass)
+      : isCaseRef;
+
+    const isCreateNewReferenceEnabled = isCreateNewRefEnabledInAuthoring && isCreateNewRefEnabledForUser;
+
+    const startingFields: any = {};
+    const createNewRecord = () => {
+      if (this.referenceType === 'Case' || this.firstChildMeta?.config?.referenceType === 'Case') {
+        if (!disableStartingFieldsForReference) {
+          startingFields.pyAddCaseContextPage = { pyID: this.pConn$.getCaseInfo().getKey()?.split(' ')?.pop() };
+        }
+        return this.pConn$.getActionsApi().createWork(this.contextClass, {
+          openCaseViewAfterCreate: false,
+          startingFields
+        });
+      }
+      if (this.referenceType === 'Data' || this.firstChildMeta?.config?.referenceType === 'Data') {
+        return getPConnect().getActionsApi().showDataObjectCreateView(this.contextClass);
+      }
+    };
 
     const additionalInfo = this.refFieldMetadata?.additionalInformation
       ? {
@@ -430,12 +438,12 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
         }),
       dataRelationshipContext: this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name ? this.rawViewMetadata.config.name : null,
       hideLabel: this.hideLabel,
-      onRecordChange: this.handleSelection,
-      createNewRecord: isCreateNewReferenceEnabled ? this.createNewRecord : undefined,
+      onRecordChange: this.handleSelection.bind(this),
+      createNewRecord: isCreateNewReferenceEnabled ? createNewRecord : undefined,
       inline: this.inline
     };
 
-    const searchSelectCacheKey = componentCachePersistUtils.getComponentStateKey(this.pConn$, this.rawViewMetadata.config?.name);
+    const searchSelectCacheKey = componentCachePersistUtils.getComponentStateKey(this.pConn$, this.rawViewMetadata.config.name);
 
     const dataReferenceAdvancedSearchContext = {
       dataReferenceConfigToChild,
@@ -444,7 +452,12 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       pyID: this.pyID,
       searchSelectCacheKey
     };
-    this.advancedSearchService.setConfig(dataReferenceAdvancedSearchContext);
+
+    if (this.displayAs === 'advancedSearch') {
+      this.showAdvancedSearch = true;
+      this.advancedSearchService.setConfig(dataReferenceAdvancedSearchContext);
+      return;
+    }
 
     return this.firstChildPConnect().createComponent({
       type,

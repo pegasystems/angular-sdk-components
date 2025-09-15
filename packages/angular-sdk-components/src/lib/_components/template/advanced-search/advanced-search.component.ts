@@ -1,75 +1,3 @@
-// import { Component, Input, OnInit } from '@angular/core';
-// import { AdvancedSearchService } from './advanced-search.service';
-
-// @Component({
-//   selector: 'app-advanced-search',
-//   templateUrl: './advanced-search.component.html',
-//   styleUrls: ['./advanced-search.component.css']
-// })
-// export class AdvancedSearchComponent implements OnInit {
-//   @Input() getPConnect: any;
-//   @Input() targetObjectClass: string;
-//   @Input() localeReference: string;
-
-//   searchFields: any[] = [];
-//   showRecords = false;
-//   editableFieldComp: any;
-//   searchGroupsProps: any;
-
-//   constructor(private advancedSearchService: AdvancedSearchService) {}
-
-//   ngOnInit(): void {
-//     const pConn = this.getPConnect();
-//     const rawViewMetadata = pConn.getRawMetadata();
-
-//     // Initialize search fields
-//     this.searchFields = this.advancedSearchService.initializeSearchFields(rawViewMetadata);
-
-//     // Determine if records should be shown
-//     const dataReferenceConfigToChild = pConn.getContextData().dataReferenceConfigToChild;
-//     const selectionMode = dataReferenceConfigToChild.selectionMode;
-//     const MULTI = pConn.getConstants().LIST_SELECTION_MODE.MULTI;
-
-//     if (selectionMode === MULTI) {
-//       this.showRecords = pConn.getValue(dataReferenceConfigToChild.readonlyContextList)?.length || false;
-//     } else {
-//       this.showRecords = pConn.getValue(dataReferenceConfigToChild.value) || false;
-//     }
-
-//     // Create editable field component
-//     const firstChildMeta = rawViewMetadata.children[0];
-//     const localizedVal = this.advancedSearchService.getLocalizedValue('Search results', 'DataReference');
-//     const cache = pConn.getNavigationUtils().getComponentCache(dataReferenceConfigToChild.searchSelectCacheKey) ?? {};
-
-//     this.editableFieldComp = pConn.createComponent({
-//       type: firstChildMeta.type,
-//       config: {
-//         ...firstChildMeta.config,
-//         searchFields: this.searchFields,
-//         showRecords: this.showRecords,
-//         label: localizedVal,
-//         searchSelectCacheKey: dataReferenceConfigToChild.searchSelectCacheKey,
-//         cache
-//       }
-//     });
-
-//     // Set up search groups props
-//     const { selectionList, dataRelationshipContext } = this.editableFieldComp.props.getPConnect().getConfigProps();
-//     const editableField = selectionMode === MULTI ? selectionList.substring(1) : dataRelationshipContext;
-
-//     this.searchGroupsProps = {
-//       getPConnect: this.getPConnect,
-//       editableField,
-//       localeReference: this.localeReference,
-//       setShowRecords: (value: boolean) => {
-//         this.showRecords = value;
-//       },
-//       searchSelectCacheKey: dataReferenceConfigToChild.searchSelectCacheKey,
-//       cache
-//     };
-//   }
-// }
-
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectService, AngularPConnectData } from '../../../_bridge/angular-pconnect';
@@ -102,9 +30,9 @@ export class AdvancedSearchComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    // this.checkAndUpdate();
-    this.updateSelf();
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+    this.checkAndUpdate();
+    // this.updateSelf();
   }
 
   onStateChange() {
@@ -159,8 +87,6 @@ export class AdvancedSearchComponent implements OnInit {
     const localizedVal = PCore.getLocaleUtils().getLocaleValue;
     // @ts-ignore
     const cache = PCore.getNavigationUtils().getComponentCache(searchSelectCacheKey) ?? {};
-
-    console.log('DataReference: recreatedFirstChild dataReferenceAdvancedSearchContext data: ', data);
 
     this.editableFieldComp = firstChildPConnect().createComponent({
       type: firstChildMeta.type,

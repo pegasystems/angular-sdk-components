@@ -118,8 +118,9 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.checkAndUpdate();
+    // this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+    // this.checkAndUpdate();
+    this.updateSelf();
   }
 
   onStateChange() {
@@ -167,7 +168,6 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
       classID: referenceListClassID
     };
     const viewName = this.pConn$.getCurrentView();
-    console.log('In addTransientItem');
     const transientId = getPConnect.getContainerManager().addTransientItem({ id: `${referenceFieldName}-${viewName}`, data: filtersWithClassID });
     this.transientItemID = transientId;
     this.createSearchFields();

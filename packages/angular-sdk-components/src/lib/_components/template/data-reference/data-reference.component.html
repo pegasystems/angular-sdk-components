@@ -1,5 +1,5 @@
-<div *ngIf="displayAs === 'advancedSearch'; else notadvancedSearch">
-  <component-mapper name="SearchForm" [props]="{ pConn$: pConn$, formGroup$, searchSelectCacheKey }"></component-mapper>
+<div *ngIf="showAdvancedSearch; else notadvancedSearch">
+  <component-mapper name="SearchForm" [props]="{ pConn$: pConn$, formGroup$, searchSelectCacheKey: '' }"></component-mapper>
 </div>
 <ng-template #notadvancedSearch>
   <div *ngIf="childrenToRender && childrenToRender.length > 0">

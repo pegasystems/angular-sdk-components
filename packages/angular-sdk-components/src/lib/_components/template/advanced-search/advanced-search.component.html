@@ -3,6 +3,7 @@
   <component-mapper name="SearchGroups" [props]="{ pConn$, formGroup$, searchGroupsProps }"></component-mapper>
   <!-- Editable Field Component -->
   <ng-container *ngIf="editableFieldComp">
+    editableFieldComp.getPConnect().getComponentName() - {{ editableFieldComp.getPConnect().getComponentName() }}
     <component-mapper
       [name]="editableFieldComp.getPConnect().getComponentName()"
       [props]="{ pConn$: editableFieldComp.getPConnect() }"

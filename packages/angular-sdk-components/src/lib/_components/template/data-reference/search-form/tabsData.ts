@@ -63,6 +63,25 @@ export function getTabCountSources(deferLoadedTabs) {
   );
 }
 
+// function tabContent(id, index, overideTabContent, tab, data, currentTabId, template) {
+//   // if (id === currentTabId || template === 'HierarchicalForm') {
+//   //   if (overideTabContent) {
+//   //     return tab.getPConnect();
+//   //   }
+//   //   if (data[index]?.content) {
+//   //     return data[index]?.content;
+//   //   }
+//   //   return tab.getPConnect();
+//   // }
+//   // if (template !== 'HierarchicalForm') {
+//   //   return overideTabContent ? null : data[index]?.content;
+//   // }
+//   if (data[index]?.content) {
+//     return data[index]?.content;
+//   }
+//   return tab.getPConnect();
+// }
+
 function tabContent(id, index, overideTabContent, tab, data, currentTabId, template) {
   if (id === currentTabId || template === 'HierarchicalForm') {
     if (overideTabContent) {

@@ -44,6 +44,7 @@ interface ListViewProps {
   label?: string;
   displayAs?: string;
   showRecords: boolean;
+  viewName?: string;
 }
 
 export class Group {
@@ -179,7 +180,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const defRowID = this.configProps$?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
     /** If compositeKeys is defined, use dynamic value, else fallback to pyID or pyGUID. */
     this.compositeKeys = this.configProps$?.compositeKeys;
-    this.rowID = this.compositeKeys && this.compositeKeys?.length === 1 ? this.compositeKeys[0] : defRowID;
+    this.rowID = this.payload?.compositeKeys?.length === 1 ? this.payload?.compositeKeys[0] : defRowID;
     this.bShowSearch$ = this.utils.getBooleanValue(this.configProps$?.globalSearch ? this.configProps$.globalSearch : this.payload?.globalSearch);
     this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps$.reorderFields);
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps$.grouping);
@@ -264,20 +265,21 @@ export class ListViewComponent implements OnInit, OnDestroy {
         this.getListData();
       });
     }
+    this.clearSelectionsAndUpdateTable(this.pConn$, this.uniqueId, this.configProps$?.viewName);
   }
 
-  init(getPConnect: any, uniqueId: string, viewName: string): void {
+  clearSelectionsAndUpdateTable(getPConnect: any, uniqueId: string, viewName): void {
     const clearSelectionsAndRefreshList = ({ viewName: name, clearSelections }: any) => {
       if (name === viewName) {
-        const { selectionMode } = getPConnect().getRawConfigProps();
+        const { selectionMode } = getPConnect.getRawConfigProps();
         if (!selectionMode) {
           return;
         }
         if (clearSelections) {
           if (selectionMode === 'single') {
-            getPConnect().getListActions().setSelectedRows({});
+            getPConnect.getListActions().setSelectedRows({});
           } else {
-            getPConnect().getListActions().clearSelectedRows();
+            getPConnect.getListActions().clearSelectedRows();
           }
         }
       }

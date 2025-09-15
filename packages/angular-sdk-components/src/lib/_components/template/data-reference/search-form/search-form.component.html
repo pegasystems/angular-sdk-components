@@ -8,23 +8,12 @@
     </mat-form-field>
   </div>
   <div *ngIf="searchCategoriesComp === 'radio'">
-    <mat-radio-group [value]="currentTabId" (change)="handleTabClick($event.value)">
-      <mat-radio-button *ngFor="let tab of tabItems" [value]="tab.id">{{ tab.name }}</mat-radio-button>
+    <mat-radio-group [value]="currentTabId">
+      <mat-radio-button *ngFor="let tab of tabItems" [value]="tab.id" (click)="handleTabClick($event)">{{ tab.name }}</mat-radio-button>
     </mat-radio-group>
   </div>
 
   <!-- Tab Content -->
-  <!-- <mat-tab-group [selectedIndex]="getSelectedIndex()">
-    <mat-tab *ngFor="let tab of tabItems; let index = index" [label]="tab.name">
-      <div *ngIf="tab.id === currentTabId" class="psdk-sub-tabs">
-        <component-mapper
-          *ngIf="tab.content?.getPConnect() as tabPConn"
-          [name]="tabPConn.getComponentName()"
-          [props]="{ pConn$: tabPConn, formGroup$ }"
-        ></component-mapper>
-      </div>
-    </mat-tab>
-  </mat-tab-group> -->
   <div>
     <div *ngFor="let tab of tabItems; let index = index">
       <div *ngIf="tab.id === currentTabId" class="psdk-sub-tabs">
@@ -43,7 +32,7 @@
       <p>When changing search categories, any previous selections will be lost.</p>
     </mat-dialog-content>
     <mat-dialog-actions>
-      <button mat-button (click)="onDialogClose()">Go back</button>
+      <button mat-stroked-button type="button" (click)="onDialogClose()">Go back</button>
       <button mat-raised-button color="primary" (click)="clearSelectionAndSwitchTab()">Discard</button>
     </mat-dialog-actions>
   </ng-template>
