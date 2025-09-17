@@ -119,7 +119,6 @@ export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges() {
-    console.log('SearchGroupsComponent - ngOnChanges');
     this.updateSelf();
   }
 
@@ -250,7 +249,6 @@ export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
 
   /** NEW: update existing transient data when active group changes */
   updateTransientDataForActiveGroup() {
-    console.log('In replaceTransientData');
     const filtersWithClassID = {
       ...this.initialSearchFields,
       classID: this.referenceListClassID

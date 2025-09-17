@@ -42,7 +42,6 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log('DeferLoad - ngOnInit');
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     // The below call is causing an error while creating/opening a case, hence commenting it out
     this.updateSelf();
@@ -90,7 +89,6 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     this.isContainerPreview = /preview_[0-9]*/g.test(this.pConn$.getContextName());
 
     const theConfigProps = this.pConn$.getConfigProps();
-    console.log('DeferLoad theConfigProps', theConfigProps);
     this.deferLoadId = theConfigProps.deferLoadId;
     this.name = this.name || theConfigProps.name;
 
@@ -165,7 +163,6 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
           this.onResponse(data);
         });
     } else {
-      console.log('refreshCaseView call');
       this.pConn$
         .getActionsApi()
         .refreshCaseView(encodeURI(this.loadViewCaseID), this.name, '')

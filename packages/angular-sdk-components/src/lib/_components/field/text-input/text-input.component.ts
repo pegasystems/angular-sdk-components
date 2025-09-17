@@ -63,7 +63,6 @@ export class TextInputComponent implements OnInit, OnDestroy {
     // call updateSelf when initializing
     // this.updateSelf();
     this.checkAndUpdate();
-    console.log('formGroup$', this.formGroup$);
     if (this.formGroup$) {
       // add control to formGroup
       this.formGroup$.addControl(this.controlName$, this.fieldControl);
@@ -73,7 +72,6 @@ export class TextInputComponent implements OnInit, OnDestroy {
       this.bReadonly$ = true;
       this.bHasForm$ = false;
     }
-    console.log('this.bHasForm$', this.bHasForm$);
   }
 
   ngOnDestroy(): void {
@@ -106,7 +104,6 @@ export class TextInputComponent implements OnInit, OnDestroy {
   updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as TextInputProps;
-    console.log('this.configProps$', this.configProps$);
     if (this.configProps$.value != undefined) {
       this.value$ = this.configProps$.value;
     }

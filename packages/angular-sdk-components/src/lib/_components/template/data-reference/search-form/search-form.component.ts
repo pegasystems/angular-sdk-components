@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, TemplateRef, ViewChild, OnChanges } from '@angular/core';
+import { Component, forwardRef, Input, OnChanges, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { getFirstVisibleTabId, getActiveTabId, searchtabsClick } from '../../../../_helpers/tab-utils';
 import { MatRadioModule } from '@angular/material/radio';
@@ -50,7 +50,6 @@ export class SearchFormComponent implements OnInit, OnChanges {
   tabData: any = [];
   tabCountSources: any;
   deferLoadedTabs: any;
-
   @ViewChild('dialogTemplate') dialogTemplate!: TemplateRef<any>;
   dialogRef: any;
   constructor(private dialog: MatDialog) {}
@@ -64,7 +63,6 @@ export class SearchFormComponent implements OnInit, OnChanges {
     const { selectedCategory } = cache;
     const firstTabId = getFirstVisibleTabId(this.deferLoadedTabs, selectedCategory);
     this.currentTabId = getActiveTabId(this.deferLoadedTabs.getPConnect().getChildren(), firstTabId);
-    console.log('this.currentTabId updateSelf', this.currentTabId);
     this.updateSelf();
   }
 

@@ -15,11 +15,14 @@
 
   <!-- Tab Content -->
   <div>
-    <div>
-      <component-mapper
-        [name]="activeTabPConnect.getComponentName()"
-        [props]="{ pConn$: activeTabPConnect, formGroup$, name: activeTabPConnect.getConfigProps().name }"
-      ></component-mapper>
+    <div *ngFor="let tab of tabItems; let index = index">
+      <div *ngIf="tab.id === currentTabId" class="psdk-sub-tabs">
+        <component-mapper
+          *ngIf="tab.content?.getPConnect() as tabPConn"
+          [name]="tabPConn.getComponentName()"
+          [props]="{ pConn$: tabPConn, formGroup$ }"
+        ></component-mapper>
+      </div>
     </div>
   </div>
   <!-- Dialog -->

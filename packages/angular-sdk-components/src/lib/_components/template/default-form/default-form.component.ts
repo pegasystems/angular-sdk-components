@@ -56,7 +56,6 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
   }
 
   onStateChange() {
-    console.log('DefaultFormComponent - onStateChange');
     this.updateSelf();
   }
 
