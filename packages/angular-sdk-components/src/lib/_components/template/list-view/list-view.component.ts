@@ -158,10 +158,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
   query: any = null;
   paging: any;
   fieldDefs: any;
-  // xRayApis = PCore.getDebugger().getXRayRuntime();
-  // xRayUid = this.xRayApis.startXRay();
-  // const xRayApis = PCore.getDebugger().getXRayRuntime();
-  // const xRayUid = xRayApis.startXRay();
   checkBoxValue: string;
   label?: string = '';
   uniqueId = crypto.randomUUID();
@@ -257,7 +253,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
         listContext: this.listContext,
         ref: this.ref,
         showDynamicFields: this.showDynamicFields,
-        xRayUid: '',
         cosmosTableRef: this.cosmosTableRef,
         selectionMode: this.selectionMode
       }).then(response => {
@@ -445,7 +440,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
     if (this.displayAs === 'advancedSearch' && !this.showRecords) {
       Promise.resolve({ data: null });
     } else if (this.configProps$) {
-      // this.preparePayload();
       const refList = this.configProps$.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
@@ -471,17 +465,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
           const fieldsMetaData = results[0];
           const workListData = results[1];
 
-          // this.fields$ = this.configProps$.presets[0].children[0].children;
-          // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
-          // const columnFields = componentConfig.presets[0].children[0].children;
-
           const tableDataResults = !this.bInForm$ ? workListData.data.data : workListData.data;
 
-          // const columns = this.getHeaderCells(columnFields, this.fieldDefs);
           this.fields$ = this.updateFields(this.fields$, fieldsMetaData.data.fields, columns);
-          // this.displayedColumns$ = columns.map(col => {
-          //   return col.id;
-          // });
           this.response = tableDataResults;
           this.updatedRefList = this.updateData(tableDataResults, this.fields$);
           if (this.selectionMode === SELECTION_MODE.SINGLE && this.updatedRefList?.length > 0) {

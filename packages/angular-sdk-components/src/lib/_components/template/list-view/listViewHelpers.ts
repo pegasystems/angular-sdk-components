@@ -12,7 +12,6 @@ export function init(props) {
     ref,
     showDynamicFields,
     isDataObject,
-    xRayUid,
     cosmosTableRef
   } = props;
   let { editing, selectionMode } = props;
@@ -67,8 +66,7 @@ export function init(props) {
     pConn$,
     compositeKeys,
     isSearchable,
-    isCacheable: true,
-    xRayUid
+    isCacheable: true
   }).then(async context => {
     return readContextResponse(context, {
       ...props,
@@ -76,7 +74,6 @@ export function init(props) {
       selectionCountThreshold,
       ref,
       selectionMode,
-      xRayUid,
       cosmosTableRef
     });
   });
