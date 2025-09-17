@@ -1,7 +1,6 @@
-import { Component, Input, OnInit, OnDestroy, forwardRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, forwardRef, OnChanges, ChangeDetectorRef, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import componentCachePersistUtils from '../search-group/persist-utils';
-import { AngularPConnectService, AngularPConnectData } from '../../../../_bridge/angular-pconnect';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -87,13 +86,11 @@ export const initializeSearchFields = (searchFields, getPConnect, referenceListC
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class SearchGroupsComponent implements OnInit, OnDestroy {
+export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() searchGroupsProps;
 
-  // For interaction with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   configProps$: any;
   cache: any;
   previousFormValues: any;
@@ -105,7 +102,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
   referenceListClassID: any;
   transientItemID: any;
   useCache: boolean;
-  searchFieldsC11nEnv: any;
+  searchFieldsC11nEnv: any = signal(null);
   referenceFieldName: any;
   viewName: any;
   subs: Subscription[] = [];
@@ -115,27 +112,15 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
   state: any = {};
   rawGroupsConfig: any;
   initialSearchFields: {};
-  constructor(private angularPConnect: AngularPConnectService) {}
+  constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    // this.checkAndUpdate();
+    console.log('SearchGroupsComponent - ngOnInit');
+  }
+
+  ngOnChanges() {
+    console.log('SearchGroupsComponent - ngOnChanges');
     this.updateSelf();
-  }
-
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
   }
 
   // updateSelf
@@ -194,14 +179,20 @@ export class SearchGroupsComponent implements OnInit, OnDestroy {
       ]
     };
 
+    console.log('SearchGroupsComponent - createSearchFields - searchFieldsViewConfig: ', searchFieldsViewConfig);
+
     // Create c11n env (Angular will render this via the SDK host component)
-    this.searchFieldsC11nEnv = PCore.createPConnect({
-      meta: searchFieldsViewConfig,
-      options: {
-        hasForm: true,
-        contextName: this.transientItemID
-      }
-    });
+    this.searchFieldsC11nEnv.set(
+      PCore.createPConnect({
+        meta: searchFieldsViewConfig,
+        options: {
+          hasForm: true,
+          contextName: this.transientItemID
+        }
+      })
+    );
+
+    this.cdRef.detectChanges();
   }
 
   getFilterData(): void {

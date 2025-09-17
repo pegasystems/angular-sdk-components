@@ -1,10 +1,9 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, OnChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectService, AngularPConnectData } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DataReferenceAdvancedSearchService } from '../data-reference/data-reference-advanced-search.service';
 import { getFirstChildConfig } from '../data-reference/utils';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-advanced-search',
@@ -12,40 +11,27 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./advanced-search.component.scss'],
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class AdvancedSearchComponent implements OnInit {
+export class AdvancedSearchComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() searchSelectCacheKey;
 
-  // For interaction with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
+  isInitialized = false;
+
   configProps$: any;
   showRecords: any;
   searchGroupsProps: any;
   editableFieldComp: any;
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private advancedSearchService: DataReferenceAdvancedSearchService
-  ) {}
+  constructor(private advancedSearchService: DataReferenceAdvancedSearchService) {}
 
   ngOnInit(): void {
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.checkAndUpdate();
-    // this.updateSelf();
+    this.isInitialized = true;
+    this.updateSelf();
   }
 
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
+  ngOnChanges() {
+    if (this.isInitialized) {
       this.updateSelf();
     }
   }

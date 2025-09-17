@@ -1,6 +1,5 @@
-import { Component, forwardRef, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, TemplateRef, ViewChild, OnChanges } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AngularPConnectData } from '../../../../_bridge/angular-pconnect';
 import { getFirstVisibleTabId, getActiveTabId, searchtabsClick } from '../../../../_helpers/tab-utils';
 import { MatRadioModule } from '@angular/material/radio';
 import { CommonModule } from '@angular/common';
@@ -34,14 +33,13 @@ import { getFieldMeta } from '../utils';
     forwardRef(() => ComponentMapperComponent)
   ]
 })
-export class SearchFormComponent implements OnInit {
+export class SearchFormComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() searchSelectCacheKey;
 
-  // For interaction with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   configProps$: any;
+  isInitialized = false;
 
   currentTabId: string;
   nextTabId: string;
@@ -52,11 +50,13 @@ export class SearchFormComponent implements OnInit {
   tabData: any = [];
   tabCountSources: any;
   deferLoadedTabs: any;
+
   @ViewChild('dialogTemplate') dialogTemplate!: TemplateRef<any>;
   dialogRef: any;
   constructor(private dialog: MatDialog) {}
 
   ngOnInit(): void {
+    this.isInitialized = true;
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.propsToUse = { ...this.pConn$.getInheritedProps() };
     this.deferLoadedTabs = this.pConn$.getChildren()[2];
@@ -64,7 +64,14 @@ export class SearchFormComponent implements OnInit {
     const { selectedCategory } = cache;
     const firstTabId = getFirstVisibleTabId(this.deferLoadedTabs, selectedCategory);
     this.currentTabId = getActiveTabId(this.deferLoadedTabs.getPConnect().getChildren(), firstTabId);
+    console.log('this.currentTabId updateSelf', this.currentTabId);
     this.updateSelf();
+  }
+
+  ngOnChanges() {
+    if (this.isInitialized) {
+      this.updateSelf();
+    }
   }
 
   // updateSelf
@@ -135,6 +142,11 @@ export class SearchFormComponent implements OnInit {
     }
 
     PCore.getPubSubUtils().publish('update-advanced-search-selections', payload);
+  }
+
+  get activeTabPConnect() {
+    const tabData = this.tabItems.find(tab => tab.id === this.currentTabId);
+    return tabData.content?.getPConnect();
   }
 
   checkIfSelectionsExist(getPConnect) {

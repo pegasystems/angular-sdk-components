@@ -1,7 +1,7 @@
-<div *ngIf="loadedPConn$">
+<div *ngIf="childComponentPConnect">
   <component-mapper
-    [name]="componentName$"
-    [props]="{ pConn$: loadedPConn$, formGroup$ }"
-    errorMsg="Defer Load Missing: {{ componentName$ }}"
+    [name]="childComponentPConnect.getComponentName()"
+    [props]="{ pConn$: childComponentPConnect, formGroup$ }"
+    errorMsg="Defer Load Missing: {{ childComponentPConnect.getComponentName() }}"
   ></component-mapper>
 </div>

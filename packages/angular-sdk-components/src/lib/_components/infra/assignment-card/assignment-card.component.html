@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup$" name="flowContainer" class="psdk-flow-container">
-  <div *ngFor="let kid of arChildren$">
+  <div *ngFor="let kid of childrenArray" class="psdk-assignment-card-child">
     <div [ngSwitch]="kid.getPConnect().getComponentName()">
       <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
       <component-mapper
