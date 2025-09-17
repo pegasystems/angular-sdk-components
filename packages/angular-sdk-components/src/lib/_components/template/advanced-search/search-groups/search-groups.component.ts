@@ -178,8 +178,6 @@ export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
       ]
     };
 
-    console.log('SearchGroupsComponent - createSearchFields - searchFieldsViewConfig: ', searchFieldsViewConfig);
-
     // Create c11n env (Angular will render this via the SDK host component)
     this.searchFieldsC11nEnv.set(
       PCore.createPConnect({
