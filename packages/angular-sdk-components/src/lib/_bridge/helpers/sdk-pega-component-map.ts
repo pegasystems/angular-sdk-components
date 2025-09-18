@@ -30,6 +30,7 @@ import { EmailComponent } from '../../_components/field/email/email.component';
 import { GroupComponent } from '../../_components/field/group/group.component';
 import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
+import { LocationComponent } from '../../_components/field/location/location.component';
 import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
@@ -182,6 +183,7 @@ const pegaSdkComponentMap = {
   ListUtility: ListUtilityComponent,
   ListView: ListViewComponent,
   ListViewActionButtons: ListViewActionButtonsComponent,
+  Location: LocationComponent,
   MaterialDetails: MaterialDetailsComponent,
   MaterialUtility: MaterialUtilityComponent,
   ModalViewContainer: ModalViewContainerComponent,
