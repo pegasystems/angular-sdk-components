@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup } from '@angular/forms';
@@ -56,6 +56,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
   bHasNavigation$ = false;
   bIsVertical$ = false;
+  prevNavigationSteps: any[] = [];
   arCurrentStepIndicies$: number[] = [];
   arNavigationSteps$: any[] = [];
 
@@ -82,7 +83,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
     private erService: ErrorMessagesService,
-    private ngZone: NgZone,
     private snackBar: MatSnackBar,
     public bannerService: BannerService
   ) {}
@@ -250,9 +250,11 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
     // iterate through steps to find current one(s)
     // immutable, so we want to change the local copy, so need to make a copy
-    this.ngZone.run(() => {
+
+    if (!PCore.isDeepEqual(this.prevNavigationSteps, oCaseInfo.navigation.steps)) {
       // what comes back now in configObject is the children of the flowContainer
       this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
+      this.prevNavigationSteps = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
       this.arNavigationSteps$.forEach(step => {
         if (step.name) {
           step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
@@ -260,7 +262,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       });
       this.arCurrentStepIndicies$ = [];
       this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
-    });
+    }
   }
 
   findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {

@@ -1,0 +1,32 @@
+<div class="search-groups-container" fxLayout="column" fxLayoutGap="16px">
+  <!-- Dropdown if multiple groups -->
+  <div *ngIf="groups && groups.length > 1">
+    <mat-form-field appearance="fill" style="width: 100%">
+      <mat-label>Search By</mat-label>
+      <mat-select [value]="activeGroupId" (selectionChange)="onActiveGroupChange($event.value)">
+        <mat-option *ngFor="let group of groups" [value]="group.config.id">
+          {{ group.config.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Search Fields Form -->
+  <div *ngIf="transientItemID">
+    <component-mapper
+      [name]="searchFieldsC11nEnv()?.getPConnect().getComponentName()"
+      [props]="{ pConn$: searchFieldsC11nEnv()?.getPConnect(), formGroup$ }"
+      errorMsg="View Missing (displayAll): {{ searchFieldsC11nEnv()?.getPConnect().getComponentName() }}"
+    ></component-mapper>
+  </div>
+
+  <!-- Action Buttons -->
+  <div style="display: flex; gap: 8px; margin-bottom: 10px">
+    <button mat-stroked-button type="button" (click)="resetFilterData()">
+      {{ localizedVal('Reset', 'SimpleTable') }}
+    </button>
+    <button mat-raised-button color="primary" type="button" (click)="getFilterData()">
+      {{ localizedVal('Search', 'SimpleTable') }}
+    </button>
+  </div>
+</div>

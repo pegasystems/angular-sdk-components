@@ -42,6 +42,9 @@ interface ListViewProps {
   value: any;
   readonlyContextList: any;
   label?: string;
+  displayAs?: string;
+  showRecords: boolean;
+  viewName?: string;
 }
 
 export class Group {
@@ -155,11 +158,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
   query: any = null;
   paging: any;
   fieldDefs: any;
-  xRayApis = PCore.getDebugger().getXRayRuntime();
-  xRayUid = this.xRayApis.startXRay();
   checkBoxValue: string;
   label?: string = '';
-
+  uniqueId = crypto.randomUUID();
+  displayAs: any;
+  showRecords: any;
+  identifier: string;
+  promotedFiltersId: string;
   constructor(
     private psService: ProgressSpinnerService,
     public utils: Utils
@@ -171,12 +176,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const defRowID = this.configProps$?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
     /** If compositeKeys is defined, use dynamic value, else fallback to pyID or pyGUID. */
     this.compositeKeys = this.configProps$?.compositeKeys;
-    this.rowID = this.compositeKeys && this.compositeKeys?.length === 1 ? this.compositeKeys[0] : defRowID;
+    this.rowID = this.payload?.compositeKeys?.length === 1 ? this.payload?.compositeKeys[0] : defRowID;
     this.bShowSearch$ = this.utils.getBooleanValue(this.configProps$?.globalSearch ? this.configProps$.globalSearch : this.payload?.globalSearch);
     this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps$.reorderFields);
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps$.grouping);
     this.showDynamicFields = this.configProps$?.showDynamicFields;
-
+    this.displayAs = this.configProps$.displayAs;
+    this.showRecords = this.configProps$.showRecords;
     this.menuSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
     this.arrowDownSvgIcon$ = this.utils.getImageSrc('arrow-down', this.utils.getSDKStaticContentUrl());
     this.arrowUpSvgIcon$ = this.utils.getImageSrc('arrow-up', this.utils.getSDKStaticContentUrl());
@@ -205,6 +211,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.label = title;
 
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
+    this.promotedFiltersId = `promoted-filters-queryable-${this.uniqueId}`;
     setTimeout(() => {
       PCore.getPubSubUtils().subscribe(
         PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
@@ -225,6 +232,15 @@ export class ListViewComponent implements OnInit, OnDestroy {
         false,
         this.pConn$.getContextName()
       );
+      PCore.getPubSubUtils().subscribe(
+        PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS,
+        data => {
+          this.showRecords = data.showRecords;
+          const filterData = this.prepareFilters(data);
+          this.processFilterChange(filterData);
+        },
+        this.promotedFiltersId
+      );
     }, 0);
     if (this.configProps$) {
       if (!this.payload) {
@@ -237,7 +253,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
         listContext: this.listContext,
         ref: this.ref,
         showDynamicFields: this.showDynamicFields,
-        xRayUid: this.xRayUid,
         cosmosTableRef: this.cosmosTableRef,
         selectionMode: this.selectionMode
       }).then(response => {
@@ -245,6 +260,29 @@ export class ListViewComponent implements OnInit, OnDestroy {
         this.getListData();
       });
     }
+    this.clearSelectionsAndUpdateTable(this.pConn$, this.uniqueId, this.configProps$?.viewName);
+  }
+
+  clearSelectionsAndUpdateTable(getPConnect: any, uniqueId: string, viewName): void {
+    const clearSelectionsAndRefreshList = ({ viewName: name, clearSelections }: any) => {
+      if (name === viewName) {
+        const { selectionMode } = getPConnect.getRawConfigProps();
+        if (!selectionMode) {
+          return;
+        }
+        if (clearSelections) {
+          if (selectionMode === 'single') {
+            getPConnect.getListActions().setSelectedRows({});
+          } else {
+            getPConnect.getListActions().clearSelectedRows();
+          }
+        }
+      }
+    };
+
+    this.identifier = `clear-and-update-advanced-search-selections-${uniqueId}`;
+
+    PCore.getPubSubUtils().subscribe('update-advanced-search-selections', clearSelectionsAndRefreshList, this.identifier);
   }
 
   getFieldFromFilter(filter, dateRange = false) {
@@ -259,7 +297,11 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   // Will be triggered when EVENT_DASHBOARD_FILTER_CHANGE fires
   processFilterChange(data) {
-    const { filterId, filterExpression } = data;
+    let filterId;
+    let filterExpression;
+    let isDateRange;
+    let field;
+    const selectParam: any[] = [];
     let dashboardFilterPayload: any = {
       query: {
         filter: {},
@@ -267,24 +309,38 @@ export class ListViewComponent implements OnInit, OnDestroy {
       }
     };
 
-    this.filters[filterId] = filterExpression;
-    let isDateRange = !!data.filterExpression?.AND;
+    if (this.displayAs === 'advancedSearch') {
+      this.filters = {};
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      Object.entries(data).reduce((acc, [item, value]) => {
+        // eslint-disable-next-line @typescript-eslint/no-shadow
+        const { filterId, filterExpression } = value as any;
+        // filterExpression = value.filterExpression;
+        this.filters[filterId] = filterExpression;
+        return acc; // Ensure the accumulator is returned
+      }, {});
+    } else {
+      ({ filterId, filterExpression } = data);
+      this.filters[filterId] = filterExpression;
+      isDateRange = !!data.filterExpression?.AND;
+      field = this.getFieldFromFilter(filterExpression, isDateRange);
+
+      // Constructing the select parameters list (will be sent in dashboardFilterPayload)
+      this.displayedColumns$?.forEach(col => {
+        selectParam.push({
+          field: col
+        });
+      });
+
+      // Checking if the triggered filter is applicable for this list
+      if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
+        return;
+      }
+    }
+
     // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
     const relationalOp = 'AND';
 
-    let field = this.getFieldFromFilter(filterExpression, isDateRange);
-    const selectParam: any[] = [];
-    // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-    this.displayedColumns$?.forEach(col => {
-      selectParam.push({
-        field: col
-      });
-    });
-
-    // Checking if the triggered filter is applicable for this list
-    if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
-      return;
-    }
     // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
     let validFilter = false;
 
@@ -318,9 +374,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
       } else {
         dashboardFilterPayload.query.filter.filterConditions = {
           ...dashboardFilterPayload.query.filter.filterConditions,
-          [`T${index++}`]: { ...filter.condition, ignoreCase: true }
+          [`T${index++}`]: { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' ? { ignoreCase: true } : {}) }
         };
-
         if (dashboardFilterPayload.query.filter.logic) {
           dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index - 1}`;
         } else {
@@ -369,10 +424,22 @@ export class ListViewComponent implements OnInit, OnDestroy {
     return PCore.getAnalyticsUtils().getDataViewMetadata(refList, this.showDynamicFields);
   }
 
+  getValue(col) {
+    return this.fieldDefs.find(f => f.name === col)?.label;
+  }
+
   getListData() {
+    this.preparePayload();
     const componentConfig = this.pConn$.getComponentConfig();
-    if (this.configProps$) {
-      this.preparePayload();
+    const columnFields = componentConfig.presets[0].children[0].children;
+    const columns = this.getHeaderCells(columnFields, this.fieldDefs);
+    this.fields$ = this.configProps$.presets[0].children[0].children;
+    this.displayedColumns$ = columns.map(col => {
+      return col.id;
+    });
+    if (this.displayAs === 'advancedSearch' && !this.showRecords) {
+      Promise.resolve({ data: null });
+    } else if (this.configProps$) {
       const refList = this.configProps$.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
@@ -398,17 +465,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
           const fieldsMetaData = results[0];
           const workListData = results[1];
 
-          this.fields$ = this.configProps$.presets[0].children[0].children;
-          // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
-          const columnFields = componentConfig.presets[0].children[0].children;
-
           const tableDataResults = !this.bInForm$ ? workListData.data.data : workListData.data;
 
-          const columns = this.getHeaderCells(columnFields, this.fieldDefs);
           this.fields$ = this.updateFields(this.fields$, fieldsMetaData.data.fields, columns);
-          this.displayedColumns$ = columns.map(col => {
-            return col.id;
-          });
           this.response = tableDataResults;
           this.updatedRefList = this.updateData(tableDataResults, this.fields$);
           if (this.selectionMode === SELECTION_MODE.SINGLE && this.updatedRefList?.length > 0) {
@@ -434,6 +493,33 @@ export class ListViewComponent implements OnInit, OnDestroy {
           this.psService.sendMessage(false);
         });
     }
+  }
+
+  prepareFilters(data) {
+    return Object.entries(data.payload).reduce((acc, [field, value]) => {
+      if (value) {
+        let comparator = 'EQ';
+        const filterRecord = this.listContext.meta.fieldDefs.filter(item => item.id === field);
+        if (filterRecord?.[0]?.meta.type === 'TextInput') {
+          comparator = 'CONTAINS';
+        }
+        acc[field] = {
+          filterExpression: {
+            condition: {
+              lhs: {
+                field
+              },
+              comparator,
+              rhs: {
+                value
+              }
+            }
+          },
+          filterId: field
+        };
+      }
+      return acc;
+    }, {});
   }
 
   preparePayload() {
@@ -477,6 +563,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
       `dashboard-component-${'id'}`,
       this.pConn$.getContextName()
     );
+    PCore.getPubSubUtils().unsubscribe('update-advanced-search-selections', this.identifier);
+    PCore.getPubSubUtils().unsubscribe(PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS, this.promotedFiltersId);
   }
 
   // ngAfterViewInit() {

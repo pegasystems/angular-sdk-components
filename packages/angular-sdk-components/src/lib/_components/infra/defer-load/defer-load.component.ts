@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
@@ -19,11 +19,10 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 })
 export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;
-  @Input() loadData$: any;
+  @Input() formGroup$;
   @Input() name;
 
-  componentName$: string;
-  loadedPConn$: any;
+  childComponentPConnect: typeof PConnect;
   bShowDefer$ = false;
 
   angularPConnectData: AngularPConnectData = {};
@@ -45,7 +44,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   ngOnInit(): void {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     // The below call is causing an error while creating/opening a case, hence commenting it out
-    // this.loadActiveTab();
+    this.updateSelf();
   }
 
   ngOnDestroy(): void {
@@ -62,11 +61,17 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     if (theRequestedAssignment !== this.currentLoadedAssignment || (lastUpdateCaseTime && lastUpdateCaseTime !== this.lastUpdateCaseTime)) {
       this.currentLoadedAssignment = theRequestedAssignment;
       this.lastUpdateCaseTime = lastUpdateCaseTime;
-      this.loadActiveTab();
+      this.updateSelf();
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (!Object.values(changes).every(val => val.firstChange === true)) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf() {
     this.loadViewCaseID = this.pConn$.getValue(this.constants.PZINSKEY) || this.pConn$.getValue(this.constants.CASE_INFO.CASE_INFO_ID);
     let containerItemData;
     const targetName = this.pConn$.getTarget();
@@ -119,8 +124,9 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
       };
       const configObject = PCore.createPConnect(config);
       configObject.getPConnect().setInheritedProp('displayMode', 'DISPLAY_ONLY');
-      this.loadedPConn$ = ReferenceComponent.normalizePConn(configObject.getPConnect());
-      this.componentName$ = this.loadedPConn$.getComponentName();
+
+      this.childComponentPConnect = ReferenceComponent.normalizePConn(configObject.getPConnect());
+
       if (this.deferLoadId) {
         PCore.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
       }

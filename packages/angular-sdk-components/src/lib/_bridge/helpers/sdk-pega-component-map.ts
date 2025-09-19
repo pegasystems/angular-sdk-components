@@ -42,9 +42,11 @@ import { TimeComponent } from '../../_components/field/time/time.component';
 import { UrlComponent } from '../../_components/field/url/url.component';
 import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';
 import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
+import { SearchFormComponent } from '../../_components/template/data-reference/search-form/search-form.component';
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 
 // Template components
+import { AdvancedSearchComponent } from '../../_components/template/advanced-search/advanced-search.component';
 import { AppShellComponent } from '../../_components/template/app-shell/app-shell.component';
 import { BannerPageComponent } from '../../_components/template/banner-page/banner-page.component';
 import { CaseSummaryComponent } from '../../_components/template/case-summary/case-summary.component';
@@ -75,6 +77,7 @@ import { OneColumnPageComponent } from '../../_components/template/one-column-pa
 import { OneColumnTabComponent } from '../../_components/template/one-column-tab/one-column-tab.component';
 import { PageComponent } from '../../_components/template/page/page.component';
 import { PromotedFiltersComponent } from '../../_components/template/promoted-filters/promoted-filters.component';
+import { SearchGroupsComponent } from '../../_components/template/advanced-search/search-groups/search-groups.component';
 import { SimpleTableComponent } from '../../_components/template/simple-table/simple-table.component';
 import { SimpleTableManualComponent } from '../../_components/template/simple-table-manual/simple-table-manual.component';
 import { SimpleTableSelectComponent } from '../../_components/template/simple-table-select/simple-table-select.component';
@@ -126,6 +129,7 @@ import { WssQuickCreateComponent } from '../../_components/designSystemExtension
 //  Also, note that "Checkbox" component is named/exported as CheckboxComponent
 
 const pegaSdkComponentMap = {
+  AdvancedSearch: AdvancedSearchComponent,
   ActionButtons: ActionButtonsComponent,
   Alert: AlertComponent,
   AlertBanner: AlertBannerComponent,
@@ -210,6 +214,8 @@ const pegaSdkComponentMap = {
   RichTextEditor: RichTextEditorComponent,
   RootContainer: RootContainerComponent,
   ScalarList: ScalarListComponent,
+  SearchForm: SearchFormComponent,
+  SearchGroups: SearchGroupsComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,
