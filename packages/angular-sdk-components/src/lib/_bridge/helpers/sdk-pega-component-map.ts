@@ -30,6 +30,7 @@ import { EmailComponent } from '../../_components/field/email/email.component';
 import { GroupComponent } from '../../_components/field/group/group.component';
 import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
+import { LocationComponent } from '../../_components/field/location/location.component';
 import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
@@ -43,6 +44,7 @@ import { UrlComponent } from '../../_components/field/url/url.component';
 import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';
 import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
 import { SearchFormComponent } from '../../_components/template/data-reference/search-form/search-form.component';
+import { SelectableCardComponent } from '../../_components/field/selectable-card/selectable-card.component';
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 
 // Template components
@@ -186,6 +188,7 @@ const pegaSdkComponentMap = {
   ListUtility: ListUtilityComponent,
   ListView: ListViewComponent,
   ListViewActionButtons: ListViewActionButtonsComponent,
+  Location: LocationComponent,
   MaterialDetails: MaterialDetailsComponent,
   MaterialUtility: MaterialUtilityComponent,
   ModalViewContainer: ModalViewContainerComponent,
@@ -216,6 +219,7 @@ const pegaSdkComponentMap = {
   ScalarList: ScalarListComponent,
   SearchForm: SearchFormComponent,
   SearchGroups: SearchGroupsComponent,
+  SelectableCard: SelectableCardComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,
