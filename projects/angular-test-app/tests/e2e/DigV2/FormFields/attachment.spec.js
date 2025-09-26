@@ -19,31 +19,15 @@ test.describe('E2E test', () => {
   test('should login, create case and run the Attachment tests', async ({ page }) => {
     await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
-    /** Testing announcement banner presence */
-    const announcementBanner = page.locator('h2:has-text("Announcements")');
-    await expect(announcementBanner).toBeVisible();
+    await common.verifyHomePage(page);
 
-    /** Testing worklist presence */
-    const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
-    await expect(worklist).toBeVisible();
-
-    /** Click on the Create Case button */
-    const createCase = page.locator('mat-list-item[id="create-case-button"]');
-    await createCase.click();
-
-    /** Creating a Form Field case-type */
-    const formFieldCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Form Field")');
-    await formFieldCase.click();
+    await common.createCase('Form Field', page);
 
     /** Selecting Attachment from the Category dropdown */
-    const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
-    await selectedCategory.click();
-    await page.getByRole('option', { name: 'Attachment' }).click();
+    await common.selectCategory('Attachment', page);
 
     /** Selecting Required from the Sub Category dropdown */
-    const selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Required' }).click();
+    await common.selectSubCategory('Required', page);
 
     const cableChatFilePath = path.join(__dirname, '../../../../src/assets/cablechat.jpg');
     const cableInfoFilePath = path.join(__dirname, '../../../../src/assets/cableinfo.jpg');
@@ -58,8 +42,7 @@ test.describe('E2E test', () => {
     await expect(page.locator('span:has-text("Cannot be blank")')).toBeHidden();
 
     /** Selecting Disable from the Sub Category dropdown */
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Disable' }).click();
+    await common.selectSubCategory('Disable', page);
 
     // Disable tests
     const alwaysDisabledAttachment = page.locator('app-attachment').filter({ hasText: 'AttachmentDisabledAlways' }).getByRole('button');
@@ -81,8 +64,7 @@ test.describe('E2E test', () => {
     await expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Testing Single mode attachments */
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Single' }).click();
+    await common.selectSubCategory('Single', page);
 
     const singleAttachment = page.locator('div[id="attachment-container"]');
     await expect(singleAttachment.locator('button:has-text("Choose a file")')).toBeVisible();
@@ -95,8 +77,7 @@ test.describe('E2E test', () => {
     await expect(singleAttachment.locator('button:has-text("Choose a file")')).toBeVisible();
 
     /** Testing Multiple mode attachments */
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Multiple' }).click();
+    await common.selectSubCategory('Multiple', page);
 
     const multipleAttachment = page.locator('div[id="attachment-container"]');
     await expect(singleAttachment.locator('button:has-text("Choose files")')).toBeVisible();

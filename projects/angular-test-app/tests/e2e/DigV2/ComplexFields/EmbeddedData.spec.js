@@ -11,30 +11,12 @@ test.describe('E2E test', () => {
   test('should login, create case and run different test cases for Embedded Data', async ({ page }) => {
     await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
-    /** Testing announcement banner presence */
-    const announcementBanner = page.locator('h2:has-text("Announcements")');
-    await expect(announcementBanner).toBeVisible();
+    await common.verifyHomePage(page);
 
-    /** Testing worklist presence */
-    const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
-    await expect(worklist).toBeVisible();
-
-    /** Hovering over navbar */
-    const navbar = page.locator('app-navbar');
-    await navbar.locator('div[class="psdk-appshell-nav"]').hover();
-
-    /** opening all case types */
-    const createCase = page.locator('mat-list-item[id="create-case-button"]');
-    await createCase.click();
-
-    /** Creating a Complex Fields case-type */
-    const complexFieldsCaseBtn = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
-    await complexFieldsCaseBtn.click();
+    await common.createCase('Complex Fields', page);
 
     /** Selecting Embedded Data from the Category dropdown */
-    const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
-    await selectedCategory.click();
-    await page.locator('mat-option > span:has-text("EmbeddedData")').click();
+    await common.selectCategory('EmbeddedData', page);
 
     await page.locator('button:has-text("submit")').click();
 
@@ -44,9 +26,7 @@ test.describe('E2E test', () => {
     await page.locator('mat-option > span:has-text("ListOfRecords")').click();
 
     /** Table subcategory tests */
-    let selectedSubCategory = await page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.locator('mat-option > span:has-text("Table")').click();
+    await common.selectSubCategory('Table', page);
 
     /** Editable mode type tests */
     let selectedEditMode = await page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
@@ -210,9 +190,7 @@ test.describe('E2E test', () => {
 
     /** FieldGroup subcategory tests */
 
-    selectedSubCategory = await page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.locator('mat-option > span:has-text("FieldGroup")').click();
+    await common.selectSubCategory('FieldGroup', page);
 
     /** Editable mode type tests */
     selectedEditMode = await page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
@@ -289,9 +267,7 @@ test.describe('E2E test', () => {
     await selectedOption.click();
     await page.locator('mat-option > span:has-text("ListOfRecords")').click();
 
-    selectedSubCategory = await page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.locator('mat-option > span:has-text("Table")').click();
+    await common.selectSubCategory('Table', page);
 
     /** Editable mode type tests */
     selectedEditMode = await page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');

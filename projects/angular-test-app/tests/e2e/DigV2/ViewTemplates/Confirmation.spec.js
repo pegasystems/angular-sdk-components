@@ -11,26 +11,12 @@ test.describe('E2E test', () => {
   test('should login, create case and run different test cases for Confirmation', async ({ page }) => {
     await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
-    /** Testing announcement banner presence */
-    const announcementBanner = await page.locator('h2:has-text("Announcements")');
-    await expect(announcementBanner).toBeVisible();
+    await common.verifyHomePage(page);
 
-    /** Testing worklist presence */
-    const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
-    await expect(worklist).toBeVisible();
-
-    /** Click on the Create Case button */
-    const createCase = page.locator('mat-list-item[id="create-case-button"]');
-    await createCase.click();
-
-    /** Creating a View Templates case-type */
-    const complexFieldsCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("View Templates")');
-    await complexFieldsCase.click();
+    await common.createCase('View Templates', page);
 
     /** Selecting User Reference from the Category dropdown */
-    const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
-    await selectedCategory.click();
-    await page.locator('mat-option > span:has-text("Confirmation")').click();
+    await common.selectCategory('Confirmation', page);
 
     const caseID = await page.locator('div[id="caseId"]').textContent();
 
