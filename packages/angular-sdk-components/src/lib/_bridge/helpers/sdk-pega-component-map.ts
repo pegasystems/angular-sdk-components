@@ -31,6 +31,7 @@ import { GroupComponent } from '../../_components/field/group/group.component';
 import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
 import { LocationComponent } from '../../_components/field/location/location.component';
+import { ObjectReferenceComponent } from '../../_components/field/object-reference/object-reference.component';
 import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
@@ -200,6 +201,7 @@ const pegaSdkComponentMap = {
   NarrowWideForm: NarrowWideFormComponent,
   //   'NarrowWidePage': NarrowWidePage,
   NavBar: NavbarComponent,
+  ObjectReference: ObjectReferenceComponent,
   OneColumn: OneColumnComponent,
   OneColumnPage: OneColumnPageComponent,
   OneColumnTab: OneColumnTabComponent,
