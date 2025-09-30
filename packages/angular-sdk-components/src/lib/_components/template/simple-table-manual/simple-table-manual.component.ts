@@ -921,7 +921,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;
     for (const key of refKeys) {
-      valBuilder = valBuilder[key];
+      valBuilder = valBuilder ?? valBuilder[key];
     }
     return valBuilder;
   }

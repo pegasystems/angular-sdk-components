@@ -1,10 +1,7 @@
-<div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+<div *ngIf="bVisible$ !== false" [ngClass]="label$.length > 0 ? 'psdk-grid-filter' : 'psdk-container-nolabels'">
+  <div class="psdk-grid-label">{{ label$ }}</div>
+  <a *ngIf="!isLinkTextEmpty; else noLink" class="psdk-value" href="#" (click)="openLinkClick($event)">{{ value$ || '---' }}</a>
 </div>
-
-<ng-template #noDisplayMode>
-  <div *ngIf="label$ !== undefined && bVisible$ !== false" class="psdk-grid-filter">
-    <div class="psdk-grid-label">{{ label$ }}</div>
-    <div class="psdk-value">{{ value$ || '---' }}</div>
-  </div>
+<ng-template #noLink>
+  <div class="psdk-value">{{ value$ || '---' }}</div>
 </ng-template>
