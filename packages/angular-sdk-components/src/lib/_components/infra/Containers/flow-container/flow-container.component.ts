@@ -202,9 +202,9 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       const kid = this.pConn$.getChildren()[0];
       const todoKid = kid.getPConnect().getChildren()[0];
 
-      this.todo_pConn$ = todoKid.getPConnect();
+      this.todo_pConn$ = todoKid?.getPConnect();
 
-      return true;
+      return !!this.todo_pConn$;
     }
 
     return !(caseViewMode && caseViewMode === 'perform');

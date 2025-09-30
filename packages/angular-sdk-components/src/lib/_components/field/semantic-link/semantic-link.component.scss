@@ -6,6 +6,11 @@
   align-items: start;
 }
 
+.psdk-container-nolabels {
+  align-items: start;
+  padding-block: 8px;
+}
+
 .psdk-label {
   color: var(--app-label-color);
   margin: 8px 0px;

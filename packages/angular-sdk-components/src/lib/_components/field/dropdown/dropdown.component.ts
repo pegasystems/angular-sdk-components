@@ -6,6 +6,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import isEqual from 'fast-deep-equal';
+import { ComponentMetadataConfig } from '@pega/pcore-pconnect-typedefs/interpreter/types';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { Utils } from '../../../_helpers/utils';
@@ -73,6 +74,13 @@ interface DropdownProps extends PConnFieldProps {
 export class DropdownComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+  @Input() parentProps?: {
+    parentPconn: typeof PConnect;
+    rawViewMetadata: ComponentMetadataConfig;
+    canBeChangedInReviewMode: boolean;
+    isDisplayModeEnabled: boolean;
+    mode: string;
+  };
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -342,7 +350,73 @@ export class DropdownComponent implements OnInit, OnDestroy {
     this.pConn$.clearErrorMessages({
       property: this.propName
     });
+    if (this.parentProps?.parentPconn.getComponentName() === 'ObjectReference') {
+      this.onRecordChange(event);
+    }
   }
+
+  onRecordChange = event => {
+    const caseKey = this.parentProps?.parentPconn.getCaseInfo().getKey() ?? '';
+    const refreshOptions = { autoDetectRefresh: true, propertyName: '' };
+    refreshOptions.propertyName = this.parentProps?.rawViewMetadata.config?.value;
+
+    if (!this.parentProps?.canBeChangedInReviewMode || !this.parentProps?.parentPconn.getValue('__currentPageTabViewName')) {
+      const pgRef = this.parentProps?.parentPconn.getPageReference().replace('caseInfo.content', '') ?? '';
+      const viewName = this.parentProps?.rawViewMetadata.name;
+      if (viewName && viewName.length > 0) {
+        getPConnect().getActionsApi().refreshCaseView(caseKey, viewName, pgRef, refreshOptions);
+      }
+    }
+
+    const propValue = event?.value || event?.target?.value;
+    const propName =
+      this.parentProps?.rawViewMetadata.type === 'SimpleTableSelect' && this.parentProps.mode === 'multi'
+        ? PCore.getAnnotationUtils().getPropertyName(this.parentProps?.rawViewMetadata.config?.selectionList)
+        : PCore.getAnnotationUtils().getPropertyName(this.parentProps?.rawViewMetadata.config?.value);
+
+    if (propValue && this.parentProps?.canBeChangedInReviewMode && this.parentProps.isDisplayModeEnabled) {
+      PCore.getCaseUtils()
+        .getCaseEditLock(caseKey, '')
+        .then(caseResponse => {
+          const pageTokens = this.parentProps?.parentPconn.getPageReference().replace('caseInfo.content', '').split('.');
+          let curr = {};
+          const commitData = curr;
+
+          pageTokens?.forEach(el => {
+            if (el !== '') {
+              curr[el] = {};
+              curr = curr[el];
+            }
+          });
+
+          // expecting format like {Customer: {pyID:"C-100"}}
+          const propArr = propName.split('.');
+          propArr.forEach((element, idx) => {
+            if (idx + 1 === propArr.length) {
+              curr[element] = propValue;
+            } else {
+              curr[element] = {};
+              curr = curr[element];
+            }
+          });
+
+          PCore.getCaseUtils()
+            .updateCaseEditFieldsData(
+              caseKey,
+              { [caseKey]: commitData },
+              caseResponse.headers.etag,
+              this.parentProps?.parentPconn?.getContextName() ?? ''
+            )
+            .then(response => {
+              PCore.getContainerUtils().updateParentLastUpdateTime(
+                this.parentProps?.parentPconn.getContextName() ?? '',
+                response.data.data.caseInfo.lastUpdateTime
+              );
+              PCore.getContainerUtils().updateRelatedContextEtag(this.parentProps?.parentPconn.getContextName() ?? '', response.headers.etag);
+            });
+        });
+    }
+  };
 
   getLocalizedOptionValue(opt: IOption) {
     return this.pConn$.getLocalizedValue(

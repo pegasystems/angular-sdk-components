@@ -179,7 +179,7 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
 
       this.selectionList = this.configProps$.selectionList;
       this.selectedvalues = this.configProps$.readonlyContextList;
-      this.showNoValue = this.readOnly && this.selectedvalues.length === 0; // not used
+      this.showNoValue = this.readOnly && this.selectedvalues?.length === 0; // not used
       this.primaryField = this.configProps$.primaryField;
     }
 
