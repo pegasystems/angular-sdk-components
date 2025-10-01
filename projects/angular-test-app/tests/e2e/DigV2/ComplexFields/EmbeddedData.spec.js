@@ -68,7 +68,7 @@ test.describe('E2E test', () => {
     await page.locator('input[data-test-id="202003240938510831291"]').fill('Cambridge');
     await page.locator('input[data-test-id="202003240938510831411"]').fill('MA');
     await page.locator('input[data-test-id="202003240938510832734"]').fill('02142');
-    let phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
+    let phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
     let countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
@@ -81,7 +81,7 @@ test.describe('E2E test', () => {
     await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('California');
     await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').fill('AK');
     await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').fill('03142');
-    phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
+    phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
@@ -129,12 +129,12 @@ test.describe('E2E test', () => {
     await expect(addRecordTitle).toBeVisible();
 
     /** Adding record to the Table in Modal */
-    await modal.locator('input[data-test-id="202003240938510823869"]').type('Main St');
-    await modal.locator('input[data-test-id="202003240938510831291"]').type('Cambridge');
-    await modal.locator('input[data-test-id="202003240938510831411"]').type('MA');
-    await modal.locator('input[data-test-id="202003240938510832734"]').type('02142');
+    await modal.locator('input[data-test-id="202003240938510823869"]').fill('Main St');
+    await modal.locator('input[data-test-id="202003240938510831291"]').fill('Cambridge');
+    await modal.locator('input[data-test-id="202003240938510831411"]').fill('MA');
+    await modal.locator('input[data-test-id="202003240938510832734"]').fill('02142');
 
-    phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
+    phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
@@ -225,7 +225,7 @@ test.describe('E2E test', () => {
     await page.locator('input[data-test-id="202003240938510831411"]').fill('MA');
     await page.locator('input[data-test-id="202003240938510832734"]').fill('02142');
 
-    phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
+    phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
@@ -239,7 +239,7 @@ test.describe('E2E test', () => {
     await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').fill('AK');
     await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').fill('03142');
 
-    phone = page.locator('ngx-mat-intl-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
+    phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"] >> nth=1');
     countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();

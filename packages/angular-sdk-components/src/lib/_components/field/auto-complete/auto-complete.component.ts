@@ -322,21 +322,16 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   }
 
   optionChanged(event: any) {
-    const value = event?.option?.value;
-    handleEvent(this.actionsApi, 'change', this.propName, value);
-  }
+    const val = event?.option?.value;
 
-  fieldOnBlur(event: Event) {
     let key = '';
-    const el = event?.target as HTMLInputElement;
-    if (el?.value) {
-      const index = this.options$?.findIndex(element => element.value === el.value);
-      key = index > -1 ? (key = this.options$[index].key) : el.value;
+    if (val) {
+      const index = this.options$?.findIndex(element => element.value === val);
+      key = index > -1 ? (key = this.options$[index].key) : val;
     }
     const value = key;
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     if (this.configProps$?.onRecordChange) {
-      el.value = value;
       this.configProps$.onRecordChange(event);
     }
   }

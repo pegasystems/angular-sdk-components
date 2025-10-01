@@ -14,7 +14,6 @@
           [required]="bRequired$"
           [matAutocomplete]="auto"
           (input)="fieldOnChange($event)"
-          (blur)="fieldOnBlur($event)"
         />
         <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="optionChanged($event)">
           <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
