@@ -90,7 +90,7 @@ test.describe('E2E test', () => {
     await expect(attributes.includes('readonly')).toBeFalsy();
 
     /** Validation tests */
-    const validationMsg = 'Please enter a valid URL including the protocol (http://, https://, ftp://, etc.)';
+    const validationMsg = 'Enter a valid url';
     await EditableURL.fill('InvalidUrl');
     await EditableURL.blur();
     await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeVisible();

@@ -162,8 +162,6 @@ export class EmailComponent implements OnInit, OnDestroy {
     const isValueChanged = event.target.value.toString() !== oldVal.toString();
 
     if (isValueChanged) {
-      const value = event?.target?.value;
-      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
       this.pConn$.clearErrorMessages({
         property: this.propName
       });
