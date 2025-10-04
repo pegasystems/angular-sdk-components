@@ -1,6 +1,7 @@
 import { Component, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { getComponentFromMap } from '../helpers/sdk_component_map';
+import { getComponentClassAsync } from '../helpers/sdk-dynamic-component-map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
 const componentsRequireDisplayOnlyFAProp: string[] = ['HybridViewContainer', 'ModalViewContainer', 'ViewContainer', 'RootContainer', 'View'];
@@ -17,6 +18,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
 
   public componentRef: ComponentRef<any> | undefined;
   public isInitialized = false;
+  public lastLoadedName: string | undefined;
 
   @Input() name?: string = '';
   @Input() props: any;
@@ -25,7 +27,10 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   // parent prop is compulsory when outputEvents is present
   @Input() parent: any;
 
+  private loadingToken = 0; // Guards against race conditions during rapid name changes
+
   ngOnInit(): void {
+    // Begin async load (non-blocking) while preserving original synchronous signature
     this.loadComponent();
     this.isInitialized = true;
   }
@@ -42,14 +47,43 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
+  // Backwards-compatible method name; now performs async dynamic import.
   loadComponent() {
-    const component = getComponentFromMap(this.name || '');
+    this.loadComponentAsync();
+  }
+
+  private async loadComponentAsync() {
+    const requestedName = this.name || '';
+    const token = ++this.loadingToken;
+
+    // Prefer dynamic loader for lazy chunks; fallback to static map if not defined yet.
+    let componentClass: any;
+    try {
+      componentClass = await getComponentClassAsync(requestedName);
+    } catch (e) {
+      console.error('Error loading component dynamically; falling back to static map', requestedName, e);
+    }
+
+    if (!componentClass) {
+      try {
+        componentClass = getComponentFromMap(requestedName || 'ErrorBoundary');
+      } catch (err) {
+        console.error('Static map fallback also failed; using ErrorBoundary', err);
+        componentClass = ErrorBoundaryComponent;
+      }
+    }
+
+    // If another async load started after this one, abandon this result.
+    if (token !== this.loadingToken) {
+      return;
+    }
 
     if (this.dynamicComponent) {
       this.dynamicComponent.clear();
-      this.componentRef = this.dynamicComponent.createComponent(component);
+      this.componentRef = this.dynamicComponent.createComponent(componentClass);
+      this.lastLoadedName = requestedName;
 
-      if (component === ErrorBoundaryComponent) {
+      if (componentClass === ErrorBoundaryComponent) {
         this.componentRef.instance.message = this.errorMsg;
       } else {
         this.bindInputProps();

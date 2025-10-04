@@ -4,9 +4,7 @@ import { endpoints } from './endpoints';
 import { ServerConfigService } from './server-config.service';
 import { Utils } from '../_helpers/utils';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class DatapageService {
   constructor(
     private http: HttpClient,

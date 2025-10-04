@@ -123,41 +123,33 @@ export class DecimalComponent implements OnInit, OnDestroy {
 
   // updateSelf
   updateSelf(): void {
-    // starting very simple...
-
-    // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DecimalProps;
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
     this.inputMode = NgxCurrencyInputMode.Natural;
+
     let nValue: any = this.configProps$.value;
-    if (nValue) {
-      if (typeof nValue === 'string') {
-        nValue = parseFloat(nValue);
-      }
-      this.value$ = nValue;
-      this.fieldControl.setValue(this.value$);
+    if (nValue && typeof nValue === 'string') {
+      nValue = parseFloat(nValue);
     }
+    this.value$ = nValue;
+    this.fieldControl.setValue(this.value$);
+
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
     const showGroupSeparators = this.configProps$.showGroupSeparators;
     const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
-
     const theSymbols = getCurrencyCharacters(currencyISOCode);
     this.decimalSeparator = theSymbols.theDecimalIndicator;
     this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
-
     const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
     this.formatter = this.configProps$.formatter;
 
-    if (this.formatter) {
-      this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
-    } else {
-      this.formattedValue = format(this.value$, 'decimal', theCurrencyOptions);
-    }
+    this.formattedValue = this.formatter
+      ? format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions)
+      : format(this.value$, 'decimal', theCurrencyOptions);
 
-    // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
         this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
@@ -165,15 +157,10 @@ export class DecimalComponent implements OnInit, OnDestroy {
       this.cdRef.detectChanges();
     });
 
-    if (this.configProps$.visibility != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    }
+    this.bVisible$ = this.configProps$.visibility != null ? this.utils.getBooleanValue(this.configProps$.visibility) : this.bVisible$;
 
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
+    this.bReadonly$ = this.configProps$.readOnly != null ? this.utils.getBooleanValue(this.configProps$.readOnly) : this.bReadonly$;
 
-    // disabled
     if (this.configProps$.disabled != undefined) {
       this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
     }
@@ -184,24 +171,21 @@ export class DecimalComponent implements OnInit, OnDestroy {
       this.fieldControl.enable();
     }
 
-    if (this.bReadonly$ && this.formatter === 'Currency') {
-      this.currencySymbol = theSymbols.theCurrencySymbol;
-    }
-
-    if (this.bReadonly$ && this.formatter === 'Percentage') {
-      this.suffix = '%';
+    if (this.bReadonly$) {
+      if (this.formatter === 'Currency') {
+        this.currencySymbol = theSymbols.theCurrencySymbol;
+      } else if (this.formatter === 'Percentage') {
+        this.suffix = '%';
+      }
     }
 
     this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
-
     this.componentReference = this.pConn$.getStateProps().value;
 
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
+    if (this.angularPConnectData.validateMessage) {
       const timer = interval(100).subscribe(() => {
         this.fieldControl.setErrors({ message: true });
         this.fieldControl.markAsTouched();
-
         timer.unsubscribe();
       });
     }

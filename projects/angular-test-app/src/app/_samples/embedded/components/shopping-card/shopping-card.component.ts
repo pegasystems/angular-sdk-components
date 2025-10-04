@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   selector: 'app-shopping-card',
   templateUrl: './shopping-card.component.html',
   styleUrls: ['./shopping-card.component.scss'],
-  standalone: true
+  standalone: false
 })
 export class ShoppingCardComponent {
   @Input() option: any;

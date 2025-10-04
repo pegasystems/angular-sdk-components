@@ -42,7 +42,8 @@ interface AutoCompleteProps extends PConnFieldProps {
     MatAutocompleteModule,
     MatOptionModule,
     forwardRef(() => ComponentMapperComponent)
-  ]
+  ],
+  providers: [DatapageService]
 })
 export class AutoCompleteComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

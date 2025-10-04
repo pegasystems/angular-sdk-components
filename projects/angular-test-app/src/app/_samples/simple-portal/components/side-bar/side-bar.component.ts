@@ -1,18 +1,17 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { MatButtonModule } from '@angular/material/button';
 import { Subscription } from 'rxjs';
-import { ProgressSpinnerService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
-import { UpdateWorklistService } from '../../../../../../../packages/angular-sdk-components/src/lib/_messages/update-worklist.service';
-import { CaseService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/case.service';
-import { DatapageService } from '../../../../../../../packages/angular-sdk-components/src/lib/_services/datapage.service';
+import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
+import { UpdateWorklistService } from 'packages/angular-sdk-components/src/lib/_messages/update-worklist.service';
+import { DatapageService } from 'packages/angular-sdk-components/src/lib/_services/datapage.service';
+import { CaseService } from 'packages/angular-sdk-components/src/lib/_services/case.service';
 
 @Component({
   selector: 'app-side-bar',
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss'],
-  imports: [CommonModule, MatButtonModule]
+  standalone: false,
+  providers: [CaseService]
 })
 export class SideBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

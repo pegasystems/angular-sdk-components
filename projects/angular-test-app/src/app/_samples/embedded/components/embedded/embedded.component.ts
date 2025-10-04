@@ -1,21 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 import { getSdkConfig, loginIfNecessary } from '@pega/auth/lib/sdk-auth-manager';
 
 import { ProgressSpinnerService } from 'packages/angular-sdk-components/src/lib/_messages/progress-spinner.service';
-import { Utils } from 'packages/angular-sdk-components/src/lib/_helpers/utils';
 import { compareSdkPCoreVersions } from 'packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
-import { HeaderComponent } from './header/header.component';
-import { MainScreenComponent } from './main-screen/main-screen.component';
-
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
-import { initializeAuthentication } from './utils';
+import { initializeAuthentication } from '../../helpers/utils';
 
 declare global {
   interface Window {
@@ -27,8 +18,7 @@ declare global {
   selector: 'app-embedded',
   templateUrl: './embedded.component.html',
   styleUrls: ['./embedded.component.scss'],
-  providers: [Utils],
-  imports: [CommonModule, MatProgressSpinnerModule, MatToolbarModule, MatIconModule, MatButtonModule, HeaderComponent, MainScreenComponent]
+  standalone: false
 })
 export class EmbeddedComponent implements OnInit, OnDestroy {
   pConn$: typeof PConnect;
