@@ -1,13 +1,12 @@
-import { Component, Input, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-import { CommonModule } from '@angular/common';
 import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
-import { Utils } from '../../../_helpers/utils';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { FieldBase } from '../field.base';
 
 interface SelectableCardProps extends PConnFieldProps {
   selectionList: any;
@@ -30,21 +29,15 @@ interface SelectableCardProps extends PConnFieldProps {
   templateUrl: './selectable-card.component.html',
   styleUrl: './selectable-card.component.scss'
 })
-export class SelectableCardComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
+export class SelectableCardComponent extends FieldBase implements OnInit {
   @Input() type: string;
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
 
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   configProps$: SelectableCardProps;
-  value$: any;
   readOnly = false;
   disabled = false;
-  displayMode$: string | undefined;
   radioBtnValue;
   additionalProps;
-  testId;
   showNoValue = false;
   selectionKey?: string;
   defaultStyle = {};
@@ -61,17 +54,9 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
     }
   ];
 
-  actionsApi: object;
-  propName: string;
+  override ngOnInit(): void {
+    super.ngOnInit();
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private utils: Utils
-  ) {}
-
-  ngOnInit(): void {
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     // styles used in displaying common field props
     this.defaultStyle = {
       display: 'grid',
@@ -84,36 +69,10 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
       margin: '0.5rem',
       fontSize: '0.875rem'
     };
-    this.checkAndUpdate();
   }
 
-  ngOnDestroy(): void {
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
-  updateSelf(): void {
+  override updateSelf(): void {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SelectableCardProps;
-
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
 
     const hideFieldLabels = this.configProps$.hideFieldLabels;
     const datasource: any = this.configProps$.datasource;
@@ -163,7 +122,7 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
 
     if (this.type === 'checkbox') {
       this.testId = this.configProps$.testId;
-      this.displayMode$ = this.configProps$.displayMode;
+      this.displayMode$ = this.configProps$.displayMode ?? '';
 
       this.selectionKey = this.configProps$.selectionKey;
       recordKey = this.selectionKey?.split('.').pop() ?? '';

@@ -1,14 +1,12 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, forwardRef, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { interval } from 'rxjs';
 import isEqual from 'fast-deep-equal';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { DatapageService } from '../../../_services/datapage.service';
-import { Utils } from '../../../_helpers/utils';
+
+import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -70,68 +68,18 @@ interface DropdownProps extends PConnFieldProps {
   styleUrls: ['./dropdown.component.scss'],
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DropdownComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
-  @Input() formGroup$: FormGroup;
+export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
   @Output() onRecordChange: EventEmitter<any> = new EventEmitter();
 
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   configProps$: DropdownProps;
 
-  label$ = '';
-  value$ = '';
-  bRequired$ = false;
-  bReadonly$ = false;
-  bDisabled$ = false;
-  bVisible$ = true;
-  displayMode$?: string = '';
-  controlName$: string;
-  bHasForm$ = true;
   options$: IOption[];
-  componentReference = '';
-  testId = '';
-  helperText: string;
-  hideLabel: any;
   theDatasource: any[] | null;
-  fieldControl = new FormControl('', null);
-  fieldMetadata: any[];
   localeContext = '';
   localeClass = '';
   localeName = '';
   localePath = '';
   localizedValue = '';
-  actionsApi: object;
-  propName: string;
-
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils,
-    private dataPageService: DatapageService
-  ) {}
-
-  ngOnInit(): void {
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.controlName$ = this.angularPConnect.getComponentID(this);
-
-    // Then, continue on with other initialization
-
-    // call updateSelf when initializing
-    this.checkAndUpdate();
-    // this should get called afer checkAndUpdate
-
-    if (this.formGroup$) {
-      // add control to formGroup
-      this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      this.fieldControl.setValue(this.value$);
-      this.bHasForm$ = true;
-    } else {
-      this.bReadonly$ = true;
-      this.bHasForm$ = false;
-    }
-  }
 
   set options(options: IOption[]) {
     this.options$ = options;
@@ -145,79 +93,33 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.formGroup$) {
-      this.formGroup$.removeControl(this.controlName$);
-    }
-
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
-  // updateSelf
-  updateSelf(): void {
-    // moved this from ngOnInit() and call this from there instead...
+  /**
+   * Updates the component when there are changes in the state.
+   */
+  override updateSelf(): void {
+    // Resolve configuration properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DropdownProps;
-    if (this.configProps$.value != undefined) {
-      this.value$ = this.configProps$.value;
-    }
 
-    this.testId = this.configProps$.testId;
-    this.displayMode$ = this.configProps$.displayMode;
-    this.label$ = this.configProps$.label;
-    this.helperText = this.configProps$.helperText;
-    this.hideLabel = this.configProps$.hideLabel;
-    const datasource = this.configProps$.datasource;
-    // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => {
-      if (this.configProps$.required != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-      }
-      this.cdRef.detectChanges();
-    });
+    // Update component common properties
+    this.updateComponentCommonProperties(this.configProps$);
+
+    // Set component specific properties
+    this.updateDropdownProperties(this.configProps$);
+  }
+
+  /**
+   * Updates dropdown properties based on the provided configuration.
+   * @param configProps - Configuration properties
+   */
+  updateDropdownProperties(configProps) {
+    const { value, fieldMetadata, datasource } = configProps;
+
+    this.value$ = value;
 
     if (!isEqual(datasource, this.theDatasource)) {
       // inbound datasource is different, so update theDatasource
       this.theDatasource = datasource || null;
     }
-
-    if (this.configProps$.visibility != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    }
-
-    // disabled
-    if (this.configProps$.disabled != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    }
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
-    }
-
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
-
-    this.componentReference = this.pConn$.getStateProps().value;
 
     if (this.value$ === '' && !this.bReadonly$) {
       this.value$ = 'Select';
@@ -235,8 +137,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);
 
-    this.fieldMetadata = this.configProps$.fieldMetadata;
-    const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter(field => field?.classID === className)[0] : this.fieldMetadata;
+    const metaData = Array.isArray(fieldMetadata) ? fieldMetadata.filter(field => field?.classID === className)[0] : fieldMetadata;
 
     let displayName = metaData?.datasource?.propertyForDisplayText;
     displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);
@@ -252,16 +153,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
     );
 
     this.localizedValue = this.options$?.find(opt => opt.key === this.value$)?.value || this.localizedValue;
-    this.getDatapageData();
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      const timer = interval(100).subscribe(() => {
-        this.fieldControl.setErrors({ message: true });
-        this.fieldControl.markAsTouched();
 
-        timer.unsubscribe();
-      });
-    }
+    this.getDatapageData();
   }
 
   getDatapageData() {
@@ -352,22 +245,5 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.localePath,
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
     );
-  }
-
-  getErrorMessage() {
-    let errMessage = '';
-
-    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
-    if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage ?? '';
-      return errMessage;
-    }
-    if (this.fieldControl.hasError('required')) {
-      errMessage = 'You must enter a value';
-    } else if (this.fieldControl.errors) {
-      errMessage = this.fieldControl.errors.toString();
-    }
-
-    return errMessage;
   }
 }

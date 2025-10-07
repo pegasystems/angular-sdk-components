@@ -8,6 +8,8 @@ export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
 
+export * from './lib/_components/field/field.base';
+
 export * from './lib/_components/field/auto-complete/auto-complete.component';
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
 export * from './lib/_components/field/check-box/check-box.component';

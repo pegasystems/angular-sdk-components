@@ -24,16 +24,16 @@ export class GroupComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
+  // Used with AngularPConnect
+  angularPConnectData: AngularPConnectData = {};
+  configProps$: GroupProps;
+
   arChildren$: any[];
   visibility$?: boolean;
   showHeading$?: boolean;
   heading$: string;
   instructions$: string;
   collapsible$: boolean;
-
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
-  configProps$: GroupProps;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -59,6 +59,9 @@ export class GroupComponent implements OnInit {
     }
   }
 
+  /**
+   * Updates the component when there are changes in the state.
+   */
   updateSelf(): void {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as GroupProps;
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
