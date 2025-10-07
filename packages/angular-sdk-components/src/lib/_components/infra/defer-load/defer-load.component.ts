@@ -97,7 +97,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
 
   getViewOptions = () => ({
     viewContext: this.resourceType,
-    pageClass: this.loadViewCaseID ? '' : this.pConn$.getDataObject().pyPortal.classID,
+    pageClass: this.loadViewCaseID ? '' : this.pConn$.getDataObject()?.pyPortal?.classID,
     container: this.isContainerPreview ? 'preview' : undefined,
     containerName: this.isContainerPreview ? 'preview' : undefined,
     updateData: this.isContainerPreview

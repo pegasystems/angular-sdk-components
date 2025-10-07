@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+  @Input() dataRelationshipContext?: any;
 
   angularPConnectData: AngularPConnectData = {};
   configProps: any;
@@ -64,7 +65,7 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const displayAs = this.configProps.displayAs ?? 'readonly';
     const dataRelationshipContext = (rawViewMetadata?.config as any)?.displayField
       ? getDataRelationshipContextFromKey((rawViewMetadata?.config as any)?.displayField)
-      : null;
+      : this.dataRelationshipContext;
     this.label = propsToUse.label;
 
     const editableComponents = ['AutoComplete', 'SimpleTableSelect', 'Dropdown', 'RadioButtons'];

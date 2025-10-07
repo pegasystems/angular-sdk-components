@@ -201,6 +201,7 @@ const pegaSdkComponentMap = {
   NarrowWideForm: NarrowWideFormComponent,
   //   'NarrowWidePage': NarrowWidePage,
   NavBar: NavbarComponent,
+  ObjectPage: CaseViewComponent,
   ObjectReference: ObjectReferenceComponent,
   OneColumn: OneColumnComponent,
   OneColumnPage: OneColumnPageComponent,
