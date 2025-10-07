@@ -1,4 +1,4 @@
-import { getTabLabel } from 'packages/angular-sdk-components/src/public-api';
+import { getTabLabel } from '../../../../_helpers/tab-utils';
 
 export function getTabCountSources(deferLoadedTabs) {
   const availableTabs = deferLoadedTabs.getPConnect().getChildren() || [];
