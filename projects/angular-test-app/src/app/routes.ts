@@ -1,8 +1,5 @@
 import { Routes } from '@angular/router';
-import { FullPortalComponent } from './_samples/full-portal/full-portal.component';
-import { EmbeddedComponent } from './_samples/embedded/embedded.component';
-import { NavigationComponent } from './_samples/simple-portal/navigation/navigation.component';
-import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_services/endpoints';
+import { endpoints } from 'packages/angular-sdk-components/src/public-api';
 
 // Adding path to remove "Cannot match routes" error at launch
 // Tried this at one point... Need to add /app in path now...
@@ -12,17 +9,22 @@ import { endpoints } from '../../../../packages/angular-sdk-components/src/lib/_
 // But we can get it from window.location.pathname
 
 // const appName = window.location.pathname.split('/')[3];
-
 export const routes: Routes = [
-  { path: '', component: EmbeddedComponent },
-  { path: endpoints.PORTAL, component: FullPortalComponent },
-  { path: endpoints.PORTALHTML, component: FullPortalComponent },
-  { path: endpoints.FULLPORTAL, component: FullPortalComponent },
-  { path: endpoints.FULLPORTALHTML, component: FullPortalComponent },
-  { path: endpoints.EMBEDDED, component: EmbeddedComponent },
-  { path: endpoints.EMBEDDEDHTML, component: EmbeddedComponent },
-  { path: endpoints.MASHUP, component: EmbeddedComponent },
-  { path: endpoints.MASHUPHTML, component: EmbeddedComponent },
-  { path: endpoints.SIMPLEPORTAL, component: NavigationComponent },
-  { path: endpoints.SIMPLEPORTALHTML, component: NavigationComponent }
+  { path: '', loadComponent: () => import('./_samples/embedded/embedded.component').then(m => m.EmbeddedComponent) },
+  { path: endpoints.PORTAL, loadComponent: () => import('./_samples/full-portal/full-portal.component').then(m => m.FullPortalComponent) },
+  { path: endpoints.PORTALHTML, loadComponent: () => import('./_samples/full-portal/full-portal.component').then(m => m.FullPortalComponent) },
+  { path: endpoints.FULLPORTAL, loadComponent: () => import('./_samples/full-portal/full-portal.component').then(m => m.FullPortalComponent) },
+  { path: endpoints.FULLPORTALHTML, loadComponent: () => import('./_samples/full-portal/full-portal.component').then(m => m.FullPortalComponent) },
+  { path: endpoints.EMBEDDED, loadComponent: () => import('./_samples/embedded/embedded.component').then(m => m.EmbeddedComponent) },
+  { path: endpoints.EMBEDDEDHTML, loadComponent: () => import('./_samples/embedded/embedded.component').then(m => m.EmbeddedComponent) },
+  { path: endpoints.MASHUP, loadComponent: () => import('./_samples/embedded/embedded.component').then(m => m.EmbeddedComponent) },
+  { path: endpoints.MASHUPHTML, loadComponent: () => import('./_samples/embedded/embedded.component').then(m => m.EmbeddedComponent) },
+  {
+    path: endpoints.SIMPLEPORTAL,
+    loadComponent: () => import('./_samples/simple-portal/navigation/navigation.component').then(m => m.NavigationComponent)
+  },
+  {
+    path: endpoints.SIMPLEPORTALHTML,
+    loadComponent: () => import('./_samples/simple-portal/navigation/navigation.component').then(m => m.NavigationComponent)
+  }
 ];

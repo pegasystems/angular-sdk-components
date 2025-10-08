@@ -8,9 +8,6 @@ import { ServerConfigService } from 'packages/angular-sdk-components/src/lib/_se
 import { compareSdkPCoreVersions } from 'packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
 import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 
-import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
-
 declare global {
   interface Window {
     myLoadPortal: Function;
@@ -93,14 +90,7 @@ export class FullPortalComponent implements OnInit, OnDestroy {
     PCore.onPCoreReady(renderObj => {
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
-
-      // Initialize the SdkComponentMap (local and pega-provided)
-      getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
-        console.log(`SdkComponentMap initialized`, theComponentMap);
-
-        // Don't call initialRender until SdkComponentMap is fully initialized
-        this.initialRender(renderObj);
-      });
+      this.initialRender(renderObj);
     });
 
     const { appPortal: thePortal, excludePortals } = this.scservice.getSdkConfigServer();

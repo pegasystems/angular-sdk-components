@@ -14,9 +14,6 @@ import { compareSdkPCoreVersions } from '../../../../../../../packages/angular-s
 import { MainContentComponent } from '../main-content/main-content.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
 
-import { getSdkComponentMap } from '../../../../../../../packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from '../../../../../../../packages/angular-sdk-components/src/sdk-local-component-map';
-
 declare global {
   interface Window {
     myLoadMashup: Function;
@@ -123,13 +120,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   startMashup() {
     PCore.onPCoreReady(renderObj => {
-      // Initialize the SdkComponentMap (local and pega-provided)
-      getSdkComponentMap(localSdkComponentMap).then((theComponentMap: any) => {
-        console.log(`SdkComponentMap initialized`, theComponentMap);
-
-        // Don't call initialRender until SdkComponentMap is fully initialized
-        this.initialRender(renderObj);
-      });
+      this.initialRender(renderObj);
     });
 
     window.myLoadMashup('app-root', false); // this is defined in bootstrap shell that's been loaded already
