@@ -74,7 +74,8 @@ class Group {
     MatSelectModule,
     MatInputModule,
     forwardRef(() => ComponentMapperComponent)
-  ]
+  ],
+  providers: [DatapageService]
 })
 export class SimpleTableManualComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
@@ -211,24 +212,17 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   // updateSelf
   updateSelf(): void {
-    // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableManualProps;
 
     if (this.configProps$.visibility != null) {
-      this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
-    // NOTE: getConfigProps() has each child.config with datasource and value undefined
-    //  but getRawMetadata() has each child.config with datasource and value showing their unresolved values (ex: "@P thePropName")
-    //  We need to use the prop name as the "glue" to tie the Angular Material table dataSource, displayColumns and data together.
-    //  So, in the code below, we'll use the unresolved config.value (but replacing the space with an underscore to keep things happy)
     const rawMetadata = this.pConn$.getRawMetadata();
-
-    // Adapted from Nebula
     const {
-      referenceList = [], // if referenceList not in configProps$, default to empy list
+      referenceList = [],
       renderMode,
-      children, // destructure children into an array var: "resolvedFields"
+      children,
       presets,
       allowActions,
       allowTableEdit,
@@ -246,17 +240,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       targetClassLabel
     } = this.configProps$;
 
-    const simpleTableManualProps: any = {};
-    if (this.checkIfAllowActionsOrRowEditingExist(allowActions) && editMode) {
-      simpleTableManualProps.hideAddRow = allowActions?.allowAdd === false;
-      simpleTableManualProps.hideDeleteRow = allowActions?.allowDelete === false;
-      simpleTableManualProps.hideEditRow = allowActions?.allowEdit === false;
-      simpleTableManualProps.disableDragDrop = allowActions?.allowDragDrop === false;
-    } else if (allowTableEdit === false) {
-      simpleTableManualProps.hideAddRow = true;
-      simpleTableManualProps.hideDeleteRow = true;
-      simpleTableManualProps.disableDragDrop = true;
-    }
+    const simpleTableManualProps: any = this.getSimpleTableManualProps(allowActions, allowTableEdit ?? false, editMode ?? '');
 
     this.referenceListStr = getContext(this.pConn$).referenceListStr;
     this.label = labelProp || propertyLabel;
@@ -265,34 +249,18 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     let { contextClass } = this.configProps$;
     this.referenceList = referenceList;
     if (!contextClass) {
-      let listName = this.pConn$.getComponentConfig().referenceList;
-      listName = PCore.getAnnotationUtils().getPropertyName(listName);
-      contextClass = this.pConn$.getFieldMetadata(listName)?.pageClass;
+      contextClass = this.getContextClassFromConfig();
     }
     this.contextClass = contextClass;
 
     const resolvedFields = children?.[0]?.children || presets?.[0].children?.[0].children;
-    // get raw config as @P and other annotations are processed and don't appear in the resolved config.
-    //  Destructure "raw" children into array var: "rawFields"
-    //  NOTE: when config.listType == "associated", the property can be found in either
-    //    config.value (ex: "@P .DeclarantChoice") or
-    //    config.datasource (ex: "@ASSOCIATED .DeclarantChoice")
-    //  Neither of these appear in the resolved (this.configProps$)
     const rawConfig: any = rawMetadata?.config;
     const rawFields = rawConfig?.children?.[0]?.children || rawConfig?.presets?.[0].children?.[0]?.children;
     this.rawFields = rawFields;
-    // At this point, fields has resolvedFields and rawFields we can use
-
-    // start of from Nebula
-    // get context name and referenceList which will be used to prepare config of PConnect
-    // const { contextName, referenceListStr, pageReferenceForRows } = getContext(this.pConn$);
 
     const resolvedList = getReferenceList(this.pConn$);
     this.pageReference = `${this.pConn$.getPageReference()}${resolvedList}`;
     this.pConn$.setReferenceList(resolvedList);
-
-    // This gives up the "properties" we need to map to row/column values later
-    // const processedData = populateRowKey(referenceList);
 
     this.requestedReadOnlyMode = renderMode === 'ReadOnly';
     this.readOnlyMode = renderMode === 'ReadOnly';
@@ -301,79 +269,31 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.showAddRowButton = !this.readOnlyMode && !simpleTableManualProps.hideAddRow;
     this.allowEditingInModal =
       (editMode ? editMode === 'modal' : addAndEditRowsWithin === 'modal') && !(renderMode === 'ReadOnly' || isDisplayModeEnabled);
-    const showDeleteButton = this.editableMode && !simpleTableManualProps.hideDeleteRow && evaluateAllowRowAction(allowRowDelete, this.rowData);
+
+    const showDeleteButton = this.shouldShowDeleteButton(this.editableMode, simpleTableManualProps, allowRowDelete, this.rowData);
     this.defaultView = editModeConfig ? editModeConfig.defaultView : viewForAddAndEditModal;
     this.bUseSeparateViewForEdit = editModeConfig ? editModeConfig.useSeparateViewForEdit : useSeparateViewForEdit;
     this.editView = editModeConfig ? editModeConfig.editView : viewForEditModal;
     const primaryFieldsViewIndex = resolvedFields.findIndex(field => field.config.value === 'pyPrimaryFields');
-    // const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
 
-    // Nebula has other handling for isReadOnlyMode but has Cosmos-specific code
-    //  so ignoring that for now...
-    // fieldDefs will be an array where each entry will have a "name" which will be the
-    //  "resolved" property name (that we can use as the colId) though it's not really
-    //  resolved. The buildFieldsForTable helper just removes the "@P " (which is what
-    //  Nebula does). It will also have the "label", and "meta" contains the original,
-    //  unchanged config info. For now, much of the info here is carried over from
-    //  Nebula and we may not end up using it all.
-    this.fieldDefs = buildFieldsForTable(rawFields, this.pConn$, showDeleteButton, {
-      primaryFieldsViewIndex,
-      fields: resolvedFields
-    });
-    this.fieldDefs = this.fieldDefs?.filter(field => !(field.meta?.config?.hide === true));
+    this.fieldDefs = this.buildFilteredFieldDefs(rawFields, showDeleteButton, primaryFieldsViewIndex, resolvedFields);
     this.initializeDefaultPageInstructions();
 
-    // end of from Nebula
+    this.displayedColumns = this.fieldDefs?.map(field => (field.name ? field.name : field.cellRenderer));
 
-    // Here, we use the "name" field in fieldDefs since that has the assoicated property
-    //  (if one exists for the field). If no "name", use "cellRenderer" (typically get DELETE_ICON)
-    //  for our columns.
-    this.displayedColumns = this.fieldDefs?.map(field => {
-      return field.name ? field.name : field.cellRenderer;
-    });
+    const labelsMap = this.fieldDefs.reduce((acc, curr) => ({ ...acc, [curr.name]: curr.label }), {});
 
-    // And now we can process the resolvedFields to add in the "name"
-    //  from from the fieldDefs. This "name" is the value that
-    //  we'll share to connect things together in the table.
+    this.processedFields = this.processResolvedFields(resolvedFields, labelsMap);
 
-    const labelsMap = this.fieldDefs.reduce((acc, curr) => {
-      return { ...acc, [curr.name]: curr.label };
-    }, {});
-
-    this.processedFields = [];
-
-    this.processedFields = resolvedFields.map((field, i) => {
-      field.config.name = this.displayedColumns[i]; // .config["value"].replace(/ ./g,"_");   // replace space dot with underscore
-      field.config.label = labelsMap[field.config.name] || field.config.label;
-      return field;
-    });
-
-    // for adding rows to table when editable and not modal view
     if (this.prevReferenceList.length !== this.referenceList.length) {
       this.buildElementsForTable();
     }
 
-    // for edit and adding rows in modal view and to generate readonly list
     if (!isEqual(this.prevReferenceList, this.referenceList) && (this.readOnlyMode || this.allowEditingInModal)) {
       this.generateRowsData();
     }
 
     this.prevReferenceList = this.referenceList;
-
-    // These are the data structures referred to in the html file.
-    //  These are the relationships that make the table work
-    //  displayedColumns: key/value pairs where key is order of column and
-    //    value is the property shown in that column. Ex: 1: "FirstName"
-    //  processedFields: key/value pairs where each key is order of column
-    //    and each value is an object of more detailed information about that
-    //    column.
-    //  rowData: array of each row's key/value pairs. Inside each row,
-    //    each key is an entry in displayedColumns: ex: "FirstName": "Charles"
-    //    Ex: { 1: {config: {label: "First Name", readOnly: true: name: "FirstName"}}, type: "TextInput" }
-    //    The "type" indicates the type of component that should be used for editing (when editing is enabled)
-    //
-    //  Note that the "property" shown in the column ("FirstName" in the above examples) is what
-    //  ties the 3 data structures together.
   }
 
   checkIfAllowActionsOrRowEditingExist(newflagobject) {
@@ -1033,5 +953,46 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     });
     this.originalElementsData = eleData;
     this.elementsData = eleData;
+  }
+
+  private getSimpleTableManualProps(allowActions: any, allowTableEdit: boolean, editMode: string) {
+    const props: any = {};
+    if (this.checkIfAllowActionsOrRowEditingExist(allowActions) && editMode) {
+      props.hideAddRow = allowActions?.allowAdd === false;
+      props.hideDeleteRow = allowActions?.allowDelete === false;
+      props.hideEditRow = allowActions?.allowEdit === false;
+      props.disableDragDrop = allowActions?.allowDragDrop === false;
+    } else if (allowTableEdit === false) {
+      props.hideAddRow = true;
+      props.hideDeleteRow = true;
+      props.disableDragDrop = true;
+    }
+    return props;
+  }
+
+  private getContextClassFromConfig() {
+    let listName = this.pConn$.getComponentConfig().referenceList;
+    listName = PCore.getAnnotationUtils().getPropertyName(listName);
+    return this.pConn$.getFieldMetadata(listName)?.pageClass;
+  }
+
+  private shouldShowDeleteButton(editableMode: boolean, simpleTableManualProps: any, allowRowDelete: any, rowData: any): boolean {
+    return editableMode && !simpleTableManualProps.hideDeleteRow && evaluateAllowRowAction(allowRowDelete, rowData);
+  }
+
+  private buildFilteredFieldDefs(rawFields, showDeleteButton, primaryFieldsViewIndex, resolvedFields) {
+    const fieldDefs = buildFieldsForTable(rawFields, this.pConn$, showDeleteButton, {
+      primaryFieldsViewIndex,
+      fields: resolvedFields
+    });
+    return fieldDefs?.filter(field => !(field.meta?.config?.hide === true));
+  }
+
+  private processResolvedFields(resolvedFields, labelsMap) {
+    return resolvedFields.map((field, i) => {
+      field.config.name = this.displayedColumns[i];
+      field.config.label = labelsMap[field.config.name] || field.config.label;
+      return field;
+    });
   }
 }

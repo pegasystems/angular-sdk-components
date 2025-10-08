@@ -164,18 +164,12 @@ export class MultiselectComponent extends FieldBase {
 
   // main search function trigger
   getCaseListBasedOnParams(searchText, group, selectedRows, currentItemsTree, isTriggeredFromSearch = false) {
-    if (this.referenceList && this.referenceList.length > 0) {
-      this.listActions.getSelectedRows(true).then(result => {
-        selectedRows =
-          result.length > 0
-            ? result.map(item => {
-                return {
-                  id: item[this.selectionKey.startsWith('.') ? this.selectionKey.substring(1) : this.selectionKey],
-                  primary: item[this.primaryField.startsWith('.') ? this.primaryField.substring(1) : this.primaryField]
-                };
-              })
-            : [];
-        this.selectedItems = selectedRows;
+    if (!(this.referenceList && this.referenceList.length > 0)) {
+      return;
+    }
+
+    this.listActions.getSelectedRows(true).then(result => {
+      this.selectedItems = this.processSelectedRows(result);
 
         const initalItemsTree = isTriggeredFromSearch || !currentItemsTree ? [...this.itemsTreeBaseData] : [...currentItemsTree];
 

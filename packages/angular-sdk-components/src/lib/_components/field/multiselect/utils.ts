@@ -85,72 +85,95 @@ function prepareSearchResults(listObjData, displayFieldMeta) {
   return searchResults;
 }
 
+async function handleUngroupedSearch(searchText, displayFieldMeta, dataApiObj, itemsTree, showSecondaryInSearchOnly, selected) {
+  const response = await dataApiObj.fetchData(searchText).catch(() => itemsTree);
+  const listObjData = response.data;
+  let newItemsTree = [];
+  const showSecondaryData = showSecondaryInSearchOnly ? !!searchText : true;
+  if (listObjData && listObjData.length > 0) {
+    newItemsTree = listObjData.map(entry => createSingleTreeObejct(entry, displayFieldMeta, showSecondaryData, selected));
+  }
+  return newItemsTree;
+}
+
+function setGroupSearchParameters(dataApiObj, searchText, initialCaseClass, clickedGroup) {
+  const paramKeys = Object.keys(dataApiObj.parameters);
+  dataApiObj.parameters[paramKeys[1]] = searchText;
+  dataApiObj.parameters[paramKeys[0]] = initialCaseClass;
+  if (clickedGroup) {
+    dataApiObj.parameters[paramKeys[0]] = JSON.stringify([clickedGroup]);
+  }
+}
+
+async function handleGroupedSearch(
+  searchText,
+  clickedGroup,
+  initialCaseClass,
+  displayFieldMeta,
+  dataApiObj,
+  itemsTree,
+  showSecondaryInSearchOnly,
+  selected
+) {
+  dataApiObj = cloneDeep(dataApiObj);
+  dataApiObj.fetchedNQData = false;
+  dataApiObj.cache = {};
+
+  if (searchText === '' && clickedGroup === '') {
+    return itemsTree;
+  }
+
+  setGroupSearchParameters(dataApiObj, searchText, initialCaseClass, clickedGroup);
+
+  if (clickedGroup && searchText === '') {
+    const containsData = itemsTree.find(item => item.id === clickedGroup);
+    if (containsData?.items?.length) return itemsTree;
+  }
+
+  const response = await dataApiObj.fetchData('').catch(() => itemsTree);
+  let listObjData = response.data;
+  let newItemsTree = [];
+
+  if (searchText) {
+    listObjData = prepareSearchResults(listObjData, displayFieldMeta);
+    const showSecondaryData = searchText ? showSecondaryInSearchOnly : true;
+    if (listObjData && listObjData.length > 0) {
+      newItemsTree = listObjData.map(entry => createSingleTreeObejct(entry, displayFieldMeta, showSecondaryData, selected));
+    }
+    return newItemsTree;
+  }
+  newItemsTree = putItemsDataInItemsTree(listObjData, displayFieldMeta, itemsTree, showSecondaryInSearchOnly, selected);
+  return newItemsTree;
+}
+
 async function doSearch(
   searchText,
   clickedGroup,
   initialCaseClass,
   displayFieldMeta,
-  dataApiObj, // deep clone of the dataApiObj
+  dataApiObj,
   itemsTree,
   isGroupData,
   showSecondaryInSearchOnly,
   selected
 ) {
-  let searchTextForUngroupedData = '';
-  if (dataApiObj) {
-    // creating dataApiObject in grouped data cases
-    if (isGroupData) {
-      dataApiObj = cloneDeep(dataApiObj);
-      dataApiObj.fetchedNQData = false;
-      dataApiObj.cache = {};
-
-      // if we have no search text and no group selected, return the original tree
-      if (searchText === '' && clickedGroup === '') {
-        return itemsTree;
-      }
-
-      // setting the inital search text & search classes in ApiObject
-      dataApiObj.parameters[Object.keys(dataApiObj.parameters)[1]] = searchText;
-      dataApiObj.parameters[Object.keys(dataApiObj.parameters)[0]] = initialCaseClass;
-
-      // if we have a selected group
-      if (clickedGroup) {
-        // check if the data for this group is already present and no search text
-        if (searchText === '') {
-          const containsData = itemsTree.find(item => item.id === clickedGroup);
-          // do not make API call when items of respective group are already fetched
-          if (containsData?.items?.length) return itemsTree;
-        }
-
-        dataApiObj.parameters[Object.keys(dataApiObj.parameters)[0]] = JSON.stringify([clickedGroup]);
-      }
-    } else {
-      searchTextForUngroupedData = searchText;
-    }
-
-    // search API call
-    const response = await dataApiObj.fetchData(searchTextForUngroupedData).catch(() => {
-      return itemsTree;
-    });
-
-    let listObjData = response.data;
-    let newItemsTree = [];
-    if (isGroupData) {
-      if (searchText) {
-        listObjData = prepareSearchResults(listObjData, displayFieldMeta);
-      } else {
-        newItemsTree = putItemsDataInItemsTree(listObjData, displayFieldMeta, itemsTree, showSecondaryInSearchOnly, selected);
-        return newItemsTree;
-      }
-    }
-    const showSecondaryData = showSecondaryInSearchOnly ? !!searchText : true;
-    if (listObjData !== undefined && listObjData.length > 0) {
-      newItemsTree = listObjData.map(entry => createSingleTreeObejct(entry, displayFieldMeta, showSecondaryData, selected));
-    }
-    return newItemsTree;
+  if (!dataApiObj) {
+    return itemsTree;
   }
 
-  return itemsTree;
+  if (isGroupData) {
+    return await handleGroupedSearch(
+      searchText,
+      clickedGroup,
+      initialCaseClass,
+      displayFieldMeta,
+      dataApiObj,
+      itemsTree,
+      showSecondaryInSearchOnly,
+      selected
+    );
+  }
+  return await handleUngroupedSearch(searchText, displayFieldMeta, dataApiObj, itemsTree, showSecondaryInSearchOnly, selected);
 }
 
 function setValuesToPropertyList(searchText, assocProp, items, columns, actions, updatePropertyInRedux = true) {

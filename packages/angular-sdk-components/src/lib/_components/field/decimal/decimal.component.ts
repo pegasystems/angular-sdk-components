@@ -83,7 +83,6 @@ export class DecimalComponent extends FieldBase {
     const theSymbols = getCurrencyCharacters(currencyISOCode);
     this.decimalSeparator = theSymbols.theDecimalIndicator;
     this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
-
     const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
     const formatterLower = formatter?.toLowerCase() || 'decimal';
     this.formattedValue = format(this.value$, formatterLower, theCurrencyOptions);

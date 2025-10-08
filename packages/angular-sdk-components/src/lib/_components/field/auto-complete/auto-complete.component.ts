@@ -42,7 +42,8 @@ interface AutoCompleteProps extends PConnFieldProps {
     MatAutocompleteModule,
     MatOptionModule,
     forwardRef(() => ComponentMapperComponent)
-  ]
+  ],
+  providers: [DatapageService]
 })
 export class AutoCompleteComponent extends FieldBase implements OnInit {
   protected dataPageService = inject(DatapageService);

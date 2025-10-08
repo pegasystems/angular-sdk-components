@@ -79,25 +79,10 @@ export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
     }
     this.variant = this.configProps$.variant;
 
-    // multi case
     this.selectionMode = this.configProps$.selectionMode;
-    if (this.selectionMode === 'multi') {
-      this.referenceList = this.configProps$.referenceList;
-      this.selectionList = this.configProps$.selectionList;
-      this.selectedvalues = this.configProps$.readonlyContextList;
-      this.primaryField = this.configProps$.primaryField;
-      this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
 
-      this.datasource = this.configProps$.datasource;
-      this.selectionKey = this.configProps$.selectionKey;
-      const listSourceItems = this.datasource?.source ?? [];
-      const dataField = this.selectionKey?.split?.('.')[1] ?? '';
-      const listToDisplay: any[] = [];
-      listSourceItems.forEach(element => {
-        element.selected = this.selectedvalues?.some?.(data => data[dataField] === element.key);
-        listToDisplay.push(element);
-      });
-      this.listOfCheckboxes = listToDisplay;
+    if (this.selectionMode === 'multi') {
+      this.handleMultiMode();
     } else {
       if (this.configProps$.value != undefined) {
         this.value$ = this.configProps$.value;

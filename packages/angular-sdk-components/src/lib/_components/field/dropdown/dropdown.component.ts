@@ -117,7 +117,6 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
     this.value$ = value;
 
     if (!isEqual(datasource, this.theDatasource)) {
-      // inbound datasource is different, so update theDatasource
       this.theDatasource = datasource || null;
     }
 
@@ -126,13 +125,10 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
     }
 
     if (this.theDatasource) {
-      const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-      optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-      this.options = optionsList;
+      this.setOptionsList();
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
-
     this.propName = this.pConn$.getStateProps().value;
     const className = this.pConn$.getCaseInfo().getClassName();
     const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);

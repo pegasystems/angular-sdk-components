@@ -324,27 +324,16 @@ export class ListViewComponent implements OnInit, OnDestroy {
       isDateRange = !!data.filterExpression?.AND;
       field = this.getFieldFromFilter(filterExpression, isDateRange);
 
-      // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-      this.displayedColumns$?.forEach(col => {
-        selectParam.push({
-          field: col
-        });
-      });
+      this.displayedColumns$?.forEach(col => selectParam.push({ field: col }));
 
-      // Checking if the triggered filter is applicable for this list
       if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
         return;
       }
     }
 
-    // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
     const relationalOp = 'AND';
-
-    // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
     let validFilter = false;
-
     let index = 1;
-    // Iterating over the current filters list to create filter data which will be POSTed
     const filterKeys: any[] = Object.keys(this.filters);
     const filterValues: any[] = Object.values(this.filters);
     for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
@@ -378,12 +367,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
         } else {
           dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
         }
-
-        dashboardFilterPayload.query.select = selectParam;
       }
     }
 
-    // Reset the dashboardFilterPayload if we end up with no valid filters for the list
     if (!validFilter) {
       dashboardFilterPayload = undefined;
     }
