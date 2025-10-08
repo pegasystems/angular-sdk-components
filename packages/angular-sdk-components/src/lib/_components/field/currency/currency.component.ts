@@ -115,44 +115,24 @@ export class CurrencyComponent implements OnInit, OnDestroy {
 
   // updateSelf
   updateSelf(): void {
-    // starting very simple...
-
-    // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CurrrencyProps;
     this.testId = this.configProps$.testId;
     this.label$ = this.configProps$.label;
     this.displayMode$ = this.configProps$.displayMode;
     this.inputMode = NgxCurrencyInputMode.Natural;
-    let nValue: any = this.configProps$.value;
-    if (nValue) {
-      if (typeof nValue === 'string') {
-        nValue = parseFloat(nValue);
-      }
-      this.value$ = nValue;
-    } else {
-      this.value$ = null;
-    }
+
+    this.setValueFromConfig();
     this.fieldControl.setValue(this.value$);
+
     this.helperText = this.configProps$.helperText;
     this.placeholder = this.configProps$.placeholder || '';
     const currencyISOCode = this.configProps$?.currencyISOCode ?? '';
 
-    const theSymbols = getCurrencyCharacters(currencyISOCode);
-    this.currencySymbol = theSymbols.theCurrencySymbol;
-    this.thousandSeparator = theSymbols.theDigitGroupSeparator;
-    this.decimalSeparator = theSymbols.theDecimalIndicator;
+    this.setCurrencySymbols(currencyISOCode);
+
     this.formatter = this.configProps$.formatter;
+    this.setFormattedValue(currencyISOCode);
 
-    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
-      const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
-      if (this.formatter) {
-        this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
-      } else {
-        this.formattedValue = format(this.value$, 'currency', theCurrencyOptions);
-      }
-    }
-
-    // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => {
       if (this.configProps$.required != null) {
         this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
@@ -164,38 +144,13 @@ export class CurrencyComponent implements OnInit, OnDestroy {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
-    // disabled
-    if (this.configProps$.disabled != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    }
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
-    }
-
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
-
-    if (this.configProps$.currencyISOCode != null) {
-      this.currencyISOCode = this.configProps$.currencyISOCode;
-    }
-
+    this.setDisabledState();
+    this.setReadonlyState();
+    this.setCurrencyISOCode();
     this.decimalPrecision = this.configProps$?.allowDecimals ? 2 : 0;
-
     this.componentReference = this.pConn$.getStateProps().value;
 
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      const timer = interval(100).subscribe(() => {
-        this.fieldControl.setErrors({ message: true });
-        this.fieldControl.markAsTouched();
-
-        timer.unsubscribe();
-      });
-    }
+    this.triggerErrorMessage();
   }
 
   fieldOnBlur(event: any) {
@@ -235,5 +190,68 @@ export class CurrencyComponent implements OnInit, OnDestroy {
     }
 
     return errMessage;
+  }
+
+  private setValueFromConfig() {
+    let nValue: any = this.configProps$.value;
+    if (nValue) {
+      if (typeof nValue === 'string') {
+        nValue = parseFloat(nValue);
+      }
+      this.value$ = nValue;
+    } else {
+      this.value$ = null;
+    }
+  }
+
+  private setCurrencySymbols(currencyISOCode: string) {
+    const theSymbols = getCurrencyCharacters(currencyISOCode);
+    this.currencySymbol = theSymbols.theCurrencySymbol;
+    this.thousandSeparator = theSymbols.theDigitGroupSeparator;
+    this.decimalSeparator = theSymbols.theDecimalIndicator;
+  }
+
+  private setFormattedValue(currencyISOCode: string) {
+    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
+      const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
+      if (this.formatter) {
+        this.formattedValue = format(this.value$, this.formatter.toLowerCase(), theCurrencyOptions);
+      } else {
+        this.formattedValue = format(this.value$, 'currency', theCurrencyOptions);
+      }
+    }
+  }
+
+  private setDisabledState() {
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
+    }
+    if (this.bDisabled$) {
+      this.fieldControl.disable();
+    } else {
+      this.fieldControl.enable();
+    }
+  }
+
+  private setReadonlyState() {
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
+    }
+  }
+
+  private setCurrencyISOCode() {
+    if (this.configProps$.currencyISOCode != null) {
+      this.currencyISOCode = this.configProps$.currencyISOCode;
+    }
+  }
+
+  private triggerErrorMessage() {
+    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
+      const timer = interval(100).subscribe(() => {
+        this.fieldControl.setErrors({ message: true });
+        this.fieldControl.markAsTouched();
+        timer.unsubscribe();
+      });
+    }
   }
 }

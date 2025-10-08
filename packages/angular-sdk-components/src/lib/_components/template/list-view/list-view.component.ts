@@ -311,82 +311,62 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     if (this.displayAs === 'advancedSearch') {
       this.filters = {};
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(data).reduce((acc, [item, value]) => {
-        // eslint-disable-next-line @typescript-eslint/no-shadow
-        const { filterId, filterExpression } = value as any;
-        // filterExpression = value.filterExpression;
-        this.filters[filterId] = filterExpression;
-        return acc; // Ensure the accumulator is returned
-      }, {});
+      Object.entries(data).forEach(([, value]) => {
+        const { filterId: innerFilterId, filterExpression: innerFilterExpression } = value as any;
+        this.filters[innerFilterId] = innerFilterExpression;
+      });
     } else {
       ({ filterId, filterExpression } = data);
       this.filters[filterId] = filterExpression;
       isDateRange = !!data.filterExpression?.AND;
       field = this.getFieldFromFilter(filterExpression, isDateRange);
 
-      // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-      this.displayedColumns$?.forEach(col => {
-        selectParam.push({
-          field: col
-        });
-      });
+      this.displayedColumns$?.forEach(col => selectParam.push({ field: col }));
 
-      // Checking if the triggered filter is applicable for this list
       if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
         return;
       }
     }
 
-    // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
     const relationalOp = 'AND';
-
-    // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
     let validFilter = false;
-
     let index = 1;
-    // Iterating over the current filters list to create filter data which will be POSTed
     const filterKeys: any[] = Object.keys(this.filters);
     const filterValues: any[] = Object.values(this.filters);
+
+    const isValidFilter = (filter, filterField) => filter !== null && this.displayedColumns$?.length && this.displayedColumns$?.includes(filterField);
+
+    const addSimpleFilter = (dashboardPayload, filter, idx) => {
+      dashboardPayload.query.filter.filterConditions = {
+        ...dashboardPayload.query.filter.filterConditions,
+        [`T${idx}`]: {
+          ...filter.condition,
+          ...(filter.condition.comparator === 'CONTAINS' ? { ignoreCase: true } : {})
+        }
+      };
+      dashboardPayload.query.filter.logic = dashboardPayload.query.filter.logic
+        ? `${dashboardPayload.query.filter.logic} ${relationalOp} T${idx}`
+        : `T${idx}`;
+      dashboardPayload.query.select = selectParam;
+    };
+
     for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
       const filter = filterValues[filterIndex];
-      // If the filter is null then we can skip this iteration
-      if (filter === null) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-
-      // Checking if the filter is of type- Date Range
       isDateRange = !!filter?.AND;
       field = this.getFieldFromFilter(filter, isDateRange);
 
-      if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-      // If we reach here that implies we've at least one valid filter, hence setting the flag
-      validFilter = true;
-      /** Below are the 2 cases for- Text & Date-Range filter types where we'll construct filter data which will be sent in the dashboardFilterPayload
-       * In Constellation DX Components, through Repeating Structures they might be using several APIs to do it. We're doing it here
-       */
-      if (isDateRange) {
-        dashboardFilterPayload = this.filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index);
-      } else {
-        dashboardFilterPayload.query.filter.filterConditions = {
-          ...dashboardFilterPayload.query.filter.filterConditions,
-          [`T${index++}`]: { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' ? { ignoreCase: true } : {}) }
-        };
-        if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index - 1}`;
-        } else {
-          dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
-        }
+      if (isValidFilter(filter, field)) {
+        validFilter = true;
 
-        dashboardFilterPayload.query.select = selectParam;
+        if (isDateRange) {
+          dashboardFilterPayload = this.filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index);
+          index += 2;
+        } else {
+          addSimpleFilter(dashboardFilterPayload, filter, index++);
+        }
       }
     }
 
-    // Reset the dashboardFilterPayload if we end up with no valid filters for the list
     if (!validFilter) {
       dashboardFilterPayload = undefined;
     }
