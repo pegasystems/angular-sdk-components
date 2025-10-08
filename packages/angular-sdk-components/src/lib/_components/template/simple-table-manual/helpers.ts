@@ -198,32 +198,43 @@ export function getFieldLabel(fieldConfig) {
 export const updateFieldLabels = (fields, configFields, primaryFieldsViewIndex, pConnect, options) => {
   const labelsOfFields: any = [];
   const { columnsRawConfig = [] } = options;
-  fields.forEach((field, idx) => {
+
+  // Helper to resolve label for a field
+  const resolveLabel = (field, idx) => {
     const rawColumnConfig = columnsRawConfig[idx]?.config;
     if (field.config.value === PRIMARY_FIELDS) {
-      labelsOfFields.push('');
-    } else if (isFLProperty(rawColumnConfig?.label ?? rawColumnConfig?.caption)) {
-      labelsOfFields.push(getFieldLabel(rawColumnConfig) || field.config.label || field.config.caption);
-    } else {
-      labelsOfFields.push(field.config.label || field.config.caption);
+      return '';
     }
+    const rawLabel = rawColumnConfig?.label ?? rawColumnConfig?.caption;
+    if (isFLProperty(rawLabel)) {
+      return getFieldLabel(rawColumnConfig) || field.config.label || field.config.caption;
+    }
+    return field.config.label || field.config.caption;
+  };
+
+  fields.forEach((field, idx) => {
+    labelsOfFields.push(resolveLabel(field, idx));
   });
+
+  const getPrimaryFieldLabel = config => {
+    let label = config?.label;
+    if (isFLProperty(label)) {
+      label = getFieldLabel(config);
+    } else if (label && label.startsWith('@')) {
+      label = label.substring(3);
+    }
+    if (pConnect) {
+      label = pConnect.getLocalizedValue(label);
+    }
+    return label;
+  };
 
   if (primaryFieldsViewIndex > -1) {
     const totalPrimaryFieldsColumns = configFields.length - fields.length + 1;
     if (totalPrimaryFieldsColumns) {
       const primaryFieldLabels: any = [];
       for (let i = primaryFieldsViewIndex; i < primaryFieldsViewIndex + totalPrimaryFieldsColumns; i += 1) {
-        let label = configFields[i].config?.label;
-        if (isFLProperty(label)) {
-          label = getFieldLabel(configFields[i].config);
-        } else if (label.startsWith('@')) {
-          label = label.substring(3);
-        }
-        if (pConnect) {
-          label = pConnect.getLocalizedValue(label);
-        }
-        primaryFieldLabels.push(label);
+        primaryFieldLabels.push(getPrimaryFieldLabel(configFields[i].config));
       }
       labelsOfFields.splice(primaryFieldsViewIndex, 1, ...primaryFieldLabels);
     } else {

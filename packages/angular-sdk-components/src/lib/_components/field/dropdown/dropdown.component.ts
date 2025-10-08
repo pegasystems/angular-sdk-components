@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { interval } from 'rxjs';
 import isEqual from 'fast-deep-equal';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { DatapageService } from '../../../_services/datapage.service';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -106,8 +105,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
-    private utils: Utils,
-    private dataPageService: DatapageService
+    private utils: Utils
   ) {}
 
   ngOnInit(): void {
@@ -172,19 +170,15 @@ export class DropdownComponent implements OnInit, OnDestroy {
 
   // updateSelf
   updateSelf(): void {
-    // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as DropdownProps;
-    if (this.configProps$.value != undefined) {
-      this.value$ = this.configProps$.value;
-    }
-
+    this.value$ = this.configProps$.value !== undefined ? this.configProps$.value : this.value$;
     this.testId = this.configProps$.testId;
     this.displayMode$ = this.configProps$.displayMode;
     this.label$ = this.configProps$.label;
     this.helperText = this.configProps$.helperText;
     this.hideLabel = this.configProps$.hideLabel;
     const datasource = this.configProps$.datasource;
-    // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
+
     setTimeout(() => {
       if (this.configProps$.required != null) {
         this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
@@ -193,7 +187,6 @@ export class DropdownComponent implements OnInit, OnDestroy {
     });
 
     if (!isEqual(datasource, this.theDatasource)) {
-      // inbound datasource is different, so update theDatasource
       this.theDatasource = datasource || null;
     }
 
@@ -201,20 +194,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
-    // disabled
-    if (this.configProps$.disabled != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    }
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
-    }
-
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
+    this.setDisabledState();
+    this.setReadonlyState();
 
     this.componentReference = this.pConn$.getStateProps().value;
 
@@ -223,26 +204,13 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
 
     if (this.theDatasource) {
-      const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-      optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-      this.options = optionsList;
+      this.setOptionsList();
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
-
     this.propName = this.pConn$.getStateProps().value;
-    const className = this.pConn$.getCaseInfo().getClassName();
-    const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);
 
-    this.fieldMetadata = this.configProps$.fieldMetadata;
-    const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.filter(field => field?.classID === className)[0] : this.fieldMetadata;
-
-    let displayName = metaData?.datasource?.propertyForDisplayText;
-    displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);
-    this.localeContext = metaData?.datasource?.tableType === 'DataPage' ? 'datapage' : 'associated';
-    this.localeClass = this.localeContext === 'datapage' ? '@baseclass' : className;
-    this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
-    this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
+    this.setLocaleMetadata();
 
     this.localizedValue = this.pConn$.getLocalizedValue(
       this.value$,
@@ -252,15 +220,8 @@ export class DropdownComponent implements OnInit, OnDestroy {
 
     this.localizedValue = this.options$?.find(opt => opt.key === this.value$)?.value || this.localizedValue;
     this.getDatapageData();
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      const timer = interval(100).subscribe(() => {
-        this.fieldControl.setErrors({ message: true });
-        this.fieldControl.markAsTouched();
 
-        timer.unsubscribe();
-      });
-    }
+    this.triggerErrorMessage();
   }
 
   getDatapageData() {
@@ -367,5 +328,53 @@ export class DropdownComponent implements OnInit, OnDestroy {
     }
 
     return errMessage;
+  }
+
+  private setDisabledState() {
+    if (this.configProps$.disabled !== undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
+    }
+    if (this.bDisabled$) {
+      this.fieldControl.disable();
+    } else {
+      this.fieldControl.enable();
+    }
+  }
+
+  private setReadonlyState() {
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
+    }
+  }
+
+  private setOptionsList() {
+    const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
+    optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+    this.options = optionsList;
+  }
+
+  private setLocaleMetadata() {
+    this.fieldMetadata = this.configProps$.fieldMetadata;
+    const className = this.pConn$.getCaseInfo().getClassName();
+    const metaData = Array.isArray(this.fieldMetadata) ? this.fieldMetadata.find(field => field?.classID === className) : this.fieldMetadata;
+
+    let displayName = metaData?.datasource?.propertyForDisplayText;
+    displayName = displayName?.slice(displayName.lastIndexOf('.') + 1);
+    const refName = this.propName?.slice(this.propName.lastIndexOf('.') + 1);
+
+    this.localeContext = metaData?.datasource?.tableType === 'DataPage' ? 'datapage' : 'associated';
+    this.localeClass = this.localeContext === 'datapage' ? '@baseclass' : className;
+    this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
+    this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
+  }
+
+  private triggerErrorMessage() {
+    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage !== '') {
+      const timer = interval(100).subscribe(() => {
+        this.fieldControl.setErrors({ message: true });
+        this.fieldControl.markAsTouched();
+        timer.unsubscribe();
+      });
+    }
   }
 }

@@ -145,27 +145,7 @@ export class MultiselectComponent implements OnInit, OnDestroy {
           key: 'true'
         }
       ];
-      let secondaryColumns: any = [];
-      if (this.secondaryFields) {
-        secondaryColumns = this.secondaryFields.map(secondaryField => ({
-          value: secondaryField,
-          display: 'true',
-          secondary: 'true',
-          useForSearch: 'true'
-        }));
-      } else {
-        secondaryColumns = [
-          {
-            value: this.selectionKey,
-            display: 'true',
-            secondary: 'true',
-            useForSearch: 'true'
-          }
-        ];
-      }
-      if (this.referenceType === 'Case') {
-        columns = [...columns, ...secondaryColumns];
-      }
+      columns = this.addSecondaryColumns(columns);
     }
 
     this.value$ = this.value$ ? this.value$ : '';
@@ -251,36 +231,29 @@ export class MultiselectComponent implements OnInit, OnDestroy {
 
   // main search function trigger
   getCaseListBasedOnParams(searchText, group, selectedRows, currentItemsTree, isTriggeredFromSearch = false) {
-    if (this.referenceList && this.referenceList.length > 0) {
-      this.listActions.getSelectedRows(true).then(result => {
-        selectedRows =
-          result.length > 0
-            ? result.map(item => {
-                return {
-                  id: item[this.selectionKey.startsWith('.') ? this.selectionKey.substring(1) : this.selectionKey],
-                  primary: item[this.primaryField.startsWith('.') ? this.primaryField.substring(1) : this.primaryField]
-                };
-              })
-            : [];
-        this.selectedItems = selectedRows;
-
-        const initalItemsTree = isTriggeredFromSearch || !currentItemsTree ? [...this.itemsTreeBaseData] : [...currentItemsTree];
-
-        doSearch(
-          searchText,
-          group,
-          this.initialCaseClass,
-          this.displayFieldMeta,
-          this.dataApiObj,
-          initalItemsTree,
-          this.isGroupData,
-          this.showSecondaryInSearchOnly,
-          selectedRows || []
-        ).then(res => {
-          this.itemsTree = res || [];
-        });
-      });
+    if (!(this.referenceList && this.referenceList.length > 0)) {
+      return;
     }
+
+    this.listActions.getSelectedRows(true).then(result => {
+      this.selectedItems = this.processSelectedRows(result);
+
+      const initalItemsTree = isTriggeredFromSearch || !currentItemsTree ? [...this.itemsTreeBaseData] : [...currentItemsTree];
+
+      doSearch(
+        searchText,
+        group,
+        this.initialCaseClass,
+        this.displayFieldMeta,
+        this.dataApiObj,
+        initalItemsTree,
+        this.isGroupData,
+        this.showSecondaryInSearchOnly,
+        this.selectedItems
+      ).then(res => {
+        this.itemsTree = res || [];
+      });
+    });
   }
 
   fieldOnChange(event: Event) {
@@ -362,5 +335,40 @@ export class MultiselectComponent implements OnInit, OnDestroy {
     }
 
     return errMessage;
+  }
+
+  private processSelectedRows(result: any[]): any[] {
+    if (!result || result.length === 0) {
+      return [];
+    }
+    return result.map(item => ({
+      id: item[this.selectionKey.startsWith('.') ? this.selectionKey.substring(1) : this.selectionKey],
+      primary: item[this.primaryField.startsWith('.') ? this.primaryField.substring(1) : this.primaryField]
+    }));
+  }
+
+  private addSecondaryColumns(columns: any[]): any[] {
+    let secondaryColumns: any[] = [];
+    if (this.secondaryFields) {
+      secondaryColumns = this.secondaryFields.map(secondaryField => ({
+        value: secondaryField,
+        display: 'true',
+        secondary: 'true',
+        useForSearch: 'true'
+      }));
+    } else {
+      secondaryColumns = [
+        {
+          value: this.selectionKey,
+          display: 'true',
+          secondary: 'true',
+          useForSearch: 'true'
+        }
+      ];
+    }
+    if (this.referenceType === 'Case') {
+      return [...columns, ...secondaryColumns];
+    }
+    return columns;
   }
 }

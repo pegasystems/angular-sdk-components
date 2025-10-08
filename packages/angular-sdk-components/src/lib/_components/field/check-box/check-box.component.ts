@@ -137,93 +137,23 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
   // updateSelf
   updateSelf(): void {
-    // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CheckboxProps;
 
     this.testId = this.configProps$.testId;
     this.displayMode$ = this.configProps$.displayMode;
     this.label$ = this.configProps$.label;
-    if (this.label$ != '') {
-      this.showLabel$ = true;
-    }
+    this.showLabel$ = !!this.label$;
 
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;
     this.variant = this.configProps$.variant;
 
-    // multi case
     this.selectionMode = this.configProps$.selectionMode;
+
     if (this.selectionMode === 'multi') {
-      this.referenceList = this.configProps$.referenceList;
-      this.selectionList = this.configProps$.selectionList;
-      this.selectedvalues = this.configProps$.readonlyContextList;
-      this.primaryField = this.configProps$.primaryField;
-      this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
-
-      this.datasource = this.configProps$.datasource;
-      this.selectionKey = this.configProps$.selectionKey;
-      const listSourceItems = this.datasource?.source ?? [];
-      const dataField = this.selectionKey?.split?.('.')[1] ?? '';
-      const listToDisplay: any[] = [];
-      listSourceItems.forEach(element => {
-        element.selected = this.selectedvalues?.some?.(data => data[dataField] === element.key);
-        listToDisplay.push(element);
-      });
-      this.listOfCheckboxes = listToDisplay;
+      this.handleMultiMode();
     } else {
-      if (this.configProps$.value != undefined) {
-        this.value$ = this.configProps$.value;
-      }
-
-      this.caption$ = this.configProps$.caption;
-      this.helperText = this.configProps$.helperText;
-      this.trueLabel$ = this.configProps$.trueLabel || 'Yes';
-      this.falseLabel$ = this.configProps$.falseLabel || 'No';
-
-      // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => {
-        if (this.configProps$.required != null) {
-          this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-        }
-        this.cdRef.detectChanges();
-      });
-
-      if (this.configProps$.visibility != null) {
-        this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-      }
-
-      // disabled
-      if (this.configProps$.disabled != undefined) {
-        this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-      }
-
-      if (this.configProps$.readOnly != null) {
-        this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-      }
-
-      if (this.bDisabled$ || this.bReadonly$) {
-        this.fieldControl.disable();
-      } else {
-        this.fieldControl.enable();
-      }
-
-      this.componentReference = this.pConn$.getStateProps().value;
-
-      // eslint-disable-next-line sonarjs/no-redundant-boolean
-      if (this.value$ === 'true' || this.value$ == true) {
-        this.isChecked$ = true;
-      } else {
-        this.isChecked$ = false;
-      }
-      // trigger display of error message with field control
-      if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-        const timer = interval(100).subscribe(() => {
-          this.fieldControl.setErrors({ message: true });
-          this.fieldControl.markAsTouched();
-
-          timer.unsubscribe();
-        });
-      }
+      this.handleSingleMode();
     }
   }
 
@@ -277,5 +207,69 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
     }
 
     return errMessage;
+  }
+
+  private handleMultiMode(): void {
+    this.referenceList = this.configProps$.referenceList;
+    this.selectionList = this.configProps$.selectionList;
+    this.selectedvalues = this.configProps$.readonlyContextList;
+    this.primaryField = this.configProps$.primaryField;
+    this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
+
+    this.datasource = this.configProps$.datasource;
+    this.selectionKey = this.configProps$.selectionKey;
+    const listSourceItems = this.datasource?.source ?? [];
+    const dataField = this.selectionKey?.split?.('.')[1] ?? '';
+    this.listOfCheckboxes = listSourceItems.map(element => {
+      element.selected = this.selectedvalues?.some?.(data => data[dataField] === element.key);
+      return element;
+    });
+  }
+
+  private handleSingleMode(): void {
+    if (this.configProps$.value != undefined) {
+      this.value$ = this.configProps$.value;
+    }
+
+    this.caption$ = this.configProps$.caption;
+    this.helperText = this.configProps$.helperText;
+    this.trueLabel$ = this.configProps$.trueLabel || 'Yes';
+    this.falseLabel$ = this.configProps$.falseLabel || 'No';
+
+    setTimeout(() => {
+      if (this.configProps$.required != null) {
+        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
+      }
+      this.cdRef.detectChanges();
+    });
+
+    if (this.configProps$.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
+    }
+
+    if (this.configProps$.disabled != undefined) {
+      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
+    }
+
+    if (this.configProps$.readOnly != null) {
+      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
+    }
+
+    if (this.bDisabled$ || this.bReadonly$) {
+      this.fieldControl.disable();
+    } else {
+      this.fieldControl.enable();
+    }
+
+    this.componentReference = this.pConn$.getStateProps().value;
+    this.isChecked$ = this.utils.getBooleanValue(this.value$);
+
+    if (this.angularPConnectData.validateMessage) {
+      const timer = interval(100).subscribe(() => {
+        this.fieldControl.setErrors({ message: true });
+        this.fieldControl.markAsTouched();
+        timer.unsubscribe();
+      });
+    }
   }
 }
