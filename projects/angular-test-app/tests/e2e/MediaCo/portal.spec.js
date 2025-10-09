@@ -16,7 +16,7 @@ test.describe('E2E test', () => {
     const announcementBanner = page.locator('h2:has-text("Announcements")');
     await expect(announcementBanner).toBeVisible();
 
-    const worklist = page.locator('div[id="worklist"]:has-text("Tasks")');
+    const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
     await expect(worklist).toBeVisible();
 
     const navbar = page.locator('app-navbar');
