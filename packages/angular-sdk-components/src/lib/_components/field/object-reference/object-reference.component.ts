@@ -74,7 +74,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     const showPromotedFilters = this.configProps.showPromotedFilters;
     const referenceType: string = targetObjectType === 'case' ? 'Case' : 'Data';
     this.rawViewMetadata = this.pConn$.getRawMetadata();
-    const refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.value?.split('.', 2)[1]);
+    const refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.value?.split('.', 2)[1] ?? '');
 
     // Destructured properties
     const propsToUse = { ...this.pConn$.getInheritedProps(), ...this.configProps };
@@ -202,7 +202,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
   onRecordChange(value) {
     const caseKey = this.pConn$.getCaseInfo().getKey() ?? '';
     const refreshOptions = { autoDetectRefresh: true, propertyName: '' };
-    refreshOptions.propertyName = this.rawViewMetadata?.config?.value;
+    refreshOptions.propertyName = this.rawViewMetadata?.config?.value ?? '';
 
     if (!this.canBeChangedInReviewMode || !this.pConn$.getValue('__currentPageTabViewName')) {
       const pgRef = this.pConn$.getPageReference().replace('caseInfo.content', '') ?? '';
@@ -215,8 +215,8 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     const propValue = value;
     const propName =
       this.rawViewMetadata?.type === 'SimpleTableSelect' && this.configProps.mode === 'multi'
-        ? PCore.getAnnotationUtils().getPropertyName(this.rawViewMetadata?.config?.selectionList)
-        : PCore.getAnnotationUtils().getPropertyName(this.rawViewMetadata?.config?.value);
+        ? PCore.getAnnotationUtils().getPropertyName(this.rawViewMetadata?.config?.selectionList ?? '')
+        : PCore.getAnnotationUtils().getPropertyName(this.rawViewMetadata?.config?.value ?? '');
 
     if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
       PCore.getCaseUtils()
