@@ -137,7 +137,7 @@ export function getData(deferLoadedTabs, tabCountSources, currentTabId, data) {
         }))
       )
       .then(res => {
-        const values = res?.data?.caseInfo?.content || {};
+        const values = (res?.data as any)?.caseInfo?.content || {};
         const temp = calculatedFields.map(field => ({
           ...field,
           count: values[field.propertyName?.substring(1)] || field.count

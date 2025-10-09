@@ -404,7 +404,7 @@ export const createPConnect = (contextName, referenceList, pageReference) => {
 
   // create PConnect object
   const config = { meta: {}, options };
-  const { getPConnect } = PCore.createPConnect(config);
+  const { getPConnect } = PCore.createPConnect(config as any);
 
   return getPConnect();
 };
