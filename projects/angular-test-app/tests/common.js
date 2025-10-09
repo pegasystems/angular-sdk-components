@@ -2,8 +2,8 @@ const { expect } = require('@playwright/test');
 const { config } = require('./config');
 
 const createCase = async (caseTypeName, page) => {
-  const createCase = page.locator('mat-list-item[id="create-case-button"]');
-  await createCase.click();
+  const createCaseBtn = page.locator('mat-list-item[id="create-case-button"]');
+  await createCaseBtn.click();
   const caseType = page.locator(`mat-list-item[id="case-list-item"] > span:has-text("${caseTypeName}")`);
   await caseType.click();
 };
@@ -32,7 +32,6 @@ const login = async (username, password, page) => {
 };
 
 const getAttributes = async element => {
-  // eslint-disable-next-line no-return-await
   return await element.evaluate(async ele => ele.getAttributeNames());
 };
 
