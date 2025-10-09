@@ -228,8 +228,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     const caseKey = this.pConn$.getCaseInfo().getKey();
     const refreshOptions: any = { autoDetectRefresh: true, propertyName: '' };
 
-    if (this.pConn$?.getRawMetadata()?.children?.length > 0 && this.pConn$?.getRawMetadata()?.children[0].config?.value) {
-      refreshOptions.propertyName = this.pConn$?.getRawMetadata()?.children[0].config.value;
+    if ((this.pConn$?.getRawMetadata()?.children as any)?.length > 0 && this.pConn$?.getRawMetadata()?.children?.[0].config?.value) {
+      refreshOptions.propertyName = this.pConn$?.getRawMetadata()?.children?.[0].config.value;
       refreshOptions.classID = (this.pConn$.getRawMetadata() as any).classID;
     }
 

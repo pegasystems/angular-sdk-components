@@ -450,7 +450,7 @@ export class Utils {
 
     for (const part of pathParts) {
       if (!currentObj[part]) return key;
-      currentObj = currentObj[part];
+      currentObj = currentObj[part] as any;
     }
 
     return currentObj[key] || key;

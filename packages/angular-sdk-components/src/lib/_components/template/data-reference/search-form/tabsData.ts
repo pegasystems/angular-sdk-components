@@ -1,4 +1,4 @@
-import { getTabLabel } from 'packages/angular-sdk-components/src/public-api';
+import { getTabLabel } from '../../../../_helpers/tab-utils';
 
 export function getTabCountSources(deferLoadedTabs) {
   const availableTabs = deferLoadedTabs.getPConnect().getChildren() || [];
@@ -137,7 +137,7 @@ export function getData(deferLoadedTabs, tabCountSources, currentTabId, data) {
         }))
       )
       .then(res => {
-        const values = res?.data?.caseInfo?.content || {};
+        const values = (res?.data as any)?.caseInfo?.content || {};
         const temp = calculatedFields.map(field => ({
           ...field,
           count: values[field.propertyName?.substring(1)] || field.count
