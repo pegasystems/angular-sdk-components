@@ -1,9 +1,9 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, forwardRef, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { getDataRelationshipContextFromKey } from '../../field/object-reference/utils';
-import { CommonModule } from '@angular/common';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { getDataRelationshipContextFromKey } from '../../../_helpers/objectReference-utils';
 
 @Component({
   selector: 'app-single-reference-readonly',

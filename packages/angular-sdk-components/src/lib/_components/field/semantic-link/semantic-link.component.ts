@@ -2,9 +2,9 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { getDataReferenceInfo, isLinkTextEmpty } from '../../../_helpers/semanticLink-utils';
 import { Utils } from '../../../_helpers/utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-import { getDataReferenceInfo, isLinkTextEmpty } from './utils';
 
 interface SemanticLinkProps extends PConnFieldProps {
   // If any, enter additional props that only exist on SemanticLink here

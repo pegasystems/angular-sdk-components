@@ -1,11 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, forwardRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
-import { generateColumns, getDataRelationshipContextFromKey } from './utils';
-import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { CommonModule } from '@angular/common';
 import { ComponentMetadataConfig } from '@pega/pcore-pconnect-typedefs/interpreter/types';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { generateColumns, getDataRelationshipContextFromKey } from '../../../_helpers/objectReference-utils';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface ObjectReferenceProps extends PConnFieldProps {
   showPromotedFilters: boolean;
