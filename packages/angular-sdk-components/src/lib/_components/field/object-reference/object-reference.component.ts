@@ -5,6 +5,7 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { generateColumns, getDataRelationshipContextFromKey } from './utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { CommonModule } from '@angular/common';
+import { ComponentMetadataConfig } from '@pega/pcore-pconnect-typedefs/interpreter/types';
 
 interface ObjectReferenceProps extends PConnFieldProps {
   showPromotedFilters: boolean;
@@ -35,7 +36,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
   canBeChangedInReviewMode: boolean;
   newComponentName: string;
   newPconn: typeof PConnect;
-  parentProps: {};
+  rawViewMetadata: ComponentMetadataConfig | undefined;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -72,28 +73,30 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     const inline = this.configProps.inline;
     const showPromotedFilters = this.configProps.showPromotedFilters;
     const referenceType: string = targetObjectType === 'case' ? 'Case' : 'Data';
-    const rawViewMetadata = this.pConn$.getRawMetadata();
-    const refFieldMetadata = this.pConn$.getFieldMetadata(rawViewMetadata?.config?.value?.split('.', 2)[1]);
+    this.rawViewMetadata = this.pConn$.getRawMetadata();
+    const refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.value?.split('.', 2)[1]);
 
     // Destructured properties
     const propsToUse = { ...this.pConn$.getInheritedProps(), ...this.configProps };
 
     // Computed variables
     this.isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
-    this.canBeChangedInReviewMode = editableInReview && ['Autocomplete', 'Dropdown'].includes((rawViewMetadata?.config as any)?.componentType);
+    this.canBeChangedInReviewMode = editableInReview && ['Autocomplete', 'Dropdown'].includes((this.rawViewMetadata?.config as any)?.componentType);
     // componentType is not defined in ComponentMetadataConfig type so using any
-    this.type = (rawViewMetadata?.config as any)?.componentType;
+    this.type = (this.rawViewMetadata?.config as any)?.componentType;
 
     if (this.type === 'SemanticLink' && !this.canBeChangedInReviewMode) {
       const config: any = {
-        ...rawViewMetadata?.config,
-        primaryField: (rawViewMetadata?.config as any).displayField
+        ...this.rawViewMetadata?.config,
+        primaryField: (this.rawViewMetadata?.config as any).displayField
       };
-      config.caseClass = (rawViewMetadata?.config as any).targetObjectClass;
+      config.caseClass = (this.rawViewMetadata?.config as any).targetObjectClass;
       config.text = config.primaryField;
       config.caseID = config.value;
       config.contextPage = `@P .${
-        (rawViewMetadata?.config as any)?.displayField ? getDataRelationshipContextFromKey((rawViewMetadata?.config as any).displayField) : null
+        (this.rawViewMetadata?.config as any)?.displayField
+          ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField)
+          : null
       }`;
       config.resourceParams = {
         workID: config.value
@@ -110,8 +113,8 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
             displayMode,
             referenceType,
             hideLabel,
-            dataRelationshipContext: (rawViewMetadata?.config as any)?.displayField
-              ? getDataRelationshipContextFromKey((rawViewMetadata?.config as any).displayField)
+            dataRelationshipContext: (this.rawViewMetadata?.config as any)?.displayField
+              ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField)
               : null
           }
         },
@@ -124,7 +127,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
 
     if (this.type !== 'SemanticLink' && !this.isDisplayModeEnabled) {
       // 1) Set datasource
-      const config: any = { ...rawViewMetadata?.config };
+      const config: any = { ...this.rawViewMetadata?.config };
       generateColumns(config, this.pConn$, referenceType);
       config.deferDatasource = true;
       config.listType = 'datapage';
@@ -190,16 +193,64 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       );
       this.newComponentName = component?.getPConnect().getComponentName();
       this.newPconn = component?.getPConnect();
-      if (rawViewMetadata?.config) {
-        rawViewMetadata.config = config ? { ...config } : rawViewMetadata.config;
+      if (this.rawViewMetadata?.config) {
+        this.rawViewMetadata.config = config ? { ...config } : this.rawViewMetadata.config;
       }
-      this.parentProps = {
-        parentPconn: this.pConn$,
-        rawViewMetadata,
-        canBeChangedInReviewMode: this.canBeChangedInReviewMode,
-        isDisplayModeEnabled: this.isDisplayModeEnabled,
-        mode
-      };
+    }
+  }
+
+  onRecordChange(value) {
+    const caseKey = this.pConn$.getCaseInfo().getKey() ?? '';
+    const refreshOptions = { autoDetectRefresh: true, propertyName: '' };
+    refreshOptions.propertyName = this.rawViewMetadata?.config?.value;
+
+    if (!this.canBeChangedInReviewMode || !this.pConn$.getValue('__currentPageTabViewName')) {
+      const pgRef = this.pConn$.getPageReference().replace('caseInfo.content', '') ?? '';
+      const viewName = this.rawViewMetadata?.name;
+      if (viewName && viewName.length > 0) {
+        getPConnect().getActionsApi().refreshCaseView(caseKey, viewName, pgRef, refreshOptions);
+      }
+    }
+
+    const propValue = value;
+    const propName =
+      this.rawViewMetadata?.type === 'SimpleTableSelect' && this.configProps.mode === 'multi'
+        ? PCore.getAnnotationUtils().getPropertyName(this.rawViewMetadata?.config?.selectionList)
+        : PCore.getAnnotationUtils().getPropertyName(this.rawViewMetadata?.config?.value);
+
+    if (propValue && this.canBeChangedInReviewMode && this.isDisplayModeEnabled) {
+      PCore.getCaseUtils()
+        .getCaseEditLock(caseKey, '')
+        .then(caseResponse => {
+          const pageTokens = this.pConn$.getPageReference().replace('caseInfo.content', '').split('.');
+          let curr = {};
+          const commitData = curr;
+
+          pageTokens?.forEach(el => {
+            if (el !== '') {
+              curr[el] = {};
+              curr = curr[el];
+            }
+          });
+
+          // expecting format like {Customer: {pyID:"C-100"}}
+          const propArr = propName.split('.');
+          propArr.forEach((element, idx) => {
+            if (idx + 1 === propArr.length) {
+              curr[element] = propValue;
+            } else {
+              curr[element] = {};
+              curr = curr[element];
+            }
+          });
+
+          PCore.getCaseUtils()
+            .updateCaseEditFieldsData(caseKey, { [caseKey]: commitData }, caseResponse.headers.etag, this.pConn$?.getContextName() ?? '')
+            .then(response => {
+              PCore.getContainerUtils().updateParentLastUpdateTime(this.pConn$.getContextName() ?? '', response.data.data.caseInfo.lastUpdateTime);
+              PCore.getContainerUtils().updateRelatedContextEtag(this.pConn$.getContextName() ?? '', response.headers.etag);
+            });
+        });
     }
   }
 }

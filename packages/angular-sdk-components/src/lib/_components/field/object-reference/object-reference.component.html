@@ -7,5 +7,11 @@
   </div>
 </ng-template>
 <ng-template #loadDynamicComp>
-  <component-mapper *ngIf="newComponentName" [name]="newComponentName" [props]="{ pConn$: newPconn, formGroup$, parentProps }"></component-mapper>
+  <component-mapper
+    *ngIf="newComponentName"
+    [name]="newComponentName"
+    [props]="{ pConn$: newPconn, formGroup$ }"
+    [parent]="this"
+    [outputEvents]="{ onRecordChange: onRecordChange }"
+  ></component-mapper>
 </ng-template>
