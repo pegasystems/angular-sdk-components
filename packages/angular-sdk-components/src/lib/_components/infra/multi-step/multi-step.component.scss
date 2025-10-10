@@ -1,5 +1,5 @@
 .psdk-case-view-divider {
-  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
+  border-bottom: 0.0625rem solid var(--mat-sys-outline-variant);
 }
 
 .psdk-icon {
@@ -8,11 +8,9 @@
 }
 
 .psdk-icon-current {
-  color: var(--app-primary-color);
 }
 
 .psdk-icon-not-current {
-  color: var(--app-neutral-color);
 }
 
 .psdk-current-svg-icon {
@@ -35,16 +33,13 @@ mat-horizontal-stepper {
 .psdk-sub-step-current {
   padding-left: 0.625rem;
   font-weight: bold;
-  color: var(--app-label-selected-color);
 }
 
 .psdk-sub-step-not-current {
   padding-left: 0.625rem;
-  color: var(--app-label-color);
 }
 
 .psdk-flow-container-top {
-  background-color: var(--app-form-color);
   padding: 0rem 0.625rem;
   border-radius: 0.3125rem;
 }
@@ -81,8 +76,6 @@ mat-horizontal-stepper {
 
 .psdk-vertical-step-icon {
   margin-right: 12px;
-  background-color: var(--app-neutral-color);
-  color: var(--app-form-color);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -95,13 +88,10 @@ mat-horizontal-stepper {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: var(--app-form-color);
 }
 
 .psdk-vertical-step-icon-selected {
   margin-right: 12px;
-  background-color: var(--app-primary-color);
-  color: var(--app-form-color);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -110,7 +100,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-vertical-step-label {
-  color: var(--app-label-color);
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -122,7 +111,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-vertical-step-label-selected {
-  color: var(--app-label-selected-color);
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -152,7 +140,6 @@ mat-horizontal-stepper {
   border-left-style: solid;
   top: -16px;
   bottom: -16px;
-  border-left-color: var(--app-multi-step-border-color);
 }
 
 .psdk-horizontal-stepper {
@@ -182,8 +169,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-icon {
-  background-color: var(--app-neutral-color);
-  color: var(--app-form-color);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -203,8 +188,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-icon-selected {
-  background-color: var(--app-primary-color);
-  color: var(--app-form-color);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -216,7 +199,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-label {
-  color: var(--app-label-color);
   display: inline-block;
   min-width: 50px;
   vertical-align: middle;
@@ -226,7 +208,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-label-selected {
-  color: var(--app-label-selected-color);
   display: inline-block;
   min-width: 50px;
   vertical-align: middle;
@@ -236,7 +217,6 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-line {
-  border-top-color: var(--app-multi-step-border-color);
   border-top-width: 1px;
   border-top-style: solid;
   flex: auto;

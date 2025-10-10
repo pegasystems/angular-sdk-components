@@ -16,7 +16,6 @@
   cursor: pointer;
   padding-right: 1rem;
   &:hover {
-    background-color: var(--app-neutral-color);
   }
   align-items: center;
 }
@@ -111,7 +110,6 @@
   color: var(--app-nav-color);
 
   &:hover {
-    background-color: var(--app-neutral-color);
   }
 }
 
@@ -127,8 +125,6 @@
   align-items: center;
   text-align: center;
   display: inline-flex;
-  background: var(--app-neutral-color);
-  color: var(--app-form-color);
   font-weight: normal;
   font-size: 1rem;
 }
@@ -148,7 +144,6 @@ mat-list-item {
   height: auto !important;
 
   &:hover {
-    // background-color: rgba(0, 0, 0, 0.5);
   }
 
   .flex-box {
