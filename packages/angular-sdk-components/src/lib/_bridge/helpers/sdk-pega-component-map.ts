@@ -75,6 +75,7 @@ import { ListViewComponent } from '../../_components/template/list-view/list-vie
 import { MultiReferenceReadonlyComponent } from '../../_components/template/multi-reference-readonly/multi-reference-readonly.component';
 import { MultiselectComponent } from '../../_components/field/multiselect/multiselect.component';
 import { NarrowWideFormComponent } from '../../_components/template/narrow-wide-form/narrow-wide-form.component';
+import { ObjectPageComponent } from '../../_components/template/object-page/object-page.component';
 import { OneColumnComponent } from '../../_components/template/one-column/one-column.component';
 import { OneColumnPageComponent } from '../../_components/template/one-column-page/one-column-page.component';
 import { OneColumnTabComponent } from '../../_components/template/one-column-tab/one-column-tab.component';
@@ -201,7 +202,7 @@ const pegaSdkComponentMap = {
   NarrowWideForm: NarrowWideFormComponent,
   //   'NarrowWidePage': NarrowWidePage,
   NavBar: NavbarComponent,
-  ObjectPage: CaseViewComponent,
+  ObjectPage: ObjectPageComponent,
   ObjectReference: ObjectReferenceComponent,
   OneColumn: OneColumnComponent,
   OneColumnPage: OneColumnPageComponent,
