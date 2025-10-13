@@ -55,7 +55,9 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
   updateSelf() {
     this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     const rawViewMetadata = this.pConn$.getRawMetadata();
-    const propsToUse = { ...this.pConn$.getInheritedProps(), ...this.configProps };
+    const label = this.configProps.label;
+    const showLabel = this.configProps.showLabel;
+    const propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
     const type = (rawViewMetadata?.config as any)?.componentType;
     const displayMode = this.configProps.displayMode;
     const targetObjectType = this.configProps.targetObjectType;
@@ -66,12 +68,16 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const dataRelationshipContext = (rawViewMetadata?.config as any)?.displayField
       ? getDataRelationshipContextFromKey((rawViewMetadata?.config as any)?.displayField)
       : this.dataRelationshipContext;
+    if (propsToUse.showLabel === false) {
+      propsToUse.label = '';
+    }
     this.label = propsToUse.label;
 
     const editableComponents = ['AutoComplete', 'SimpleTableSelect', 'Dropdown', 'RadioButtons'];
     const config: any = {
       ...rawViewMetadata?.config,
-      primaryField: (rawViewMetadata?.config as any)?.displayField
+      primaryField: (rawViewMetadata?.config as any)?.displayField,
+      label: this.label
     };
 
     const activeViewRuleClass = (rawViewMetadata?.config as any)?.targetObjectClass;
