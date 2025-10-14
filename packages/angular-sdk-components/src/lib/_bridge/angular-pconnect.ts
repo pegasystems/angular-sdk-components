@@ -35,7 +35,7 @@ export class AngularPConnectService {
    * anything added by populateAdditionalProps.
    * Each entry is: { __componentID__: _the component's most recent props_ }
    */
-  private componentPropsArr: Object[] = [];
+  private componentPropsArr: object[] = [];
 
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
@@ -98,7 +98,7 @@ export class AngularPConnectService {
   //  and (b) to determine whether the component should update itself (re-render)
    * @param inComp The component whose properties are being obtained
    */
-  private getComponentProps(inComp: any = null): Object {
+  private getComponentProps(inComp: any = null): object {
     let compProps: any = {};
     let addProps = {};
 

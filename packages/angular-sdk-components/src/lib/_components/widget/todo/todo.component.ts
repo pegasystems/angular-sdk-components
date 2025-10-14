@@ -152,7 +152,7 @@ export class TodoComponent implements OnInit, OnDestroy {
       }
     } else {
       // get caseInfoId assignment.
-      // eslint-disable-next-line no-lonely-if
+
       if (this.caseInfoID$ != undefined) {
         this.arAssignments$ = this.getCaseInfoAssignment(this.assignmentsSource$, this.caseInfoID$);
       }

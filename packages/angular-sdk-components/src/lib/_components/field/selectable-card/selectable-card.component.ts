@@ -61,7 +61,7 @@ export class SelectableCardComponent implements OnInit, OnDestroy {
     }
   ];
 
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

@@ -68,7 +68,6 @@ export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
   }
 
   rowClick(row) {
-    // eslint-disable-next-line sonarjs/no-small-switch
     switch (this.configProps$.rowClickAction) {
       case 'openAssignment':
         this.psService.sendMessage(true);

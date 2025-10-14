@@ -71,7 +71,7 @@ export class MultiselectComponent implements OnInit, OnDestroy {
   dataApiObj: any;
   itemsTree: any[] = [];
   trigger: any;
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

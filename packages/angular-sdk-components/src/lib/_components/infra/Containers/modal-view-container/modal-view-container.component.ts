@@ -30,7 +30,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   angularPConnectData: AngularPConnectData = {};
 
   arChildren$: any[];
-  stateProps$: Object;
+  stateProps$: object;
   banners: any;
   templateName$: string;
   buildName$: string;
@@ -39,7 +39,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   bShowModal$ = false;
   itemKey$: string;
   formGroup$: FormGroup;
-  oCaseInfo: Object = {};
+  oCaseInfo: object = {};
 
   // for causing a change on assignment
   updateToken$ = 0;
@@ -134,7 +134,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
     // const configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.stateProps$ = this.pConn$.getStateProps();
@@ -364,7 +364,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     return {};
   }
 
-  compareCaseInfoIsDifferent(oCurrentCaseInfo: Object): boolean {
+  compareCaseInfoIsDifferent(oCurrentCaseInfo: object): boolean {
     let bRet = false;
 
     // fast-deep-equal version

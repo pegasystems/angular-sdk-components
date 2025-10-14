@@ -49,10 +49,8 @@ const setComponentCache = ({
   }
 };
 
-const componentCachePersistUtils = {
+export const componentCachePersistUtils = {
   getComponentStateKey,
   getComponentStateOptions,
   setComponentCache
 };
-
-export default componentCachePersistUtils;

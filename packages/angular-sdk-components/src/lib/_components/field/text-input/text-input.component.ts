@@ -44,7 +44,7 @@ export class TextInputComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl('', null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

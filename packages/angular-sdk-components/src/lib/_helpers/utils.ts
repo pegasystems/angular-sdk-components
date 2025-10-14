@@ -62,7 +62,7 @@ export class Utils {
         }
       }
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
   }
 
@@ -428,7 +428,7 @@ export class Utils {
     return sessionStorage.getItem('asdk_AH') as string;
   }
 
-  static isEmptyObject(obj: Object): boolean {
+  static isEmptyObject(obj: object): boolean {
     return Object.keys(obj).length === 0;
   }
 

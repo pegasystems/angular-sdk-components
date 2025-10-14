@@ -43,7 +43,7 @@ export class IntegerComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl<number | null>(null, null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getMappedKey } from '../advanced-search/search-group/persist-utils';
-import componentCachePersistUtils from '../advanced-search/search-group/persist-utils';
+import { componentCachePersistUtils } from '../advanced-search/search-group/persist-utils';
 import { getFirstChildConfig } from '../data-reference/utils';
 import { DataReferenceAdvancedSearchService } from './data-reference-advanced-search.service';
 
@@ -233,7 +233,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     const caseKey = this.pConn$.getCaseInfo().getKey();
     const refreshOptions: any = { autoDetectRefresh: true, propertyName: '' };
 
-    if ((this.pConn$?.getRawMetadata()?.children as any)?.length > 0 && this.pConn$?.getRawMetadata()?.children?.[0].config?.value) {
+    if ((this.pConn$?.getRawMetadata()?.children as Array<any>)?.length > 0 && this.pConn$?.getRawMetadata()?.children?.[0].config?.value) {
       refreshOptions.propertyName = this.pConn$?.getRawMetadata()?.children?.[0].config.value;
       refreshOptions.classID = (this.pConn$.getRawMetadata() as any).classID;
     }

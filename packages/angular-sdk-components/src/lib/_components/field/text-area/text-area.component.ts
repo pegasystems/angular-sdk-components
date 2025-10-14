@@ -44,7 +44,7 @@ export class TextAreaComponent implements OnInit, OnDestroy {
   helperText: string;
 
   fieldControl = new FormControl('', null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

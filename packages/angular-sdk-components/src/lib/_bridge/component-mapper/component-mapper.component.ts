@@ -68,7 +68,6 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
             // We'll set 'displayOnlyFA$' prop only to the components which really need it
             // Eventual plan is to get rid of this particular prop
             if (propsKeys[i] === 'displayOnlyFA$' && !componentsRequireDisplayOnlyFAProp.includes(this.name || '')) {
-              // eslint-disable-next-line no-continue
               continue;
             }
             this.componentRef?.setInput(propsKeys[i], propsValues[i]);

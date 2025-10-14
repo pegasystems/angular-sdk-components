@@ -29,7 +29,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   currentUserName$: string;
 
   pulseMessages$: any[];
-  showReplyComment$: Object = {};
+  showReplyComment$: object = {};
 
   svgComment$: string;
   svgLike$: string;
@@ -39,7 +39,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   pulseConversation: string;
   userData: Map<any, any> = new Map();
 
-  pulseComment: Object = {};
+  pulseComment: object = {};
 
   // functions
   actionsAPI: any;

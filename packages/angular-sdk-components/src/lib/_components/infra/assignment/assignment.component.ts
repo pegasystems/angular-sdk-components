@@ -128,7 +128,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
         this.psService.sendMessage(loadingInfo);
       } catch (ex) {
-        /* empty */
+        console.log(ex);
       }
     }
   }

@@ -101,7 +101,7 @@ export class DropdownComponent implements OnInit, OnDestroy {
   localeName = '';
   localePath = '';
   localizedValue = '';
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

@@ -8,13 +8,13 @@ import pegaSdkComponentMap from './sdk-pega-component-map';
 // Create a singleton for this class (with async loading of components map file) and export it
 // Note: Initializing SdkComponentMap to null seems to cause lots of compile issues with references
 //  within other components and the value potentially being null (so try to leave it undefined)
-// eslint-disable-next-line import/no-mutable-exports
+
 export let SdkComponentMap;
 let SdkComponentMapCreateInProgress = false;
 
 interface ISdkComponentMap {
-  localComponentMap: Object;
-  pegaProvidedComponentMap: Object;
+  localComponentMap: object;
+  pegaProvidedComponentMap: object;
 }
 
 class ComponentMap {
@@ -137,7 +137,6 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
         idNextCheck = setInterval(fnCheckForConfig, 500);
       };
       if (SdkComponentMap) {
-        // eslint-disable-next-line no-promise-executor-return
         return resolve(SdkComponentMap.sdkComponentMap);
       }
       idNextCheck = setInterval(fnCheckForConfig, 500);

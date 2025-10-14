@@ -10,7 +10,7 @@ import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 interface ObjectReferenceProps extends PConnFieldProps {
   showPromotedFilters: boolean;
   inline: boolean;
-  parameters: Object;
+  parameters: object;
   mode: string;
   targetObjectType: any;
   allowAndPersistChangesInReviewMode: boolean;

@@ -43,7 +43,7 @@ export class EmailComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl('', null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

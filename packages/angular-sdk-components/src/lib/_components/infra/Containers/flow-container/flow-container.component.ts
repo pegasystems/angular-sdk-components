@@ -169,7 +169,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
-    // eslint-disable-next-line sonarjs/no-collapsible-if
+
     if (bUpdateSelf || caseViewModeFromProps !== caseViewModeFromRedux) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
@@ -464,7 +464,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
 
     // this check in routingInfo, mimic Nebula/Constellation (React) to check and get the internals of the
@@ -486,7 +486,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
           }
         });
 
-        // eslint-disable-next-line sonarjs/no-collapsible-if
         if (currentOrder.length > 0) {
           if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
             // when we get here, it it because the flow action data has changed

@@ -44,7 +44,7 @@ export class PhoneComponent implements OnInit, OnDestroy {
 
   fieldControl = new FormControl('', null);
 
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   preferredCountries: string[] = ['us'];
 

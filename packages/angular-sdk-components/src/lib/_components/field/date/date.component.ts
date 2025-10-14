@@ -83,7 +83,7 @@ export class DateComponent implements OnInit, OnDestroy {
   dateFormatInfo = dateFormatInfoDefault;
   // and then update, as needed, based on locale, etc.
   theDateFormat = getDateFormatInfo();
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   formattedValue$: any;
 

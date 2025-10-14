@@ -45,7 +45,6 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnDestroy(): void {
     // Ref: https://medium.com/@kamil.galek/mythical-angular-component-styles-cleanup-in-angular-17-f799a08b2abc
     // Commenting the below line as it is causing the Operator component's styles not getting applied.

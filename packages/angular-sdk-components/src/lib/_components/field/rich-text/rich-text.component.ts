@@ -39,7 +39,7 @@ export class RichTextComponent implements OnInit, OnDestroy {
   info: any;
   error: boolean;
   status: any;
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

@@ -79,7 +79,6 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableProps;
 
     if (this.configProps$.visibility != null) {
-      // eslint-disable-next-line no-multi-assign
       this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 

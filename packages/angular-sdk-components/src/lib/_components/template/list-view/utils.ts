@@ -676,7 +676,7 @@ export const readContextResponse = async (context, params) => {
   const { pConn$, apiContext, children, showDynamicFields, referenceList, isDataObject } = params;
   // let { listContext } = params;
   const { promisesResponseArray, apiContext: otherContext } = context;
-  // eslint-disable-next-line sonarjs/no-unused-collection
+
   const listOfComponents: any[] = [];
   const {
     data: { fields: metaFields, classID, isQueryable }

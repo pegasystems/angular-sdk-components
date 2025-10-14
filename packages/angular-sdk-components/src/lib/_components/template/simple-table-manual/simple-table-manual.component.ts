@@ -215,7 +215,6 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableManualProps;
 
     if (this.configProps$.visibility != null) {
-      // eslint-disable-next-line no-multi-assign
       this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
@@ -825,7 +824,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const seen = {};
     return a.filter(item => {
       const k = key(item);
-      // eslint-disable-next-line no-return-assign, no-prototype-builtins
+      // eslint-disable-next-line no-prototype-builtins
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     });
   }
@@ -916,7 +915,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   // return the value that should be shown as the contents for the given row data
   //  of the given row field
-  getRowValue(inRowData: Object, inColKey: string): any {
+  getRowValue(inRowData: object, inColKey: string): any {
     // See what data (if any) we have to display
     const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;

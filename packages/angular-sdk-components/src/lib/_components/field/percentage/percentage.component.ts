@@ -52,7 +52,7 @@ export class PercentageComponent implements OnInit, OnDestroy {
   inputMode: any;
   decimalPrecision: number | undefined;
   fieldControl = new FormControl<number | null>(null, null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   formattedValue: string;
 

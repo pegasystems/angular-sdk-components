@@ -61,7 +61,7 @@ export class RadioButtonsComponent implements OnInit, OnDestroy {
   localeName = '';
   localePath = '';
   localizedValue = '';
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   variant?: string;
 

@@ -70,7 +70,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   selectedvalues: any;
   referenceList: string;
   listOfCheckboxes: any[] = [];
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   variant?: string;
 
@@ -209,7 +209,6 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
 
       this.componentReference = this.pConn$.getStateProps().value;
 
-      // eslint-disable-next-line sonarjs/no-redundant-boolean
       if (this.value$ === 'true' || this.value$ == true) {
         this.isChecked$ = true;
       } else {

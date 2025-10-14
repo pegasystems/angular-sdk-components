@@ -155,7 +155,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
     switch (errorMessages.action) {
       case 'update':
         // won't show unless publish is turned on
-        // eslint-disable-next-line @typescript-eslint/prefer-includes
+
         if (this.sErrorMessages.indexOf(errorMessages.actionMessage) < 0) {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
 
@@ -168,7 +168,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
       case 'show':
         // add error message if not in the list
         // won't show unless publish is turned on
-        // eslint-disable-next-line @typescript-eslint/prefer-includes
+
         if (this.sErrorMessages.indexOf(errorMessages.actionMessage) < 0) {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
         }

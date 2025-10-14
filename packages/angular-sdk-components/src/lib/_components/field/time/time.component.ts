@@ -44,7 +44,7 @@ export class TimeComponent implements OnInit, OnDestroy {
   placeholder: string;
 
   fieldControl = new FormControl('', null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   formattedValue$: any;
 

@@ -250,7 +250,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
     // If file to be deleted is the one added in previous stage i.e. for which a file instance is created in server
     // no need to filter currentAttachmentList as we will get another entry of file in redux with delete & label
-    // eslint-disable-next-line no-unsafe-optional-chaining
+
     if (this.value$ && this.value$?.pxResults && +this.value$?.pyCount > 0 && file.responseProps && file?.responseProps?.pzInsKey !== 'temp') {
       const updatedAttachments = this.files.map(f => {
         if (f.responseProps && f.responseProps.pzInsKey === file.responseProps.pzInsKey) {

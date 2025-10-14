@@ -64,7 +64,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   filterValue = '';
 
   fieldControl = new FormControl('', null);
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   onRecordChange: any;
 
@@ -187,7 +187,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
       } else {
         // if same user ref field is referred in view as editable & readonly formatted text
         // referenced users won't be available, so get user details from dx api
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
         this.userName$ = await getUserName(this.pConn$, this.userID$);
       }
     } else if (displayAs === DROPDOWN_LIST || displayAs === SEARCH_BOX) {
@@ -276,7 +276,6 @@ function getUserName(pConn, userId = ''): Promise<string> {
     const { parameters = {}, referenceList } = pConn.getConfigProps();
     const contextName = pConn.getContextName();
 
-    // eslint-disable-next-line @typescript-eslint/no-shadow
     const OPERATORS_DP = referenceList || PCore.getEnvironmentInfo().getDefaultOperatorDP() || '';
 
     const columns = [

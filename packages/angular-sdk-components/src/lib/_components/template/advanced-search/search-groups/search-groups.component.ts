@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, forwardRef, OnChanges, ChangeDetectorRef, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import componentCachePersistUtils from '../search-group/persist-utils';
+import { componentCachePersistUtils } from '../search-group/persist-utils';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';

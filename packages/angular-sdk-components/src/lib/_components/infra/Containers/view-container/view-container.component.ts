@@ -161,7 +161,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
 
       this.psService.sendMessage(loadingInfo);
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
 
     // const buildName = this.buildName();

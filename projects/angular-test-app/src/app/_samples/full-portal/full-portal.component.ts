@@ -76,7 +76,7 @@ export class FullPortalComponent implements OnInit, OnDestroy {
     });
 
     /* Login if needed */
-    // eslint-disable-next-line no-restricted-globals
+
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
     loginIfNecessary({ appName: sAppName, mainRedirect: true });
 

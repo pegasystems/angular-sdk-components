@@ -73,7 +73,7 @@ export class LocationComponent implements OnInit, OnDestroy {
   testId = '';
   helperText: string;
   placeholder: string;
-  actionsApi: Object;
+  actionsApi: object;
   valueProp: string;
   coordinatesProp: string;
 

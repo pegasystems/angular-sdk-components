@@ -313,7 +313,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
       this.filters = {};
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(data).reduce((acc, [item, value]) => {
-        // eslint-disable-next-line @typescript-eslint/no-shadow
         const { filterId, filterExpression } = value as any;
         // filterExpression = value.filterExpression;
         this.filters[filterId] = filterExpression;
@@ -352,7 +351,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
       const filter = filterValues[filterIndex];
       // If the filter is null then we can skip this iteration
       if (filter === null) {
-        // eslint-disable-next-line no-continue
         continue;
       }
 
@@ -361,7 +359,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
       field = this.getFieldFromFilter(filter, isDateRange);
 
       if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
-        // eslint-disable-next-line no-continue
         continue;
       }
       // If we reach here that implies we've at least one valid filter, hence setting the flag
@@ -1244,7 +1241,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const seen = {};
     return a.filter(item => {
       const k = key(item);
-      // eslint-disable-next-line no-return-assign, no-prototype-builtins
+      // eslint-disable-next-line no-prototype-builtins
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     });
   }

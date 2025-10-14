@@ -66,7 +66,7 @@ export class DateTimeComponent implements OnInit, OnDestroy {
   // and then update, as needed, based on locale, etc.
   theDateFormat = getDateFormatInfo();
   placeholder: string;
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
   formattedValue$: any;
   timezone = PCore.getEnvironmentInfo()?.getTimeZone();

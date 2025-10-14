@@ -75,7 +75,7 @@ export class AutoCompleteComponent implements OnInit, OnDestroy {
   hideLabel: boolean;
   filteredOptions: Observable<any[]>;
   filterValue = '';
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   constructor(

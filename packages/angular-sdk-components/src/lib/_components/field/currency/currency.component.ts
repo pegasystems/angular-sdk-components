@@ -48,7 +48,7 @@ export class CurrencyComponent implements OnInit, OnDestroy {
   helperText: string;
   placeholder: string;
   currencyISOCode = 'USD';
-  currencyOptions: Object = {};
+  currencyOptions: object = {};
 
   fieldControl = new FormControl<number | null>(null, { updateOn: 'blur' });
   currencySymbol: string;
