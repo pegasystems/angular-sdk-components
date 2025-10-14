@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,7 +41,10 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
   bootstrapShell: any;
 
-  constructor(private psservice: ProgressSpinnerService) {}
+  constructor(
+    private psservice: ProgressSpinnerService,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit() {
     this.initialize();
@@ -105,7 +108,9 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
     this.pConn$ = props.getPConnect();
 
-    this.bHasPConnect$ = true;
+    this.ngZone.run(() => {
+      this.bHasPConnect$ = true;
+    });
 
     this.showHideProgress(false);
   }
