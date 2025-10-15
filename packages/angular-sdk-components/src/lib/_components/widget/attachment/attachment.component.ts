@@ -159,9 +159,17 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       this.categoryName = value.pyCategoryName;
     }
 
-    if (value?.pxResults && +value.pyCount > 0) {
-      this.files = value.pxResults.map(f => this.buildFilePropsFromResponse(f));
-    }
+    // if (value?.pxResults && +value.pyCount > 0) {
+    //   this.files = value.pxResults.map(f => this.buildFilePropsFromResponse(f));
+    // }
+
+    const rawValue = this.pConn$.getComponentConfig().value;
+    const isAttachmentAnnotationPresent = typeof rawValue === 'object' ? false : rawValue?.includes('@ATTACHMENT');
+    const { hasUploadedFiles, attachments, categoryName } = isAttachmentAnnotationPresent
+      ? value
+      : PCore.getAttachmentUtils().prepareAttachmentData(value);
+
+    this.files = attachments;
 
     this.updateAttachments();
   }
