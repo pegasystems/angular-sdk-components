@@ -1,5 +1,3 @@
-/* eslint-disable import/export */
-
 /*
  * Public API Surface of angular-sdk-components
  */
@@ -58,6 +56,12 @@ export * from './lib/_components/template/base/form-template-base';
 export * from './lib/_components/template/base/details-template-base';
 
 export * from './lib/_components/template/app-shell/app-shell.component';
+export * from './lib/_components/template/advanced-search/search-group/persist-utils';
+export * from './lib/_components/template/advanced-search/search-groups/utils';
+export * from './lib/_components/template/data-reference/data-reference-advanced-search.service';
+export * from './lib/_components/template/data-reference/search-form/tabsData';
+export * from './lib/_components/template/data-reference/search-form/search-form.component';
+export * from './lib/_components/template/data-reference/utils';
 export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
 export * from './lib/_components/template/confirmation/confirmation.component';
@@ -129,6 +133,7 @@ export * from './lib/_services/banner.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';
+export * from './lib/_services/google-maps-loader.service';
 export * from './lib/_services/server-config.service';
 
 export * from './lib/_helpers/case-utils';
