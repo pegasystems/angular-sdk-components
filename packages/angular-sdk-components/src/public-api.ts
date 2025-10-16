@@ -52,20 +52,19 @@ export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
 export * from './lib/_components/infra/Containers/base-components/flow-container-base.component';
 
-export * from './lib/_components/template/base/form-template-base';
-export * from './lib/_components/template/base/details-template-base';
-
-export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/advanced-search/search-group/persist-utils';
 export * from './lib/_components/template/advanced-search/search-groups/utils';
-export * from './lib/_components/template/data-reference/data-reference-advanced-search.service';
-export * from './lib/_components/template/data-reference/search-form/tabsData';
-export * from './lib/_components/template/data-reference/search-form/search-form.component';
-export * from './lib/_components/template/data-reference/utils';
+export * from './lib/_components/template/app-shell/app-shell.component';
+export * from './lib/_components/template/base/form-template-base';
+export * from './lib/_components/template/base/details-template-base';
 export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
 export * from './lib/_components/template/confirmation/confirmation.component';
 export * from './lib/_components/template/data-reference/data-reference.component';
+export * from './lib/_components/template/data-reference/data-reference-advanced-search.service';
+export * from './lib/_components/template/data-reference/search-form/tabsData';
+export * from './lib/_components/template/data-reference/search-form/search-form.component';
+export * from './lib/_components/template/data-reference/utils';
 export * from './lib/_components/template/default-form/default-form.component';
 export * from './lib/_components/template/details/details.component';
 export * from './lib/_components/template/details-narrow-wide/details-narrow-wide.component';
