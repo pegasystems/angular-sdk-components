@@ -1,11 +1,4 @@
-<div *ngIf="displayMode$">
-  <div class="psdk-grid-filter">
-    <div class="psdk-grid-label">{{ label$ }}</div>
-    <a *ngIf="!isLinkTextEmpty; else noLink" class="psdk-value" href="#" (click)="openLinkClick($event)">{{ value$ || '---' }}</a>
-  </div>
-</div>
-<div *ngIf="bVisible$ !== false && !displayMode$" [ngClass]="label$.length > 0 ? '' : 'psdk-container-nolabels'">
-  <div class="psdk-grid-label">{{ label$ }}</div>
+<div *ngIf="bVisible$ !== false">
   <a *ngIf="!isLinkTextEmpty; else noLink" class="psdk-value" href="#" (click)="openLinkClick($event)">{{ value$ || '---' }}</a>
 </div>
 <ng-template #noLink>

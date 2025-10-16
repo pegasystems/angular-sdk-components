@@ -21,6 +21,7 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
   component: any;
   label: string;
   newPconn: typeof PConnect;
+  displayMode: string;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -59,7 +60,7 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const showLabel = this.configProps.showLabel;
     const propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
     const type = (rawViewMetadata?.config as any)?.componentType;
-    const displayMode = this.configProps.displayMode;
+    this.displayMode = this.configProps.displayMode;
     const targetObjectType = this.configProps.targetObjectType;
     const referenceType = targetObjectType === 'case' ? 'Case' : 'Data';
     const hideLabel = this.configProps.hideLabel;
@@ -99,7 +100,7 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
         type: 'SemanticLink',
         config: {
           ...config,
-          displayMode,
+          displayMode: this.displayMode,
           referenceType,
           hideLabel,
           dataRelationshipContext
