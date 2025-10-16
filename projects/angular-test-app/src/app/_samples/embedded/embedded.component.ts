@@ -16,6 +16,7 @@ import { MainScreenComponent } from './main-screen/main-screen.component';
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
 import { initializeAuthentication } from './utils';
+import { ThemeService } from 'packages/angular-sdk-components/src/lib/_services/theme.service';
 
 declare global {
   interface Window {
@@ -43,7 +44,8 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
   constructor(
     private psservice: ProgressSpinnerService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit() {
@@ -63,7 +65,8 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
     // Add event listener for when logged in and constellation bootstrap is loaded
     document.addEventListener('SdkConstellationReady', () => this.handleSdkConstellationReady());
 
-    const { authConfig } = await getSdkConfig();
+    const { authConfig, theme } = await getSdkConfig();
+    this.themeService.setTheme(theme);
 
     initializeAuthentication(authConfig);
 
