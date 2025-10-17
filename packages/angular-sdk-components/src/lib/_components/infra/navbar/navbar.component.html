@@ -47,8 +47,17 @@
         </div>
       </mat-list-item>
       <mat-menu #menu="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="themes">Switch Theme</button>
         <button mat-menu-item>Profile</button>
         <button mat-menu-item (click)="navPanelLogoutClick()">{{ localizedVal('Log off', localeCategory) }}</button>
+      </mat-menu>
+      <mat-menu #themes="matMenu">
+        <button *ngFor="let theme of themeService.getThemes()" mat-menu-item (click)="themeService.setTheme(theme.id)">
+          <div class="theme-menu-item">
+            <div class="color-preview" [style.background-color]="theme.primary"></div>
+            <span>{{ theme.displayName }}</span>
+          </div>
+        </button>
       </mat-menu>
     </mat-list>
   </div>

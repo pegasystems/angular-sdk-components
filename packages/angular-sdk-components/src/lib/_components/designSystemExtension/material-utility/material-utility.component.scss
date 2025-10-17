@@ -4,7 +4,7 @@
 }
 
 .psdk-case-view-divider {
-  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
+  border-bottom: 0.0625rem solid var(--mat-sys-outline-variant);
 }
 
 .psdk-utility .header-text {
@@ -24,7 +24,6 @@
   height: 6.25rem;
   padding: 0.625rem 0rem;
   text-align: left;
-  background-color: var(--app-form-color);
   border-radius: 0.6125rem;
   margin: 0.3125rem 0rem;
 }
