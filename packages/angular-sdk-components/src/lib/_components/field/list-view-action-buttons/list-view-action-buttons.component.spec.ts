@@ -8,7 +8,7 @@ describe('ListViewActionButtonsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ListViewActionButtonsComponent]
+      imports: [ListViewActionButtonsComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListViewActionButtonsComponent);

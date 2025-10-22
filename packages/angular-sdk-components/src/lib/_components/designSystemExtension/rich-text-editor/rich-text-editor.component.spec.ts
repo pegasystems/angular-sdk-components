@@ -8,7 +8,7 @@ describe('RichTextComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RichTextEditorComponent]
+      imports: [RichTextEditorComponent]
     }).compileComponents();
   }));
 

@@ -8,7 +8,7 @@ describe('UserReferenceComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UserReferenceComponent]
+      imports: [UserReferenceComponent]
     }).compileComponents();
   }));
 

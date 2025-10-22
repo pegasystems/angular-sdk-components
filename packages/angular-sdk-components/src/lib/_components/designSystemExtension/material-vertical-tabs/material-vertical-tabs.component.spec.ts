@@ -8,7 +8,7 @@ describe('MaterialVerticalTabsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MaterialVerticalTabsComponent]
+      imports: [MaterialVerticalTabsComponent]
     }).compileComponents();
   }));
 

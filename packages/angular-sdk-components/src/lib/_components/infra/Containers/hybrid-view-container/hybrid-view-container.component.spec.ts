@@ -8,7 +8,7 @@ describe('HybridViewContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HybridViewContainerComponent]
+      imports: [HybridViewContainerComponent]
     }).compileComponents();
   }));
 

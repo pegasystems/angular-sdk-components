@@ -8,7 +8,7 @@ describe('RootContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RootContainerComponent]
+      imports: [RootContainerComponent]
     }).compileComponents();
   }));
 

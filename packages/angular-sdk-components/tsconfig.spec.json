@@ -5,5 +5,11 @@
     "outDir": "../../out-tsc/spec",
     "types": ["jasmine"]
   },
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": [
+    "src/test.ts",
+    "src/test-setup.ts",
+    "src/global-constellation.d.ts",
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ]
 }

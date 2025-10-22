@@ -8,7 +8,7 @@ describe('DeferLoadComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DeferLoadComponent]
+      imports: [DeferLoadComponent]
     }).compileComponents();
   }));
 

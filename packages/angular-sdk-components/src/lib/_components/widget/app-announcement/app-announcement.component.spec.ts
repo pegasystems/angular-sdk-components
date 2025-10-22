@@ -8,7 +8,7 @@ describe('AppAnnouncementComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AppAnnouncementComponent]
+      imports: [AppAnnouncementComponent]
     }).compileComponents();
   }));
 

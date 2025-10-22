@@ -8,7 +8,7 @@ describe('RegionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RegionComponent]
+      imports: [RegionComponent]
     }).compileComponents();
   }));
 

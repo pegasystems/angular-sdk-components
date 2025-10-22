@@ -8,7 +8,7 @@ describe('AutoCompleteComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AutoCompleteComponent]
+      imports: [AutoCompleteComponent]
     }).compileComponents();
   }));
 

@@ -8,7 +8,7 @@ describe('WssQuickCreateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WssQuickCreateComponent]
+      imports: [WssQuickCreateComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WssQuickCreateComponent);

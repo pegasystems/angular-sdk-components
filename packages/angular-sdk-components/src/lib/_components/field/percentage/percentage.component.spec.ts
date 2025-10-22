@@ -8,7 +8,7 @@ describe('PercentageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PercentageComponent]
+      imports: [PercentageComponent]
     }).compileComponents();
   });
 

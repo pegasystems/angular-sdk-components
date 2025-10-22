@@ -8,7 +8,7 @@ describe('DataReferenceComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DataReferenceComponent]
+      imports: [DataReferenceComponent]
     }).compileComponents();
   }));
 

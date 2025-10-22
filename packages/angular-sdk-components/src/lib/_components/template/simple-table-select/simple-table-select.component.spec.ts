@@ -8,7 +8,7 @@ describe('SimpleTableSelectComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SimpleTableSelectComponent]
+      imports: [SimpleTableSelectComponent]
     }).compileComponents();
   }));
 

@@ -8,7 +8,7 @@ describe('PageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PageComponent]
+      imports: [PageComponent]
     }).compileComponents();
   }));
 

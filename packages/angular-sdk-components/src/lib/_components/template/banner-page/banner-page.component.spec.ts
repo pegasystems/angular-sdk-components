@@ -8,7 +8,7 @@ describe('BannerPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [BannerPageComponent]
+      imports: [BannerPageComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(BannerPageComponent);

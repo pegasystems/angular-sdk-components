@@ -8,7 +8,7 @@ describe('FieldValueListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FieldValueListComponent]
+      imports: [FieldValueListComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FieldValueListComponent);

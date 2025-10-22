@@ -8,7 +8,7 @@ describe('PromotedFiltersComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PromotedFiltersComponent]
+      imports: [PromotedFiltersComponent]
     }).compileComponents();
   }));
 

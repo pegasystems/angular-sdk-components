@@ -8,7 +8,7 @@ describe('TextComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TextComponent]
+      imports: [TextComponent]
     }).compileComponents();
   }));
 

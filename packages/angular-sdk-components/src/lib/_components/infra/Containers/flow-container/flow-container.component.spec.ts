@@ -8,7 +8,7 @@ describe('FlowContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [FlowContainerComponent]
+      imports: [FlowContainerComponent]
     }).compileComponents();
   }));
 

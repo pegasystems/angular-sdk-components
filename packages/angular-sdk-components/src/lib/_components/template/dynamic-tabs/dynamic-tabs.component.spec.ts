@@ -8,7 +8,7 @@ describe('DynamicTabsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DynamicTabsComponent]
+      imports: [DynamicTabsComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(DynamicTabsComponent);

@@ -8,7 +8,7 @@ describe('CaseCreateStageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseCreateStageComponent]
+      imports: [CaseCreateStageComponent]
     }).compileComponents();
   }));
 

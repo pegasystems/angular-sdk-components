@@ -8,7 +8,7 @@ describe('QuickCreateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [QuickCreateComponent]
+      imports: [QuickCreateComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(QuickCreateComponent);

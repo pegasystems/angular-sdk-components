@@ -8,7 +8,7 @@ describe('TimeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TimeComponent]
+      imports: [TimeComponent]
     }).compileComponents();
   });
 

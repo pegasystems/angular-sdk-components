@@ -1,3 +1,4 @@
+import '../../../../test-setup';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FeedContainerComponent } from './feed-container.component';
@@ -8,7 +9,7 @@ describe('FeedContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [FeedContainerComponent]
+      imports: [FeedContainerComponent]
     }).compileComponents();
   }));
 

@@ -8,7 +8,7 @@ describe('DetailsNarrowWideComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DetailsNarrowWideComponent]
+      imports: [DetailsNarrowWideComponent]
     }).compileComponents();
   });
 

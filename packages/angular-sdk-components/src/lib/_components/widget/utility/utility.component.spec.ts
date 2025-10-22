@@ -8,7 +8,7 @@ describe('UtilityComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UtilityComponent]
+      imports: [UtilityComponent]
     }).compileComponents();
   }));
 

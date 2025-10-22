@@ -8,7 +8,7 @@ describe('DateComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DateComponent]
+      imports: [DateComponent]
     }).compileComponents();
   }));
 

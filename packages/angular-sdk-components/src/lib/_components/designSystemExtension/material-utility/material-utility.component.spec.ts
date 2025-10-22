@@ -8,7 +8,7 @@ describe('MaterialutilityComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MaterialUtilityComponent]
+      imports: [MaterialUtilityComponent]
     }).compileComponents();
   }));
 

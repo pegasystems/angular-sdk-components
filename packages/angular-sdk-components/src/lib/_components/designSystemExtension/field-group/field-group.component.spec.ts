@@ -8,7 +8,7 @@ describe('FieldGroupComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [FieldGroupComponent]
+      imports: [FieldGroupComponent]
     });
     fixture = TestBed.createComponent(FieldGroupComponent);
     component = fixture.componentInstance;

@@ -8,7 +8,7 @@ describe('FieldGroupTemplateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FieldGroupTemplateComponent]
+      imports: [FieldGroupTemplateComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(FieldGroupTemplateComponent);

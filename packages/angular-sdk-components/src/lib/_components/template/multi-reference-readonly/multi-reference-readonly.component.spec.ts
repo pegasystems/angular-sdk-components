@@ -8,7 +8,7 @@ describe('MultiReferenceReadonlyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MultiReferenceReadonlyComponent]
+      imports: [MultiReferenceReadonlyComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MultiReferenceReadonlyComponent);

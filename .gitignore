@@ -6,6 +6,9 @@ node_modules
 /dist
 /__DO_NOT_COMMIT
 
+# test coverage output
+coverage/
+
 # don't commit generated package .tgz files
 **/*.tgz
 

@@ -8,7 +8,7 @@ describe('RepeatingStructuresComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [RepeatingStructuresComponent]
+      imports: [RepeatingStructuresComponent]
     }).compileComponents();
   }));
 

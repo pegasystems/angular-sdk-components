@@ -8,7 +8,7 @@ describe('NarrowWideFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NarrowWideFormComponent]
+      imports: [NarrowWideFormComponent]
     }).compileComponents();
   });
 

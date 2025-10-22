@@ -8,7 +8,7 @@ describe('TwoColumnPageComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [TwoColumnPageComponent]
+      imports: [TwoColumnPageComponent]
     }).compileComponents();
   }));
 

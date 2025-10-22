@@ -8,7 +8,7 @@ describe('CaseViewComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CaseViewComponent]
+      imports: [CaseViewComponent]
     }).compileComponents();
   }));
 

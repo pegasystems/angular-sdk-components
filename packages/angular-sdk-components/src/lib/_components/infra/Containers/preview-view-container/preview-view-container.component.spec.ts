@@ -8,7 +8,7 @@ describe('PreviewViewContainerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PreviewViewContainerComponent]
+      imports: [PreviewViewContainerComponent]
     }).compileComponents();
   }));
 

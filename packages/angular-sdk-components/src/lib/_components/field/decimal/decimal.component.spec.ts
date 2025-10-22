@@ -8,7 +8,7 @@ describe('DecimalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [DecimalComponent]
+      imports: [DecimalComponent]
     }).compileComponents();
   }));
 

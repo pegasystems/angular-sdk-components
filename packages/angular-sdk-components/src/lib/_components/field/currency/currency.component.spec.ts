@@ -8,7 +8,7 @@ describe('CurrencyComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CurrencyComponent]
+      imports: [CurrencyComponent]
     }).compileComponents();
   }));
 

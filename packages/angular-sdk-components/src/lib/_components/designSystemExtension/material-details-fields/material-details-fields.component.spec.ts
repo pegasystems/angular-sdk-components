@@ -8,7 +8,7 @@ describe('MaterialDetailsFieldsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MaterialDetailsFieldsComponent]
+      imports: [MaterialDetailsFieldsComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MaterialDetailsFieldsComponent);

@@ -8,7 +8,7 @@ describe('SingleReferenceReadonlyComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SingleReferenceReadonlyComponent]
+      imports: [SingleReferenceReadonlyComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SingleReferenceReadonlyComponent);

@@ -8,7 +8,7 @@ describe('InlineDashboardComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [InlineDashboardComponent]
+      imports: [InlineDashboardComponent]
     }).compileComponents();
   }));
 

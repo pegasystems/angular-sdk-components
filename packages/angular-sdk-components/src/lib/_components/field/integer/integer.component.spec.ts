@@ -8,7 +8,7 @@ describe('IntegerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [IntegerComponent]
+      imports: [IntegerComponent]
     }).compileComponents();
   }));
 

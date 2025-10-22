@@ -8,7 +8,7 @@ describe('MultiselectComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MultiselectComponent]
+      imports: [MultiselectComponent]
     });
     fixture = TestBed.createComponent(MultiselectComponent);
     component = fixture.componentInstance;

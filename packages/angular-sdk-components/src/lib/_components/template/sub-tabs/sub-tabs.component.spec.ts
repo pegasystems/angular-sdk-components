@@ -8,7 +8,7 @@ describe('SubTabsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SubTabsComponent]
+      imports: [SubTabsComponent]
     }).compileComponents();
   }));
 

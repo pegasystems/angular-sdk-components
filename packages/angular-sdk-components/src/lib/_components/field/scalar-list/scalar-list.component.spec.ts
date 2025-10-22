@@ -8,7 +8,7 @@ describe('ScalarListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ScalarListComponent]
+      imports: [ScalarListComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ScalarListComponent);
