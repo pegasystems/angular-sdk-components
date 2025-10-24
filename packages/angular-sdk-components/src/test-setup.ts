@@ -59,3 +59,17 @@ const coreStub = {
 (globalThis as any).PConnect = function () { return undefined; };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).getPConnect = () => ({ getContextName: () => 'root' });
+
+// Stub global fetch for sdk-config.json to avoid 404 noise during unit tests.
+const originalFetch = (globalThis as any).fetch;
+(globalThis as any).fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+  const url = typeof input === 'string' ? input : input.toString();
+  if (url.includes('sdk-config.json')) {
+    return Promise.resolve(new Response(JSON.stringify({}), { status: 200 }));
+  }
+  if (originalFetch) {
+    return originalFetch(input as any, init as any);
+  }
+  // Minimal fallback for environments without fetch
+  return Promise.resolve(new Response('OK', { status: 200 }));
+};
