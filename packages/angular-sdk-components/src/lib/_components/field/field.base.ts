@@ -16,7 +16,7 @@ export class FieldBase implements OnInit, OnDestroy {
 
   fieldControl: FormControl<any> = new FormControl('', null);
   controlName$: string;
-  actionsApi: Object;
+  actionsApi: object;
   propName: string;
 
   bHasForm$ = true;
