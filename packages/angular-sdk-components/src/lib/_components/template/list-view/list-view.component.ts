@@ -297,12 +297,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   // Will be triggered when EVENT_DASHBOARD_FILTER_CHANGE fires
   processFilterChange(data) {
-    let filterId;
-    let filterExpression;
     let isDateRange;
     let field;
     const selectParam: any[] = [];
-    let dashboardFilterPayload: any = {
+    const dashboardFilterPayload: any = {
       query: {
         filter: {},
         select: []
@@ -311,83 +309,63 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
     if (this.displayAs === 'advancedSearch') {
       this.filters = {};
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(data).reduce((acc, [item, value]) => {
+      Object.entries(data).forEach(([, value]) => {
         const { filterId, filterExpression } = value as any;
-        // filterExpression = value.filterExpression;
         this.filters[filterId] = filterExpression;
-        return acc; // Ensure the accumulator is returned
-      }, {});
+      });
     } else {
-      ({ filterId, filterExpression } = data);
+      const { filterId, filterExpression } = data;
       this.filters[filterId] = filterExpression;
-      isDateRange = !!data.filterExpression?.AND;
+      isDateRange = !!filterExpression?.AND;
       field = this.getFieldFromFilter(filterExpression, isDateRange);
 
-      // Constructing the select parameters list (will be sent in dashboardFilterPayload)
       this.displayedColumns$?.forEach(col => {
-        selectParam.push({
-          field: col
-        });
+        selectParam.push({ field: col });
       });
 
-      // Checking if the triggered filter is applicable for this list
-      if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
+      if (filterExpression !== null && !this.displayedColumns$?.includes(field)) {
         return;
       }
     }
 
-    // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
     const relationalOp = 'AND';
-
-    // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
     let validFilter = false;
-
     let index = 1;
-    // Iterating over the current filters list to create filter data which will be POSTed
-    const filterKeys: any[] = Object.keys(this.filters);
-    const filterValues: any[] = Object.values(this.filters);
-    for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
-      const filter = filterValues[filterIndex];
-      // If the filter is null then we can skip this iteration
+
+    for (const filter of Object.values(this.filters)) {
       if (filter === null) {
         continue;
       }
 
-      // Checking if the filter is of type- Date Range
       isDateRange = !!filter?.AND;
       field = this.getFieldFromFilter(filter, isDateRange);
 
-      if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
+      if (!this.displayedColumns$?.includes(field)) {
         continue;
       }
-      // If we reach here that implies we've at least one valid filter, hence setting the flag
+
       validFilter = true;
-      /** Below are the 2 cases for- Text & Date-Range filter types where we'll construct filter data which will be sent in the dashboardFilterPayload
-       * In Constellation DX Components, through Repeating Structures they might be using several APIs to do it. We're doing it here
-       */
+
       if (isDateRange) {
         dashboardFilterPayload = this.filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index);
+        index += 2; // filterBasedOnDateRange uses two indices
       } else {
+        const condition = { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' && { ignoreCase: true }) };
         dashboardFilterPayload.query.filter.filterConditions = {
           ...dashboardFilterPayload.query.filter.filterConditions,
-          [`T${index++}`]: { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' ? { ignoreCase: true } : {}) }
+          [`T${index}`]: condition
         };
         if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index - 1}`;
+          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index}`;
         } else {
-          dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
+          dashboardFilterPayload.query.filter.logic = `T${index}`;
         }
-
+        index++;
         dashboardFilterPayload.query.select = selectParam;
       }
     }
 
-    // Reset the dashboardFilterPayload if we end up with no valid filters for the list
-    if (!validFilter) {
-      dashboardFilterPayload = undefined;
-    }
-    this.filterPayload = dashboardFilterPayload;
+    this.filterPayload = validFilter ? dashboardFilterPayload : undefined;
     this.getListData();
   }
 

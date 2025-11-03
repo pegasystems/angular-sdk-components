@@ -1,46 +1,53 @@
+function getContextProperty(pageReference, dataRelationshipContext) {
+  if (!pageReference) return null;
+
+  const propertySplit = pageReference.split('.');
+  let contextProperty = dataRelationshipContext ?? propertySplit.pop();
+
+  // Regex to match if the property is list type. Eg: EmployeeRef[1]
+  const listPropertyRegex = /([a-z|A-Z]*[[][\d]*)[\]]$/gm;
+  if (listPropertyRegex.test(contextProperty)) {
+    // Regex to match [1] part of the property EmployeeRef[1]
+    const indexRegex = /([[][\d]*[\]])+/gm;
+    contextProperty = contextProperty.replace(indexRegex, '');
+  }
+  return contextProperty;
+}
+
+function buildPayload(parameters, pConnect, contextPage, dataRelationshipContext) {
+  const payload = {};
+  const annotationUtils = PCore.getAnnotationUtils();
+
+  for (const [key, value] of Object.entries(parameters)) {
+    if (contextPage && Object.hasOwn(contextPage, key)) {
+      payload[key] = contextPage[key];
+    } else {
+      const isProperty = annotationUtils.isProperty(value as string);
+      if (isProperty) {
+        const property =
+          dataRelationshipContext !== null ? annotationUtils.getPropertyName(value as string) : annotationUtils.getLeafPropertyName(value as string);
+        payload[key] = pConnect.getValue(`.${property}`);
+      } else {
+        payload[key] = value;
+      }
+    }
+  }
+  return payload;
+}
+
 function getDataReferenceInfo(pConnect, dataRelationshipContext, contextPage) {
   if (!pConnect) {
     throw Error('PConnect parameter is required');
   }
 
-  let dataContext = '';
-  const payload = {};
   const pageReference = pConnect.getPageReference();
-  const annotationUtils = PCore.getAnnotationUtils();
-  let fieldMetadata;
+  const contextProperty = getContextProperty(pageReference, dataRelationshipContext);
+  const fieldMetadata = contextProperty ? pConnect.getFieldMetadata(contextProperty) : null;
 
-  if (pageReference) {
-    /*
-    For page list the page reference will be something like caseInfo.content.EmployeeRef[1].
-    Need to extract EmployeeRef from caseInfo.content.EmployeeRef[1]
-    */
-    const propertySplit = pageReference.split('.');
-
-    // Regex to match if the property is list type. Eg: EmployeeRef[1]
-    const listPropertyRegex = /([a-z|A-Z]*[[][\d]*)[\]]$/gm;
-    // Regex to match [1] part of the property EmployeeRef[1]
-    const indexRegex = /([[][\d]*[\]])+/gm;
-
-    let contextProperty = dataRelationshipContext !== null ? dataRelationshipContext : propertySplit.pop();
-    const isListProperty = listPropertyRegex.test(contextProperty);
-    contextProperty = isListProperty ? contextProperty.replace(indexRegex, '') : contextProperty;
-    fieldMetadata = pConnect.getFieldMetadata(contextProperty);
-  }
-
-  if (!!fieldMetadata && fieldMetadata.datasource) {
-    const { name, parameters } = fieldMetadata.datasource;
-    dataContext = name;
-    for (const [key, value] of Object.entries(parameters)) {
-      if (contextPage && Object.hasOwn(contextPage, key)) {
-        payload[key] = contextPage[key];
-      } else {
-        const isProperty = PCore.getAnnotationUtils().isProperty(value as string);
-        const property =
-          dataRelationshipContext !== null ? annotationUtils.getPropertyName(value as string) : annotationUtils.getLeafPropertyName(value as string);
-        payload[key] = isProperty ? pConnect.getValue(`.${property}`) : value;
-      }
-    }
-    return { dataContext, dataContextParameters: payload };
+  if (fieldMetadata?.datasource) {
+    const { name: dataContext, parameters } = fieldMetadata.datasource;
+    const dataContextParameters = buildPayload(parameters, pConnect, contextPage, dataRelationshipContext);
+    return { dataContext, dataContextParameters };
   }
 
   return {};

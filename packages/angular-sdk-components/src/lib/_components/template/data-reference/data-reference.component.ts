@@ -125,22 +125,19 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       this.updateSelf();
     }
   }
-
   updateSelf() {
     // Update properties based on configProps
     const theConfigProps = this.pConn$.getConfigProps();
     this.updatePropertiesFromProps(theConfigProps);
 
-    const displayAs = theConfigProps.displayAs;
-    const displayMode = theConfigProps.displayMode;
+    const { displayAs, displayMode } = theConfigProps;
     this.rawViewMetadata = this.pConn$.getRawMetadata();
     this.viewName = this.rawViewMetadata.name;
     this.firstChildMeta = this.rawViewMetadata.children[0];
     this.refList = this.rawViewMetadata.config.referenceList;
     this.dataRelationshipContext =
       this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name ? this.rawViewMetadata.config.name : null;
-    this.canBeChangedInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode && (displayAs === 'autocomplete' || displayAs === 'dropdown');
-    // this.childrenToRender = this.children;
+    this.canBeChangedInReviewMode = theConfigProps.allowAndPersistChangesInReviewMode && ['autocomplete', 'dropdown'].includes(displayAs);
     this.isDisplayModeEnabled = ['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(displayMode);
     this.refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.authorContext);
     this.pyID = getMappedKey('pyID');
@@ -151,38 +148,41 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.isDDSourceDeferred =
       (this.firstChildMeta?.type === 'Dropdown' && this.selectionMode === SELECTION_MODE.SINGLE && this.refFieldMetadata?.descriptors) ||
       this.firstChildMeta.config.deferDatasource;
-    if (this.firstChildMeta?.type !== 'Region') {
-      this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;
 
-      /* remove refresh When condition from those old view so that it will not be used for runtime */
-      if (this.firstChildMeta.config?.readOnly) {
-        delete this.firstChildMeta.config.readOnly;
-      }
-      if (this.firstChildMeta?.type === 'Dropdown') {
-        this.firstChildMeta.config.datasource.source = this.rawViewMetadata.config?.parameters
-          ? this.dropDownDataSource
-          : '@DATASOURCE '.concat(this.refList).concat('.pxResults');
-      } else if (this.firstChildMeta?.type === 'AutoComplete') {
-        this.firstChildMeta.config.datasource = this.refList;
-
-        /* Insert the parameters to the component only if present */
-        if (this.rawViewMetadata.config?.parameters) {
-          this.firstChildMeta.config.parameters = this.parameters;
-        }
-      }
-      // set displayMode conditionally
-      if (!this.canBeChangedInReviewMode) {
-        this.firstChildMeta.config.displayMode = displayMode;
-      }
-      if (this.firstChildMeta.type === 'SimpleTableSelect' && this.selectionMode === SELECTION_MODE.MULTI) {
-        this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.selectionList);
-      } else {
-        this.propName = PCore.getAnnotationUtils().getPropertyName(this.firstChildMeta.config.value);
-      }
-
-      this.generateChildrenToRender();
-      this.displayChild = !(this.displaySingleRef || this.displayMultiRef);
+    if (this.firstChildMeta?.type === 'Region') {
+      return;
     }
+
+    this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;
+
+    /* remove refresh When condition from those old view so that it will not be used for runtime */
+    if (this.firstChildMeta.config?.readOnly) {
+      delete this.firstChildMeta.config.readOnly;
+    }
+
+    if (this.firstChildMeta?.type === 'Dropdown') {
+      this.firstChildMeta.config.datasource.source = this.rawViewMetadata.config?.parameters
+        ? this.dropDownDataSource
+        : '@DATASOURCE '.concat(this.refList).concat('.pxResults');
+    } else if (this.firstChildMeta?.type === 'AutoComplete') {
+      this.firstChildMeta.config.datasource = this.refList;
+      /* Insert the parameters to the component only if present */
+      if (this.rawViewMetadata.config?.parameters) {
+        this.firstChildMeta.config.parameters = this.parameters;
+      }
+    }
+
+    // set displayMode conditionally
+    if (!this.canBeChangedInReviewMode) {
+      this.firstChildMeta.config.displayMode = displayMode;
+    }
+
+    const isMultiSelectSimpleTable = this.firstChildMeta.type === 'SimpleTableSelect' && this.selectionMode === SELECTION_MODE.MULTI;
+    const propNameConfig = isMultiSelectSimpleTable ? this.firstChildMeta.config.selectionList : this.firstChildMeta.config.value;
+    this.propName = PCore.getAnnotationUtils().getPropertyName(propNameConfig);
+
+    this.generateChildrenToRender();
+    this.displayChild = !(this.displaySingleRef || this.displayMultiRef);
   }
 
   updatePropertiesFromProps(theConfigProps) {
@@ -303,169 +303,41 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     if (this.firstChildMeta?.type === 'Region' && this.displayAs !== 'advancedSearch') {
       return;
     }
-    const { type } = this.firstChildMeta;
     this.firstChildPConnect = this.pConn$.getChildren()[0].getPConnect;
-    // this.pConn$.getChildren()[0].getPConnect
-    /* Read-only variants */
+
+    this._setupDisplayFlags();
+
     if (
-      (this.displayAs === 'readonly' || this.isDisplayModeEnabled) &&
-      !this.canBeChangedInReviewMode &&
-      this.selectionMode === SELECTION_MODE.SINGLE
+      this.firstChildMeta.type === 'Dropdown' &&
+      this.dropDownDataSource === null &&
+      !this.isDDSourceDeferred &&
+      this.rawViewMetadata.config?.parameters
     ) {
-      this.displaySingleRef = true;
-    }
-
-    if ((['readonly', 'readonlyMulti', 'map'].includes(this.displayAs) || this.isDisplayModeEnabled) && this.selectionMode === SELECTION_MODE.MULTI) {
-      this.displayMultiRef = true;
-    }
-
-    /* Editable variants */
-    // Datasource w/ parameters cannot load the dropdown before the parameters
-    if (type === 'Dropdown' && this.dropDownDataSource === null && !this.isDDSourceDeferred && this.rawViewMetadata.config?.parameters) {
       return null;
     }
 
-    // Meta prep
-    // 1) Cleanup
-    if (this.firstChildMeta.config?.readOnly) {
-      delete this.firstChildMeta.config.readOnly;
-    }
+    this._prepareDatasource();
+    this._configureChildComponent();
 
-    // 2) Set datasource
-    if (
-      ['Dropdown', 'Checkbox', 'RadioButtons'].includes(this.firstChildMeta?.type) &&
-      !this.firstChildMeta.config.deferDatasource &&
-      this.firstChildMeta.config.datasource
-    ) {
-      // If data page doesn't exist within shared object when card component is mounted, then we need to set source to dropdownDataSource
-      const isDeferDataPageCallEnabled =
-        this.rawViewMetadata.config?.parameters &&
-        this.firstChildMeta.config.variant === 'card' &&
-        // @ts-ignore
-        !firstChildPConnect()?.getSharedDataPageForReferenceList();
-      this.firstChildMeta.config.datasource.source =
-        (this.firstChildMeta.config.variant === 'card' && (this.dropDownDataSource || isDeferDataPageCallEnabled)) ||
-        (this.firstChildMeta.config.variant !== 'card' && this.rawViewMetadata.config?.parameters)
-          ? this.dropDownDataSource
-          : '@DATASOURCE '.concat(this.refList).concat('.pxResults');
-    } else if (this.firstChildMeta?.type === 'AutoComplete') {
-      this.firstChildMeta.config.datasource = this.refList;
-
-      if (this.rawViewMetadata.config?.parameters) {
-        this.firstChildMeta.config.parameters = this.parameters;
-      }
-    }
-
-    // 3) Pass through configs
-    if (this.firstChildMeta.config) {
-      this.firstChildMeta.config.showPromotedFilters = this.showPromotedFilters;
-      if (!this.canBeChangedInReviewMode) {
-        this.firstChildMeta.config.displayMode = this.displayMode;
-      }
-    }
-
-    // 4) Define field meta
-    let fieldMetaData: any = null;
-    if (this.isDDSourceDeferred && !this.firstChildMeta.config.deferDatasource) {
-      fieldMetaData = {
-        datasourceMetadata: this.refFieldMetadata
-      };
-      if (this.rawViewMetadata.config?.parameters) {
-        fieldMetaData.datasourceMetadata.datasource.parameters = this.parameters;
-      }
-      fieldMetaData.datasourceMetadata.datasource.propertyForDisplayText = this.firstChildMeta?.config?.datasource?.fields?.text.startsWith('@P')
-        ? this.firstChildMeta?.config?.datasource?.fields?.text?.substring(3)
-        : this.firstChildMeta?.config?.datasource?.fields?.text;
-      fieldMetaData.datasourceMetadata.datasource.propertyForValue = this.firstChildMeta?.config?.datasource?.fields?.value.startsWith('@P')
-        ? this.firstChildMeta?.config?.datasource?.fields?.value?.substring(3)
-        : this.firstChildMeta?.config?.datasource?.fields?.value;
-      fieldMetaData.datasourceMetadata.datasource.name = this.rawViewMetadata.config?.referenceList;
-    }
-
-    const { disableStartingFieldsForReference = false } = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || ({} as any);
-
-    const isEnvLP: any = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form;
-    // Create Link in Reference Field: For legacy views where isCreationOfNewRecordAllowedForReference is absent, Infinity should treat it as turned off. However, in LP, it should be considered as turned on by default.
-    const isCreateNewRefEnabledInAuthoring = this.isCreationOfNewRecordAllowedForReference ?? isEnvLP?.isCreateNewReferenceEnabled;
-    const isCaseRef = this.referenceType === 'Case' || this.firstChildMeta?.config?.referenceType === 'Case';
-    // In infinity supported only for case reference @todo add user access check. For LP case and data both are supported given user has access.
-    const isCreateNewRefEnabledForUser = isEnvLP
-      ? isEnvLP.isCreateNewReferenceEnabled && PCore.getAccessPrivilege().hasCreateAccess(this.contextClass)
-      : isCaseRef;
-
-    const isCreateNewReferenceEnabled = isCreateNewRefEnabledInAuthoring && isCreateNewRefEnabledForUser;
-
-    const startingFields: any = {};
-    const createNewRecord = () => {
-      if (this.referenceType === 'Case' || this.firstChildMeta?.config?.referenceType === 'Case') {
-        if (!disableStartingFieldsForReference) {
-          startingFields.pyAddCaseContextPage = { pyID: this.pConn$.getCaseInfo().getKey()?.split(' ')?.pop() };
-        }
-        return this.pConn$.getActionsApi().createWork(this.contextClass, {
-          openCaseViewAfterCreate: false,
-          startingFields
-        });
-      }
-      if (this.referenceType === 'Data' || this.firstChildMeta?.config?.referenceType === 'Data') {
-        return getPConnect().getActionsApi().showDataObjectCreateView(this.contextClass);
-      }
-    };
-
-    const additionalInfo = this.refFieldMetadata?.additionalInformation
-      ? {
-          content: this.refFieldMetadata.additionalInformation
-        }
-      : undefined;
-
-    const dataReferenceConfigToChild = {
-      selectionMode: this.selectionMode,
-      additionalInfo,
-      descriptors: this.selectionMode === SELECTION_MODE.SINGLE ? this.refFieldMetadata?.descriptors : null,
-      datasourceMetadata: fieldMetaData?.datasourceMetadata,
-      required: this.propsToUse.required,
-      visibility: this.propsToUse.visibility,
-      disabled: this.propsToUse.disabled,
-      label: this.propsToUse.label,
-      displayAs: this.displayAs,
-      readOnly: false,
-      ...(this.selectionMode === SELECTION_MODE.SINGLE && {
-        referenceType: this.referenceType
-      }),
-      ...(this.selectionMode === SELECTION_MODE.SINGLE &&
-        this.displayAs === 'advancedSearch' && {
-          value: this.rawViewMetadata.config.value,
-          contextPage: this.rawViewMetadata.config.contextPage
-        }),
-      ...(this.selectionMode === SELECTION_MODE.MULTI &&
-        this.displayAs === 'advancedSearch' && {
-          selectionList: this.selectionList,
-          readonlyContextList: this.rawViewMetadata.config.readonlyContextList
-        }),
-      dataRelationshipContext: this.rawViewMetadata.config.contextClass && this.rawViewMetadata.config.name ? this.rawViewMetadata.config.name : null,
-      hideLabel: this.hideLabel,
-      onRecordChange: this.handleSelection.bind(this),
-      createNewRecord: isCreateNewReferenceEnabled ? createNewRecord : undefined,
-      inline: this.inline
-    };
-
-    const searchSelectCacheKey = componentCachePersistUtils.getComponentStateKey(this.pConn$, this.rawViewMetadata.config.name);
-
-    const dataReferenceAdvancedSearchContext = {
-      dataReferenceConfigToChild,
-      isCreateNewReferenceEnabled,
-      disableStartingFieldsForReference,
-      pyID: this.pyID,
-      searchSelectCacheKey
-    };
+    const { isCreateNewReferenceEnabled, createNewRecord } = this._getCreateNewRecordHandler();
+    const dataReferenceConfigToChild = this._buildDataReferenceConfig(isCreateNewReferenceEnabled, createNewRecord);
 
     if (this.displayAs === 'advancedSearch') {
       this.showAdvancedSearch = true;
-      this.advancedSearchService.setConfig(dataReferenceAdvancedSearchContext);
+      const { disableStartingFieldsForReference = false } = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || ({} as any);
+      this.advancedSearchService.setConfig({
+        dataReferenceConfigToChild,
+        isCreateNewReferenceEnabled,
+        disableStartingFieldsForReference,
+        pyID: this.pyID,
+        searchSelectCacheKey: componentCachePersistUtils.getComponentStateKey(this.pConn$, this.rawViewMetadata.config.name)
+      });
       return;
     }
 
+    const { disableStartingFieldsForReference = false } = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || ({} as any);
     return this.firstChildPConnect().createComponent({
-      type,
+      type: this.firstChildMeta.type,
       config: {
         ...getFirstChildConfig({
           firstChildMeta: this.firstChildMeta,
@@ -479,5 +351,147 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
         })
       }
     });
+  }
+
+  private _setupDisplayFlags() {
+    const isReadOnlySingle =
+      (this.displayAs === 'readonly' || this.isDisplayModeEnabled) && !this.canBeChangedInReviewMode && this.selectionMode === SELECTION_MODE.SINGLE;
+    if (isReadOnlySingle) {
+      this.displaySingleRef = true;
+    }
+
+    const isReadOnlyMulti =
+      (['readonly', 'readonlyMulti', 'map'].includes(this.displayAs) || this.isDisplayModeEnabled) && this.selectionMode === SELECTION_MODE.MULTI;
+    if (isReadOnlyMulti) {
+      this.displayMultiRef = true;
+    }
+  }
+
+  private _prepareDatasource() {
+    const { type, config } = this.firstChildMeta;
+
+    if (config?.readOnly) {
+      delete config.readOnly;
+    }
+
+    if (['Dropdown', 'Checkbox', 'RadioButtons'].includes(type) && !config.deferDatasource && config.datasource) {
+      const isCardVariant = config.variant === 'card';
+      const hasParameters = !!this.rawViewMetadata.config?.parameters;
+      // @ts-ignore
+      const isDeferDataPageCallEnabled = isCardVariant && hasParameters && !this.firstChildPConnect()?.getSharedDataPageForReferenceList();
+
+      const useDropdownDataSource = (isCardVariant && (this.dropDownDataSource || isDeferDataPageCallEnabled)) || (!isCardVariant && hasParameters);
+
+      config.datasource.source = useDropdownDataSource ? this.dropDownDataSource : `@DATASOURCE ${this.refList}.pxResults`;
+    } else if (type === 'AutoComplete') {
+      config.datasource = this.refList;
+      if (this.rawViewMetadata.config?.parameters) {
+        config.parameters = this.parameters;
+      }
+    }
+  }
+
+  private _configureChildComponent() {
+    if (this.firstChildMeta.config) {
+      this.firstChildMeta.config.showPromotedFilters = this.showPromotedFilters;
+      if (!this.canBeChangedInReviewMode) {
+        this.firstChildMeta.config.displayMode = this.displayMode;
+      }
+    }
+  }
+
+  private _getDeferredDatasourceMetadata() {
+    if (!this.isDDSourceDeferred || this.firstChildMeta.config.deferDatasource) {
+      return null;
+    }
+
+    const { fields } = this.firstChildMeta.config.datasource;
+    const getProp = (prop: string) => (prop.startsWith('@P') ? prop.substring(3) : prop);
+
+    const fieldMetaData = {
+      datasourceMetadata: {
+        ...this.refFieldMetadata,
+        datasource: {
+          name: this.rawViewMetadata.config?.referenceList,
+          propertyForDisplayText: getProp(fields.text),
+          propertyForValue: getProp(fields.value)
+        }
+      }
+    };
+
+    if (this.rawViewMetadata.config?.parameters) {
+      fieldMetaData.datasourceMetadata.datasource.parameters = this.parameters;
+    }
+
+    return fieldMetaData;
+  }
+
+  private _getCreateNewRecordHandler() {
+    const isEnvLP: any = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form;
+    const isCreateNewRefEnabledInAuthoring = this.isCreationOfNewRecordAllowedForReference ?? isEnvLP?.isCreateNewReferenceEnabled;
+    const isCaseRef = this.referenceType === 'Case' || this.firstChildMeta?.config?.referenceType === 'Case';
+    const isCreateNewRefEnabledForUser = isEnvLP
+      ? isEnvLP.isCreateNewReferenceEnabled && PCore.getAccessPrivilege().hasCreateAccess(this.contextClass)
+      : isCaseRef;
+
+    if (!isCreateNewRefEnabledInAuthoring || !isCreateNewRefEnabledForUser) {
+      return { isCreateNewReferenceEnabled: false, createNewRecord: undefined };
+    }
+
+    const createNewRecord = () => {
+      if (isCaseRef) {
+        const { disableStartingFieldsForReference = false } = PCore.getEnvironmentInfo().environmentInfoObject?.features?.form || ({} as any);
+        const startingFields: any = {};
+        if (!disableStartingFieldsForReference) {
+          startingFields.pyAddCaseContextPage = { pyID: this.pConn$.getCaseInfo().getKey()?.split(' ')?.pop() };
+        }
+        return this.pConn$.getActionsApi().createWork(this.contextClass, {
+          openCaseViewAfterCreate: false,
+          startingFields
+        });
+      }
+      if (this.referenceType === 'Data' || this.firstChildMeta?.config?.referenceType === 'Data') {
+        return getPConnect().getActionsApi().showDataObjectCreateView(this.contextClass);
+      }
+      return null;
+    };
+
+    return { isCreateNewReferenceEnabled: true, createNewRecord };
+  }
+
+  private _buildDataReferenceConfig(isCreateNewReferenceEnabled: boolean, createNewRecord: () => any) {
+    const fieldMetaData = this._getDeferredDatasourceMetadata();
+    const additionalInfo = this.refFieldMetadata?.additionalInformation ? { content: this.refFieldMetadata.additionalInformation } : undefined;
+
+    const config: any = {
+      selectionMode: this.selectionMode,
+      additionalInfo,
+      descriptors: this.selectionMode === SELECTION_MODE.SINGLE ? this.refFieldMetadata?.descriptors : null,
+      datasourceMetadata: fieldMetaData?.datasourceMetadata,
+      required: this.propsToUse.required,
+      visibility: this.propsToUse.visibility,
+      disabled: this.propsToUse.disabled,
+      label: this.propsToUse.label,
+      displayAs: this.displayAs,
+      readOnly: false,
+      dataRelationshipContext: this.dataRelationshipContext,
+      hideLabel: this.hideLabel,
+      onRecordChange: this.handleSelection.bind(this),
+      createNewRecord: isCreateNewReferenceEnabled ? createNewRecord : undefined,
+      inline: this.inline
+    };
+
+    if (this.selectionMode === SELECTION_MODE.SINGLE) {
+      config.referenceType = this.referenceType;
+      if (this.displayAs === 'advancedSearch') {
+        config.value = this.rawViewMetadata.config.value;
+        config.contextPage = this.rawViewMetadata.config.contextPage;
+      }
+    } else if (this.displayAs === 'advancedSearch') {
+      config.selectionList = this.selectionList;
+      config.readonlyContextList = this.rawViewMetadata.config.readonlyContextList;
+    }
+
+    return config;
   }
 }

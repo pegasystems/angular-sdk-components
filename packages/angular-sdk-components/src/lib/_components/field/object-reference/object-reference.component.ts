@@ -62,143 +62,6 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSelf() {
-    this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ObjectReferenceProps;
-    const displayMode = this.configProps.displayMode;
-    const editableInReview = this.configProps.allowAndPersistChangesInReviewMode ?? false;
-    const targetObjectType = this.configProps.targetObjectType;
-    const mode = this.configProps.mode;
-    const parameters = this.configProps.parameters;
-    const hideLabel = this.configProps.hideLabel;
-    const inline = this.configProps.inline;
-    const showPromotedFilters = this.configProps.showPromotedFilters;
-    const referenceType: string = targetObjectType === 'case' ? 'Case' : 'Data';
-    this.rawViewMetadata = this.pConn$.getRawMetadata();
-    const refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.value?.split('.', 2)[1] ?? '');
-
-    // Destructured properties
-    const propsToUse = { ...this.pConn$.getInheritedProps(), ...this.configProps };
-
-    // Computed variables
-    this.isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
-    this.canBeChangedInReviewMode = editableInReview && ['Autocomplete', 'Dropdown'].includes((this.rawViewMetadata?.config as any)?.componentType);
-    // componentType is not defined in ComponentMetadataConfig type so using any
-    this.type = (this.rawViewMetadata?.config as any)?.componentType;
-
-    if (this.type === 'SemanticLink' && !this.canBeChangedInReviewMode) {
-      const config: any = {
-        ...this.rawViewMetadata?.config,
-        primaryField: (this.rawViewMetadata?.config as any).displayField
-      };
-      config.caseClass = (this.rawViewMetadata?.config as any).targetObjectClass;
-      config.text = config.primaryField;
-      config.caseID = config.value;
-      config.contextPage = `@P .${
-        (this.rawViewMetadata?.config as any)?.displayField
-          ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField)
-          : null
-      }`;
-      config.resourceParams = {
-        workID: config.value
-      };
-      config.resourcePayload = {
-        caseClassName: config.caseClass
-      };
-
-      const component = this.pConn$.createComponent(
-        {
-          type: 'SemanticLink',
-          config: {
-            ...config,
-            displayMode,
-            referenceType,
-            hideLabel,
-            dataRelationshipContext: (this.rawViewMetadata?.config as any)?.displayField
-              ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField)
-              : null
-          }
-        },
-        '',
-        0,
-        {}
-      );
-      this.newPconn = component?.getPConnect();
-    }
-
-    if (this.type !== 'SemanticLink' && !this.isDisplayModeEnabled) {
-      // 1) Set datasource
-      const config: any = { ...this.rawViewMetadata?.config };
-      generateColumns(config, this.pConn$, referenceType);
-      config.deferDatasource = true;
-      config.listType = 'datapage';
-      if (['Dropdown', 'AutoComplete'].includes(this.type) && !config.placeholder) {
-        config.placeholder = '@L Select...';
-      }
-
-      // 2) Pass through configs
-      config.showPromotedFilters = showPromotedFilters;
-
-      if (!this.canBeChangedInReviewMode) {
-        config.displayMode = displayMode;
-      }
-
-      // 3) Define field meta
-
-      const fieldMetaData = {
-        datasourceMetadata: {
-          datasource: {
-            parameters: {},
-            propertyForDisplayText: false,
-            propertyForValue: false,
-            name: ''
-          }
-        }
-      };
-      if (config?.parameters) {
-        fieldMetaData.datasourceMetadata.datasource.parameters = parameters;
-      }
-      fieldMetaData.datasourceMetadata.datasource.propertyForDisplayText = config?.datasource?.fields?.text?.startsWith('@P')
-        ? config?.datasource?.fields?.text?.substring(3)
-        : config?.datasource?.fields?.text;
-      fieldMetaData.datasourceMetadata.datasource.propertyForValue = config?.datasource?.fields?.value?.startsWith('@P')
-        ? config?.datasource?.fields?.value?.substring(3)
-        : config?.datasource?.fields?.value;
-      fieldMetaData.datasourceMetadata.datasource.name = config?.referenceList ?? '';
-
-      const component = this.pConn$.createComponent(
-        {
-          type: this.type,
-          config: {
-            ...config,
-            descriptors: mode === 'single' ? refFieldMetadata?.descriptors : null,
-            datasourceMetadata: fieldMetaData?.datasourceMetadata,
-            required: propsToUse.required,
-            visibility: propsToUse.visibility,
-            disabled: propsToUse.disabled,
-            label: propsToUse.label,
-            parameters: config.parameters,
-            readOnly: false,
-            localeReference: config.localeReference,
-            ...(mode === 'single' ? { referenceType } : ''),
-            contextClass: config.targetObjectClass,
-            primaryField: config?.displayField,
-            dataRelationshipContext: config?.displayField ? getDataRelationshipContextFromKey(config.displayField) : null,
-            hideLabel,
-            inline
-          }
-        },
-        '',
-        0,
-        {}
-      );
-      this.newComponentName = component?.getPConnect().getComponentName();
-      this.newPconn = component?.getPConnect();
-      if (this.rawViewMetadata?.config) {
-        this.rawViewMetadata.config = config ? { ...config } : this.rawViewMetadata.config;
-      }
-    }
-  }
-
   onRecordChange(value) {
     const caseKey = this.pConn$.getCaseInfo().getKey() ?? '';
     const refreshOptions = { autoDetectRefresh: true, propertyName: '' };
@@ -252,5 +115,106 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
             });
         });
     }
+  }
+
+  private updateSelf() {
+    this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ObjectReferenceProps;
+    this.rawViewMetadata = this.pConn$.getRawMetadata();
+    const { displayMode, allowAndPersistChangesInReviewMode, targetObjectType, mode } = this.configProps;
+
+    this.isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
+    const editableInReview = allowAndPersistChangesInReviewMode ?? false;
+    const rawConfig = this.rawViewMetadata?.config as any;
+    this.type = rawConfig?.componentType;
+
+    this.canBeChangedInReviewMode = editableInReview && ['Autocomplete', 'Dropdown'].includes(this.type);
+
+    const referenceType: string = targetObjectType === 'case' ? 'Case' : 'Data';
+
+    if (this.type === 'SemanticLink' && !this.canBeChangedInReviewMode) {
+      this.createSemanticLink(rawConfig, displayMode, referenceType);
+    } else if (this.type !== 'SemanticLink' && !this.isDisplayModeEnabled) {
+      this.createEditableComponent(rawConfig, mode, referenceType);
+    }
+  }
+
+  private createSemanticLink(rawConfig: any, displayMode: string, referenceType: string) {
+    const { hideLabel } = this.configProps;
+    const dataRelationshipContext = rawConfig?.displayField ? getDataRelationshipContextFromKey(rawConfig.displayField) : null;
+
+    const config = {
+      ...rawConfig,
+      primaryField: rawConfig.displayField,
+      caseClass: rawConfig.targetObjectClass,
+      text: rawConfig.displayField,
+      caseID: rawConfig.value,
+      contextPage: `@P .${dataRelationshipContext}`,
+      resourceParams: { workID: rawConfig.value },
+      resourcePayload: { caseClassName: rawConfig.targetObjectClass },
+      displayMode,
+      referenceType,
+      hideLabel,
+      dataRelationshipContext
+    };
+
+    const component = this.pConn$.createComponent({ type: 'SemanticLink', config }, '', 0, {});
+    this.newPconn = component?.getPConnect();
+  }
+
+  private createEditableComponent(rawConfig: any, mode: string, referenceType: string) {
+    const { parameters, showPromotedFilters, hideLabel, inline } = this.configProps;
+    const propsToUse = { ...this.pConn$.getInheritedProps(), ...this.configProps };
+
+    const config = { ...rawConfig };
+    generateColumns(config, this.pConn$, referenceType);
+    config.deferDatasource = true;
+    config.listType = 'datapage';
+    if (['Dropdown', 'AutoComplete'].includes(this.type) && !config.placeholder) {
+      config.placeholder = '@L Select...';
+    }
+    config.showPromotedFilters = showPromotedFilters;
+    if (!this.canBeChangedInReviewMode) {
+      config.displayMode = this.configProps.displayMode;
+    }
+
+    const refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.value?.split('.', 2)[1] ?? '');
+
+    const componentConfig = {
+      ...config,
+      descriptors: mode === 'single' ? refFieldMetadata?.descriptors : null,
+      datasourceMetadata: this.getDatasourceMetadata(config, parameters),
+      required: propsToUse.required,
+      visibility: propsToUse.visibility,
+      disabled: propsToUse.disabled,
+      label: propsToUse.label,
+      parameters: config.parameters,
+      readOnly: false,
+      localeReference: config.localeReference,
+      ...(mode === 'single' ? { referenceType } : {}),
+      contextClass: config.targetObjectClass,
+      primaryField: config?.displayField,
+      dataRelationshipContext: config?.displayField ? getDataRelationshipContextFromKey(config.displayField) : null,
+      hideLabel,
+      inline
+    };
+
+    const component = this.pConn$.createComponent({ type: this.type, config: componentConfig }, '', 0, {});
+    this.newComponentName = component?.getPConnect().getComponentName();
+    this.newPconn = component?.getPConnect();
+    if (this.rawViewMetadata?.config) {
+      this.rawViewMetadata.config = { ...config };
+    }
+  }
+
+  private getDatasourceMetadata(config: any, parameters: object) {
+    const getProp = (prop: string) => (prop?.startsWith('@P') ? prop.substring(3) : prop);
+    return {
+      datasource: {
+        name: config?.referenceList ?? '',
+        parameters: config?.parameters ? parameters : {},
+        propertyForDisplayText: getProp(config?.datasource?.fields?.text),
+        propertyForValue: getProp(config?.datasource?.fields?.value)
+      }
+    };
   }
 }

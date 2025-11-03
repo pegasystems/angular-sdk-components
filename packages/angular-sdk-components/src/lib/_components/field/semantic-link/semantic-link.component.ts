@@ -78,94 +78,48 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
 
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SemanticLinkProps;
-    this.value$ = this.configProps$.text ? this.configProps$.text : this.configProps$.value || '';
-    this.displayMode$ = this.configProps$.displayMode;
-    this.label$ = this.configProps$.label;
-    if (this.configProps$.visibility) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
+    const { text, value, displayMode, label, visibility, contextPage } = this.configProps$;
+
+    this.value$ = text || value || '';
+    this.displayMode$ = displayMode;
+    this.label$ = label;
+    if (visibility) {
+      this.bVisible$ = this.utils.getBooleanValue(visibility);
     }
-    const { resourceParams = {}, dataRelationshipContext = null, contextPage } = this.configProps$;
+
     this.referenceType = this.configProps$.referenceType;
     this.previewKey = this.configProps$.previewKey;
     this.resourcePayload = this.configProps$.resourcePayload ?? {};
-    const { ACTION_OPENWORKBYHANDLE, ACTION_SHOWDATA, ACTION_GETOBJECT } = PCore.getSemanticUrlUtils().getActions() as any;
     this.dataResourcePayLoad = this.resourcePayload?.resourceType === 'DATA' ? this.resourcePayload : null;
+
     const {
       RESOURCE_TYPES: { DATA },
       WORKCLASS,
       CASE_INFO: { CASE_INFO_CLASSID }
     } = PCore.getConstants();
 
-    this.payload = {};
-    let isData = false;
-    this.shouldTreatAsDataReference = !this.previewKey && this.resourcePayload?.caseClassName;
+    this.shouldTreatAsDataReference = !this.previewKey && !!this.resourcePayload?.caseClassName;
+
     if (contextPage?.classID) {
       this.resourcePayload.caseClassName = contextPage.classID;
     }
-    /* TODO : In case of duplicate search case the classID is Work- need to set it to
-  the current case class ID */
     if (this.resourcePayload.caseClassName === WORKCLASS) {
       this.resourcePayload.caseClassName = this.pConn$.getValue(CASE_INFO_CLASSID);
     }
 
-    if ((this.referenceType && this.referenceType.toUpperCase() === DATA) || this.shouldTreatAsDataReference) {
-      try {
-        isData = true;
-        const dataRefContext = getDataReferenceInfo(this.pConn$, dataRelationshipContext, contextPage);
-        this.dataViewName = dataRefContext.dataContext ?? '';
-        this.payload = dataRefContext.dataContextParameters ?? {};
-      } catch (error) {
-        console.log('Error in getting the data reference info', error);
-      }
-    } else if (this.resourcePayload && this.resourcePayload.resourceType === 'DATA') {
+    let isData = false;
+    this.payload = {};
+
+    const isDataReference = this.referenceType?.toUpperCase() === DATA || this.shouldTreatAsDataReference;
+
+    if (isDataReference) {
+      isData = this.setDataReferenceInfo();
+    } else if (this.dataResourcePayLoad) {
       isData = true;
-      this.dataViewName = PCore.getDataTypeUtils().getLookUpDataPage(this.resourcePayload.className);
-      const lookUpDataPageInfo: any = PCore.getDataTypeUtils().getLookUpDataPageInfo(this.resourcePayload.className);
-      const { content } = this.resourcePayload;
-      if (lookUpDataPageInfo) {
-        const { parameters } = lookUpDataPageInfo;
-        this.payload = Object.keys(parameters).reduce((acc, param) => {
-          const paramValue = parameters[param];
-          return {
-            ...acc,
-            [param]: PCore.getAnnotationUtils().isProperty(paramValue) ? content[PCore.getAnnotationUtils().getPropertyName(paramValue)] : paramValue
-          };
-        }, {});
-      } else {
-        const keysInfo = PCore.getDataTypeUtils().getDataPageKeys(this.dataViewName) ?? [];
-        this.payload = keysInfo.reduce((acc, curr) => {
-          return {
-            ...acc,
-            [curr.keyName]: content[curr.isAlternateKeyStorage ? curr.linkedField : curr.keyName]
-          };
-        }, {});
-      }
+      this.setDataPayloadFromResource();
     }
 
-    if (isData && this.dataViewName && this.payload) {
-      this.linkURL = PCore.getSemanticUrlUtils().getResolvedSemanticURL(
-        ACTION_SHOWDATA,
-        { pageName: 'pyDetails', dataViewName: this.dataViewName },
-        {
-          ...this.payload
-        }
-      );
-    } else {
-      // BUG-678282 fix to handle scenario when workID was not populated.
-      // Check renderParentLink in Caseview / CasePreview. comment from constellation
-      const isObjectType = (PCore.getCaseUtils() as any).isObjectCaseType(this.resourcePayload.caseClassName);
-      resourceParams[isObjectType ? 'objectID' : 'workID'] =
-        resourceParams.workID === '' && typeof this.previewKey === 'string' ? this.previewKey.split(' ')[1] : resourceParams.workID;
-      if (this.previewKey) {
-        resourceParams.id = this.previewKey;
-      }
-
-      this.linkURL = PCore.getSemanticUrlUtils().getResolvedSemanticURL(
-        isObjectType ? ACTION_GETOBJECT : ACTION_OPENWORKBYHANDLE,
-        this.resourcePayload,
-        resourceParams
-      );
-    }
+    this.linkURL = this.getLinkURL(isData);
     this.isLinkTextEmpty = isLinkTextEmpty(this.value$);
   }
 
@@ -208,5 +162,75 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
         this.pConn$.getActionsApi().openWorkByHandle(this.previewKey, this.resourcePayload.caseClassName);
       }
     }
+  }
+
+  private setDataReferenceInfo() {
+    const { dataRelationshipContext = null, contextPage } = this.configProps$;
+    try {
+      const dataRefContext = getDataReferenceInfo(this.pConn$, dataRelationshipContext, contextPage);
+      this.dataViewName = dataRefContext.dataContext ?? '';
+      this.payload = dataRefContext.dataContextParameters ?? {};
+      return true;
+    } catch (error) {
+      console.log('Error in getting the data reference info', error);
+      return false;
+    }
+  }
+
+  private setDataPayloadFromResource() {
+    this.dataViewName = PCore.getDataTypeUtils().getLookUpDataPage(this.resourcePayload.className);
+    const lookUpDataPageInfo: any = PCore.getDataTypeUtils().getLookUpDataPageInfo(this.resourcePayload.className);
+    const { content } = this.resourcePayload;
+
+    if (lookUpDataPageInfo) {
+      const { parameters } = lookUpDataPageInfo;
+      this.payload = Object.keys(parameters).reduce((acc, param) => {
+        const paramValue = parameters[param];
+        const propertyName = PCore.getAnnotationUtils().getPropertyName(paramValue);
+        return {
+          ...acc,
+          [param]: PCore.getAnnotationUtils().isProperty(paramValue) ? content[propertyName] : paramValue
+        };
+      }, {});
+    } else {
+      const keysInfo = PCore.getDataTypeUtils().getDataPageKeys(this.dataViewName) ?? [];
+      this.payload = keysInfo.reduce((acc, curr) => {
+        return {
+          ...acc,
+          [curr.keyName]: content[curr.isAlternateKeyStorage ? curr.linkedField : curr.keyName]
+        };
+      }, {});
+    }
+  }
+
+  private getLinkURL(isData: boolean) {
+    const { ACTION_OPENWORKBYHANDLE, ACTION_SHOWDATA, ACTION_GETOBJECT } = PCore.getSemanticUrlUtils().getActions() as any;
+    const { resourceParams = {} } = this.configProps$;
+
+    if (isData && this.dataViewName && this.payload) {
+      return PCore.getSemanticUrlUtils().getResolvedSemanticURL(
+        ACTION_SHOWDATA,
+        { pageName: 'pyDetails', dataViewName: this.dataViewName },
+        { ...this.payload }
+      );
+    }
+
+    const isObjectType = (PCore.getCaseUtils() as any).isObjectCaseType(this.resourcePayload.caseClassName);
+    const workIDKey = isObjectType ? 'objectID' : 'workID';
+    if (resourceParams.workID === '' && typeof this.previewKey === 'string') {
+      resourceParams[workIDKey] = this.previewKey.split(' ')[1];
+    } else {
+      resourceParams[workIDKey] = resourceParams.workID;
+    }
+
+    if (this.previewKey) {
+      resourceParams.id = this.previewKey;
+    }
+
+    return PCore.getSemanticUrlUtils().getResolvedSemanticURL(
+      isObjectType ? ACTION_GETOBJECT : ACTION_OPENWORKBYHANDLE,
+      this.resourcePayload,
+      resourceParams
+    );
   }
 }
