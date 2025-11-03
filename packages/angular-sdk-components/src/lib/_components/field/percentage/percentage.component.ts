@@ -1,19 +1,19 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
+import { Component, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { interval } from 'rxjs';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { Utils } from '../../../_helpers/utils';
+
+import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
-import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { format } from '../../../_helpers/formatters';
+import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
-interface PercentageProps extends PConnFieldProps {
+interface PercentageProps extends Omit<PConnFieldProps, 'value'> {
+  value?: number;
   showGroupSeparators?: string;
   decimalPrecision?: number;
   currencyISOCode?: string;
@@ -26,155 +26,54 @@ interface PercentageProps extends PConnFieldProps {
   styleUrls: ['./percentage.component.scss'],
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
 })
-export class PercentageComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
-  @Input() formGroup$: FormGroup;
-
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
+export class PercentageComponent extends FieldBase {
   configProps$: PercentageProps;
+  override fieldControl = new FormControl<number | null>(null, null);
 
-  label$ = '';
-  value$: number;
-  bRequired$ = false;
-  bReadonly$ = false;
-  bDisabled$ = false;
-  bVisible$ = true;
-  displayMode$?: string = '';
-  controlName$: string;
-  bHasForm$ = true;
-  componentReference = '';
-  testId: string;
-  helperText: string;
-  placeholder: string;
   decimalSeparator: string;
   thousandSeparator: string;
-  inputMode: any;
+  inputMode: any = NgxCurrencyInputMode.Natural;
   decimalPrecision: number | undefined;
-  fieldControl = new FormControl<number | null>(null, null);
-  actionsApi: object;
-  propName: string;
   formattedValue: string;
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
-
-  ngOnInit(): void {
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.controlName$ = this.angularPConnect.getComponentID(this);
-
-    // Then, continue on with other initialization
-    // call updateSelf when initializing
-    // this.updateSelf();
-    this.checkAndUpdate();
-
-    if (this.formGroup$) {
-      // add control to formGroup
-      this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      this.fieldControl.setValue(this.value$);
-      this.bHasForm$ = true;
-    } else {
-      this.bReadonly$ = true;
-      this.bHasForm$ = false;
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.formGroup$) {
-      this.formGroup$.removeControl(this.controlName$);
-    }
-
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
-  // updateSelf
-  updateSelf(): void {
-    // moved this from ngOnInit() and call this from there instead...
+  /**
+   * Updates the component when there are changes in the state.
+   */
+  override updateSelf(): void {
+    // Resolve configuration properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as PercentageProps;
-    this.testId = this.configProps$.testId;
-    this.label$ = this.configProps$.label;
-    this.displayMode$ = this.configProps$.displayMode;
-    this.inputMode = NgxCurrencyInputMode.Natural;
-    const nValue: any = this.configProps$.value;
-    if (nValue) {
-      this.value$ = nValue;
-      this.fieldControl.setValue(nValue);
+
+    // Update component common properties
+    this.updateComponentCommonProperties(this.configProps$);
+
+    // Set component specific properties
+    const { value } = this.configProps$;
+    if (value) {
+      this.value$ = value;
+      this.fieldControl.setValue(value);
     }
-    this.helperText = this.configProps$.helperText;
-    this.placeholder = this.configProps$.placeholder || '';
-    const showGroupSeparators = this.configProps$.showGroupSeparators;
+
+    // update percentage properties
+    this.updatePercentageProperties(this.configProps$);
+  }
+
+  /**
+   * Updates the percentage properties
+   *
+   * @param {Object} configProps - Configuration properties.
+   * @param {boolean} configProps.showGroupSeparators - Whether to show group separators.
+   * @param {number} configProps.decimalPrecision - The number of decimal places to display.
+   */
+  updatePercentageProperties(configProps): void {
+    const { showGroupSeparators, decimalPrecision } = configProps;
 
     const theSymbols = getCurrencyCharacters('');
     this.decimalSeparator = theSymbols.theDecimalIndicator;
     this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
+    this.decimalPrecision = decimalPrecision ?? 2;
 
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
-
-    if (this.displayMode$ === 'DISPLAY_ONLY' || this.displayMode$ === 'STACKED_LARGE_VAL') {
-      this.formattedValue = nValue ? format(nValue, 'percentage') : '';
-    }
-
-    // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => {
-      if (this.configProps$.required != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-      }
-      this.cdRef.detectChanges();
-    });
-
-    if (this.configProps$.visibility != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    }
-
-    // disabled
-    if (this.configProps$.disabled != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    }
-
-    if (this.bDisabled$) {
-      this.fieldControl.disable();
-    } else {
-      this.fieldControl.enable();
-    }
-
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
-
-    this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
-
-    this.componentReference = this.pConn$.getStateProps().value;
-
-    // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      const timer = interval(100).subscribe(() => {
-        this.fieldControl.setErrors({ message: true });
-        this.fieldControl.markAsTouched();
-        timer.unsubscribe();
-      });
+    if (['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(this.displayMode$)) {
+      this.formattedValue = this.value$ ? format(this.value$, 'percentage') : '';
     }
   }
 
@@ -209,21 +108,5 @@ export class PercentageComponent implements OnInit, OnDestroy {
       }
       handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     }
-  }
-
-  getErrorMessage() {
-    // field control gets error message from here
-    let errMessage = '';
-    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
-    if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage ?? '';
-      return errMessage;
-    }
-    if (this.fieldControl.hasError('required')) {
-      errMessage = 'You must enter a value';
-    } else if (this.fieldControl.errors) {
-      errMessage = this.fieldControl.errors.toString();
-    }
-    return errMessage;
   }
 }

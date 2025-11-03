@@ -11,7 +11,7 @@
 }
 
 .psdk-utility-divider {
-  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
+  border-bottom: 0.0625rem solid var(--mat-sys-outline-variant);
 }
 
 .psdk-utility-view-all {
@@ -21,9 +21,9 @@
 }
 
 .psdk-utility-count {
-  background: var(--app-primary-light-color);
+  background: var(--mat-sys-inverse-primary);
+  color: var(--mat-sys-on-primary);
   border-radius: calc(1.125 * 0.5rem);
-  color: var(--app-inverse-form-color);
   display: inline-block;
   font-size: 0.75rem;
   font-weight: bold;
@@ -50,7 +50,6 @@
   width: 100%;
   padding: 0.625rem 0rem;
   text-align: left;
-  background-color: var(--app-form-color);
   border-radius: 0.6125rem;
   margin: 0.3125rem 0rem;
   position: relative;
@@ -98,7 +97,6 @@
 }
 
 .psdk-utility-card-main-primary-url {
-  color: var(--app-primary-color);
 }
 
 .psdk-utility-card-main-primary-url .mat-mdc-button.mat-primary {

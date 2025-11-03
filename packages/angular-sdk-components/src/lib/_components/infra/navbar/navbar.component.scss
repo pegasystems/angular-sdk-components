@@ -5,7 +5,7 @@ $transition-fast: 0.1s !default;
 $natural-ease: cubic-bezier(0.4, 0.6, 0.1, 1) !default;
 
 .psdk-nav-divider {
-  border-bottom: 0.0625rem solid var(--app-divider-color);
+  border-bottom: 0.0625rem solid var(--mat-sys-outline-variant);
   width: 100%;
   align-items: center;
 }
@@ -119,8 +119,8 @@ $natural-ease: cubic-bezier(0.4, 0.6, 0.1, 1) !default;
   align-items: center;
   text-align: center;
   display: inline-flex;
-  background: var(--app-neutral-color);
-  color: var(--app-form-color);
+  background: var(--mat-sys-background);
+  color: var(--mat-sys-on-background);
   font-weight: normal;
   font-size: 1rem;
 }
@@ -140,7 +140,7 @@ mat-list-item {
   height: auto !important;
 
   &:hover {
-    background-color: var(--app-label-color);
+    background-color: rgba(0, 0, 0, 0.54);
   }
 
   .flex-box {
@@ -149,4 +149,16 @@ mat-list-item {
     width: 100%;
     text-align: left;
   }
+}
+
+.theme-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.color-preview {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
 }

@@ -27,7 +27,7 @@ h1 {
 }
 
 .psdk-case-icon-div {
-  background-color: var(--app-primary-dark-color);
+  background-color: var(--mat-sys-on-primary-fixed);
   border-radius: 1rem;
   padding: 0.5rem 0.3rem 0.3rem 0.3rem;
 }
@@ -47,11 +47,9 @@ h1 {
   flex: 0 0 auto;
   width: 25rem;
   float: left;
-  padding: 0rem 0.3125rem 0rem 0rem;
-  margin-left: 0.5rem;
-  margin-top: 0.5rem;
-  height: 100%; /* Should be removed. Only for demonstration */
-  background-color: var(--app-form-color);
+  // padding: 0rem 0.3125rem 0rem 0rem;
+  background-color: var(--mat-sys-surface-container);
+  height: 100%;
 }
 
 .psdk-case-view-main {
@@ -84,22 +82,26 @@ h1 {
 }
 
 .psdk-case-view-utilities {
+  background-color: var(--mat-sys-surface-container);
   width: 21.875rem;
   float: left;
   padding: 0rem 0.3125rem;
-  height: 100%; /* Should be removed. Only for demonstration */
 }
 
 .psdk-case-view-divider {
-  border-bottom: 0.0625rem solid var(--app-neutral-light-color);
+  border-bottom: 0.0625rem solid var(--mat-sys-outline-variant);
 }
 
 .psdk-status {
   padding: 0.3125rem 0.3125rem;
-  background-color: var(--app-primary-color);
-  color: var(--app-form-color);
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-surface-container);
   width: fit-content;
   margin: 0.625rem;
+}
+
+.psdk-case-view-toolbar {
+  background-color: var(--mat-sys-primary);
 }
 
 button {

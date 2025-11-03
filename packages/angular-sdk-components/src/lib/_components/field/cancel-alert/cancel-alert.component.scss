@@ -5,7 +5,6 @@
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color: var(--app-dialog-background-color);
   position: fixed;
   z-index: 9999;
   top: 0px;
@@ -16,7 +15,6 @@
   display: table;
   margin: auto;
   min-width: 550px;
-  background-color: var(--app-form-color);
   border: 1px solid var(--app-inverse-form-color);
   border-radius: 10px;
   padding: 20px;
