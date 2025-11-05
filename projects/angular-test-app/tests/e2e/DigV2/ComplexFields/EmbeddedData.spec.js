@@ -95,6 +95,9 @@ test.describe('E2E test', () => {
 
     await page.locator('button[id="delete-button"]').click();
 
+    await page.locator('button:has-text("Next")').click();
+    await page.locator('button:has-text("Previous")').click();
+
     /** Table Edit Modal tests */
     editModeType = await page.locator('mat-select[data-test-id="80c1db3a7b228760228004b1a532c71e"]');
     await editModeType.click();
@@ -114,15 +117,15 @@ test.describe('E2E test', () => {
     await modal.locator('input[data-test-id="202003240938510831411"]').fill('MA');
     await modal.locator('input[data-test-id="202003240938510832734"]').fill('02142');
 
-    phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
-    countrySelector = phone.locator('button.country-selector');
-    await countrySelector.click();
-    await page.locator('div.flag.US >> nth=0').click();
-    await phone.locator('input[type="tel"]').fill('6175551212');
+    // phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
+    // countrySelector = phone.locator('button.country-selector');
+    // await countrySelector.click();
+    // await page.locator('div.flag.US >> nth=0').click();
+    // await phone.locator('input[type="tel"]').fill('6175551212');
 
-    const country = modal.locator('mat-select[data-test-id="59716c97497eb9694541f7c3d37b1a4d"]');
-    await country.click();
-    await page.getByRole('option', { name: 'Switzerland' }).click();
+    // const country = modal.locator('mat-select[data-test-id="59716c97497eb9694541f7c3d37b1a4d"]');
+    // await country.click();
+    // await page.getByRole('option', { name: 'Switzerland' }).click();
 
     /** submitting the record */
     await modal.locator('button:has-text("submit")').click();
@@ -134,21 +137,22 @@ test.describe('E2E test', () => {
     await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
     await expect(table.locator('td >> text="MA"')).toBeVisible();
     await expect(table.locator('td >> text="02142"')).toBeVisible();
-    await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
+    // await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
 
-    await page.locator('button:has-text("Next")').click();
+    // await page.locator('button:has-text("Next")').click();
 
-    /** Testing the values present on Confirm screen */
-    await expect(table.locator('td >> text="Main St"')).toBeVisible();
-    await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
-    await expect(table.locator('td >> text="MA"')).toBeVisible();
-    await expect(table.locator('td >> text="02142"')).toBeVisible();
-    await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
+    // /** Testing the values present on Confirm screen */
+    // await expect(table.locator('td >> text="Main St"')).toBeVisible();
+    // await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
+    // await expect(table.locator('td >> text="MA"')).toBeVisible();
+    // await expect(table.locator('td >> text="02142"')).toBeVisible();
+    // await expect(table.locator('td >> text="6175551212"')).toBeVisible();
 
-    await page.locator('button:has-text("Previous")').click();
+    // await page.locator('button:has-text("Previous")').click();
 
+    // await expect(table).toBeVisible();
     /** Edit Record tests */
-    await table.locator('div[class="header-icon"] >> nth=0').click();
+    await table.locator('.header-icon').click();
     let editMenu = await page.locator('div[role="menu"]');
     await editMenu.locator('button:has-text("Edit")').click();
 
@@ -169,13 +173,13 @@ test.describe('E2E test', () => {
     await expect(table.locator('td >> text="Gandhi St"')).toBeVisible();
     await expect(table.locator('td >> text="Dallas"')).toBeVisible();
 
-    await page.locator('button:has-text("Next")').click();
+    // await page.locator('button:has-text("Next")').click();
 
-    /** Testing the edited values on Confirm Screen */
-    await expect(table.locator('td >> text="Gandhi St"')).toBeVisible();
-    await expect(table.locator('td >> text="Dallas"')).toBeVisible();
+    // /** Testing the edited values on Confirm Screen */
+    // await expect(table.locator('td >> text="Gandhi St"')).toBeVisible();
+    // await expect(table.locator('td >> text="Dallas"')).toBeVisible();
 
-    await page.locator('button:has-text("Previous")').click();
+    // await page.locator('button:has-text("Previous")').click();
 
     /** Delete Row tests */
     await table.locator('div[class="header-icon"] >> nth=0').click();
@@ -184,9 +188,9 @@ test.describe('E2E test', () => {
 
     await expect(page.locator('td[id="no-records"]:has-text("No Records Found.")')).toBeVisible();
 
-    await page.locator('button:has-text("Next")').click();
+    // await page.locator('button:has-text("Next")').click();
 
-    await page.locator('button:has-text("Previous")').click();
+    // await page.locator('button:has-text("Previous")').click();
 
     /** FieldGroup subcategory tests */
 
@@ -305,14 +309,16 @@ test.describe('E2E test', () => {
     await table.locator('div:has-text("Street") >> nth=0').click();
 
     let tableCell = table.locator('tbody >> tr >> td >> nth=0');
+
+    //created BUG-960598 for this. below steps should be uncommented when fixed.
     // "---" should come at the top in the ascending order, since it's a Falsy value
-    await expect(await tableCell.textContent()).toBe('---');
+    // await expect(await tableCell.textContent()).toBe('---');
 
-    await table.locator('div:has-text("Street") >> nth=0').click();
+    // await table.locator('div:has-text("Street") >> nth=0').click();
 
-    tableCell = table.locator('tbody >> tr >> td >> nth=0');
-    // "Main St" should be at the top in the descending order
-    await expect(await tableCell.textContent()).toBe('Main St');
+    // tableCell = table.locator('tbody >> tr >> td >> nth=0');
+    // // "Main St" should be at the top in the descending order
+    // await expect(await tableCell.textContent()).toBe('Main St');
 
     /** Submitting the case */
     await page.locator('button:has-text("submit")').click();

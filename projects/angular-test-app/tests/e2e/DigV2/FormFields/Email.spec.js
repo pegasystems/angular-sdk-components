@@ -67,6 +67,23 @@ test.describe('E2E test', () => {
     attributes = await common.getAttributes(neverDisabledEmail);
     await expect(attributes.includes('disabled')).toBeFalsy();
 
+    /** Selecting Visibility from the Sub Category dropdown */
+    await common.selectSubCategory('Visibility', page);
+
+    /** Visibility tests */
+    await expect(page.locator('input[data-test-id="c30b8043cb501907a3e7b186fb37a85b"]')).toBeVisible();
+
+    const neverVisibleEmail = await page.locator('input[data-test-id="5aa7a927ac4876abf1fcff6187ce5d76"]');
+    await expect(neverVisibleEmail).not.toBeVisible();
+
+    const conditionallyVisibleEmail = await page.locator('input[data-test-id="7f544a3551e7d7e51222dec315e7add5"]');
+
+    if (isVisible) {
+      await expect(conditionallyVisibleEmail).toBeVisible();
+    } else {
+      await expect(conditionallyVisibleEmail).not.toBeVisible();
+    }
+
     /** Selecting Update from the Sub Category dropdown */
     await common.selectSubCategory('Update', page);
 
@@ -88,23 +105,6 @@ test.describe('E2E test', () => {
 
     attributes = await common.getAttributes(editableEmail);
     await expect(attributes.includes('readonly')).toBeFalsy();
-
-    /** Selecting Visibility from the Sub Category dropdown */
-    await common.selectSubCategory('Visibility', page);
-
-    /** Visibility tests */
-    await expect(page.locator('input[data-test-id="c30b8043cb501907a3e7b186fb37a85b"]')).toBeVisible();
-
-    const neverVisibleEmail = await page.locator('input[data-test-id="5aa7a927ac4876abf1fcff6187ce5d76"]');
-    await expect(neverVisibleEmail).not.toBeVisible();
-
-    const conditionallyVisibleEmail = await page.locator('input[data-test-id="7f544a3551e7d7e51222dec315e7add5"]');
-
-    if (isVisible) {
-      await expect(conditionallyVisibleEmail).toBeVisible();
-    } else {
-      await expect(conditionallyVisibleEmail).not.toBeVisible();
-    }
   }, 10000);
 });
 
