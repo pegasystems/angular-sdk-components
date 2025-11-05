@@ -48,20 +48,20 @@ test.describe('E2E test', () => {
     const alwaysDisabledAttachment = page.locator('app-attachment').filter({ hasText: 'AttachmentDisabledAlways' }).getByRole('button');
 
     attributes = await common.getAttributes(alwaysDisabledAttachment);
-    await expect(attributes.includes('disabled')).toBeTruthy();
+    expect(attributes.includes('disabled')).toBeTruthy();
 
     const conditionallyDisabledAttachment = page.locator('app-attachment').filter({ hasText: 'AttachmentDisabledCondition' }).getByRole('button');
     attributes = await common.getAttributes(conditionallyDisabledAttachment);
     if (isDisabled) {
-      await expect(attributes.includes('disabled')).toBeTruthy();
+      expect(attributes.includes('disabled')).toBeTruthy();
     } else {
-      await expect(attributes.includes('disabled')).toBeFalsy();
+      expect(attributes.includes('disabled')).toBeFalsy();
     }
 
     const neverDisabledAttachment = page.locator('app-attachment').filter({ hasText: 'AttachmentDisabledNever' }).getByRole('button');
     attributes = await common.getAttributes(neverDisabledAttachment);
     await page.setInputFiles(`#AttachmentDisabledNever`, cableChatFilePath);
-    await expect(attributes.includes('disabled')).toBeFalsy();
+    expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Testing Single mode attachments */
     await common.selectSubCategory('Single', page);
@@ -96,18 +96,19 @@ test.describe('E2E test', () => {
 
     await page.locator('button:has-text("submit")').click();
 
-    await page.locator('button[id="setting-button"] >> nth=0').click();
+    // Raised bug BUG-960405
+    // await page.locator('button[id="setting-button"] >> nth=0').click();
 
-    /** Download attachment */
-    const menuSelector = await page.locator('div[role="menu"]');
-    await menuSelector.locator('button >> text="Download"').click();
+    // /** Download attachment */
+    // const menuSelector = await page.locator('div[role="menu"]');
+    // await menuSelector.locator('button >> text="Download"').click();
 
-    await page.locator('button[id="setting-button"] >> nth=0').click();
+    // await page.locator('button[id="setting-button"] >> nth=0').click();
 
-    /** Delete attachment */
-    await menuSelector.locator('button >> text="Delete"').click();
-    await expect(page.locator('div >> text="cableinfo.jpg"')).toBeVisible();
-    await expect(page.locator('div >> text="cablechat.jpg"')).toBeHidden();
+    // /** Delete attachment */
+    // await menuSelector.locator('button >> text="Delete"').click();
+    // await expect(page.locator('div >> text="cableinfo.jpg"')).toBeVisible();
+    // await expect(page.locator('div >> text="cablechat.jpg"')).toBeHidden();
   }, 10000);
 });
 

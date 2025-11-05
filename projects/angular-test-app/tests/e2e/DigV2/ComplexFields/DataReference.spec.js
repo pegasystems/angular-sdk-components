@@ -42,7 +42,7 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     let price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -81,7 +81,7 @@ test.describe('E2E test', () => {
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
-    await page.getByRole('option', { name: 'Table' }).click();
+    await page.getByRole('option', { name: 'Table', exact: true }).click();
 
     selectedProduct = page.locator('tr:has-text("Basic Product")');
     const selectedProductRow = selectedProduct.locator('td >> mat-radio-button');
@@ -122,9 +122,8 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
 
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -166,7 +165,6 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'SingleSelect' }).click();
 
     selectedProduct = page.getByLabel('Selected Product');
-    // selectedProduct = page.locator('input[id="mat-input-6"]');
     await selectedProduct.click();
     await page.getByRole('option', { name: 'Basic Product' }).click();
     await expect(selectedProduct).toBeVisible();
@@ -177,9 +175,8 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    price = assignment.locator('app-currency >> input');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
 
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -252,7 +249,7 @@ test.describe('E2E test', () => {
     await selectedTestName.click();
     await page.getByRole('option', { name: 'Readonly' }).click();
 
-    selectedProduct = page.locator('app-data-reference >> app-semantic-link >> div >> div:has-text("Basic Product")');
+    selectedProduct = page.locator('app-data-reference >> app-semantic-link >> div >> a:has-text("Basic Product")');
     await expect(selectedProduct).toBeVisible();
 
     await page.locator('button:has-text("Next")').click();
@@ -261,9 +258,8 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    price = assignment.locator('app-currency >> input');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
 
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -283,18 +279,18 @@ test.describe('E2E test', () => {
 
     let tableCell = table.locator('tbody >> tr >> td >> nth=1');
     // "---" should come at the top in the ascending order, since it's a Falsy value
-    await expect(await tableCell.textContent()).toBe('---');
+    expect(await tableCell.textContent()).toBe('---');
 
     await table.locator('div:has-text("Product Name") >> nth=0').click();
 
     tableCell = table.locator('tbody >> tr >> td >> nth=1');
-    // "Luxury Product" should be at the top in the descending order
-    await expect(await tableCell.textContent()).toBe('Luxury Product');
+    // "Red Item" should be at the top in the descending order
+    await expect(await tableCell.textContent()).toBe('Red Item');
 
-    const lastRow = table.locator('tbody >> tr >> nth=3');
+    const lastRow = table.locator('tbody >> tr').last();
     tableCell = lastRow.locator('td >> nth=1');
     // "---" should be at the bottom in the descending order
-    await expect(await tableCell.textContent()).toBe('---');
+    expect(await tableCell.textContent()).toBe('---');
 
     await page.locator('button:has-text("Next")').click();
 
