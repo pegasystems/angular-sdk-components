@@ -64,69 +64,42 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
 
   updateSelf() {
     this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ObjectReferenceProps;
-    const displayMode = this.configProps.displayMode;
-    const editableInReview = this.configProps.allowAndPersistChangesInReviewMode ?? false;
-    const targetObjectType = this.configProps.targetObjectType;
-    const mode = this.configProps.mode;
-    const parameters = this.configProps.parameters;
-    const hideLabel = this.configProps.hideLabel;
-    const inline = this.configProps.inline;
-    const showPromotedFilters = this.configProps.showPromotedFilters;
+    const {
+      displayMode,
+      allowAndPersistChangesInReviewMode: editableInReview = false,
+      targetObjectType,
+      mode,
+      parameters,
+      hideLabel,
+      inline,
+      showPromotedFilters
+    } = this.configProps;
+
     const referenceType: string = targetObjectType === 'case' ? 'Case' : 'Data';
     this.rawViewMetadata = this.pConn$.getRawMetadata();
     const refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.value?.split('.', 2)[1] ?? '');
-
-    // Destructured properties
     const propsToUse = { ...this.pConn$.getInheritedProps(), ...this.configProps };
 
-    // Computed variables
     this.isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
-    this.canBeChangedInReviewMode = editableInReview && ['Autocomplete', 'Dropdown'].includes((this.rawViewMetadata?.config as any)?.componentType);
-    // componentType is not defined in ComponentMetadataConfig type so using any
-    this.type = (this.rawViewMetadata?.config as any)?.componentType;
+    this.type = this.getComponentType();
+    this.canBeChangedInReviewMode = editableInReview && ['Autocomplete', 'Dropdown'].includes(this.type);
 
     if (this.type === 'SemanticLink' && !this.canBeChangedInReviewMode) {
       const config: any = {
         ...this.rawViewMetadata?.config,
-        primaryField: (this.rawViewMetadata?.config as any).displayField
+        primaryField: (this.rawViewMetadata?.config as any).displayField,
+        caseClass: (this.rawViewMetadata?.config as any).targetObjectClass,
+        text: (this.rawViewMetadata?.config as any).displayField,
+        caseID: (this.rawViewMetadata?.config as any).value,
+        contextPage: `@P .${(this.rawViewMetadata?.config as any).displayField ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField) : null}`,
+        resourceParams: { workID: (this.rawViewMetadata?.config as any).value },
+        resourcePayload: { caseClassName: (this.rawViewMetadata?.config as any).targetObjectClass }
       };
-      config.caseClass = (this.rawViewMetadata?.config as any).targetObjectClass;
-      config.text = config.primaryField;
-      config.caseID = config.value;
-      config.contextPage = `@P .${
-        (this.rawViewMetadata?.config as any)?.displayField
-          ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField)
-          : null
-      }`;
-      config.resourceParams = {
-        workID: config.value
-      };
-      config.resourcePayload = {
-        caseClassName: config.caseClass
-      };
-
-      const component = this.pConn$.createComponent(
-        {
-          type: 'SemanticLink',
-          config: {
-            ...config,
-            displayMode,
-            referenceType,
-            hideLabel,
-            dataRelationshipContext: (this.rawViewMetadata?.config as any)?.displayField
-              ? getDataRelationshipContextFromKey((this.rawViewMetadata?.config as any).displayField)
-              : null
-          }
-        },
-        '',
-        0,
-        {}
-      );
-      this.newPconn = component?.getPConnect();
+      this.createSemanticLinkPConnect(config, displayMode ?? '', referenceType, hideLabel);
+      return;
     }
 
     if (this.type !== 'SemanticLink' && !this.isDisplayModeEnabled) {
-      // 1) Set datasource
       const config: any = { ...this.rawViewMetadata?.config };
       generateColumns(config, this.pConn$, referenceType);
       config.deferDatasource = true;
@@ -134,68 +107,13 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       if (['Dropdown', 'AutoComplete'].includes(this.type) && !config.placeholder) {
         config.placeholder = '@L Select...';
       }
-
-      // 2) Pass through configs
       config.showPromotedFilters = showPromotedFilters;
-
       if (!this.canBeChangedInReviewMode) {
         config.displayMode = displayMode;
       }
+      config.parameters = parameters;
 
-      // 3) Define field meta
-
-      const fieldMetaData = {
-        datasourceMetadata: {
-          datasource: {
-            parameters: {},
-            propertyForDisplayText: false,
-            propertyForValue: false,
-            name: ''
-          }
-        }
-      };
-      if (config?.parameters) {
-        fieldMetaData.datasourceMetadata.datasource.parameters = parameters;
-      }
-      fieldMetaData.datasourceMetadata.datasource.propertyForDisplayText = config?.datasource?.fields?.text?.startsWith('@P')
-        ? config?.datasource?.fields?.text?.substring(3)
-        : config?.datasource?.fields?.text;
-      fieldMetaData.datasourceMetadata.datasource.propertyForValue = config?.datasource?.fields?.value?.startsWith('@P')
-        ? config?.datasource?.fields?.value?.substring(3)
-        : config?.datasource?.fields?.value;
-      fieldMetaData.datasourceMetadata.datasource.name = config?.referenceList ?? '';
-
-      const component = this.pConn$.createComponent(
-        {
-          type: this.type,
-          config: {
-            ...config,
-            descriptors: mode === 'single' ? refFieldMetadata?.descriptors : null,
-            datasourceMetadata: fieldMetaData?.datasourceMetadata,
-            required: propsToUse.required,
-            visibility: propsToUse.visibility,
-            disabled: propsToUse.disabled,
-            label: propsToUse.label,
-            parameters: config.parameters,
-            readOnly: false,
-            localeReference: config.localeReference,
-            ...(mode === 'single' ? { referenceType } : ''),
-            contextClass: config.targetObjectClass,
-            primaryField: config?.displayField,
-            dataRelationshipContext: config?.displayField ? getDataRelationshipContextFromKey(config.displayField) : null,
-            hideLabel,
-            inline
-          }
-        },
-        '',
-        0,
-        {}
-      );
-      this.newComponentName = component?.getPConnect().getComponentName();
-      this.newPconn = component?.getPConnect();
-      if (this.rawViewMetadata?.config) {
-        this.rawViewMetadata.config = config ? { ...config } : this.rawViewMetadata.config;
-      }
+      this.createOtherComponentPConnect(config, propsToUse, mode, refFieldMetadata, referenceType, hideLabel, inline);
     }
   }
 
@@ -251,6 +169,69 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
               PCore.getContainerUtils().updateRelatedContextEtag(this.pConn$.getContextName() ?? '', response.headers.etag);
             });
         });
+    }
+  }
+
+  private getComponentType(): string {
+    // componentType is not defined in ComponentMetadataConfig type so using any
+    return (this.rawViewMetadata?.config as any)?.componentType;
+  }
+
+  private createSemanticLinkPConnect(config: any, displayMode: string, referenceType: string, hideLabel: boolean) {
+    const semanticLinkConfig = {
+      ...config,
+      displayMode,
+      referenceType,
+      hideLabel,
+      dataRelationshipContext: config.displayField ? getDataRelationshipContextFromKey(config.displayField) : null
+    };
+
+    const component = this.pConn$.createComponent({ type: 'SemanticLink', config: semanticLinkConfig }, '', 0, {});
+    this.newPconn = component?.getPConnect();
+  }
+
+  private createOtherComponentPConnect(
+    config: any,
+    propsToUse: any,
+    mode: string,
+    refFieldMetadata: any,
+    referenceType: string,
+    hideLabel: boolean,
+    inline: boolean
+  ) {
+    const fieldMetaData = {
+      datasourceMetadata: {
+        datasource: {
+          parameters: config.parameters ?? {},
+          propertyForDisplayText: config.datasource?.fields?.text?.substring(3) ?? config.datasource?.fields?.text,
+          propertyForValue: config.datasource?.fields?.value?.substring(3) ?? config.datasource?.fields?.value,
+          name: config.referenceList ?? ''
+        }
+      }
+    };
+
+    const componentConfig = {
+      ...config,
+      descriptors: mode === 'single' ? refFieldMetadata?.descriptors : null,
+      datasourceMetadata: fieldMetaData.datasourceMetadata,
+      required: propsToUse.required,
+      visibility: propsToUse.visibility,
+      disabled: propsToUse.disabled,
+      label: propsToUse.label,
+      readOnly: false,
+      ...(mode === 'single' && { referenceType }),
+      contextClass: config.targetObjectClass,
+      primaryField: config.displayField,
+      dataRelationshipContext: config.displayField ? getDataRelationshipContextFromKey(config.displayField) : null,
+      hideLabel,
+      inline
+    };
+
+    const component = this.pConn$.createComponent({ type: this.type, config: componentConfig }, '', 0, {});
+    this.newComponentName = component?.getPConnect().getComponentName();
+    this.newPconn = component?.getPConnect();
+    if (this.rawViewMetadata?.config) {
+      this.rawViewMetadata.config = { ...config };
     }
   }
 }
