@@ -35,7 +35,7 @@ test.describe('E2E test', () => {
     await cityInput.click();
     await cityInput.fill('Cambridge');
 
-    const phone = page.locator('mat-intl-tel-input[data-test-id="1F8261D17452A959E013666C5DF45E07"]');
+    const phone = page.locator('mat-tel-input[data-test-id="1F8261D17452A959E013666C5DF45E07"]');
     const countrySelector = phone.locator('button.country-selector');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
