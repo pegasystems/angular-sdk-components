@@ -12,11 +12,8 @@ import { Utils } from 'packages/angular-sdk-components/src/lib/_helpers/utils';
 import { compareSdkPCoreVersions } from 'packages/angular-sdk-components/src/lib/_helpers/versionHelpers';
 import { HeaderComponent } from './header/header.component';
 import { MainScreenComponent } from './main-screen/main-screen.component';
-
-import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
-import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
-import { ThemeService } from 'packages/angular-sdk-components/src/lib/_services/theme.service';
 import { initializeAuthentication } from './utils';
+import { ThemeService } from 'packages/angular-sdk-components/src/lib/_services/theme.service';
 
 declare global {
   interface Window {
@@ -87,12 +84,6 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
       // Check that we're seeing the PCore version we expect
       compareSdkPCoreVersions();
-
-      // Initialize the SdkComponentMap (local and pega-provided)
-      await getSdkComponentMap(localSdkComponentMap);
-      console.log(`SdkComponentMap initialized`);
-
-      // Don't call initialRender until SdkComponentMap is fully initialized
       this.initialRender(renderObj);
     });
 

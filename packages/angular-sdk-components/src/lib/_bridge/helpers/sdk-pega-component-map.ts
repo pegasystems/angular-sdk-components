@@ -1,260 +1,180 @@
-// Infra components
-import { ActionButtonsComponent } from '../../_components/infra/action-buttons/action-buttons.component';
-import { AssignmentCardComponent } from '../../_components/infra/assignment-card/assignment-card.component';
-import { AssignmentComponent } from '../../_components/infra/assignment/assignment.component';
-import { DashboardFilterComponent } from '../../_components/infra/dashboard-filter/dashboard-filter.component';
-import { DeferLoadComponent } from '../../_components/infra/defer-load/defer-load.component';
-import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
-import { FlowContainerComponent } from '../../_components/infra/Containers/flow-container/flow-container.component';
-import { ModalViewContainerComponent } from '../../_components/infra/Containers/modal-view-container/modal-view-container.component';
-import { MultiStepComponent } from '../../_components/infra/multi-step/multi-step.component';
-import { NavbarComponent } from '../../_components/infra/navbar/navbar.component';
-import { ReferenceComponent } from '../../_components/infra/reference/reference.component';
-import { RegionComponent } from '../../_components/infra/region/region.component';
-import { RootContainerComponent } from '../../_components/infra/root-container/root-container.component';
-import { StagesComponent } from '../../_components/infra/stages/stages.component';
-import { SubTabsComponent } from '../../_components/template/sub-tabs/sub-tabs.component';
-import { ViewComponent } from '../../_components/infra/view/view.component';
-import { ViewContainerComponent } from '../../_components/infra/Containers/view-container/view-container.component';
+/**
+ * Dynamic (lazy) component loader map.
+ * This allows splitting the large component set into separate chunks.
+ * Each key corresponds to the logical component name used in metadata / name input.
+ */
 
-// Field components
-import { AutoCompleteComponent } from '../../_components/field/auto-complete/auto-complete.component';
-import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
-import { CheckBoxComponent } from '../../_components/field/check-box/check-box.component';
-import { CurrencyComponent } from '../../_components/field/currency/currency.component';
-import { DateComponent } from '../../_components/field/date/date.component';
-import { DateTimeComponent } from '../../_components/field/date-time/date-time.component';
-import { DecimalComponent } from '../../_components/field/decimal/decimal.component';
-import { DropdownComponent } from '../../_components/field/dropdown/dropdown.component';
-import { EmailComponent } from '../../_components/field/email/email.component';
-import { GroupComponent } from '../../_components/field/group/group.component';
-import { IntegerComponent } from '../../_components/field/integer/integer.component';
-import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
-import { LocationComponent } from '../../_components/field/location/location.component';
-import { ObjectReferenceComponent } from '../../_components/field/object-reference/object-reference.component';
-import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
-import { PhoneComponent } from '../../_components/field/phone/phone.component';
-import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
-import { SemanticLinkComponent } from '../../_components/field/semantic-link/semantic-link.component';
-import { TextAreaComponent } from '../../_components/field/text-area/text-area.component';
-import { TextComponent } from '../../_components/field/text/text.component';
-import { TextContentComponent } from '../../_components/field/text-content/text-content.component';
-import { TextInputComponent } from '../../_components/field/text-input/text-input.component';
-import { TimeComponent } from '../../_components/field/time/time.component';
-import { UrlComponent } from '../../_components/field/url/url.component';
-import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';
-import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
-import { SearchFormComponent } from '../../_components/template/data-reference/search-form/search-form.component';
-import { SelectableCardComponent } from '../../_components/field/selectable-card/selectable-card.component';
-import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
+import { Type } from '@angular/core';
 
-// Template components
-import { AdvancedSearchComponent } from '../../_components/template/advanced-search/advanced-search.component';
-import { AppShellComponent } from '../../_components/template/app-shell/app-shell.component';
-import { BannerPageComponent } from '../../_components/template/banner-page/banner-page.component';
-import { CaseSummaryComponent } from '../../_components/template/case-summary/case-summary.component';
-import { CaseViewComponent } from '../../_components/template/case-view/case-view.component';
-import { ConfirmationComponent } from '../../_components/template/confirmation/confirmation.component';
-import { DataReferenceComponent } from '../../_components/template/data-reference/data-reference.component';
-import { DefaultFormComponent } from '../../_components/template/default-form/default-form.component';
-import { DetailsComponent } from '../../_components/template/details/details.component';
-import { DetailsNarrowWideComponent } from '../../_components/template/details-narrow-wide/details-narrow-wide.component';
-import { DetailsOneColumnComponent } from '../../_components/template/details-one-column/details-one-column.component';
-import { DetailsSubTabsComponent } from '../../_components/template/details-sub-tabs/details-sub-tabs.component';
-import { DetailsThreeColumnComponent } from '../../_components/template/details-three-column/details-three-column.component';
-import { DetailsTwoColumnComponent } from '../../_components/template/details-two-column/details-two-column.component';
-import { DetailsWideNarrowComponent } from '../../_components/template/details-wide-narrow/details-wide-narrow.component';
-import { DynamicTabsComponent } from '../../_components/template/dynamic-tabs/dynamic-tabs.component';
-import { FieldGroupListComponent } from '../../_components/template/field-group-list/field-group-list.component';
-import { FieldGroupTemplateComponent } from '../../_components/template/field-group-template/field-group-template.component';
-import { FieldValueListComponent } from '../../_components/template/field-value-list/field-value-list.component';
-import { InlineDashboardComponent } from '../../_components/template/inline-dashboard/inline-dashboard.component';
-import { InlineDashboardPageComponent } from '../../_components/template/inline-dashboard-page/inline-dashboard-page.component';
-import { ListPageComponent } from '../../_components/template/list-page/list-page.component';
-import { ListViewComponent } from '../../_components/template/list-view/list-view.component';
-import { MultiReferenceReadonlyComponent } from '../../_components/template/multi-reference-readonly/multi-reference-readonly.component';
-import { MultiselectComponent } from '../../_components/field/multiselect/multiselect.component';
-import { NarrowWideFormComponent } from '../../_components/template/narrow-wide-form/narrow-wide-form.component';
-import { ObjectPageComponent } from '../../_components/template/object-page/object-page.component';
-import { OneColumnComponent } from '../../_components/template/one-column/one-column.component';
-import { OneColumnPageComponent } from '../../_components/template/one-column-page/one-column-page.component';
-import { OneColumnTabComponent } from '../../_components/template/one-column-tab/one-column-tab.component';
-import { PageComponent } from '../../_components/template/page/page.component';
-import { PromotedFiltersComponent } from '../../_components/template/promoted-filters/promoted-filters.component';
-import { SearchGroupsComponent } from '../../_components/template/advanced-search/search-groups/search-groups.component';
-import { SimpleTableComponent } from '../../_components/template/simple-table/simple-table.component';
-import { SimpleTableManualComponent } from '../../_components/template/simple-table-manual/simple-table-manual.component';
-import { SimpleTableSelectComponent } from '../../_components/template/simple-table-select/simple-table-select.component';
-import { SingleReferenceReadonlyComponent } from '../../_components/template/single-reference-readonly/single-reference-readonly.component';
-import { ThreeColumnComponent } from '../../_components/template/three-column/three-column.component';
-import { ThreeColumnPageComponent } from '../../_components/template/three-column-page/three-column-page.component';
-import { TwoColumnComponent } from '../../_components/template/two-column/two-column.component';
-import { TwoColumnPageComponent } from '../../_components/template/two-column-page/two-column-page.component';
-import { TwoColumnTabComponent } from '../../_components/template/two-column-tab/two-column-tab.component';
-import { WideNarrowFormComponent } from '../../_components/template/wide-narrow-form/wide-narrow-form.component';
-import { WideNarrowPageComponent } from '../../_components/template/wide-narrow-page/wide-narrow-page.component';
-import { WssNavBarComponent } from '../../_components/template/wss-nav-bar/wss-nav-bar.component';
+// Loader function type returning the concrete component class
+type ComponentLoader = () => Promise<Type<any>>;
 
-// Widget components
-import { AppAnnouncementComponent } from '../../_components/widget/app-announcement/app-announcement.component';
-import { AttachmentComponent } from '../../_components/widget/attachment/attachment.component';
-import { CaseHistoryComponent } from '../../_components/widget/case-history/case-history.component';
-import { FileUtilityComponent } from '../../_components/widget/file-utility/file-utility.component';
-import { FeedContainerComponent } from '../../_components/widget/feed-container/feed-container.component';
-import { ListUtilityComponent } from '../../_components/widget/list-utility/list-utility.component';
-import { QuickCreateComponent } from '../../_components/widget/quick-create/quick-create.component';
-import { TodoComponent } from '../../_components/widget/todo/todo.component';
+// Cache so each component is only loaded once per session.
+export const componentClassCache: Record<string, Type<any>> = {};
 
-// Design System components
-import { AlertBannerComponent } from '../../_components/designSystemExtension/alert-banner/alert-banner.component';
-import { AlertComponent } from '../../_components/designSystemExtension/alert/alert.component';
-import { BannerComponent } from '../../_components/designSystemExtension/banner/banner.component';
-import { CaseCreateStageComponent } from '../../_components/designSystemExtension/case-create-stage/case-create-stage.component';
-import { FieldGroupComponent } from '../../_components/designSystemExtension/field-group/field-group.component';
-import { MaterialCaseSummaryComponent } from '../../_components/designSystemExtension/material-case-summary/material-case-summary.component';
-import { MaterialDetailsComponent } from '../../_components/designSystemExtension/material-details/material-details.component';
-import { MaterialDetailsFieldsComponent } from '../../_components/designSystemExtension/material-details-fields/material-details-fields.component';
-import { MaterialSummaryItemComponent } from '../../_components/designSystemExtension/material-summary-item/material-summary-item.component';
-import { MaterialSummaryListComponent } from '../../_components/designSystemExtension/material-summary-list/material-summary-list.component';
-import { MaterialUtilityComponent } from '../../_components/designSystemExtension/material-utility/material-utility.component';
-import { MaterialVerticalTabsComponent } from '../../_components/designSystemExtension/material-vertical-tabs/material-vertical-tabs.component';
-import { OperatorComponent } from '../../_components/designSystemExtension/operator/operator.component';
-import { PulseComponent } from '../../_components/designSystemExtension/pulse/pulse.component';
-import { RichTextEditorComponent } from '../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
-import { WssQuickCreateComponent } from '../../_components/designSystemExtension/wss-quick-create/wss-quick-create.component';
-
-// pegaSdkComponentMap is the JSON object where we'll store the components that are
-// the default implementations provided by the SDK. These will be used if there isn't
-// an entry in the localSdkComponentMap
-
-// NOTE: A few components have non-standard capitalization:
-//  'reference' is what's in the metadata, not Reference
-//  'Todo' is what's in the metadata, not ToDo
-//  Also, note that "Checkbox" component is named/exported as CheckboxComponent
-
-const pegaSdkComponentMap = {
-  AdvancedSearch: AdvancedSearchComponent,
-  ActionButtons: ActionButtonsComponent,
-  Alert: AlertComponent,
-  AlertBanner: AlertBannerComponent,
-  //   'ActionButtonsForFileUtil': ActionButtonsForFileUtil,
-  AppAnnouncement: AppAnnouncementComponent,
-  AppShell: AppShellComponent,
-  Assignment: AssignmentComponent,
-  AssignmentCard: AssignmentCardComponent,
-  Attachment: AttachmentComponent,
-  AutoComplete: AutoCompleteComponent,
-  Banner: BannerComponent,
-  BannerPage: BannerPageComponent,
-  CancelAlert: CancelAlertComponent,
-  CaseCreateStage: CaseCreateStageComponent,
-  CaseHistory: CaseHistoryComponent,
-  CaseSummary: CaseSummaryComponent,
-  CaseSummaryFields: MaterialCaseSummaryComponent,
-  CaseView: CaseViewComponent,
-  //   'CaseViewActionsMenu': CaseViewActionsMenu,
-  Checkbox: CheckBoxComponent,
-  Confirmation: ConfirmationComponent,
-  Currency: CurrencyComponent,
-  DashboardFilter: DashboardFilterComponent,
-  DataReference: DataReferenceComponent,
-  Date: DateComponent,
-  DateTime: DateTimeComponent,
-  Decimal: DecimalComponent,
-  DefaultForm: DefaultFormComponent,
-  DeferLoad: DeferLoadComponent,
-  Details: DetailsComponent,
-  DetailsFields: MaterialDetailsFieldsComponent,
-  DetailsOneColumn: DetailsOneColumnComponent,
-  DetailsSubTabs: DetailsSubTabsComponent,
-  DetailsThreeColumn: DetailsThreeColumnComponent,
-  DetailsTwoColumn: DetailsTwoColumnComponent,
-  Dropdown: DropdownComponent,
-  DynamicTabs: DynamicTabsComponent,
-  Email: EmailComponent,
-  ErrorBoundary: ErrorBoundaryComponent,
-  FeedContainer: FeedContainerComponent,
-  FieldGroup: FieldGroupComponent,
-  FieldGroupList: FieldGroupListComponent,
-  FieldGroupTemplate: FieldGroupTemplateComponent,
-  FieldValueList: FieldValueListComponent,
-  FileUtility: FileUtilityComponent,
-  FlowContainer: FlowContainerComponent,
-  Group: GroupComponent,
-  //   'Followers': Followers,
-  InlineDashboard: InlineDashboardComponent,
-  InlineDashboardPage: InlineDashboardPageComponent,
-  Integer: IntegerComponent,
-  //   'LeftAlignVerticalTabs': LeftAlignVerticalTabs,
-  ListPage: ListPageComponent,
-  ListUtility: ListUtilityComponent,
-  ListView: ListViewComponent,
-  ListViewActionButtons: ListViewActionButtonsComponent,
-  Location: LocationComponent,
-  MaterialDetails: MaterialDetailsComponent,
-  MaterialUtility: MaterialUtilityComponent,
-  ModalViewContainer: ModalViewContainerComponent,
-  MultiReferenceReadOnly: MultiReferenceReadonlyComponent,
-  Multiselect: MultiselectComponent,
-  MultiStep: MultiStepComponent,
-  //   'NarrowWide': NarrowWideFormComponent,
-  NarrowWideDetails: DetailsNarrowWideComponent,
-  NarrowWideForm: NarrowWideFormComponent,
-  //   'NarrowWidePage': NarrowWidePage,
-  NavBar: NavbarComponent,
-  ObjectPage: ObjectPageComponent,
-  ObjectReference: ObjectReferenceComponent,
-  OneColumn: OneColumnComponent,
-  OneColumnPage: OneColumnPageComponent,
-  OneColumnTab: OneColumnTabComponent,
-  Operator: OperatorComponent,
-  Page: PageComponent,
-  Percentage: PercentageComponent,
-  Phone: PhoneComponent,
-  PromotedFilters: PromotedFiltersComponent,
-  Pulse: PulseComponent,
-  QuickCreate: QuickCreateComponent,
-  reference: ReferenceComponent,
-  RadioButtons: RadioButtonsComponent,
-  Region: RegionComponent,
-  RichText: RichTextComponent,
-  RichTextEditor: RichTextEditorComponent,
-  RootContainer: RootContainerComponent,
-  ScalarList: ScalarListComponent,
-  SearchForm: SearchFormComponent,
-  SearchGroups: SearchGroupsComponent,
-  SelectableCard: SelectableCardComponent,
-  SemanticLink: SemanticLinkComponent,
-  SimpleTable: SimpleTableComponent,
-  SimpleTableManual: SimpleTableManualComponent,
-  SimpleTableSelect: SimpleTableSelectComponent,
-  SingleReferenceReadOnly: SingleReferenceReadonlyComponent,
-  Stages: StagesComponent,
-  SubTabs: SubTabsComponent,
-  SummaryItem: MaterialSummaryItemComponent,
-  SummaryList: MaterialSummaryListComponent,
-  Text: TextComponent,
-  TextArea: TextAreaComponent,
-  TextContent: TextContentComponent,
-  TextInput: TextInputComponent,
-  ThreeColumn: ThreeColumnComponent,
-  ThreeColumnPage: ThreeColumnPageComponent,
-  Time: TimeComponent,
-  Todo: TodoComponent,
-  TwoColumn: TwoColumnComponent,
-  TwoColumnPage: TwoColumnPageComponent,
-  TwoColumnTab: TwoColumnTabComponent,
-  URL: UrlComponent,
-  UserReference: UserReferenceComponent,
-  VerticalTabs: MaterialVerticalTabsComponent,
-  View: ViewComponent,
-  ViewContainer: ViewContainerComponent,
-  //   'WideNarrow': WideNarrow,
-  WideNarrowDetails: DetailsWideNarrowComponent,
-  WideNarrowForm: WideNarrowFormComponent,
-  WideNarrowPage: WideNarrowPageComponent,
-  WssNavBar: WssNavBarComponent,
-  WssQuickCreate: WssQuickCreateComponent
+/**
+ * Map of component name -> dynamic import loader.
+ * NOTE: The Right-Hand side of each mapping resolves to the exported class inside the module.
+ */
+export const componentLoaders: Record<string, ComponentLoader> = {
+  ActionButtons: () => import('../../_components/infra/action-buttons/action-buttons.component').then(m => m.ActionButtonsComponent),
+  AdvancedSearch: () => import('../../_components/template/advanced-search/advanced-search.component').then(m => m.AdvancedSearchComponent),
+  Alert: () => import('../../_components/designSystemExtension/alert/alert.component').then(m => m.AlertComponent),
+  AlertBanner: () => import('../../_components/designSystemExtension/alert-banner/alert-banner.component').then(m => m.AlertBannerComponent),
+  AppAnnouncement: () => import('../../_components/widget/app-announcement/app-announcement.component').then(m => m.AppAnnouncementComponent),
+  AppShell: () => import('../../_components/template/app-shell/app-shell.component').then(m => m.AppShellComponent),
+  Assignment: () => import('../../_components/infra/assignment/assignment.component').then(m => m.AssignmentComponent),
+  AssignmentCard: () => import('../../_components/infra/assignment-card/assignment-card.component').then(m => m.AssignmentCardComponent),
+  Attachment: () => import('../../_components/widget/attachment/attachment.component').then(m => m.AttachmentComponent),
+  AutoComplete: () => import('../../_components/field/auto-complete/auto-complete.component').then(m => m.AutoCompleteComponent),
+  Banner: () => import('../../_components/designSystemExtension/banner/banner.component').then(m => m.BannerComponent),
+  BannerPage: () => import('../../_components/template/banner-page/banner-page.component').then(m => m.BannerPageComponent),
+  CancelAlert: () => import('../../_components/field/cancel-alert/cancel-alert.component').then(m => m.CancelAlertComponent),
+  CaseCreateStage: () =>
+    import('../../_components/designSystemExtension/case-create-stage/case-create-stage.component').then(m => m.CaseCreateStageComponent),
+  CaseHistory: () => import('../../_components/widget/case-history/case-history.component').then(m => m.CaseHistoryComponent),
+  CaseSummary: () => import('../../_components/template/case-summary/case-summary.component').then(m => m.CaseSummaryComponent),
+  CaseSummaryFields: () =>
+    import('../../_components/designSystemExtension/material-case-summary/material-case-summary.component').then(m => m.MaterialCaseSummaryComponent),
+  CaseView: () => import('../../_components/template/case-view/case-view.component').then(m => m.CaseViewComponent),
+  Checkbox: () => import('../../_components/field/check-box/check-box.component').then(m => m.CheckBoxComponent),
+  Confirmation: () => import('../../_components/template/confirmation/confirmation.component').then(m => m.ConfirmationComponent),
+  Currency: () => import('../../_components/field/currency/currency.component').then(m => m.CurrencyComponent),
+  DashboardFilter: () => import('../../_components/infra/dashboard-filter/dashboard-filter.component').then(m => m.DashboardFilterComponent),
+  DataReference: () => import('../../_components/template/data-reference/data-reference.component').then(m => m.DataReferenceComponent),
+  Date: () => import('../../_components/field/date/date.component').then(m => m.DateComponent),
+  DateTime: () => import('../../_components/field/date-time/date-time.component').then(m => m.DateTimeComponent),
+  Decimal: () => import('../../_components/field/decimal/decimal.component').then(m => m.DecimalComponent),
+  DefaultForm: () => import('../../_components/template/default-form/default-form.component').then(m => m.DefaultFormComponent),
+  DeferLoad: () => import('../../_components/infra/defer-load/defer-load.component').then(m => m.DeferLoadComponent),
+  Details: () => import('../../_components/template/details/details.component').then(m => m.DetailsComponent),
+  DetailsFields: () =>
+    import('../../_components/designSystemExtension/material-details-fields/material-details-fields.component').then(
+      m => m.MaterialDetailsFieldsComponent
+    ),
+  DetailsNarrowWide: () =>
+    import('../../_components/template/details-narrow-wide/details-narrow-wide.component').then(m => m.DetailsNarrowWideComponent),
+  DetailsOneColumn: () => import('../../_components/template/details-one-column/details-one-column.component').then(m => m.DetailsOneColumnComponent),
+  DetailsSubTabs: () => import('../../_components/template/details-sub-tabs/details-sub-tabs.component').then(m => m.DetailsSubTabsComponent),
+  DetailsThreeColumn: () =>
+    import('../../_components/template/details-three-column/details-three-column.component').then(m => m.DetailsThreeColumnComponent),
+  DetailsTwoColumn: () => import('../../_components/template/details-two-column/details-two-column.component').then(m => m.DetailsTwoColumnComponent),
+  DetailsWideNarrow: () =>
+    import('../../_components/template/details-wide-narrow/details-wide-narrow.component').then(m => m.DetailsWideNarrowComponent),
+  Dropdown: () => import('../../_components/field/dropdown/dropdown.component').then(m => m.DropdownComponent),
+  DynamicTabs: () => import('../../_components/template/dynamic-tabs/dynamic-tabs.component').then(m => m.DynamicTabsComponent),
+  Email: () => import('../../_components/field/email/email.component').then(m => m.EmailComponent),
+  ErrorBoundary: () => import('../../_components/infra/error-boundary/error-boundary.component').then(m => m.ErrorBoundaryComponent),
+  FeedContainer: () => import('../../_components/widget/feed-container/feed-container.component').then(m => m.FeedContainerComponent),
+  FieldGroup: () => import('../../_components/designSystemExtension/field-group/field-group.component').then(m => m.FieldGroupComponent),
+  FieldGroupList: () => import('../../_components/template/field-group-list/field-group-list.component').then(m => m.FieldGroupListComponent),
+  FieldGroupTemplate: () =>
+    import('../../_components/template/field-group-template/field-group-template.component').then(m => m.FieldGroupTemplateComponent),
+  FieldValueList: () => import('../../_components/template/field-value-list/field-value-list.component').then(m => m.FieldValueListComponent),
+  FileUtility: () => import('../../_components/widget/file-utility/file-utility.component').then(m => m.FileUtilityComponent),
+  FlowContainer: () => import('../../_components/infra/Containers/flow-container/flow-container.component').then(m => m.FlowContainerComponent),
+  FlowContainerBase: () =>
+    import('../../_components/infra/Containers/base-components/flow-container-base.component').then(m => m.FlowContainerBaseComponent),
+  Group: () => import('../../_components/field/group/group.component').then(m => m.GroupComponent),
+  HybridViewContainer: () =>
+    import('../../_components/infra/Containers/hybrid-view-container/hybrid-view-container.component').then(m => m.HybridViewContainerComponent),
+  InlineDashboard: () => import('../../_components/template/inline-dashboard/inline-dashboard.component').then(m => m.InlineDashboardComponent),
+  InlineDashboardPage: () =>
+    import('../../_components/template/inline-dashboard-page/inline-dashboard-page.component').then(m => m.InlineDashboardPageComponent),
+  Integer: () => import('../../_components/field/integer/integer.component').then(m => m.IntegerComponent),
+  ListPage: () => import('../../_components/template/list-page/list-page.component').then(m => m.ListPageComponent),
+  ListUtility: () => import('../../_components/widget/list-utility/list-utility.component').then(m => m.ListUtilityComponent),
+  ListView: () => import('../../_components/template/list-view/list-view.component').then(m => m.ListViewComponent),
+  ListViewActionButtons: () =>
+    import('../../_components/field/list-view-action-buttons/list-view-action-buttons.component').then(m => m.ListViewActionButtonsComponent),
+  Location: () => import('../../_components/field/location/location.component').then(m => m.LocationComponent),
+  MaterialDetails: () =>
+    import('../../_components/designSystemExtension/material-details/material-details.component').then(m => m.MaterialDetailsComponent),
+  MaterialSummaryItem: () =>
+    import('../../_components/designSystemExtension/material-summary-item/material-summary-item.component').then(m => m.MaterialSummaryItemComponent),
+  MaterialSummaryList: () =>
+    import('../../_components/designSystemExtension/material-summary-list/material-summary-list.component').then(m => m.MaterialSummaryListComponent),
+  MaterialUtility: () =>
+    import('../../_components/designSystemExtension/material-utility/material-utility.component').then(m => m.MaterialUtilityComponent),
+  MaterialVerticalTabs: () =>
+    import('../../_components/designSystemExtension/material-vertical-tabs/material-vertical-tabs.component').then(
+      m => m.MaterialVerticalTabsComponent
+    ),
+  ModalViewContainer: () =>
+    import('../../_components/infra/Containers/modal-view-container/modal-view-container.component').then(m => m.ModalViewContainerComponent),
+  MultiReferenceReadOnly: () =>
+    import('../../_components/template/multi-reference-readonly/multi-reference-readonly.component').then(m => m.MultiReferenceReadonlyComponent),
+  Multiselect: () => import('../../_components/field/multiselect/multiselect.component').then(m => m.MultiselectComponent),
+  MultiStep: () => import('../../_components/infra/multi-step/multi-step.component').then(m => m.MultiStepComponent),
+  NarrowWideDetails: () =>
+    import('../../_components/template/details-narrow-wide/details-narrow-wide.component').then(m => m.DetailsNarrowWideComponent),
+  NarrowWideForm: () => import('../../_components/template/narrow-wide-form/narrow-wide-form.component').then(m => m.NarrowWideFormComponent),
+  NavBar: () => import('../../_components/infra/navbar/navbar.component').then(m => m.NavbarComponent),
+  OneColumn: () => import('../../_components/template/one-column/one-column.component').then(m => m.OneColumnComponent),
+  OneColumnPage: () => import('../../_components/template/one-column-page/one-column-page.component').then(m => m.OneColumnPageComponent),
+  OneColumnTab: () => import('../../_components/template/one-column-tab/one-column-tab.component').then(m => m.OneColumnTabComponent),
+  Operator: () => import('../../_components/designSystemExtension/operator/operator.component').then(m => m.OperatorComponent),
+  Page: () => import('../../_components/template/page/page.component').then(m => m.PageComponent),
+  Percentage: () => import('../../_components/field/percentage/percentage.component').then(m => m.PercentageComponent),
+  Phone: () => import('../../_components/field/phone/phone.component').then(m => m.PhoneComponent),
+  PreviewViewContainer: () =>
+    import('../../_components/infra/Containers/preview-view-container/preview-view-container.component').then(m => m.PreviewViewContainerComponent),
+  PromotedFilters: () => import('../../_components/template/promoted-filters/promoted-filters.component').then(m => m.PromotedFiltersComponent),
+  Pulse: () => import('../../_components/designSystemExtension/pulse/pulse.component').then(m => m.PulseComponent),
+  QuickCreate: () => import('../../_components/widget/quick-create/quick-create.component').then(m => m.QuickCreateComponent),
+  RadioButtons: () => import('../../_components/field/radio-buttons/radio-buttons.component').then(m => m.RadioButtonsComponent),
+  Reference: () => import('../../_components/infra/reference/reference.component').then(m => m.ReferenceComponent),
+  Region: () => import('../../_components/infra/region/region.component').then(m => m.RegionComponent),
+  RepeatingStructures: () =>
+    import('../../_components/template/repeating-structures/repeating-structures.component').then(m => m.RepeatingStructuresComponent),
+  RichText: () => import('../../_components/field/rich-text/rich-text.component').then(m => m.RichTextComponent),
+  RichTextEditor: () =>
+    import('../../_components/designSystemExtension/rich-text-editor/rich-text-editor.component').then(m => m.RichTextEditorComponent),
+  RootContainer: () => import('../../_components/infra/root-container/root-container.component').then(m => m.RootContainerComponent),
+  ScalarList: () => import('../../_components/field/scalar-list/scalar-list.component').then(m => m.ScalarListComponent),
+  SearchForm: () => import('../../_components/template/data-reference/search-form/search-form.component').then(m => m.SearchFormComponent),
+  SearchGroups: () => import('../../_components/template/advanced-search/search-groups/search-groups.component').then(m => m.SearchGroupsComponent),
+  SelectableCard: () => import('../../_components/field/selectable-card/selectable-card.component').then(m => m.SelectableCardComponent),
+  SemanticLink: () => import('../../_components/field/semantic-link/semantic-link.component').then(m => m.SemanticLinkComponent),
+  SimpleTable: () => import('../../_components/template/simple-table/simple-table.component').then(m => m.SimpleTableComponent),
+  SimpleTableManual: () =>
+    import('../../_components/template/simple-table-manual/simple-table-manual.component').then(m => m.SimpleTableManualComponent),
+  SimpleTableSelect: () =>
+    import('../../_components/template/simple-table-select/simple-table-select.component').then(m => m.SimpleTableSelectComponent),
+  SingleReferenceReadOnly: () =>
+    import('../../_components/template/single-reference-readonly/single-reference-readonly.component').then(m => m.SingleReferenceReadonlyComponent),
+  Stages: () => import('../../_components/infra/stages/stages.component').then(m => m.StagesComponent),
+  SubTabs: () => import('../../_components/template/sub-tabs/sub-tabs.component').then(m => m.SubTabsComponent),
+  SummaryItem: () =>
+    import('../../_components/designSystemExtension/material-summary-item/material-summary-item.component').then(m => m.MaterialSummaryItemComponent),
+  SummaryList: () =>
+    import('../../_components/designSystemExtension/material-summary-list/material-summary-list.component').then(m => m.MaterialSummaryListComponent),
+  Text: () => import('../../_components/field/text/text.component').then(m => m.TextComponent),
+  TextArea: () => import('../../_components/field/text-area/text-area.component').then(m => m.TextAreaComponent),
+  TextContent: () => import('../../_components/field/text-content/text-content.component').then(m => m.TextContentComponent),
+  TextInput: () => import('../../_components/field/text-input/text-input.component').then(m => m.TextInputComponent),
+  ThreeColumn: () => import('../../_components/template/three-column/three-column.component').then(m => m.ThreeColumnComponent),
+  ThreeColumnPage: () => import('../../_components/template/three-column-page/three-column-page.component').then(m => m.ThreeColumnPageComponent),
+  Time: () => import('../../_components/field/time/time.component').then(m => m.TimeComponent),
+  Todo: () => import('../../_components/widget/todo/todo.component').then(m => m.TodoComponent),
+  TwoColumn: () => import('../../_components/template/two-column/two-column.component').then(m => m.TwoColumnComponent),
+  TwoColumnPage: () => import('../../_components/template/two-column-page/two-column-page.component').then(m => m.TwoColumnPageComponent),
+  TwoColumnTab: () => import('../../_components/template/two-column-tab/two-column-tab.component').then(m => m.TwoColumnTabComponent),
+  URL: () => import('../../_components/field/url/url.component').then(m => m.UrlComponent),
+  UserReference: () => import('../../_components/field/user-reference/user-reference.component').then(m => m.UserReferenceComponent),
+  Utility: () => import('../../_components/widget/utility/utility.component').then(m => m.UtilityComponent),
+  VerticalTabs: () =>
+    import('../../_components/designSystemExtension/material-vertical-tabs/material-vertical-tabs.component').then(
+      m => m.MaterialVerticalTabsComponent
+    ),
+  View: () => import('../../_components/infra/view/view.component').then(m => m.ViewComponent),
+  ViewContainer: () => import('../../_components/infra/Containers/view-container/view-container.component').then(m => m.ViewContainerComponent),
+  WideNarrowDetails: () =>
+    import('../../_components/template/details-wide-narrow/details-wide-narrow.component').then(m => m.DetailsWideNarrowComponent),
+  WideNarrowForm: () => import('../../_components/template/wide-narrow-form/wide-narrow-form.component').then(m => m.WideNarrowFormComponent),
+  WideNarrowPage: () => import('../../_components/template/wide-narrow-page/wide-narrow-page.component').then(m => m.WideNarrowPageComponent),
+  WssNavBar: () => import('../../_components/template/wss-nav-bar/wss-nav-bar.component').then(m => m.WssNavBarComponent),
+  WssQuickCreate: () =>
+    import('../../_components/designSystemExtension/wss-quick-create/wss-quick-create.component').then(m => m.WssQuickCreateComponent),
+  reference: () => import('../../_components/infra/reference/reference.component').then(m => m.ReferenceComponent)
 };
-
-export default pegaSdkComponentMap;
