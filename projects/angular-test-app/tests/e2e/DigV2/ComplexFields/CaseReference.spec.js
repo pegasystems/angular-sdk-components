@@ -123,12 +123,12 @@ test.describe('E2E test', () => {
     await page.locator('mat-option > span:has-text("ListOfRecords")').click();
     table = page.locator('table[id="list-view"]');
     await expect(table.getByText(' Case ID ')).toBeVisible();
-    await page.locator('input[id="search"]').pressSequentially(caseID[0]);
+    await page.locator('input[id="search"]').pressSequentially(caseID[0], { delay: 100 });
     const selectedRow1 = await page.locator(`tr:has-text("${caseID[0]}")`);
     await selectedRow1.locator('mat-checkbox').click();
 
     await page.locator('input[id="search"]').clear();
-    await page.locator('input[id="search"]').pressSequentially(caseID[1]);
+    await page.locator('input[id="search"]').pressSequentially(caseID[1], { delay: 100 });
     const selectedRow2 = await page.locator(`tr:has-text("${caseID[1]}")`);
     await selectedRow2.locator('mat-checkbox').click();
 
