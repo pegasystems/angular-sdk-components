@@ -12,7 +12,8 @@ import { DatapageService } from '../../../../../../../packages/angular-sdk-compo
   selector: 'app-side-bar',
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss'],
-  imports: [CommonModule, MatButtonModule]
+  imports: [CommonModule, MatButtonModule],
+  providers: [DatapageService]
 })
 export class SideBarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

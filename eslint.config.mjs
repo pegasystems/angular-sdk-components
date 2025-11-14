@@ -89,7 +89,7 @@ export default defineConfig([
       'prettier/prettier': 'off',
 
       // Disable rules from shared configs we're not ready for yet.
-      'sonarjs/cognitive-complexity': ['warn', 20],
+      'sonarjs/cognitive-complexity': ['error', 20],
       'sonarjs/no-duplicate-string': 'off',
 
       //
@@ -152,8 +152,7 @@ export default defineConfig([
       'import/no-relative-packages': 'off',
       'react/jsx-fragments': 'off',
       'react/react-in-jsx-scope': 'off',
-      'react-hooks/exhaustive-deps': 'off',
-      'sonarjs/cognitive-complexity': ['warn', 45]
+      'react-hooks/exhaustive-deps': 'off'
     }
   },
   {
