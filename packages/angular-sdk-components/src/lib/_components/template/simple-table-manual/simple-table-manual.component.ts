@@ -74,7 +74,8 @@ class Group {
     MatSelectModule,
     MatInputModule,
     forwardRef(() => ComponentMapperComponent)
-  ]
+  ],
+  providers: [DatapageService]
 })
 export class SimpleTableManualComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
