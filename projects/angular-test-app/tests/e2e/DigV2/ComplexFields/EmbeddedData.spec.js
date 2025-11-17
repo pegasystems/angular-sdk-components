@@ -117,15 +117,15 @@ test.describe('E2E test', () => {
     await modal.locator('input[data-test-id="202003240938510831411"]').fill('MA');
     await modal.locator('input[data-test-id="202003240938510832734"]').fill('02142');
 
-    // phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
-    // countrySelector = phone.locator('button.country-selector');
-    // await countrySelector.click();
-    // await page.locator('div.flag.US >> nth=0').click();
-    // await phone.locator('input[type="tel"]').fill('6175551212');
+    phone = page.locator('mat-tel-input[data-test-id="1f8261d17452a959e013666c5df45e07"]');
+    countrySelector = phone.locator('button.country-selector');
+    await countrySelector.click();
+    await page.locator('div.flag.US >> nth=0').click();
+    await phone.locator('input[type="tel"]').fill('6175551212');
 
-    // const country = modal.locator('mat-select[data-test-id="59716c97497eb9694541f7c3d37b1a4d"]');
-    // await country.click();
-    // await page.getByRole('option', { name: 'Switzerland' }).click();
+    const country = modal.locator('mat-select[data-test-id="59716c97497eb9694541f7c3d37b1a4d"]');
+    await country.click();
+    await page.getByRole('option', { name: 'Switzerland' }).click();
 
     /** submitting the record */
     await modal.locator('button:has-text("submit")').click();
@@ -137,7 +137,9 @@ test.describe('E2E test', () => {
     await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
     await expect(table.locator('td >> text="MA"')).toBeVisible();
     await expect(table.locator('td >> text="02142"')).toBeVisible();
-    // await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
+    await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
+
+    // Todo: Below piece of commented scenario is working fine in runtime but failing only during test case execution.
 
     // await page.locator('button:has-text("Next")').click();
 
@@ -146,11 +148,11 @@ test.describe('E2E test', () => {
     // await expect(table.locator('td >> text="Cambridge"')).toBeVisible();
     // await expect(table.locator('td >> text="MA"')).toBeVisible();
     // await expect(table.locator('td >> text="02142"')).toBeVisible();
-    // await expect(table.locator('td >> text="6175551212"')).toBeVisible();
+    // await expect(table.locator('td >> text="+16175551212"')).toBeVisible();
 
     // await page.locator('button:has-text("Previous")').click();
+    //await expect(table).toBeVisible();
 
-    // await expect(table).toBeVisible();
     /** Edit Record tests */
     await table.locator('.header-icon').click();
     let editMenu = await page.locator('div[role="menu"]');
