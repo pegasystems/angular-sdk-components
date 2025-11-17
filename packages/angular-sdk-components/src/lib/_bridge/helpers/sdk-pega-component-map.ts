@@ -57,6 +57,7 @@ import { CaseViewComponent } from '../../_components/template/case-view/case-vie
 import { ConfirmationComponent } from '../../_components/template/confirmation/confirmation.component';
 import { DataReferenceComponent } from '../../_components/template/data-reference/data-reference.component';
 import { DefaultFormComponent } from '../../_components/template/default-form/default-form.component';
+import { DefaultPageComponent } from '../../_components/template/default-page/default-page.component';
 import { DetailsComponent } from '../../_components/template/details/details.component';
 import { DetailsNarrowWideComponent } from '../../_components/template/details-narrow-wide/details-narrow-wide.component';
 import { DetailsOneColumnComponent } from '../../_components/template/details-one-column/details-one-column.component';
@@ -162,6 +163,7 @@ const pegaSdkComponentMap = {
   DateTime: DateTimeComponent,
   Decimal: DecimalComponent,
   DefaultForm: DefaultFormComponent,
+  DefaultPage: DefaultPageComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
   DetailsFields: MaterialDetailsFieldsComponent,

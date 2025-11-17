@@ -6,13 +6,21 @@
   align-items: start;
 }
 
+.psdk-grid-filter-2 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: calc(2 * 0.5rem);
+  row-gap: calc(2 * 0.5rem);
+  align-items: start;
+}
+
 .psdk-grid-filter-wide-narrow {
   display: grid;
   grid-template-columns: 7fr 3fr;
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
-  padding: 1rem;
+  // padding: 1rem;
 }
 
 .psdk-grid-filter-narrow-wide {
