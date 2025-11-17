@@ -67,6 +67,8 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AppShellProps;
 
+    this.portalTemplate = this.configProps$.portalTemplate;
+
     // making a copy, so can add info
     this.pages$ = this.configProps$.pages;
 
@@ -76,6 +78,11 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
     if (this.pages$) {
       this.bShowAppShell$ = true;
+    }
+
+    /* TODO: We're setting the `pyPortalTemplate` for now, this would be handled by the CoreJS in the future releases */
+    if (this.portalTemplate === 'wss') {
+      PCore.getEnvironmentInfo().setEnvironmentInfo({ ...PCore.getEnvironmentInfo().environmentInfoObject, pyPortalTemplate: 'wss' } as any);
     }
 
     // @ts-ignore - Property 'pyCaseTypesAvailableToCreateDP' does not exist on type pxApplication
@@ -98,8 +105,6 @@ export class AppShellComponent implements OnInit, OnDestroy {
     this.caseTypes$ = this.configProps$.caseTypes;
 
     this.arChildren$ = this.pConn$.getChildren();
-
-    this.portalTemplate = this.configProps$.portalTemplate;
 
     // handle showing and hiding the progress spinner
     this.errorMessagesSubscription = this.erService.getMessage().subscribe(message => {
