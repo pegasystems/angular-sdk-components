@@ -15,7 +15,6 @@ import { MainScreenComponent } from './main-screen/main-screen.component';
 
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
-import { ThemeService } from 'packages/angular-sdk-components/src/lib/_services/theme.service';
 import { initializeAuthentication } from './utils';
 
 declare global {
@@ -44,8 +43,7 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
   constructor(
     private psservice: ProgressSpinnerService,
-    private ngZone: NgZone,
-    private themeService: ThemeService
+    private ngZone: NgZone
   ) {}
 
   ngOnInit() {
@@ -66,8 +64,8 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
     document.addEventListener('SdkConstellationReady', () => this.handleSdkConstellationReady());
 
     const { authConfig, theme } = await getSdkConfig();
-    this.themeService.setTheme(theme);
-
+    document.body.classList.remove(...['light', 'dark']);
+    document.body.classList.add(theme);
     initializeAuthentication(authConfig);
 
     // Login if needed, without doing an initial main window redirect
