@@ -56,6 +56,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   allowImplicitRefresh: any;
   displayChild = false;
   dataRelationshipContext: any;
+  imagePosition: any;
+  showImageDescription: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -204,6 +206,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     if (this.propsToUse.showLabel === false) {
       this.propsToUse.label = '';
     }
+    this.imagePosition = theConfigProps.imagePosition;
+    this.showImageDescription = theConfigProps.showImageDescription;
   }
 
   generateChildrenToRender() {
@@ -391,6 +395,10 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       const useDropDownDataSource = (isCardVariant && (this.dropDownDataSource || isDeferDataPageCallEnabled)) || (!isCardVariant && hasParameters);
 
       config.datasource.source = useDropDownDataSource ? this.dropDownDataSource : `@DATASOURCE ${this.refList}.pxResults`;
+      if (isCardVariant) {
+        config.imagePosition = this.imagePosition;
+        config.showImageDescription = this.showImageDescription;
+      }
     } else if (type === 'AutoComplete') {
       config.datasource = this.refList;
       if (this.rawViewMetadata.config?.parameters) {
