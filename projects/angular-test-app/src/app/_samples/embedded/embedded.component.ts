@@ -65,7 +65,7 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
     const { authConfig, theme } = await getSdkConfig();
     document.body.classList.remove(...['light', 'dark']);
-    document.body.classList.add(theme);
+    document.body.classList.add(theme || 'dark');
     initializeAuthentication(authConfig);
 
     // Login if needed, without doing an initial main window redirect
