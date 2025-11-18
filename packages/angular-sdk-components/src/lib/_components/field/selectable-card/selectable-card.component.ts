@@ -43,6 +43,7 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
   defaultStyle = {};
   specialStyle = {};
   cardStyle = {};
+  noLabelStyle: {};
   selectedvalues: any;
   selectionList: any;
   primaryField: string;
@@ -68,6 +69,10 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
     this.specialStyle = {
       margin: '0.5rem',
       fontSize: '0.875rem'
+    };
+    this.noLabelStyle = {
+      alignItems: 'start',
+      marginLeft: '0.5rem'
     };
   }
 

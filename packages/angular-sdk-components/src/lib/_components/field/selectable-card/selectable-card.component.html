@@ -30,7 +30,10 @@
             >{{ cardContent.commonCardProps.label }}</mat-checkbox
           >
         </div>
-        <div *ngFor="let field of cardContent.commonCardProps.fields" [ngStyle]="field.type !== 'TextArea' ? defaultStyle : specialStyle">
+        <div
+          *ngFor="let field of cardContent.commonCardProps.fields"
+          [ngStyle]="field.type !== 'TextArea' ? (field.name ? defaultStyle : noLabelStyle) : specialStyle"
+        >
           <div style="color: rgba(0, 0, 0, 0.6)">{{ field.name }}</div>
           <div>{{ field?.value?.getPConnect().getConfigProps().value ?? '--' }}</div>
         </div>
