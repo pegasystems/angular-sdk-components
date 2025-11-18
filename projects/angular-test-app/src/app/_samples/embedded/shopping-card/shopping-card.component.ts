@@ -12,7 +12,6 @@ export interface PlanOption {
 
 @Component({
   selector: 'app-shopping-card',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './shopping-card.component.html',
   styleUrls: ['./shopping-card.component.scss', '../EmbeddedStyles.scss']

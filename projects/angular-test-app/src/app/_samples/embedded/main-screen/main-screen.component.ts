@@ -6,17 +6,14 @@ import { ServerConfigService } from 'packages/angular-sdk-components/src/lib/_se
 import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 import { shoppingOptions } from '../utils';
 
-declare const PCore: any;
-
 @Component({
   selector: 'app-main-screen',
   templateUrl: './main-screen.component.html',
   styleUrls: ['./main-screen.component.scss', '../EmbeddedStyles.scss'],
-  standalone: true,
   imports: [CommonModule, ShoppingCardComponent, ComponentMapperComponent, ResolutionScreenComponent]
 })
 export class MainScreenComponent implements OnInit, OnDestroy {
-  @Input() pConn$: any;
+  @Input() pConn$: typeof PConnect;
 
   shoppingOptionsList = shoppingOptions;
 
@@ -27,6 +24,7 @@ export class MainScreenComponent implements OnInit, OnDestroy {
   constructor(private scservice: ServerConfigService) {}
 
   ngOnInit(): void {
+    // Subscribe to the EVENT_CANCEL event to handle the assignment cancellation
     PCore.getPubSubUtils().subscribe(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL, () => this.cancelAssignment(), 'cancelAssignment');
 
     PCore.getPubSubUtils().subscribe(

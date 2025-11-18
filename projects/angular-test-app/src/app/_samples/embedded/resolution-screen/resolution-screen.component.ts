@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-declare const PCore: any;
 @Component({
   selector: 'app-resolution-screen',
   templateUrl: './resolution-screen.component.html',
   styleUrls: ['./resolution-screen.component.scss', '../EmbeddedStyles.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class ResolutionScreenComponent implements OnInit {
