@@ -37,7 +37,6 @@ export class DefaultPageComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    // console.log(`ngOnInit (no registerAndSubscribe!): Region`);
     this.backgroundImage = this.configProps$?.backgroundImage;
     this.updateSelf();
   }
