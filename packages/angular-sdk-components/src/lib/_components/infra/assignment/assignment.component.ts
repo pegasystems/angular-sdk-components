@@ -257,7 +257,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       this.prevNavigationSteps = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
       this.arNavigationSteps$.forEach(step => {
         if (step.name) {
-          step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
+          step.name = this.pConn$.getLocalizationService().getLocalizedText(step.name);
         }
       });
       this.arCurrentStepIndicies$ = [];

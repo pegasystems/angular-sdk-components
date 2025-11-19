@@ -134,7 +134,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     const timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$.header, '', this.localeKey);
+      this.heading$ = this.pConn$.getLocalizationService().getLocalizedText(this.configProps$.header);
       this.id$ = this.configProps$.subheader;
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
