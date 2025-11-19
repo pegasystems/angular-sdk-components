@@ -14,20 +14,23 @@
           <div class="psdk-todo-assignment-title">{{ getAssignmentName(assignment) }}</div>
           <div class="psdk-todo-assignment-data">
             <div class="psdk-todo-assignment-task">
-              {{ localizedVal('Task in', localeCategory) }}
+              {{ localizedVal('In', localeCategory) }}
               <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)" *ngIf="!isConfirm || canPerform; else readOnlyText">
-                {{ assignment.name }} {{ getID(assignment) }}
+                {{ localizedVal(assignment?.name, '', localeUtils.getCaseLocaleReference(assignment.classname)) }} {{ getID(assignment) }}
               </button>
-              <ng-template #readOnlyText> {{ assignment.name }} {{ getID(assignment) }} </ng-template>
+              <ng-template #readOnlyText> {{ localizedVal(assignment?.name, localeCategory) }} {{ getID(assignment) }} </ng-template>
               <span *ngIf="assignment.status != undefined">
-                &bull; <span class="psdk-todo-assignment-status">{{ assignment?.status }}</span>
+                &bull;
+                <span class="psdk-todo-assignment-status">{{
+                  localizedVal(assignment.status, '', localeUtils.getCaseLocaleReference(assignment.classname))
+                }}</span>
               </span>
               &bull; {{ localizedVal('Urgency', localeCategory) }} {{ getPriority(assignment) }}
             </div>
           </div>
         </div>
         <div *ngIf="!isConfirm || canPerform" class="psdk-todo-assignment-action">
-          <button mat-flat-button color="primary" (click)="clickGo(assignment)">{{ localizedVal('Go', localeCategory) }}</button>
+          <button mat-flat-button color="primary" (click)="clickGo(assignment)">{{ goLocalizedValue === 'go' ? 'Go' : goLocalizedValue }}</button>
         </div>
       </div>
       <div class="psdk-display-divider"></div>

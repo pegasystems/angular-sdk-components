@@ -89,8 +89,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
-    const caseInfo = this.pConn$.getCaseInfo();
-    this.localeReference = `${caseInfo?.getClassName()}!CASE!${caseInfo.getName()}`.toUpperCase();
+    this.localeReference = this.pConn$?.getCaseLocaleReference();
 
     // Then, continue on with other initialization
 

@@ -4,10 +4,10 @@
       <img class="psdk-stages-icon" src="{{ checkSvgIcon$ }}" />{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}
     </div>
     <div *ngIf="stage.visited_status == 'active'" class="psdk-stages-inner-present">
-      {{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}
+      {{ localizationService.getLocalizedText(stage.name) }}
     </div>
     <div *ngIf="stage.visited_status == 'future'" class="psdk-stages-inner-future">
-      {{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}
+      {{ localizationService.getLocalizedText(stage.name) }}
     </div>
   </div>
 </div>
