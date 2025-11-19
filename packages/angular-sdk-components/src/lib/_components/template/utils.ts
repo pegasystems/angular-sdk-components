@@ -37,3 +37,45 @@ export const evaluateAllowRowAction = (allowRowDelete, rowData) => {
   }
   return false;
 };
+
+export function prepareCaseSummaryData(caseSummaryRegion, portalSpecificVisibilityChecker?) {
+  const filterVisibleChildren = children => {
+    return children
+      ?.getPConnect()
+      ?.getChildren()
+      ?.filter(child => {
+        const configProps = child.getPConnect().getConfigProps();
+        const defaultVisibilityCn = !('visibility' in configProps) || configProps.visibility === true;
+        return defaultVisibilityCn && (portalSpecificVisibilityChecker?.(configProps) ?? true);
+      });
+  };
+  const convertChildrenToSummaryData = children => {
+    return children?.map(childItem => {
+      const childPConnData = childItem.getPConnect().resolveConfigProps(childItem.getPConnect().getRawMetadata());
+      childPConnData.kid = childItem.getPConnect();
+      return childPConnData;
+    });
+  };
+
+  const summaryFieldChildren = caseSummaryRegion
+    .getPConnect()
+    .getChildren()[0]
+    ?.getPConnect()
+    ?.getReferencedViewPConnect()
+    ?.getPConnect()
+    ?.getChildren();
+
+  const primarySummaryFields =
+    summaryFieldChildren && summaryFieldChildren.length > 0
+      ? convertChildrenToSummaryData(filterVisibleChildren(summaryFieldChildren[0]))
+      : undefined;
+  const secondarySummaryFields =
+    summaryFieldChildren && summaryFieldChildren.length > 1
+      ? convertChildrenToSummaryData(filterVisibleChildren(summaryFieldChildren[1]))
+      : undefined;
+
+  return {
+    primarySummaryFields,
+    secondarySummaryFields
+  };
+}

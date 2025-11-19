@@ -439,14 +439,13 @@ export class Utils {
    * @returns The localized string or the key itself if no translation is found
    */
   getGenericFieldsLocalizedValue(path: string, key: string): string {
-    const GENERIC_BUNDLE_KEY = PCore.getLocaleUtils().GENERIC_BUNDLE_KEY;
-    const localeStore = PCore.getLocaleUtils().localeStore[GENERIC_BUNDLE_KEY];
+    const localeStore = PCore.getLocaleUtils().localeStore;
 
     if (!localeStore) return key;
 
     // Split the path and traverse the object
     const pathParts = path.split('.');
-    let currentObj = localeStore;
+    let currentObj: any = localeStore;
 
     for (const part of pathParts) {
       if (!currentObj[part]) return key;

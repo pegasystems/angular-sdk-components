@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -8,40 +8,40 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { prepareCaseSummaryData } from '../utils';
 
-interface CaseViewProps {
+interface SelfServiceCaseViewProps {
   // If any, enter additional props that only exist on this component
   icon: string;
   subheader: string;
   header: string;
+  showCaseLifecycle: any;
+  showSummaryRegion: any;
+  showUtilitiesRegion: any;
+  showCaseActions: any;
+  caseClass: any;
 }
 
 @Component({
-  selector: 'app-case-view',
-  templateUrl: './case-view.component.html',
-  styleUrls: ['./case-view.component.scss'],
+  selector: 'app-self-service-case-view',
+  templateUrl: './self-service-case-view.component.html',
+  styleUrls: ['./self-service-case-view.component.scss'],
   providers: [Utils],
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class CaseViewComponent implements OnInit, OnDestroy {
+export class SelfServiceCaseViewComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
-  configProps$: CaseViewProps;
+  configProps$: SelfServiceCaseViewProps;
 
   arChildren$: any[];
 
   heading$ = '';
   id$ = '';
   status$ = '';
-  caseTabs$: any[] = [];
-  svgCase$: string;
-  tabData$: any;
-
-  mainTabs: any;
-  mainTabData: any;
 
   arAvailableActions$: any[] = [];
   arAvailabeProcesses$: any[] = [];
@@ -52,10 +52,16 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   bHasNewAttachments = false;
   localizedVal: any;
   localeCategory = 'CaseView';
-  localeKey: string;
+  localeKey: any;
+  showCaseLifecycle: boolean;
+  showSummaryRegion: boolean;
+  showUtilitiesRegion: boolean;
+  showCaseActions: boolean;
+  utilityRegion: any;
+  primarySummaryFields: any;
+  secondarySummaryFields: any;
 
   constructor(
-    private cdRef: ChangeDetectorRef,
     private angularPConnect: AngularPConnectService,
     private utils: Utils
   ) {}
@@ -63,8 +69,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-
-    // this.updateSelf();
     this.checkAndUpdate();
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
   }
@@ -112,7 +116,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   }
 
   updateHeaderAndSummary() {
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SelfServiceCaseViewProps;
     const hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
 
     if (hasNewAttachments !== this.bHasNewAttachments) {
@@ -134,19 +138,15 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     const timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = this.pConn$.getLocalizationService().getLocalizedText(this.configProps$.header);
+      this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$.header, '', this.localeKey);
       this.id$ = this.configProps$.subheader;
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });
   }
 
   fullUpdate() {
-    this.caseTabs$ = [];
-    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
-    // let caseTypeID = this.configProps$.ruleClass;
-    // let caseTypeName = this.configProps$.header;
-    // this.localeKey = `${caseTypeID}!CASE!${caseTypeName}`.toUpperCase();
-    this.localeKey = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SelfServiceCaseViewProps;
+    this.localeKey = this.pConn$?.getCaseLocaleReference();
     this.updateHeaderAndSummary();
 
     this.arChildren$ = this.pConn$.getChildren() as any[];
@@ -157,61 +157,47 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     this.editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
     this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
 
-    this.svgCase$ = this.utils.getImageSrc(this.configProps$.icon, this.utils.getSDKStaticContentUrl());
-
-    for (const kid of this.arChildren$) {
-      const kidPConn = kid.getPConnect();
-      if (kidPConn.getRawMetadata().name == 'Tabs') {
-        this.mainTabs = kid;
-        this.mainTabData = this.mainTabs.getPConnect().getChildren();
-      }
+    const { showCaseLifecycle = true, showSummaryRegion = true, showUtilitiesRegion = true, showCaseActions = true, caseClass } = this.configProps$;
+    this.showCaseLifecycle = this.utils.getBooleanValue(showCaseLifecycle);
+    this.showSummaryRegion = this.utils.getBooleanValue(showSummaryRegion);
+    this.showUtilitiesRegion = this.utils.getBooleanValue(showUtilitiesRegion);
+    this.showCaseActions = this.utils.getBooleanValue(showCaseActions);
+    const isObjectType: boolean = (PCore.getCaseUtils() as any).isObjectCaseType(caseClass);
+    this.utilityRegion = isObjectType ? this.filterUtilities(this.arChildren$[2]) : this.filterUtilities(this.arChildren$[4]);
+    if (this.showSummaryRegion) {
+      const { primarySummaryFields, secondarySummaryFields } = prepareCaseSummaryData(
+        this.arChildren$[0],
+        (config: any) => config?.availableInChannel?.selfService === true
+      );
+      this.primarySummaryFields = primarySummaryFields;
+      this.secondarySummaryFields = secondarySummaryFields;
     }
-
-    this.generateTabsData();
   }
 
-  generateTabsData() {
-    this.mainTabs
-      .getPConnect()
-      .getChildren()
-      ?.forEach((child, i) => {
-        const config = child.getPConnect().resolveConfigProps(child.getPConnect().getRawMetadata()).config;
-        let { label } = config;
-        const { inheritedProps, visibility } = config;
-        // For some tabs, "label" property is not avaialable in theTabCompConfig, so will get them from inheritedProps
-        if (!label) {
-          inheritedProps.forEach((inheritedProp: any) => {
-            if (inheritedProp.prop === 'label') {
-              label = inheritedProp.value;
-            }
-          });
-        }
-        // We'll display the tabs when either visibility property doesn't exist or is true(if exists)
-        if (visibility === undefined || visibility === true) {
-          this.caseTabs$.push({ name: label, id: i });
-          // To make first visible tab display at the beginning
-          if (!this.tabData$) {
-            this.tabData$ = { type: 'DeferLoad', config: child.getPConnect().getRawMetadata().config };
-          }
-        }
-      });
+  filterUtilities(utils) {
+    let utilsMeta;
+    const pConnect = utils.getPConnect();
+    utilsMeta = pConnect.getRawMetadata?.();
+    if (!utilsMeta?.children?.length) return;
+    utilsMeta = {
+      ...utilsMeta,
+      children: utilsMeta.children.filter((child: any) => child.config?.availableInChannel?.selfService === true)
+    };
+    return utilsMeta.children?.length ? pConnect.createComponent(utilsMeta) : undefined;
+  }
+
+  isUtilitiesRegionNotEmpty() {
+    if (this.utilityRegion && this.utilityRegion.getPConnect()?.getChildren()?.length > 0) {
+      return this.utilityRegion
+        .getPConnect()
+        .getChildren()
+        .some((prop: { getPConnect: () => any }) => prop.getPConnect().getConfigProps().visibility !== false);
+    }
+    return false;
   }
 
   updateSelf() {
     this.fullUpdate();
-  }
-
-  onTabClick(tab: any) {
-    this.tabData$ = this.mainTabData[tab].getPConnect().getRawMetadata();
-    this.cdRef.detectChanges();
-  }
-
-  _editClick() {
-    const editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
-    const actionsAPI = this.pConn$.getActionsApi();
-    const openLocalAction = actionsAPI.openLocalAction.bind(actionsAPI);
-
-    openLocalAction(editAction.ID, { ...editAction, containerName: 'modal', type: 'express' });
   }
 
   _menuActionClick(data) {

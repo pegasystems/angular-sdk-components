@@ -49,7 +49,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   localizedVal: any;
   localeCategory = 'AppShell';
   localeUtils = PCore.getLocaleUtils();
-  localeReference: any;
   constructor(
     private angularPConnect: AngularPConnectService,
     private chRef: ChangeDetectorRef,
@@ -113,11 +112,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
       // making a copy, so can add info
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
-
+      // @ts-ignore
+      const localeReference = PCore.getLocaleUtils().getPortalLocaleReference() || this.pConn$.getValue('.pyLocaleReference');
       this.navPages$.forEach(page => {
+        const destinationObject: any = {};
+        this.pConn$.resolveConfigProps(
+          { defaultHeading: page.pyDefaultHeading || page.pyLabel, localeReference: page.pyLocalizationReference },
+          destinationObject
+        );
+        page.name = this.localeUtils.getLocaleValue(destinationObject.defaultHeading, '', destinationObject.localeReference || localeReference);
         page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
       });
-      this.localeReference = this.pConn$.getValue('.pyLocaleReference');
       this.actionsAPI = this.pConn$.getActionsApi();
       this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
       this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
