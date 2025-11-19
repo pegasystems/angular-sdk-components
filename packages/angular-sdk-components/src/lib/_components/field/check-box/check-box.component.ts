@@ -78,6 +78,15 @@ export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
       this.showLabel$ = true;
     }
     this.variant = this.configProps$.variant;
+    this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
+
+    if (this.fieldControl) {
+      if (this.bReadonly$) {
+        this.fieldControl.disable({ emitEvent: false });
+      } else {
+        this.fieldControl.enable({ emitEvent: false });
+      }
+    }
 
     // multi case
     this.selectionMode = this.configProps$.selectionMode;
@@ -86,7 +95,6 @@ export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
       this.selectionList = this.configProps$.selectionList;
       this.selectedvalues = this.configProps$.readonlyContextList;
       this.primaryField = this.configProps$.primaryField;
-      this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
 
       this.datasource = this.configProps$.datasource;
       this.selectionKey = this.configProps$.selectionKey;
