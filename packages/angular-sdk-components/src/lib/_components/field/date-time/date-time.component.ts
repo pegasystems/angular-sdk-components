@@ -11,7 +11,6 @@ import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { handleEvent } from '../../../_helpers/event-util';
-import { format } from '../../../_helpers/formatters';
 import { DateFormatters } from '../../../_helpers/formatters/date';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
@@ -81,10 +80,14 @@ export class DateTimeComponent extends FieldBase implements OnInit, OnDestroy {
     this.fieldControl.setValue(dateTimeValue);
 
     if (['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(this.displayMode$)) {
-      this.formattedValue$ = format(this.value$, 'datetime', {
-        format: `${this.theDateFormat.dateFormatString} hh:mm A`
-      });
+      this.formattedValue$ = this.generateDateTime(this.value$);
     }
+  }
+
+  generateDateTime(sVal): string {
+    if (!sVal) return '';
+    if (sVal.length === 10) return this.utils.generateDate(sVal, 'Date-Long-Custom-YYYY');
+    return this.utils.generateDateTime(sVal, 'DateTime-Long-YYYY-Custom');
   }
 
   fieldOnDateChange(event: any) {
