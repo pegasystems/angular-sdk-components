@@ -53,7 +53,7 @@ export class PhoneComponent extends FieldBase {
     const newVal = this.formGroup$.controls[this.controlName$].value;
     const isValueChanged = newVal?.toString() !== oldVal.toString();
 
-    if (isValueChanged && newVal) {
+    if (isValueChanged) {
       const value = this.formGroup$.controls[this.controlName$].value;
       handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
     }
