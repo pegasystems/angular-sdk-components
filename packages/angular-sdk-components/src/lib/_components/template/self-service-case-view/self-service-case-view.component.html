@@ -1,0 +1,80 @@
+<div *ngIf="showCaseActions" class="psdk-self-service-case-view-header">
+  <div>{{ this.heading$ }}</div>
+  <div class="psdk-case-view-buttons">
+    <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu">{{ localizedVal('Actions...', localeCategory) }}</button>
+    <mat-menu #actionMenu="matMenu" overlapTrigger="false">
+      <ng-container *ngFor="let action of arAvailableActions$">
+        <button mat-menu-item (click)="_menuActionClick(action)">
+          {{ localizedVal(action.name, '', localeKey) }}
+        </button>
+      </ng-container>
+      <ng-container *ngFor="let process of arAvailabeProcesses$">
+        <button mat-menu-item (click)="_menuProcessClick(process)">
+          {{ process.name }}
+        </button>
+      </ng-container>
+    </mat-menu>
+  </div>
+</div>
+<div class="psdk-case-view" id="case-view">
+  <div class="psdk-case-view-info">
+    <div *ngIf="showSummaryRegion && (primarySummaryFields.length > 0 || secondarySummaryFields.length > 0)">
+      <mat-toolbar class="psdk-case-view-toolbar">
+        <mat-toolbar-row class="psdk-case-view-toolbar-row">
+          <div class="psdk-case-view-heading">
+            <div>
+              <h1 id="case-name">{{ heading$ }}</h1>
+            </div>
+            <div id="current-caseID" [hidden]="true">{{ currentCaseID }}</div>
+            <div class="psdk-case-view-heading-id" id="caseId">{{ id$ }}</div>
+          </div>
+        </mat-toolbar-row>
+      </mat-toolbar>
+      <div class="psdk-case-view-divider"></div>
+      <div class="psdk-case-view-summary">
+        <component-mapper
+          name="CaseSummaryFields"
+          [props]="{ primaryFields$: primarySummaryFields, secondaryFields$: secondarySummaryFields }"
+        ></component-mapper>
+      </div>
+    </div>
+  </div>
+  <div class="psdk-case-view-main">
+    <div>
+      <div *ngFor="let kid of arChildren$">
+        <div
+          *ngIf="
+            kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' &&
+            kid.getPConnect().getRawMetadata().name.toLowerCase() == 'stages' &&
+            showCaseLifecycle
+          "
+        >
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+        </div>
+      </div>
+    </div>
+
+    <div *ngFor="let kid of arChildren$">
+      <div
+        *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'todo'"
+      >
+        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+      </div>
+    </div>
+
+    <div *ngFor="let kid of arChildren$">
+      <div *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name == 'Main'">
+        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+      </div>
+    </div>
+  </div>
+  <div class="psdk-case-view-utilities">
+    <div *ngIf="arChildren$ && showUtilitiesRegion && isUtilitiesRegionNotEmpty()">
+      <div *ngFor="let kid of arChildren$">
+        <div *ngIf="kid.getPConnect().getRawMetadata()?.type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata()?.name == 'Utilities'">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

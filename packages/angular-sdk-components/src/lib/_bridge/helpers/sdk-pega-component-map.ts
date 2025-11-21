@@ -57,6 +57,7 @@ import { CaseViewComponent } from '../../_components/template/case-view/case-vie
 import { ConfirmationComponent } from '../../_components/template/confirmation/confirmation.component';
 import { DataReferenceComponent } from '../../_components/template/data-reference/data-reference.component';
 import { DefaultFormComponent } from '../../_components/template/default-form/default-form.component';
+import { DefaultPageComponent } from '../../_components/template/default-page/default-page.component';
 import { DetailsComponent } from '../../_components/template/details/details.component';
 import { DetailsNarrowWideComponent } from '../../_components/template/details-narrow-wide/details-narrow-wide.component';
 import { DetailsOneColumnComponent } from '../../_components/template/details-one-column/details-one-column.component';
@@ -82,6 +83,7 @@ import { OneColumnTabComponent } from '../../_components/template/one-column-tab
 import { PageComponent } from '../../_components/template/page/page.component';
 import { PromotedFiltersComponent } from '../../_components/template/promoted-filters/promoted-filters.component';
 import { SearchGroupsComponent } from '../../_components/template/advanced-search/search-groups/search-groups.component';
+import { SelfServiceCaseViewComponent } from '../../_components/template/self-service-case-view/self-service-case-view.component';
 import { SimpleTableComponent } from '../../_components/template/simple-table/simple-table.component';
 import { SimpleTableManualComponent } from '../../_components/template/simple-table-manual/simple-table-manual.component';
 import { SimpleTableSelectComponent } from '../../_components/template/simple-table-select/simple-table-select.component';
@@ -162,6 +164,7 @@ const pegaSdkComponentMap = {
   DateTime: DateTimeComponent,
   Decimal: DecimalComponent,
   DefaultForm: DefaultFormComponent,
+  DefaultPage: DefaultPageComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
   DetailsFields: MaterialDetailsFieldsComponent,
@@ -224,6 +227,7 @@ const pegaSdkComponentMap = {
   SearchForm: SearchFormComponent,
   SearchGroups: SearchGroupsComponent,
   SelectableCard: SelectableCardComponent,
+  SelfServiceCaseView: SelfServiceCaseViewComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,

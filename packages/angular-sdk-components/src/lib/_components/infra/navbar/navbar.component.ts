@@ -6,7 +6,6 @@ import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
-import { ThemeService } from '../../../_services/theme.service';
 
 interface NavBarProps {
   // If any, enter additional props that only exist on this component
@@ -50,14 +49,12 @@ export class NavbarComponent implements OnInit, OnDestroy {
   localizedVal: any;
   localeCategory = 'AppShell';
   localeUtils = PCore.getLocaleUtils();
-  localeReference: any;
   constructor(
     private angularPConnect: AngularPConnectService,
     private chRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private ngZone: NgZone,
-    private utils: Utils,
-    public themeService: ThemeService
+    private utils: Utils
   ) {}
 
   ngOnInit(): void {
@@ -115,11 +112,17 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
       // making a copy, so can add info
       this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
-
+      // @ts-ignore
+      const localeReference = PCore.getLocaleUtils().getPortalLocaleReference() || this.pConn$.getValue('.pyLocaleReference');
       this.navPages$.forEach(page => {
+        const destinationObject: any = {};
+        this.pConn$.resolveConfigProps(
+          { defaultHeading: page.pyDefaultHeading || page.pyLabel, localeReference: page.pyLocalizationReference },
+          destinationObject
+        );
+        page.name = this.localeUtils.getLocaleValue(destinationObject.defaultHeading, '', destinationObject.localeReference || localeReference);
         page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
       });
-      this.localeReference = this.pConn$.getValue('.pyLocaleReference');
       this.actionsAPI = this.pConn$.getActionsApi();
       this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
       this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);

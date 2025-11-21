@@ -234,12 +234,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
         this.title$ =
           isDataObject || this.isMultiRecord
             ? this.getModalHeading(dataObjectAction)
-            : this.determineModalHeaderByAction(
-                actionName,
-                caseTypeName,
-                ID,
-                `${theNewCaseInfo?.getClassName()}!CASE!${theNewCaseInfo.getName()}`.toUpperCase()
-              );
+            : this.determineModalHeaderByAction(actionName, caseTypeName, ID, this.createdViewPConn$?.getCaseLocaleReference());
 
         const bIsRefComponent = this.checkIfRefComponent(newComp);
 

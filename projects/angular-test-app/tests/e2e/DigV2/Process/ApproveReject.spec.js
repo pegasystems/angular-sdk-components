@@ -21,10 +21,8 @@ test.describe('E2E test', () => {
 
     await expect(caseView.locator('span >> text="Resolved-Completed"')).toBeVisible();
 
-    await createCase.click();
-
     /** Creating another Process case-type */
-    await processCase.click();
+    await common.createCase('Process', page);
 
     await page.locator('button:has-text("Reject")').click();
 

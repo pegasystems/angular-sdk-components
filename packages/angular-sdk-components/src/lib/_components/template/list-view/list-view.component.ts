@@ -297,96 +297,22 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   // Will be triggered when EVENT_DASHBOARD_FILTER_CHANGE fires
   processFilterChange(data) {
-    let filterId;
-    let filterExpression;
-    let isDateRange;
-    let field;
-    const selectParam: any[] = [];
-    let dashboardFilterPayload: any = {
-      query: {
-        filter: {},
-        select: []
-      }
-    };
+    this.updateFiltersFromData(data);
 
-    if (this.displayAs === 'advancedSearch') {
-      this.filters = {};
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      Object.entries(data).reduce((acc, [item, value]) => {
-        const { filterId, filterExpression } = value as any;
-        // filterExpression = value.filterExpression;
-        this.filters[filterId] = filterExpression;
-        return acc; // Ensure the accumulator is returned
-      }, {});
-    } else {
-      ({ filterId, filterExpression } = data);
-      this.filters[filterId] = filterExpression;
-      isDateRange = !!data.filterExpression?.AND;
-      field = this.getFieldFromFilter(filterExpression, isDateRange);
+    const selectParam = this.displayedColumns$?.map(col => ({ field: col })) || [];
 
-      // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-      this.displayedColumns$?.forEach(col => {
-        selectParam.push({
-          field: col
-        });
-      });
+    if (this.displayAs !== 'advancedSearch') {
+      const { filterExpression } = data;
+      const isDateRange = !!filterExpression?.AND;
+      const field = this.getFieldFromFilter(filterExpression, isDateRange);
 
-      // Checking if the triggered filter is applicable for this list
-      if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
+      if (filterExpression !== null && !this.displayedColumns$?.includes(field)) {
         return;
       }
     }
 
-    // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
-    const relationalOp = 'AND';
+    const dashboardFilterPayload = this.buildFilterPayload(selectParam);
 
-    // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
-    let validFilter = false;
-
-    let index = 1;
-    // Iterating over the current filters list to create filter data which will be POSTed
-    const filterKeys: any[] = Object.keys(this.filters);
-    const filterValues: any[] = Object.values(this.filters);
-    for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
-      const filter = filterValues[filterIndex];
-      // If the filter is null then we can skip this iteration
-      if (filter === null) {
-        continue;
-      }
-
-      // Checking if the filter is of type- Date Range
-      isDateRange = !!filter?.AND;
-      field = this.getFieldFromFilter(filter, isDateRange);
-
-      if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
-        continue;
-      }
-      // If we reach here that implies we've at least one valid filter, hence setting the flag
-      validFilter = true;
-      /** Below are the 2 cases for- Text & Date-Range filter types where we'll construct filter data which will be sent in the dashboardFilterPayload
-       * In Constellation DX Components, through Repeating Structures they might be using several APIs to do it. We're doing it here
-       */
-      if (isDateRange) {
-        dashboardFilterPayload = this.filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index);
-      } else {
-        dashboardFilterPayload.query.filter.filterConditions = {
-          ...dashboardFilterPayload.query.filter.filterConditions,
-          [`T${index++}`]: { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' ? { ignoreCase: true } : {}) }
-        };
-        if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index - 1}`;
-        } else {
-          dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
-        }
-
-        dashboardFilterPayload.query.select = selectParam;
-      }
-    }
-
-    // Reset the dashboardFilterPayload if we end up with no valid filters for the list
-    if (!validFilter) {
-      dashboardFilterPayload = undefined;
-    }
     this.filterPayload = dashboardFilterPayload;
     this.getListData();
   }
@@ -1514,5 +1440,61 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
 
     return select;
+  }
+
+  private updateFiltersFromData(data) {
+    if (this.displayAs === 'advancedSearch') {
+      this.filters = {};
+      Object.values(data).forEach((value: any) => {
+        this.filters[value.filterId] = value.filterExpression;
+      });
+    } else {
+      const { filterId, filterExpression } = data;
+      this.filters[filterId] = filterExpression;
+    }
+  }
+
+  private buildFilterPayload(selectParam: any[]) {
+    const filterConditions = {};
+    let logic = '';
+    let index = 1;
+    const relationalOp = 'AND';
+
+    for (const currentFilter of Object.values(this.filters)) {
+      const filter: any = currentFilter;
+      if (!filter) continue;
+
+      const isDateRange = !!filter.AND;
+      const field = this.getFieldFromFilter(filter, isDateRange);
+
+      if (!this.displayedColumns$?.includes(field)) continue;
+
+      if (logic) {
+        logic += ` ${relationalOp} `;
+      }
+
+      if (isDateRange) {
+        const dateRelationalOp = filter.AND ? 'AND' : 'OR';
+        filterConditions[`T${index}`] = { ...filter[relationalOp][0].condition };
+        filterConditions[`T${index + 1}`] = { ...filter[relationalOp][1].condition };
+        logic += `(T${index} ${dateRelationalOp} T${index + 1})`;
+        index += 2;
+      } else {
+        filterConditions[`T${index}`] = { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' && { ignoreCase: true }) };
+        logic += `T${index}`;
+        index++;
+      }
+    }
+
+    if (!logic) {
+      return undefined;
+    }
+
+    return {
+      query: {
+        filter: { filterConditions, logic },
+        select: selectParam
+      }
+    };
   }
 }

@@ -35,7 +35,10 @@
         else hasSecondaryValue
       "
     >
-      <component-mapper name="Operator" [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel }"></component-mapper>
+      <component-mapper
+        name="Operator"
+        [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
+      ></component-mapper>
     </div>
     <ng-template #hasSecondaryValue>
       <div class="psdk-csf-secondary-field">

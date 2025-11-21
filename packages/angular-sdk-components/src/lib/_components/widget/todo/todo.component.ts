@@ -87,9 +87,11 @@ export class TodoComponent implements OnInit, OnDestroy {
   CONSTS: typeof publicConstants;
   bLogging = true;
   localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeUtils = PCore.getLocaleUtils();
   localeCategory = 'Todo';
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
+  goLocalizedValue = this.localizedVal('go', 'CosmosFields');
   count: number;
 
   constructor(
@@ -190,7 +192,9 @@ export class TodoComponent implements OnInit, OnDestroy {
   }
 
   getAssignmentName(assignment) {
-    return this.type$ === this.CONSTS.TODO ? assignment.name : assignment.stepName;
+    return this.type$ === this.CONSTS.TODO
+      ? this.localizedVal(assignment.name, '', PCore.getLocaleUtils().getCaseLocaleReference(assignment.classname))
+      : this.localizedVal(assignment.stepName, '', PCore.getLocaleUtils().getCaseLocaleReference(assignment.classname));
   }
 
   getCaseInfoAssignment(assignmentsSource: any[], caseInfoID: string) {
