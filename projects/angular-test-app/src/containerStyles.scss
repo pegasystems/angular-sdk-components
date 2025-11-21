@@ -59,6 +59,7 @@ app-modal-view-container {
     padding: 20px;
     box-shadow: 0 0 10px 3px var(--mat-sys-level3);
     overflow-y: auto;
+    max-width: 700px;
   }
 
   .psdk-dialog-float {
