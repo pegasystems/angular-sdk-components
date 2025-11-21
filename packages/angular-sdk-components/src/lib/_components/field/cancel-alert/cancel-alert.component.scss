@@ -9,6 +9,7 @@
   z-index: 9999;
   top: 0px;
   left: 0px;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .psdk-cancel-alert-top {
@@ -19,4 +20,5 @@
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
+  background-color: var(--mat-sys-surface-container);
 }
