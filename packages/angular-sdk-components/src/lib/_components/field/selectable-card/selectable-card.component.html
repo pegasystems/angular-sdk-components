@@ -1,4 +1,4 @@
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 40ch), 1fr)); grid-auto-rows: 1fr; gap: 0.5rem">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); grid-auto-rows: 1fr; gap: 0.5rem">
   <div *ngFor="let cardContent of contentList">
     <mat-card [ngStyle]="cardStyle" appearance="outlined" (click)="cardSelect($event, cardContent.commonCardProps)">
       <img
@@ -34,7 +34,7 @@
           *ngFor="let field of cardContent.commonCardProps.fields"
           [ngStyle]="field.type !== 'TextArea' ? (field.name ? defaultStyle : noLabelStyle) : specialStyle"
         >
-          <div style="color: rgba(0, 0, 0, 0.6)">{{ field.name }}</div>
+          <div>{{ field.name }}</div>
           <div>{{ field?.value?.getPConnect().getConfigProps().value ?? '--' }}</div>
         </div>
       </mat-card-content>

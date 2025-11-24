@@ -168,7 +168,7 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
             alt: this.commonProps.image.showImageDescription && imageDescriptionKey ? item[imageDescriptionKey] : '',
             style: {
               width: imageWidth,
-              backgroundColor: 'rgb(233, 238, 243)',
+              backgroundColor: 'transparent',
               aspectRatio: '16/9',
               maxHeight: '100%',
               objectFit: 'contain',
