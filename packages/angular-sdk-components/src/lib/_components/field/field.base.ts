@@ -111,7 +111,8 @@ export class FieldBase implements OnInit, OnDestroy {
     this.bReadonly$ = this.utils.getBooleanValue(readOnly);
 
     // Enable or disable field control
-    this.fieldControl[this.bDisabled$ ? 'disable' : 'enable']();
+    const shouldDisable = this.bDisabled$ || this.bReadonly$;
+    this.fieldControl[shouldDisable ? 'disable' : 'enable']();
 
     // Display error message if validation message exists
     this.displayValidationMessage();
