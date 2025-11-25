@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatIcon } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import isEqual from 'fast-deep-equal';
 
@@ -73,6 +74,7 @@ class Group {
     MatOptionModule,
     MatSelectModule,
     MatInputModule,
+    MatIcon,
     forwardRef(() => ComponentMapperComponent)
   ],
   providers: [DatapageService]
