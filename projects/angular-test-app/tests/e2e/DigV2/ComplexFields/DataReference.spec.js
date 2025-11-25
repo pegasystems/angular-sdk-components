@@ -297,6 +297,112 @@ test.describe('E2E test', () => {
     /** Submitting the case */
     await page.locator('button:has-text("submit")').click();
   }, 10000);
+
+  test('should login, create case and run select all scenario in Simple Table for Data Reference', async ({ page }) => {
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+
+    await common.verifyHomePage(page);
+
+    /** Click on the Create Case button */
+    await common.createCase('Complex Fields', page);
+
+    /** Selecting Data Reference from the Category dropdown */
+    await common.selectCategory('DataReference', page, true);
+
+    await page.locator('button:has-text("submit")').click();
+
+    /** MultiSelect mode type test */
+    await common.selectSubCategory('Mode', page);
+
+    await page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]').click();
+    await page.getByRole('option', { name: 'MultiSelect' }).click();
+
+    /** Combo-Box mode type test */
+    let displayAs = page.locator('mat-select[data-test-id="4aa668349e0970901aa6b11528f95223"]');
+    await displayAs.click();
+    await page.getByRole('option', { name: 'Simple table' }).click();
+
+    const table = page.locator('table[id="list-view"]');
+    await expect(table).toBeVisible();
+
+    /** find and click the select all checkbox */
+    const selectAllCheckbox = table.locator('thead >> mat-checkbox');
+    await selectAllCheckbox.click();
+
+    await page.locator('button:has-text("Next")').click();
+
+    const assignment = page.locator('app-default-form');
+
+    await expect(assignment.locator('td:has-text("Mobile")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Television")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Washing Machine")')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** 'Unselect all' logic here */
+    await expect(table).toBeVisible();
+
+    /** click the select all checkbox to unselect all */
+    await selectAllCheckbox.click();
+
+    await page.locator('button:has-text("Next")').click();
+
+    await expect(assignment.locator('td:has-text("Mobile")')).not.toBeVisible();
+    await expect(assignment.locator('td:has-text("Television")')).not.toBeVisible();
+    await expect(assignment.locator('td:has-text("Washing Machine")')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    await expect(table).toBeVisible();
+
+    /** select mobile, washing machine checkbox rows */
+    await table.locator('tr:has-text("Mobile")').locator('mat-checkbox').click();
+    await table.locator('tr:has-text("Washing Machine")').locator('mat-checkbox').click();
+
+    /** now select all checkbox should be in indeterminate state */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).toHaveAttribute('aria-checked', 'mixed');
+
+    await page.locator('button:has-text("Next")').click();
+
+    /** confirm screen should display mobile, washing machine */
+    await expect(assignment.locator('td:has-text("Mobile")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Washing Machine")')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** now unselect mobile checkbox row */
+    await table.locator('tr:has-text("Mobile")').locator('mat-checkbox').click();
+    /** now select all checkbox should be in indeterminate state */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).toHaveAttribute('aria-checked', 'mixed');
+
+    await page.locator('button:has-text("Next")').click();
+
+    /** confirm screen should display only washing machine */
+    await expect(assignment.locator('td:has-text("Washing Machine")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Mobile")')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** now unselect washing machine checkbox row */
+    await table.locator('tr:has-text("Washing Machine")').locator('mat-checkbox').click();
+    /** now select all checkbox should be unchecked */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).not.toHaveAttribute('aria-checked', 'mixed');
+    /** now click on next button */
+    await page.locator('button:has-text("Next")').click();
+
+    /** confirm screen should not display any selected rows */
+    await expect(assignment.locator('td:has-text("Washing Machine")')).not.toBeVisible();
+    await expect(assignment.locator('td:has-text("Mobile")')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** Now select each of the rows one by one and verify that the select all checkbox gets checked */
+    await table.locator('tr:has-text("Mobile")').locator('mat-checkbox').click();
+    await table.locator('tr:has-text("Television")').locator('mat-checkbox').click();
+    await table.locator('tr:has-text("Washing Machine")').locator('mat-checkbox').click();
+    /** now select all checkbox should be checked */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).toBeChecked();
+  }, 10000);
 });
 
 test.afterEach(async ({ page }) => {
