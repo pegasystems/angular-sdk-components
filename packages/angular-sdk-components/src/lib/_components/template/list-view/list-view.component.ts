@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatOptionModule } from '@angular/material/core';
@@ -91,6 +92,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   @Input() payload;
 
   repeatList$: MatTableDataSource<any>;
+  selection = new SelectionModel<any>(true, []);
   fields$: any[];
 
   displayedColumns$ = Array<any>();
@@ -402,6 +404,14 @@ export class ListViewComponent implements OnInit, OnDestroy {
           }
 
           this.repeatList$ = new MatTableDataSource(this.updatedRefList);
+
+          if (this.configProps$?.readonlyContextList?.length > 0) {
+            const readonlyIds = new Set(this.configProps$.readonlyContextList.map(element => element[this.rowID]));
+            const rowsToSelect = this.repeatList$.data.filter(row => readonlyIds.has(row[this.rowID]));
+            if (rowsToSelect.length > 0) {
+              this.selection.select(...rowsToSelect);
+            }
+          }
           this.repeatList$.filterPredicate = this.customFilterPredicate.bind(this);
 
           // keeping an original copy to get back after possible sorts, filters and groupBy
@@ -531,13 +541,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  isChecked(rowIn): any {
-    const initialVal = false;
-    return this.configProps$?.readonlyContextList?.reduce((acc, currRow) => {
-      return acc || rowIn[this.rowID] === currRow[this.rowID];
-    }, initialVal);
-  }
-
   fieldOnChange(row) {
     const value = row[this.rowID];
     const reqObj = {};
@@ -554,32 +557,31 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.pConn$?.getListActions?.()?.setSelectedRows([reqObj]);
   }
 
-  onCheckboxClick(row, event) {
-    const value = row[this.rowID];
-    const checked = event?.checked;
-    const reqObj: any = {};
-    if (this.compositeKeys?.length > 1) {
-      const index = this.response.findIndex(element => element[this.rowID] === value);
-      const selectedRow = this.response[index];
-      this.compositeKeys.forEach(element => {
-        reqObj[element] = selectedRow[element];
-      });
-      reqObj.$selected = checked;
-    } else {
-      reqObj[this.rowID] = value;
-      reqObj.$selected = checked;
-    }
-    this.pConn$?.getListActions()?.setSelectedRows([reqObj]);
+  onCheckboxClick(row) {
+    this.selection.toggle(row);
+    const requiredValue = this.getSelectedValue(row);
+    this.pConn$?.getListActions()?.setSelectedRows([requiredValue]);
   }
 
-  // rowClick(row) {
-  //   switch (this.configProps$.rowClickAction) {
-  //     case 'openAssignment':
-  //       this.psService.sendMessage(true);
-  //       this.openAssignment(row);
-  //       break;
-  //   }
-  // }
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.repeatList$.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.pConn$?.getListActions()?.clearSelectedRows();
+      return;
+    }
+    if (this.selection.hasValue() && !this.isAllSelected()) {
+      this.pConn$?.getListActions()?.clearSelectedRows();
+    }
+    this.selection.select(...this.repeatList$.data);
+    const requiredValues = this.repeatList$.data.map(row => this.getSelectedValue(row));
+    this.pConn$?.getListActions()?.setSelectedRows(requiredValues);
+  }
 
   _getIconStyle(level): string {
     let sReturn = '';
@@ -1440,6 +1442,24 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
 
     return select;
+  }
+
+  private getSelectedValue(row) {
+    const value = row[this.rowID];
+    const checked = this.selection.isSelected(row);
+    const reqObj: any = {};
+    if (this.compositeKeys?.length > 1) {
+      const index = this.response.findIndex(element => element[this.rowID] === value);
+      const selectedRow = this.response[index];
+      this.compositeKeys.forEach(element => {
+        reqObj[element] = selectedRow[element];
+      });
+      reqObj.$selected = checked;
+    } else {
+      reqObj[this.rowID] = value;
+      reqObj.$selected = checked;
+    }
+    return reqObj;
   }
 
   private updateFiltersFromData(data) {
