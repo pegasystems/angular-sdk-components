@@ -78,7 +78,10 @@ export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
       this.showLabel$ = true;
     }
     this.variant = this.configProps$.variant;
-
+    if (this.bReadonly$) {
+      this.fieldControl?.disable();
+    }
+    
     // multi case
     this.selectionMode = this.configProps$.selectionMode;
     if (this.selectionMode === 'multi') {
