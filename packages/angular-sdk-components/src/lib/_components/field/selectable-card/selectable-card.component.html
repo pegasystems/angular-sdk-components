@@ -1,4 +1,7 @@
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 40ch), 1fr)); grid-auto-rows: 1fr; gap: 0.5rem">
+<div
+  *ngIf="type === 'checkbox'"
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); grid-auto-rows: 1fr; gap: 0.5rem"
+>
   <div *ngFor="let cardContent of contentList">
     <mat-card [ngStyle]="cardStyle" appearance="outlined" (click)="cardSelect($event, cardContent.commonCardProps)">
       <img
@@ -9,35 +12,59 @@
         [ngStyle]="cardContent.cardImage.style"
       />
       <mat-card-content>
-        <div *ngIf="type === 'radio'">
-          <mat-radio-button
-            [checked]="radioBtnValue === cardContent?.commonCardProps?.key"
-            [disabled]="disabled"
-            [value]="cardContent.commonCardProps.key"
-            (change)="fieldOnChange(cardContent.commonCardProps.key)"
-          >
-            {{ cardContent.commonCardProps.label }}
-          </mat-radio-button>
-        </div>
-        <div *ngIf="type === 'checkbox'">
-          <mat-checkbox
-            [labelPosition]="'after'"
-            [checked]="cardContent.commonCardProps.selected"
-            [disabled]="disabled || readOnly"
-            [attr.data-test-id]="testId + ':' + cardContent.commonCardProps.label"
-            (change)="handleChangeMultiMode($event, cardContent.commonCardProps)"
-            (blur)="fieldOnBlur()"
-            >{{ cardContent.commonCardProps.label }}</mat-checkbox
-          >
-        </div>
+        <mat-checkbox
+          [labelPosition]="'after'"
+          [checked]="cardContent.commonCardProps.selected"
+          [disabled]="disabled || readOnly"
+          [attr.data-test-id]="testId + ':' + cardContent.commonCardProps.label"
+          (change)="handleChangeMultiMode($event, cardContent.commonCardProps)"
+          (blur)="fieldOnBlur()"
+          >{{ cardContent.commonCardProps.label }}</mat-checkbox
+        >
         <div
           *ngFor="let field of cardContent.commonCardProps.fields"
           [ngStyle]="field.type !== 'TextArea' ? (field.name ? defaultStyle : noLabelStyle) : specialStyle"
         >
-          <div style="color: rgba(0, 0, 0, 0.6)">{{ field.name }}</div>
+          <div>{{ field.name }}</div>
           <div>{{ field?.value?.getPConnect().getConfigProps().value ?? '--' }}</div>
         </div>
       </mat-card-content>
     </mat-card>
   </div>
 </div>
+
+<mat-radio-group
+  *ngIf="type === 'radio'"
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); grid-auto-rows: 1fr; gap: 0.5rem"
+  [name]="propName"
+  [value]="radioBtnValue"
+  (change)="fieldOnChange($event.value)"
+>
+  <div *ngFor="let cardContent of contentList">
+    <mat-card [ngStyle]="cardStyle" appearance="outlined" (click)="cardSelect($event, cardContent.commonCardProps)">
+      <img
+        *ngIf="cardContent.cardImage"
+        mat-card-image
+        src="{{ cardContent.cardImage.src }}"
+        alt="{{ cardContent.cardImage.alt }}"
+        [ngStyle]="cardContent.cardImage.style"
+      />
+      <mat-card-content>
+        <mat-radio-button
+          [checked]="radioBtnValue === cardContent?.commonCardProps?.key"
+          [disabled]="disabled"
+          [value]="cardContent.commonCardProps.key"
+        >
+          {{ cardContent.commonCardProps.label }}
+        </mat-radio-button>
+        <div
+          *ngFor="let field of cardContent.commonCardProps.fields"
+          [ngStyle]="field.type !== 'TextArea' ? (field.name ? defaultStyle : noLabelStyle) : specialStyle"
+        >
+          <div>{{ field.name }}</div>
+          <div>{{ field?.value?.getPConnect().getConfigProps().value ?? '--' }}</div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</mat-radio-group>

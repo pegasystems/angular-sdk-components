@@ -15,9 +15,6 @@ export class CancelAlertComponent implements OnChanges {
   @Input() bShowAlert$: boolean;
   @Output() onAlertState$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  heading$: string;
-  body1$: string;
-  body2$: string;
   itemKey: string;
   localizedVal: Function;
   localeCategory = 'ModalContainer';
@@ -26,28 +23,18 @@ export class CancelAlertComponent implements OnChanges {
   ngOnChanges() {
     if (this.bShowAlert$) {
       this.psService.sendMessage(false);
-
       const contextName = this.pConn$.getContextName();
-      const caseInfo = this.pConn$.getCaseInfo();
-      const caseName = caseInfo.getName();
-      const ID = caseInfo.getID();
       this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
-
       this.itemKey = contextName;
-      this.heading$ = `Delete ${caseName} (${ID})`;
-      this.body1$ = `${this.localizedVal('Are you sure you want to delete ', this.localeCategory) + caseName} (${ID})?`;
-      this.body2$ = this.localizedVal('Alternatively, you can continue working or save your work for later.', this.localeCategory);
-
-      // this.onAlertState$.emit(true);
     }
   }
 
-  dismissAlert() {
+  dismissAlertOnly() {
     this.bShowAlert$ = false;
     this.onAlertState$.emit(false);
   }
 
-  dismissAlertOnly() {
+  dismissAlert() {
     this.bShowAlert$ = false;
     this.onAlertState$.emit(true);
   }
@@ -61,26 +48,10 @@ export class CancelAlertComponent implements OnChanges {
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
     switch (sAction) {
-      case 'save':
-        this.psService.sendMessage(true);
-        // eslint-disable-next-line no-case-declarations
-        const savePromise = actionsAPI.saveAndClose(this.itemKey);
-        savePromise
-          .then(() => {
-            this.psService.sendMessage(false);
-            this.dismissAlert();
-
-            PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CASE_CREATED);
-          })
-          .catch(() => {
-            this.psService.sendMessage(false);
-            this.sendMessage(this.localizedVal('Save failed', this.localeCategory));
-          });
-        break;
       case 'continue':
         this.dismissAlertOnly();
         break;
-      case 'delete':
+      case 'discard':
         this.psService.sendMessage(true);
 
         // eslint-disable-next-line no-case-declarations

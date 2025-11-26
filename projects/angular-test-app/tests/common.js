@@ -52,6 +52,25 @@ const getFutureDate = () => {
   return getFormattedDate(futureDate);
 };
 
+const selectDateFromPicker = async (page, day, month, year) => {
+  /** Open the datepicker popup */
+  await page.locator('button[aria-label="Open calendar"]').click();
+  /** Switch to multi-year view */
+  await page.locator('.mat-calendar-period-button').click();
+  /** Navigate back until the desired year is visible */
+  while (!(await page.locator(`.mat-calendar-body-cell:has-text("${year}")`).isVisible())) {
+    await page.locator('.mat-calendar-previous-button').click();
+  }
+  /** Select the year */
+  await page.locator(`.mat-calendar-body-cell:has-text("${year}")`).click();
+  /** Select the month (Angular Material uses short month names like JAN, FEB, JUN) */
+  const shortMonth = month.substring(0, 3).toUpperCase();
+  await page.locator(`.mat-calendar-body-cell:has-text("${shortMonth}")`).click();
+  /** Select the day using aria-label for uniqueness */
+  const ariaLabel = `${month} ${day}, ${year}`;
+  await page.locator(`[aria-label="${ariaLabel}"]`).click();
+};
+
 const selectCategory = async (category, page, exact = false) => {
   const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
   await selectedCategory.click();
@@ -74,6 +93,12 @@ const verifyHomePage = async page => {
   await expect(worklist).toBeVisible();
 };
 
+const fillTextInput = async (page, testID, text) => {
+  const input = page.locator(`input[data-test-id="${testID}"]`);
+  await input.click();
+  await input.fill(text);
+};
+
 module.exports = {
   createCase,
   launchPortal,
@@ -85,5 +110,7 @@ module.exports = {
   getFormattedDate,
   selectCategory,
   selectSubCategory,
-  verifyHomePage
+  verifyHomePage,
+  selectDateFromPicker,
+  fillTextInput
 };
