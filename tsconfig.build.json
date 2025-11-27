@@ -1,4 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "include": []
+  "include": ["projects/**/*.ts", "src/**/*.ts", "packages/**/*.ts"],
+  "exclude": ["node_modules", "dist", "projects/angular-test-app/lib"]
 }
