@@ -15,14 +15,7 @@ test.describe('E2E test', () => {
 
     await common.verifyHomePage(page);
 
-    const navbar = page.locator('app-navbar');
-    await navbar.locator('div[class="psdk-appshell-nav"]').hover();
-
-    const createCase = page.locator('mat-list-item[id="create-case-button"]');
-    await createCase.click();
-
-    const newServiceCase = await page.locator('mat-list-item[id="case-list-item"] > span:has-text("New Service")');
-    await newServiceCase.click();
+    await common.createCase('New Service', page);
 
     const firstNameInput = page.locator('input[data-test-id="BC910F8BDF70F29374F496F05BE0330C"]');
     await firstNameInput.click();

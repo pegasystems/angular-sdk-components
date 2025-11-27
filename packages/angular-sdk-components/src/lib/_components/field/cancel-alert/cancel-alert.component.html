@@ -4,13 +4,11 @@
     <div>
       <p>{{ localizedVal('You have unsaved changes. You can discard them or go back to keep working.', localeCategory) }}</p>
     </div>
-    <mat-grid-list cols="2" rowHeight="6.25rem">
-      <mat-grid-tile>
-        <button mat-raised-button color="secondary" (click)="buttonClick('continue')">{{ localizedVal('Go back', localeCategory) }}</button>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <button mat-raised-button color="primary" (click)="buttonClick('discard')">{{ localizedVal('Discard', localeCategory) }}</button>
-      </mat-grid-tile>
-    </mat-grid-list>
+    <component-mapper
+      name="ActionButtons"
+      [props]="{ arMainButtons$: [discardButton], arSecondaryButtons$: [goBackButton] }"
+      [parent]="this"
+      [outputEvents]="{ actionButtonClick: buttonClick }"
+    ></component-mapper>
   </div>
 </div>

@@ -1,14 +1,15 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/public-api';
 
 @Component({
   selector: 'app-cancel-alert',
   templateUrl: './cancel-alert.component.html',
   styleUrls: ['./cancel-alert.component.scss'],
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+  imports: [CommonModule, MatGridListModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;
@@ -18,6 +19,8 @@ export class CancelAlertComponent implements OnChanges {
   itemKey: string;
   localizedVal: Function;
   localeCategory = 'ModalContainer';
+  discardButton: any;
+  goBackButton: any;
 
   constructor(private psService: ProgressSpinnerService) {}
   ngOnChanges() {
@@ -26,6 +29,7 @@ export class CancelAlertComponent implements OnChanges {
       const contextName = this.pConn$.getContextName();
       this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
       this.itemKey = contextName;
+      this.createCancelAlertButtons();
     }
   }
 
@@ -43,11 +47,24 @@ export class CancelAlertComponent implements OnChanges {
     alert(sMessage);
   }
 
-  buttonClick(sAction) {
+  createCancelAlertButtons() {
+    this.discardButton = {
+      actionID: 'discard',
+      jsAction: 'discard',
+      name: this.pConn$.getLocalizedValue('Discard', '', '')
+    };
+    this.goBackButton = {
+      actionID: 'continue',
+      jsAction: 'continue',
+      name: this.pConn$.getLocalizedValue('Go back', '', '')
+    };
+  }
+
+  buttonClick({ action }) {
     const actionsAPI = this.pConn$.getActionsApi();
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
-    switch (sAction) {
+    switch (action) {
       case 'continue':
         this.dismissAlertOnly();
         break;
