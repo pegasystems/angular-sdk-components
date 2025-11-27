@@ -69,6 +69,7 @@ td.mat-mdc-footer-cell {
   padding: 0.125rem 0.125rem;
   min-width: unset;
   width: 1.1rem;
+  margin-right: 1rem;
 }
 
 .psdk-outer-div-in-form {
@@ -166,10 +167,6 @@ tr.mat-mdc-row {
 
 .label {
   margin: 8px;
-}
-
-tr.mat-mdc-header-row {
-  background: var(--app-table-header-background-color);
 }
 
 ::ng-deep th.mat-mdc-header-cell,
