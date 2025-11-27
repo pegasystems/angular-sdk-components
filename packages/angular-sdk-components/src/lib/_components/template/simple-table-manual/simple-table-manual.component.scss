@@ -76,13 +76,6 @@ td.mat-mdc-cell:last-child {
   padding-left: 0.625rem;
 }
 
-.psdk-icon-search {
-  vertical-align: sub;
-  padding: 0rem 0.125rem;
-  min-width: unset;
-  width: 1.1rem;
-}
-
 .psdk-outer-div-in-form {
   display: inline-grid;
 }
@@ -174,6 +167,7 @@ tr.mat-mdc-header-row {
 
 .psdk-utility-card-action-svg-icon {
   width: 1.4rem;
+  filter: var(--app-primary-color-filter);
 }
 
 .label {
