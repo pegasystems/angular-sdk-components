@@ -3,7 +3,10 @@
     <component-mapper name="NavBar" [props]="{ pConn$, appName$, pages$, caseTypes$ }"></component-mapper>
   </div>
   <div *ngIf="bShowAppShell$ && portalTemplate === 'wss'">
-    <component-mapper name="WssNavBar" [props]="{ pConn$, appName$, homePage: pages$[0], pages$: links, caseTypes$ }"></component-mapper>
+    <component-mapper
+      name="WssNavBar"
+      [props]="{ pConn$, appName$, homePage: pages$[0], pages$: links, caseTypes$, portalLogoImage$: imageURL }"
+    ></component-mapper>
   </div>
   <div [ngClass]="{ 'appshell-main': portalTemplate !== 'wss', 'appshell-main-wss': portalTemplate === 'wss' }">
     <div *ngFor="let kid of arChildren$">

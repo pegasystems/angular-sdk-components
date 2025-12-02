@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { Utils } from '../../../_helpers/utils';
 
 interface IPage {
   classID: string;
@@ -24,7 +25,7 @@ interface AppShellProps {
   portalTemplate: string;
   readOnly?: boolean;
   showAppHeaderBar: boolean;
-  showAppName: boolean;
+  showAppName: any;
 }
 
 @Component({
@@ -44,19 +45,22 @@ export class AppShellComponent implements OnInit, OnDestroy {
   caseTypes$?: object[];
   arChildren$: any[];
   bShowAppShell$ = false;
-  appName$ = 'PEGA';
+  appName$ = '';
   errorMessagesSubscription: Subscription;
   sErrorMessages = '';
   snackBarRef: any;
   bOkDisplayError = false;
   portalTemplate: string;
   links: any = [];
+  imageURL: string | Blob;
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
   constructor(
     private angularPConnect: AngularPConnectService,
     private erService: ErrorMessagesService,
     private snackBar: MatSnackBar,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private utils: Utils
   ) {}
 
   ngOnInit() {
@@ -142,6 +146,12 @@ export class AppShellComponent implements OnInit, OnDestroy {
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AppShellProps;
 
+    const showAppName = this.configProps$.showAppName;
+    const envInfo = PCore.getEnvironmentInfo();
+    const appNameToDisplay = showAppName ? envInfo.getApplicationLabel() : '';
+    const portalClass = this.pConn$.getValue('.classID', ''); // 2nd arg empty string until typedef marked correctly
+    const envPortalName = envInfo.getPortalName();
+
     this.ngZone.run(() => {
       // making a copy, so can add info
       this.pages$ = this.configProps$.pages;
@@ -153,6 +163,30 @@ export class AppShellComponent implements OnInit, OnDestroy {
       this.caseTypes$ = this.configProps$.caseTypes;
       this.arChildren$ = this.pConn$.getChildren();
     });
+
+    const portalLogo = this.configProps$.portalLogo;
+    // using the default icon then fetch it from the static folder (not auth involved)
+    if (
+      !portalLogo ||
+      portalLogo.toLowerCase().includes('pzpega-logo-mark') ||
+      portalLogo.toLowerCase().includes('py-logo') ||
+      portalLogo.toLowerCase().includes('py-full-logo')
+    ) {
+      const portalLogoImage = this.utils.getIconPath(this.utils.getSDKStaticContentUrl()).concat('pzpega-logo-mark.svg');
+      this.imageURL = portalLogoImage;
+    }
+    // not using default icon to fetch it using the way which uses authentication
+    else {
+      PCore.getAssetLoader()
+        .getSvcImageUrl(portalLogo)
+        .then(data => {
+          this.imageURL = data;
+        })
+        .catch(() => {
+          console.error(`${this.localizedVal('Unable to load the image for the portal logo/icon with the insName', 'AppShell')}:${portalLogo}`);
+        });
+    }
+    this.appName$ = this.localizedVal(appNameToDisplay || '', '', `${portalClass}!PORTAL!${envPortalName}`.toUpperCase());
   }
 
   // fpr show/hiding error messages in the SnackBar component
