@@ -28,6 +28,10 @@
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
+
+  & > *:nth-child(2) {
+    min-width: 0;
+  }
 }
 
 .background-image-style {
