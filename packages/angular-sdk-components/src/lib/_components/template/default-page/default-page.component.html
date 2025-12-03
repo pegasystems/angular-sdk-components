@@ -24,13 +24,11 @@
         'psdk-grid-filter-narrow-wide': this.layout$ === 'narrow-wide'
       }"
     >
-      <div>
-        <component-mapper
-          *ngFor="let child of arChildren$"
-          [name]="child.getPConnect().getComponentName()"
-          [props]="{ pConn$: child.getPConnect() }"
-        ></component-mapper>
-      </div>
+      <component-mapper
+        *ngFor="let child of arChildren$"
+        [name]="child.getPConnect().getComponentName()"
+        [props]="{ pConn$: child.getPConnect() }"
+      ></component-mapper>
     </div>
   </div>
 </ng-template>
