@@ -1,3 +1,7 @@
+.quick-link-button:hover .quick-link-icon {
+  transform: scale(1.2) rotateZ(10deg);
+}
+
 .wss-quick-create-header {
   background-color: var(--mat-sys-surface-container);
 }

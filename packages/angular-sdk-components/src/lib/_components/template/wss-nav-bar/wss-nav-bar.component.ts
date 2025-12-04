@@ -27,6 +27,7 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
   @Input() pages$: any[];
   @Input() caseTypes$: any[];
   @Input() homePage: any;
+  @Input() portalLogoImage$: string;
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -35,10 +36,6 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
   navPages$: any[];
   navExpandCollapse$: string;
   bShowCaseTypes$ = false;
-
-  portalApp$: string | undefined = '';
-  portalLogoImage$: string;
-  showAppName$ = false;
 
   portalOperator$: string | undefined;
   portalOperatorInitials$: string;
@@ -126,12 +123,8 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
 
       // const oData = this.pConn$.getDataObject();
 
-      this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
       this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
       this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
-      this.showAppName$ = this.configProps$.showAppName;
-
-      this.portalApp$ = PCore.getEnvironmentInfo().getApplicationLabel();
     });
   }
 
