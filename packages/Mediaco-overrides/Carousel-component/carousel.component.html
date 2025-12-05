@@ -1,0 +1,57 @@
+
+<div class="carousel-host-container">
+  
+  <div class="header">
+    <h2></h2>
+    <button mat-stroked-button color="primary" (click)="openShowAll()">
+      Show All
+    </button>
+  </div>
+
+  <!-- NEW: A Frame to hold the carousel -->
+  <div class="carousel-frame">
+      
+      <!-- The Scroll Area is now inside the Frame -->
+      <div class="carousel-scroll-area" #scrollContainer>
+        
+        <!-- (No Spacers) -->
+
+        <div class="card-wrapper" *ngFor="let item of displayItems" #cardItem>
+          <mat-card class="inner-material-card">
+            <img [src]="item.img" alt="Card Image">
+            <div class="card-overlay">
+              <h3>{{ item.title }}</h3>
+            </div>
+          </mat-card>
+        </div>
+
+      </div>
+
+  </div>
+</div>
+
+
+
+<!-- Find your ng-template at the bottom -->
+<!-- <ng-template #gridDialog>
+
+  <div class="dialog-content">
+    
+    <div class="dialog-header">
+      <h2 mat-dialog-title>All Content</h2>
+      <button mat-icon-button mat-dialog-close>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    
+    <div mat-dialog-content class="grid-container">
+      <div class="grid-item" *ngFor="let item of originalItems">
+        <img [src]="item.img">
+        <p>{{ item.title }}</p>
+      </div>
+    </div>
+
+  </div>
+</ng-template> -->
+
+

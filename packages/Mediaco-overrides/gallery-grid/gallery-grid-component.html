@@ -1,0 +1,16 @@
+<div class="dialog-content">
+  <div class="dialog-header">
+    <h2 mat-dialog-title>All Content</h2>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div mat-dialog-content class="grid-container">
+    <!-- Loop through the items passed in via data.items -->
+    <div class="grid-item" *ngFor="let item of data.items">
+      <img [src]="item.img" alt="Item Image">
+      <p>{{ item.title }}</p>
+    </div>
+  </div>
+</div>

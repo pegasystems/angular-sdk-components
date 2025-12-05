@@ -1,0 +1,10 @@
+<div *ngIf="template === 'Table'">
+   <p>hai this is Table</p>
+</div>
+
+<div *ngIf="template === 'Gallery'">
+  <div class="carousel-constraint-wrapper">
+      <app-carousel *ngIf="sourceList" [data]="sourceList"></app-carousel>
+  </div>
+
+</div>
