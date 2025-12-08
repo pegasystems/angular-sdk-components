@@ -1,6 +1,8 @@
 <div class="header-container">
   <h2 class="trending-title">{{ title }}</h2>
-  <button mat-stroked-button color="primary" *ngIf="referenceDataPage !== 'D_TrendingItemsList'" (click)="openShowAll()">Show All</button>
+  <button mat-button color="primary" *ngIf="referenceDataPage !== 'D_TrendingItemsList' && template === 'Table'" (click)="openShowAll()">
+    Show All
+  </button>
 </div>
 <div *ngIf="template === 'Table'" class="info-container">
   <div class="info-item" *ngFor="let item of sourceList; index as i">
