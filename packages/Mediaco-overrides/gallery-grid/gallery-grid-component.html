@@ -14,6 +14,6 @@
   </div>
 
   <div *ngIf="data.dataPage === 'D_AccountHistoryList'" class="grid">
-    <app-service-card *ngFor="let item of data.items; trackBy: trackByTitle; index as i" [data]="item" [index]="i"> </app-service-card>
+    <table-template-card *ngFor="let item of data.items; trackBy: trackByTitle; index as i" [data]="item" [index]="i"> </table-template-card>
   </div>
 </div>

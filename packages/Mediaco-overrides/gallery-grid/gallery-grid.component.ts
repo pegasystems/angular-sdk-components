@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ServiceCardComponent } from './service-card/service-card.component';
+import { TableTemplateCardComponent } from './table-template-card/table-template-card';
 
 @Component({
   selector: 'app-gallery-grid',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatIconModule, MatButtonModule, ServiceCardComponent],
+  imports: [CommonModule, MatDialogModule, MatIconModule, MatButtonModule, TableTemplateCardComponent],
   templateUrl: './gallery-grid-component.html',
   styleUrls: ['./gallery-grid-component.scss']
 })
