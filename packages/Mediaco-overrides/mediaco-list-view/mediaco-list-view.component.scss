@@ -188,3 +188,10 @@
   overflow: hidden;
   position: relative;
 }
+.carousel-footer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  padding: 0 16px 10px 16px;
+  box-sizing: border-box;
+}

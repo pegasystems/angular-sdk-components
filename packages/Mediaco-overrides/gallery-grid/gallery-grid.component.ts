@@ -15,7 +15,7 @@ import { ServiceCardComponent } from './service-card/service-card.component';
 export class GalleryGridComponent {
   trackByTitle = (_: number, item: { title: string }) => item.title;
 
-  // Inject the data passed from the parent Carousel component
+  // Inject the data passed from the parent component
   constructor(
     public dialogRef: MatDialogRef<GalleryGridComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { items: any[]; dataPage: string }

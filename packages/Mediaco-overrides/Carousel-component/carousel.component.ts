@@ -16,8 +16,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-
-// Import the new Gallery Grid Component
 import { GalleryGridComponent } from '../gallery-grid/gallery-grid.component';
 
 @Component({
@@ -29,27 +27,16 @@ import { GalleryGridComponent } from '../gallery-grid/gallery-grid.component';
 })
 export class CarouselComponent implements AfterViewInit, OnDestroy, OnChanges {
   @Input() data: any[] = [];
-
   @ViewChildren('cardItem') cardItems!: QueryList<ElementRef>;
-
-  // This finds the specific scroll div in your HTML
   @ViewChild('scrollContainer') scrollContainer!: ElementRef<HTMLElement>;
-
-  imagePool = [
-    'https://picsum.photos/id/101/800/600',
-    'https://picsum.photos/id/102/800/600',
-    'https://picsum.photos/id/103/800/600',
-    'https://picsum.photos/id/104/800/600',
-    'https://picsum.photos/id/106/800/600',
-    'https://picsum.photos/id/102/800/600',
-    'https://picsum.photos/id/103/800/600',
-    'https://picsum.photos/id/104/800/600'
-  ];
 
   originalItems: any[] = [];
   displayItems: any[] = [];
 
-  constructor(private ngZone: NgZone) {}
+  constructor(
+    private ngZone: NgZone,
+    private dialog: MatDialog
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] && this.data) {
@@ -58,40 +45,38 @@ export class CarouselComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   buildCarouselItems() {
-    this.originalItems = this.data.map((item, index) => {
+    const mappedData = this.data.map((item, index) => {
       return {
         title: item.Carouselheading || item.Description || 'Untitled',
-        img: item.ImageURL
-        // img: this.imagePool[index % this.imagePool.length],
-        // ...item
+        img: item.ImageURL,
+        ...item
       };
     });
-    // Create 4x copies for the infinite scroll effect
-    this.displayItems = [...this.originalItems, ...this.originalItems, ...this.originalItems, ...this.originalItems];
+    this.originalItems = mappedData;
+    let loopList = [...mappedData];
+    // If you have 2 items, we duplicate them until we have at least 12.
+    const MIN_ITEMS = 12;
+    if (loopList.length > 0) {
+      while (loopList.length < MIN_ITEMS) {
+        loopList = [...loopList, ...loopList];
+      }
+    }
+    //CREATE 3 SETS: [Left Buffer] [Middle (Active)] [Right Buffer]
+    this.displayItems = [...loopList, ...loopList, ...loopList];
   }
 
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
       const container = this.scrollContainer?.nativeElement;
-
-      // DEBUGGING LOGS
-      console.log('--- CAROUSEL DEBUG ---');
-      console.log('Container Element:', container);
-
       if (container) {
-        console.log('Container Width:', container.offsetWidth);
-        console.log('Container ScrollWidth:', container.scrollWidth);
-
         container.addEventListener('scroll', this.onScroll.bind(this));
-
-        // Trigger initial animation
-        this.onScroll({ target: container } as any);
-
         setTimeout(() => {
-          container.scrollLeft = 600;
-        }, 0);
-      } else {
-        console.error('CRITICAL ERROR: Scroll Container not found! Check #scrollContainer in HTML.');
+          if (container.scrollWidth > 0) {
+            const singleSetWidth = container.scrollWidth / 3;
+            container.scrollLeft = singleSetWidth;
+            this.onScroll({ target: container } as any);
+          }
+        }, 50);
       }
     });
   }
@@ -108,26 +93,28 @@ export class CarouselComponent implements AfterViewInit, OnDestroy, OnChanges {
     if (!container) return;
 
     requestAnimationFrame(() => {
+      const totalWidth = container.scrollWidth;
+      const singleSetWidth = totalWidth / 3;
+      const currentScroll = container.scrollLeft;
+
+      if (currentScroll < 100) {
+        container.scrollLeft = currentScroll + singleSetWidth;
+      } else if (currentScroll >= singleSetWidth * 2 - 100) {
+        container.scrollLeft = currentScroll - singleSetWidth;
+      }
       const containerRect = container.getBoundingClientRect();
-
-      // Safety check: if component is hidden/collapsed
       if (containerRect.width === 0) return;
-
-      const containerCenter = containerRect.width / 2;
 
       this.cardItems.forEach(item => {
         const el = item.nativeElement;
         const rect = el.getBoundingClientRect();
-
-        // Calculate center relative to the scroll container
         const cardCenter = rect.left - containerRect.left + rect.width / 2;
-
+        const containerCenter = containerRect.width / 2;
         const distance = Math.abs(containerCenter - cardCenter);
 
         const activeZone = 400;
         const minWidth = 200;
         const maxWidth = 500;
-
         let currentWidth = minWidth;
         let opacity = 0.7;
 
