@@ -162,7 +162,6 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     this.showLabel$ = this.configProps$.showLabel || isDetailsTemplate(this.templateName$) || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
     this.label$ = this.inheritedProps$.label || this.label$;
-    this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
