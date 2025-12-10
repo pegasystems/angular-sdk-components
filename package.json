@@ -49,6 +49,7 @@
     "build-angular-sdk-components": "ng build angular-sdk-components && node scripts/copy-map.js && node ./scripts/copy-npm-assets-to-components.js",
     "prod-build-angularsdk": "shx rm -rf ./dist && npm run prod-build && npm run copy-index && npm run make-mashup-dir && npm run compress-angularsdk",
     "start": "npm run ng serve",
+    "update-sdk-dependencies": "node scripts/update-dependencies.js",
     "_comment_2": "Commands related to running tests against the Angular SDK",
     "test": "node ./scripts/playwright-message.js && playwright test --project=chromium MediaCo/portal MediaCo/embedded",
     "test:headed": "playwright test --headed --project=chromium MediaCo/portal MediaCo/embedded",
