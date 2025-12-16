@@ -280,7 +280,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     // this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
-      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name, undefined, this.localeReference);
+      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
     }
 
     // turn off spinner
