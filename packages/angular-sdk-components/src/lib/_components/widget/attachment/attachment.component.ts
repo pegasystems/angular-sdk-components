@@ -132,11 +132,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   updateSelf() {
     const configProps: AttachmentProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AttachmentProps;
     const stateProps = this.pConn$.getStateProps();
-    const { value, label, required, visibility, disabled, readOnly, extensions, displayMode, isTableFormatter, allowMultiple, editMode } =
-      configProps;
+    const { value, label, required, disabled, readOnly, extensions, displayMode, isTableFormatter, allowMultiple, editMode } = configProps;
 
     this.bRequired$ = this.utils.getBooleanValue(required);
-    this.bVisible$ = this.utils.getBooleanValue(visibility);
+    if (configProps.visibility != null) {
+      this.bVisible$ = this.utils.getBooleanValue(configProps.visibility);
+    }
     this.bDisabled$ = this.utils.getBooleanValue(disabled);
     this.bReadonly$ = this.utils.getBooleanValue(readOnly);
     this.allowMultiple$ = this.utils.getBooleanValue(allowMultiple);

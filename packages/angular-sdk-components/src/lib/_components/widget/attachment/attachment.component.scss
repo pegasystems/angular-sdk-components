@@ -5,7 +5,7 @@
 }
 
 .psdk-modal-file-selector {
-  border: 1px dashed var(--app-neutral-dark-color);
+  border: 1px dashed var(--mat-sys-neutral-variant20);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
@@ -22,7 +22,7 @@
 }
 
 .psdk-modal-file-selector-error {
-  border: 1px dashed var(--app-error-light-color);
+  border: 1px dashed var(--mat-sys-error);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
@@ -52,7 +52,7 @@
   width: auto;
 }
 .psdk-modal-file-selector {
-  border: 1px dashed var(--app-neutral-dark-color);
+  border: 1px dashed var(--mat-sys-neutral-variant20);
   padding: 0.5rem;
   text-align: center;
   position: relative;
@@ -68,7 +68,7 @@
 }
 
 .psdk-modal-file-selector-error {
-  border: 1px dashed var(--app-error-light-color);
+  border: 1px dashed var(--mat-sys-error);
   padding: 0.5rem;
   text-align: center;
   position: relative;
@@ -126,7 +126,6 @@
 
 .psdk-attachment-card-svg-icon {
   width: 2.5rem;
-  filter: var(--app-white-color-filter);
 }
 
 .psdk-utility-button {
@@ -134,7 +133,6 @@
   border: none;
   margin-right: 0.5rem;
   cursor: pointer;
-  filter: var(--app-white-color-filter);
 }
 
 .psdk-utility-card-action-svg-icon {
@@ -151,7 +149,7 @@
 }
 
 .file-div-error {
-  border: 1px dashed var(--app-error-light-color);
+  border: 1px dashed var(--mat-sys-error);
   width: 100%;
   padding: 0.5rem;
   text-align: center;
