@@ -56,7 +56,8 @@ h1 {
   flex-grow: 2;
   float: left;
   padding: 0rem 0.3125rem;
-  height: 100%; /* Should be removed. Only for demonstration */
+  height: 100%;
+  padding-left: 0;
 }
 
 .psdk-case-view-summary {
