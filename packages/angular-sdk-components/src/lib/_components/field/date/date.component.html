@@ -20,7 +20,7 @@
           (dateChange)="fieldOnDateChange($event)"
         />
         <mat-datepicker-toggle matSuffix [for]="pegadate" [disabled]="bDisabled$"></mat-datepicker-toggle>
-        <mat-datepicker #pegadate [startAt]="value$"></mat-datepicker>
+        <mat-datepicker #pegadate [startAt]="value$" xPosition="end"></mat-datepicker>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
