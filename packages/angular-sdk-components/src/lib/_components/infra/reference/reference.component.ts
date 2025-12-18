@@ -71,6 +71,11 @@ export class ReferenceComponent {
       pageReference: context && context.startsWith('@CLASS') ? '' : context
     });
 
+    if (referenceConfig.inheritedProps && referenceConfig.inheritedProps.length > 0) {
+      const inheritedProps = inPConn.getInheritedProps();
+      referenceConfig.inheritedProps = Object.keys(inheritedProps).map(prop => ({ prop, value: inheritedProps[prop] }));
+    }
+
     // Get the PConnect object from the created component
     const newCompPConnect = viewComponent.getPConnect();
 
