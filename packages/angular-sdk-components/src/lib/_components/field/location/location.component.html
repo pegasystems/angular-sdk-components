@@ -6,13 +6,13 @@
       matInput
       type="text"
       [placeholder]="placeholder"
-      [formControl]="searchControl"
+      [formControl]="fieldControl"
       [required]="bRequired$"
       [matAutocomplete]="auto"
       [attr.data-test-id]="testId"
       (blur)="fieldOnBlur()"
     />
-    <mat-error *ngIf="searchControl.invalid">{{ getErrorMessage() }}</mat-error>
+    <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
     <button
       mat-icon-button
       matSuffix
