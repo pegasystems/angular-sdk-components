@@ -7,12 +7,6 @@
   min-width: unset;
 }
 
-.psdk-icon-current {
-}
-
-.psdk-icon-not-current {
-}
-
 .psdk-current-svg-icon {
   width: 1rem;
   filter: var(--app-primary-color-filter);
@@ -33,9 +27,11 @@ mat-horizontal-stepper {
 .psdk-sub-step-current {
   padding-left: 0.625rem;
   font-weight: bold;
+  color: var(--mat-sys-on-secondary-container);
 }
 
 .psdk-sub-step-not-current {
+  color: var(--mat-sys-on-surface-variant);
   padding-left: 0.625rem;
 }
 
@@ -76,6 +72,7 @@ mat-horizontal-stepper {
 
 .psdk-vertical-step-icon {
   margin-right: 12px;
+  background-color: var(--mat-sys-secondary);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -92,6 +89,8 @@ mat-horizontal-stepper {
 
 .psdk-vertical-step-icon-selected {
   margin-right: 12px;
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-surface);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -100,6 +99,7 @@ mat-horizontal-stepper {
 }
 
 .psdk-vertical-step-label {
+  color: var(--mat-sys-on-surface-variant);
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -111,6 +111,7 @@ mat-horizontal-stepper {
 }
 
 .psdk-vertical-step-label-selected {
+  color: var(--mat-sys-on-secondary-container);
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -169,6 +170,8 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-icon {
+  background-color: var(--mat-sys-secondary);
+  color: var(--mat-sys-surface);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -188,6 +191,8 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-icon-selected {
+  background-color: var(--mat-sys-primary);
+  color: var(--mat-sys-surface);
   border-radius: 50%;
   height: 24px;
   width: 24px;
@@ -199,6 +204,7 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-label {
+  color: var(--mat-sys-on-surface-variant);
   display: inline-block;
   min-width: 50px;
   vertical-align: middle;
@@ -208,6 +214,7 @@ mat-horizontal-stepper {
 }
 
 .psdk-horizontal-step-label-selected {
+  color: var(--mat-sys-on-secondary-container);
   display: inline-block;
   min-width: 50px;
   vertical-align: middle;

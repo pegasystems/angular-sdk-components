@@ -5,7 +5,7 @@
 
 table {
   width: 100%;
-  border-bottom: 1px solid var(--app-neutral-light-color);
+  border-bottom: 1px solid var(--mat-sys-on-secondary-container);
 }
 
 .search-label {
@@ -176,7 +176,7 @@ tr.mat-mdc-row {
 ::ng-deep th.mat-mdc-header-cell,
 td.mat-mdc-cell,
 td.mat-mdc-footer-cell {
-  border-right: 1px solid var(--app-neutral-light-color);
+  border-right: 1px solid var(--mat-sys-on-secondary-container);
   padding: 8px !important;
   // min-width: 10rem;
 }
