@@ -46,6 +46,7 @@ interface ListViewProps {
   displayAs?: string;
   showRecords: boolean;
   viewName?: string;
+  localeReference?: any;
 }
 
 export class Group {
@@ -516,7 +517,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const arReturn = arFields;
     arReturn.forEach((field, i) => {
       field.config = { ...field.config, ...fields[i], name: fields[i].id };
-      field.config.label = PCore.getLocaleUtils().getLocaleValue(field.config.label, 'INSIGHTS');
+      field.config.label = PCore.getLocaleUtils().getLocaleValue(field.config.label, this.configProps$.localeReference);
     });
     return arReturn;
   }
