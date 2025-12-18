@@ -16,7 +16,7 @@
         autoresize_bottom_margin: 0,
         toolbar: disabled ? false : 'blocks | bold italic strikethrough | bullist numlist outdent indent | link image',
         toolbar_location: 'bottom',
-        content_style: 'body { font-family:Helvetica, Arial,sans-serif; font-size:14px }',
+        content_style: contentStyle,
         branding: false,
         paste_data_images: true,
         file_picker_types: 'image',
@@ -31,3 +31,6 @@
     <div class="readonly-richtext-editor" style="margin: 10px 5px" [innerHTML]="value || '--'"></div>
   </div>
 </div>
+
+<!-- Add a hidden element to access a specific color -->
+<div #primaryColorElement class="mat-primary" style="display: none;"></div>
