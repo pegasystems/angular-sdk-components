@@ -1,9 +1,12 @@
-import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, forwardRef, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import dayjs from 'dayjs';
 
@@ -44,6 +47,9 @@ export class DateTimeComponent extends FieldBase implements OnInit, OnDestroy {
   theDateFormat = getDateFormatInfo();
   timezone = PCore.getEnvironmentInfo()?.getTimeZone();
   override placeholder = `${this.theDateFormat.dateFormatStringLC}, hh:mm A`;
+
+  private sso = inject(ScrollStrategyOptions);
+  scrollStrategy = this.sso.reposition();
 
   override ngOnInit(): void {
     super.ngOnInit();
