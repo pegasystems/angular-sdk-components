@@ -106,13 +106,14 @@
 
 .psdk-nav-button-span {
   padding: 0 1rem;
-  color: var(--app-nav-color);
 
   &:hover {
   }
 }
 
 .psdk-nav-oper-avatar {
+  border-radius: 100%;
+  background-color: var(--mat-sys-primary);
   margin: 0rem;
   padding: 0rem;
   min-width: 2.5rem;
@@ -126,6 +127,11 @@
   display: inline-flex;
   font-weight: normal;
   font-size: 1rem;
+}
+
+mat-toolbar {
+  margin-bottom: 5px;
+  background-color: var(--mat-sys-surface-variant);
 }
 
 mat-list {
