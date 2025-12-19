@@ -123,7 +123,6 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
 
       // const oData = this.pConn$.getDataObject();
 
-      this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
       this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
       this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
     });
