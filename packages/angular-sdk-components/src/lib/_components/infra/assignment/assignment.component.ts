@@ -18,6 +18,11 @@ function getRefreshProps(refreshConditions) {
   return refreshConditions.filter(item => item.event && item.event === 'Changes').map(item => [item.field, item.field?.substring(1)]) || [];
 }
 
+function scrollToTop() {
+  const scrollElement = document.querySelector('.psdk-view-container-top');
+  scrollElement?.scrollIntoView();
+}
+
 interface AssignmentProps {
   // If any, enter additional props that only exist on this component
   template: string;
@@ -140,6 +145,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateChanges() {
+    scrollToTop();
+
     this.registerForRefresh();
 
     // pConn$ may be a 'reference' component, so normalize it
