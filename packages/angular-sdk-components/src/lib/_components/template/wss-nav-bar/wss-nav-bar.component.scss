@@ -15,8 +15,6 @@
   padding-top: 0.625rem;
   cursor: pointer;
   padding-right: 1rem;
-  &:hover {
-  }
   align-items: center;
 }
 
@@ -106,13 +104,11 @@
 
 .psdk-nav-button-span {
   padding: 0 1rem;
-  color: var(--app-nav-color);
-
-  &:hover {
-  }
 }
 
 .psdk-nav-oper-avatar {
+  border-radius: 100%;
+  background-color: var(--mat-sys-primary);
   margin: 0rem;
   padding: 0rem;
   min-width: 2.5rem;
@@ -128,6 +124,11 @@
   font-size: 1rem;
 }
 
+mat-toolbar {
+  margin-bottom: 5px;
+  background-color: var(--mat-sys-surface-variant);
+}
+
 mat-list {
   padding: 0;
 }
@@ -141,9 +142,6 @@ mat-list-item {
   padding-right: 0;
   cursor: pointer !important;
   height: auto !important;
-
-  &:hover {
-  }
 
   .flex-box {
     display: flex;

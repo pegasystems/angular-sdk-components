@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -8,12 +8,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { debounceTime, from, of, switchMap } from 'rxjs';
 
-import { debounceTime, from, interval, of, switchMap } from 'rxjs';
-
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
+import { FieldBase } from '../field.base';
 import { GoogleMapsLoaderService } from '../../../_services/google-maps-loader.service';
-import { Utils } from '../../../_helpers/utils';
 import { handleEvent } from '../../../_helpers/event-util';
 
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -41,9 +39,8 @@ interface LocationProps extends PConnFieldProps {
   templateUrl: './location.component.html',
   styleUrl: './location.component.scss'
 })
-export class LocationComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
-  @Input() formGroup$: FormGroup;
+export class LocationComponent extends FieldBase {
+  private loader = inject(GoogleMapsLoaderService);
 
   private autocompleteService!: google.maps.places.AutocompleteService;
   private geocoder!: google.maps.Geocoder;
@@ -51,137 +48,52 @@ export class LocationComponent implements OnInit, OnDestroy {
   // Dom variables
   mapReady = false;
   isLocating = false;
-  searchControl = new FormControl('');
   showMap = true;
   filteredOptions: string[] = [];
   center: google.maps.LatLngLiteral;
   markerPosition: google.maps.LatLngLiteral | null = null;
 
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
   configProps$: LocationProps;
-  label$ = '';
   onlyCoordinates: boolean;
   coordinates: string;
-  bRequired$ = false;
-  bReadonly$ = false;
   showMapReadOnly$: boolean;
-  bDisabled$ = false;
-  bVisible$ = true;
-  controlName$: string;
-  bHasForm$ = true;
-  testId = '';
-  helperText: string;
-  placeholder: string;
-  actionsApi: object;
   valueProp: string;
   coordinatesProp: string;
 
-  constructor(
-    private loader: GoogleMapsLoaderService,
-    private angularPConnect: AngularPConnectService,
-    private utils: Utils,
-    private cdRef: ChangeDetectorRef
-  ) {}
+  override async ngOnInit() {
+    super.ngOnInit();
 
-  async ngOnInit() {
     // Loading map
     const apiKey = this.pConn$.getGoogleMapsAPIKey();
     await this.loader.load(apiKey);
     this.mapReady = true;
     this.initializeGoogleServices();
     this.getPlacePredictions();
-
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.controlName$ = this.angularPConnect.getComponentID(this);
-    this.checkAndUpdate();
-
-    if (this.formGroup$) {
-      // add control to formGroup
-      this.formGroup$.addControl(this.controlName$, this.searchControl);
-      this.bHasForm$ = true;
-    } else {
-      this.bReadonly$ = true;
-      this.bHasForm$ = false;
-    }
   }
 
-  ngOnDestroy(): void {
-    if (this.formGroup$) {
-      this.formGroup$.removeControl(this.controlName$);
-    }
-
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  checkAndUpdate() {
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
-  onStateChange() {
-    setTimeout(() => {
-      this.checkAndUpdate();
-    }, 0);
-  }
-
-  updateSelf(): void {
+  /**
+   * Updates the component when there are changes in the state.
+   */
+  override updateSelf(): void {
+    // Resolve configuration properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as LocationProps;
-    if (this.configProps$.visibility != null) {
-      this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-    }
-    this.onlyCoordinates = !!this.configProps$.onlyCoordinates;
-    this.label$ = this.configProps$.label;
-    this.testId = this.configProps$.testId;
 
-    this.helperText = this.configProps$.helperText || '';
-    this.placeholder = this.configProps$.placeholder || '';
+    // Update component common properties
+    this.updateComponentCommonProperties(this.configProps$);
+
+    this.onlyCoordinates = !!this.configProps$.onlyCoordinates;
     this.showMapReadOnly$ = !!this.configProps$.showMapReadOnly;
-    if (this.configProps$.readOnly != null) {
-      this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-    }
     this.showMap = this.bReadonly$ ? this.showMapReadOnly$ : !!this.configProps$.showMap;
+
     if (this.configProps$.coordinates) {
       const latAndLong: number[] = this.configProps$.coordinates.split(',').map(Number);
       const latitude = Number(latAndLong[0]);
       const longitude = Number(latAndLong[1]);
       this.updateMap(latitude, longitude, this.configProps$.value);
     }
-    // // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
-    setTimeout(() => {
-      if (this.configProps$.required != null) {
-        this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-      }
-      this.cdRef.detectChanges();
-    });
-    // // disabled
-    if (this.configProps$.disabled != undefined) {
-      this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-    }
 
-    if (this.bDisabled$ || this.bReadonly$) {
-      this.searchControl.disable();
-    } else {
-      this.searchControl.enable();
-    }
-
-    this.actionsApi = this.pConn$.getActionsApi();
     this.valueProp = this.pConn$.getStateProps().value;
     this.coordinatesProp = this.pConn$.getStateProps().coordinates;
-
-    // // trigger display of error message with field control
-    if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-      const timer = interval(100).subscribe(() => {
-        this.searchControl.setErrors({ message: true });
-        this.searchControl.markAsTouched();
-
-        timer.unsubscribe();
-      });
-    }
   }
 
   onOptionSelected(event: any) {
@@ -234,23 +146,6 @@ export class LocationComponent implements OnInit, OnDestroy {
         this.updateProps();
       });
     }
-  }
-
-  getErrorMessage() {
-    let errMessage = '';
-
-    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
-    if (this.searchControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage ?? '';
-      return errMessage;
-    }
-    if (this.searchControl.hasError('required')) {
-      errMessage = 'You must enter a value';
-    } else if (this.searchControl.errors) {
-      errMessage = this.searchControl.errors.toString();
-    }
-
-    return errMessage;
   }
 
   private tryGetLocation(retryCount: number) {
@@ -312,7 +207,7 @@ export class LocationComponent implements OnInit, OnDestroy {
   }
 
   private getPlacePredictions() {
-    this.searchControl.valueChanges
+    this.fieldControl.valueChanges
       .pipe(
         debounceTime(300),
         switchMap(value => this.getSuggestions(value || ''))
@@ -371,7 +266,7 @@ export class LocationComponent implements OnInit, OnDestroy {
   }
 
   private updateProps() {
-    handleEvent(this.actionsApi, 'change', this.valueProp, this.searchControl.value);
+    handleEvent(this.actionsApi, 'change', this.valueProp, this.fieldControl.value);
     handleEvent(this.actionsApi, 'change', this.coordinatesProp, this.coordinates);
   }
 
@@ -380,6 +275,6 @@ export class LocationComponent implements OnInit, OnDestroy {
   }
 
   private setLocationValue(value: string) {
-    this.searchControl.setValue(value, { emitEvent: false });
+    this.fieldControl.setValue(value, { emitEvent: false });
   }
 }
