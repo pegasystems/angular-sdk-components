@@ -1,6 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+
 import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -18,6 +19,7 @@ interface RichTextProps extends PConnFieldProps {
 })
 export class RichTextComponent extends FieldBase {
   configProps$: RichTextProps;
+
   info: any;
   error: boolean;
   status: any;
@@ -60,7 +62,10 @@ export class RichTextComponent extends FieldBase {
 
   fieldOnBlur(editorValue: any) {
     const oldVal = this.value$ ?? '';
-    if (editorValue.toString() !== oldVal.toString()) {
+
+    const isValueChanged = editorValue.toString() !== oldVal.toString();
+
+    if (isValueChanged) {
       handleEvent(this.actionsApi, 'changeNblur', this.propName, editorValue);
     }
   }

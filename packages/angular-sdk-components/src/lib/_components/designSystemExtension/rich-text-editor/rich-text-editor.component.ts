@@ -57,19 +57,16 @@ export class RichTextEditorComponent implements OnChanges {
       min_height: 130,
       plugins: ['lists', 'advlist', 'autolink', 'image', 'link', 'autoresize'],
       autoresize_bottom_margin: 0,
-
       toolbar: this.disabled ? false : 'blocks | bold italic strikethrough | bullist numlist outdent indent | link image',
       toolbar_location: 'bottom',
-
       content_style: `
-        body { 
-          font-family: Helvetica, Arial, sans-serif; 
-          font-size: 14px; 
-          color: ${textColor} !important; 
-          background: transparent !important; 
+        body {
+          font-family: Helvetica, Arial, sans-serif;
+          font-size: 14px;
+          color: ${textColor} !important;
+          background: transparent !important;
         }
       `,
-
       branding: false,
       paste_data_images: true,
       file_picker_types: 'image',
