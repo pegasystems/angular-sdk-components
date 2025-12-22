@@ -2,139 +2,96 @@
 
 :host {
   display: block;
-  /* Ensures the area behind the transparent iframe matches your theme */
   background-color: var(--mat-sys-surface, #fff);
   color: var(--mat-sys-on-surface, #000);
 }
 
-/* ==========================================================================
-   TINYMCE DEEP OVERRIDES
-   We use ::ng-deep to force these styles onto TinyMCE, which sits 
-   outside standard Angular encapsulation (especially the dialogs).
-   ========================================================================== */
 ::ng-deep {
-
-  /* ---------------------------------------------------------
-     1. MAIN EDITOR CONTAINER & IFRAME
-     --------------------------------------------------------- */
   .tox-tinymce {
     border: 1px solid var(--mat-sys-outline, #ccc) !important;
     border-radius: 4px !important;
   }
 
-  /* Make the iframe transparent so the :host background shows through */
   .tox-edit-area__iframe {
     background-color: transparent !important;
   }
 
-
-  /* ---------------------------------------------------------
-     2. TOOLBAR & HEADER
-     --------------------------------------------------------- */
-  .tox .tox-toolbar, 
+  .tox .tox-toolbar,
   .tox .tox-toolbar__primary,
   .tox .tox-editor-header {
-    background-color: var(--mat-sys-surface-container-high, #f0f0f0) !important; 
+    background-color: var(--mat-sys-surface-container-high, #f0f0f0) !important;
     border-bottom: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
   }
 
-
-  /* ---------------------------------------------------------
-     3. BUTTONS (Standard Icons)
-     --------------------------------------------------------- */
   .tox .tox-tbtn {
     color: var(--mat-sys-on-surface-variant, #555) !important;
-    background: transparent !important; /* Fixes white background issues */
+    background: transparent !important;
   }
-  
+
   .tox .tox-tbtn svg {
     fill: var(--mat-sys-on-surface-variant, #555) !important;
   }
 
   .tox .tox-tbtn:hover {
-    background: var(--mat-sys-hover-state-layer-opacity, rgba(0,0,0,0.05)) !important;
+    background: var(--mat-sys-hover-state-layer-opacity, rgba(0, 0, 0, 0.05)) !important;
   }
 
-  /* Active/Selected Buttons (Bold, Italic when active) */
   .tox .tox-tbtn--enabled,
   .tox .tox-tbtn--enabled:hover {
     background: var(--mat-sys-secondary-container, #e8def8) !important;
     color: var(--mat-sys-on-secondary-container, #1d192b) !important;
   }
-  
+
   .tox .tox-tbtn--enabled svg {
     fill: var(--mat-sys-on-secondary-container, #1d192b) !important;
   }
 
-
-  /* ---------------------------------------------------------
-     4. DROPDOWN / SELECT BUTTONS (The "Paragraph" Box Issue)
-     This fixes the specific white box issue you mentioned.
-     --------------------------------------------------------- */
   .tox .tox-tbtn--select {
-    background-color: transparent !important; /* Remove white bg */
+    background-color: transparent !important;
     margin: 2px 0;
   }
 
   .tox .tox-tbtn__select-label {
-    color: var(--mat-sys-on-surface, #000) !important; /* Fix text color */
+    color: var(--mat-sys-on-surface, #000) !important;
   }
 
   .tox .tox-tbtn__select-chevron svg {
     fill: var(--mat-sys-on-surface-variant, #555) !important;
   }
 
-  /* Hover state for the dropdown */
   .tox .tox-tbtn--select:hover {
-    background-color: var(--mat-sys-hover-state-layer-opacity, rgba(0,0,0,0.05)) !important;
+    background-color: var(--mat-sys-hover-state-layer-opacity, rgba(0, 0, 0, 0.05)) !important;
   }
 
-
-  /* ---------------------------------------------------------
-     5. STATUS BAR (Footer)
-     --------------------------------------------------------- */
   .tox .tox-statusbar {
     background-color: var(--mat-sys-surface-container-high, #f0f0f0) !important;
     border-top: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
     color: var(--mat-sys-on-surface-variant, #555) !important;
   }
 
-
-  /* ---------------------------------------------------------
-     6. DIALOGS / POPUPS (Insert Image, Link, etc.)
-     This is the part ported from React to fix the popup theme.
-     --------------------------------------------------------- */
-  
-  /* The Main Dialog Window */
   .tox .tox-dialog {
     background-color: var(--mat-sys-surface-container, #fff) !important;
     color: var(--mat-sys-on-surface, #000) !important;
     border: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
-    box-shadow: 0 4px 12px var(--mat-sys-shadow, rgba(0,0,0,0.2)) !important;
+    box-shadow: 0 4px 12px var(--mat-sys-shadow, rgba(0, 0, 0, 0.2)) !important;
   }
 
-  /* Dialog Header */
   .tox .tox-dialog__header {
     background-color: var(--mat-sys-surface-container, #fff) !important;
     color: var(--mat-sys-on-surface, #000) !important;
     border-bottom: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
   }
 
-  /* Dialog Footer */
   .tox .tox-dialog__footer {
     background-color: var(--mat-sys-surface-container, #fff) !important;
     border-top: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
   }
 
-  /* The Backdrop (Dark overlay behind dialog) */
   .tox .tox-dialog-wrap__backdrop {
-    background-color: var(--mat-sys-scrim, rgba(0,0,0,0.5)) !important;
-    opacity: 0.6; /* Ensure it's not pitch black */
+    background-color: var(--mat-sys-scrim, rgba(0, 0, 0, 0.5)) !important;
+    opacity: 0.6;
   }
 
-  /* ---------------------------------------------------------
-     7. DIALOG FORM INPUTS (Inside the popup)
-     --------------------------------------------------------- */
   .tox .tox-dialog__body input,
   .tox .tox-dialog__body textarea,
   .tox .tox-dialog__body select {
@@ -144,102 +101,70 @@
     border-radius: 4px !important;
   }
 
-  /* Input Labels */
   .tox .tox-label {
     color: var(--mat-sys-on-surface-variant, #555) !important;
   }
 
-  /* Close Button (X in top right) */
   .tox .tox-button--icon--hover:hover {
-     background-color: var(--mat-sys-hover-state-layer-opacity) !important;
-     color: var(--mat-sys-on-surface) !important;
+    background-color: var(--mat-sys-hover-state-layer-opacity) !important;
+    color: var(--mat-sys-on-surface) !important;
   }
 
-
-  /* ---------------------------------------------------------
-     8. DIALOG ACTION BUTTONS (Save, Cancel)
-     --------------------------------------------------------- */
-  
-  /* Primary Button (Save/Ok) */
   .tox .tox-dialog__footer .tox-button {
     background-color: var(--mat-sys-primary, #6200ee) !important;
     color: var(--mat-sys-on-primary, #fff) !important;
     border: none !important;
   }
 
-  /* Secondary Button (Cancel) */
   .tox .tox-dialog__footer .tox-button--secondary {
     background-color: transparent !important;
     color: var(--mat-sys-primary, #6200ee) !important;
     border: 1px solid var(--mat-sys-outline, #ccc) !important;
   }
 }
-/* ... keep your existing ::ng-deep rules ... */
 
 ::ng-deep {
-  /* [Previous rules for toolbar, dialogs etc go here...] */
-
-  /* =========================================================
-     FIX 1: FLOATING MENUS (Paragraph Dropdown, Formats)
-     These float on top of everything.
-     ========================================================= */
   .tox .tox-menu {
     background-color: var(--mat-sys-surface-container, #2e334f) !important;
     border: 1px solid var(--mat-sys-outline-variant, #404562) !important;
-    box-shadow: 0 4px 10px var(--mat-sys-shadow, rgba(0,0,0,0.3)) !important;
+    box-shadow: 0 4px 10px var(--mat-sys-shadow, rgba(0, 0, 0, 0.3)) !important;
   }
 
-  /* The individual items (Paragraph, Heading 1, etc.) */
   .tox .tox-collection__item {
     color: var(--mat-sys-on-surface, #dde1ff) !important;
   }
 
-  /* Hover/Active State for menu items */
   .tox .tox-collection__item--active {
     background-color: var(--mat-sys-secondary-container, #810081) !important;
     color: var(--mat-sys-on-secondary-container, #ffd7f5) !important;
   }
-  
-  /* The checkmark icon in menus */
+
   .tox .tox-collection__item-icon svg {
     fill: var(--mat-sys-on-surface, #dde1ff) !important;
   }
-  
-  /* Secondary text (like shortcuts displayed in menu) */
+
   .tox .tox-collection__item-accessory {
     color: var(--mat-sys-on-surface-variant, #c0c5e7) !important;
   }
 
-  /* =========================================================
-     FIX 2: SPLIT BUTTONS (Bullet Points / Numbered Lists)
-     The little arrow dropdown next to the button.
-     ========================================================= */
   .tox .tox-swatches__picker-btn {
-     /* Color picker squares */
-     border-color: var(--mat-sys-outline-variant) !important;
+    border-color: var(--mat-sys-outline-variant) !important;
   }
 
-  /* =========================================================
-     FIX 3: INSIDE DIALOG DROPDOWNS ("Open link in..." selector)
-     TinyMCE uses a custom 'listbox' instead of a standard <select>
-     ========================================================= */
   .tox .tox-listbox {
     background-color: transparent !important;
     border: 1px solid var(--mat-sys-outline, #8a8faf) !important;
     color: var(--mat-sys-on-surface, #dde1ff) !important;
   }
 
-  /* The arrow icon inside the dropdown */
   .tox .tox-listbox__select-chevron svg {
     fill: var(--mat-sys-on-surface-variant, #c0c5e7) !important;
   }
 
-  /* The label inside the dropdown */
   .tox .tox-listbox__select-label {
     color: var(--mat-sys-on-surface, #dde1ff) !important;
   }
-  
-  /* Fixed height listbox field (Link Dialog specific) */
+
   .tox .tox-listboxfield .tox-listbox--select {
     background-color: transparent !important;
     color: var(--mat-sys-on-surface, #dde1ff) !important;

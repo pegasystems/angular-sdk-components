@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
@@ -13,10 +13,6 @@ declare let tinymce: any;
   providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
 })
 export class RichTextEditorComponent implements OnChanges {
-
-  @ViewChild('primaryColorElement') primaryColorElement!: ElementRef;
-  primaryColor: string = '';
-
   @Input() placeholder;
   @Input() disabled;
   @Input() readonly;
@@ -31,14 +27,7 @@ export class RichTextEditorComponent implements OnChanges {
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
   richText = new FormControl();
-
-  ngAfterViewInit() {
-    // Use getComputedStyle to get the applied color value at runtime
-    const element = this.primaryColorElement.nativeElement;
-    this.primaryColor = window.getComputedStyle(element).color;
-
-    console.log('Primary color:', this.primaryColor);
-  }
+  editorConfig: any = {};
 
   ngOnChanges() {
     if (this.required) {
@@ -54,6 +43,40 @@ export class RichTextEditorComponent implements OnChanges {
     if (this.value) {
       this.richText.setValue(this.value);
     }
+
+    const themeElement = document.querySelector('.dark') || document.body;
+    let textColor = getComputedStyle(themeElement).getPropertyValue('--mat-sys-on-surface').trim();
+    if (!textColor) textColor = '#000000';
+
+    this.editorConfig = {
+      base_url: '/tinymce',
+      suffix: '.min',
+      menubar: false,
+      placeholder: this.placeholder, // Pass the input prop
+      statusbar: false,
+      min_height: 130,
+      plugins: ['lists', 'advlist', 'autolink', 'image', 'link', 'autoresize'],
+      autoresize_bottom_margin: 0,
+
+      // Dynamic Toolbar logic
+      toolbar: this.disabled ? false : 'blocks | bold italic strikethrough | bullist numlist outdent indent | link image',
+      toolbar_location: 'bottom',
+
+      // THE FIX: Dynamic Color + Original Fonts
+      content_style: `
+        body { 
+          font-family: Helvetica, Arial, sans-serif; 
+          font-size: 14px; 
+          color: ${textColor} !important; 
+          background: transparent !important; 
+        }
+      `,
+
+      branding: false,
+      paste_data_images: true,
+      file_picker_types: 'image',
+      file_picker_callback: this.filePickerCallback
+    };
   }
 
   filePickerCallback = cb => {
@@ -96,11 +119,5 @@ export class RichTextEditorComponent implements OnChanges {
 
   change(event) {
     this.onChange.emit(event);
-  }
-
-  get contentStyle() {
-
-    console.log( `body { font-family:Helvetica, Arial,sans-serif; font-size:14px; color: ${this.primaryColor} }`)
-    return `body { font-family:Helvetica, Arial,sans-serif; font-size:14px; color: ${this.primaryColor} }`
   }
 }
