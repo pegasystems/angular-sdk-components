@@ -1,6 +1,6 @@
-<div *ngIf="showCaseActions" class="psdk-self-service-case-view-header">
-  <div>{{ this.heading$ }}</div>
-  <div class="psdk-case-view-buttons">
+<div class="psdk-self-service-case-view-header">
+  <div class="heading">{{ this.heading$ }}</div>
+  <div *ngIf="showCaseActions" class="psdk-case-view-buttons">
     <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu">{{ localizedVal('Actions...', localeCategory) }}</button>
     <mat-menu #actionMenu="matMenu" overlapTrigger="false">
       <ng-container *ngFor="let action of arAvailableActions$">

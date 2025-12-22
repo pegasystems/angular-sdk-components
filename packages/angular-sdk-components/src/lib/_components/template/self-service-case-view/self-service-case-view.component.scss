@@ -117,9 +117,16 @@ button {
 }
 
 .psdk-self-service-case-view-header {
+  height: 50px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  margin: 10px;
   background-color: var(--mat-sys-primary);
+  padding: 0px 8px;
+}
+
+.heading {
+  font-size: 20px;
+  color: var(--mat-sys-on-primary);
+  font-weight: 600;
 }

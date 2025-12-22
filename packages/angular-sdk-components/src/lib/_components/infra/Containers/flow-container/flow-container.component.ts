@@ -70,6 +70,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   pConnectOfActiveContainerItem;
+  isMultiStep: any;
 
   constructor(
     injector: Injector,
@@ -281,6 +282,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     // this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
       this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
+      this.isMultiStep = this.utils.getBooleanValue(oWorkData.caseInfo.assignments?.[0].isMultiStep);
     }
 
     // turn off spinner
