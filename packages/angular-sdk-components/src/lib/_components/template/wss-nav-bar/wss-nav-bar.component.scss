@@ -15,8 +15,6 @@
   padding-top: 0.625rem;
   cursor: pointer;
   padding-right: 1rem;
-  &:hover {
-  }
   align-items: center;
 }
 
@@ -106,9 +104,6 @@
 
 .psdk-nav-button-span {
   padding: 0 1rem;
-
-  &:hover {
-  }
 }
 
 .psdk-nav-oper-avatar {
@@ -147,9 +142,6 @@ mat-list-item {
   padding-right: 0;
   cursor: pointer !important;
   height: auto !important;
-
-  &:hover {
-  }
 
   .flex-box {
     display: flex;

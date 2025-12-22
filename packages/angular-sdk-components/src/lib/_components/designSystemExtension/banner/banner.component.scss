@@ -20,6 +20,10 @@
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
+
+  & > *:nth-child(1) {
+    min-width: 0;
+  }
 }
 
 .psdk-grid-filter-narrow-wide {
