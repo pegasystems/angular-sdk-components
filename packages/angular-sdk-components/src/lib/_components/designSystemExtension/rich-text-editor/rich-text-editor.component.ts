@@ -27,7 +27,7 @@ export class RichTextEditorComponent implements OnChanges {
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
   richText = new FormControl();
-  editorConfig : any ={};
+  editorConfig: any = {};
 
   ngOnChanges() {
     if (this.required) {
@@ -43,7 +43,7 @@ export class RichTextEditorComponent implements OnChanges {
     if (this.value) {
       this.richText.setValue(this.value);
     }
-      
+
     const themeElement = document.querySelector('.dark') || document.body;
     let textColor = getComputedStyle(themeElement).getPropertyValue('--mat-sys-on-surface').trim();
     if (!textColor) textColor = '#000000';
@@ -57,10 +57,10 @@ export class RichTextEditorComponent implements OnChanges {
       min_height: 130,
       plugins: ['lists', 'advlist', 'autolink', 'image', 'link', 'autoresize'],
       autoresize_bottom_margin: 0,
-      
+
       toolbar: this.disabled ? false : 'blocks | bold italic strikethrough | bullist numlist outdent indent | link image',
       toolbar_location: 'bottom',
-      
+
       content_style: `
         body { 
           font-family: Helvetica, Arial, sans-serif; 
@@ -69,7 +69,7 @@ export class RichTextEditorComponent implements OnChanges {
           background: transparent !important; 
         }
       `,
-      
+
       branding: false,
       paste_data_images: true,
       file_picker_types: 'image',
