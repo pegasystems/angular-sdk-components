@@ -1,0 +1,172 @@
+@use '@angular/material' as mat;
+
+:host {
+  display: block;
+  background-color: var(--mat-sys-surface, #fff);
+  color: var(--mat-sys-on-surface, #000);
+}
+
+::ng-deep {
+  .tox-tinymce {
+    border: 1px solid var(--mat-sys-outline, #ccc) !important;
+    border-radius: 4px !important;
+  }
+
+  .tox-edit-area__iframe {
+    background-color: transparent !important;
+  }
+
+  .tox .tox-toolbar,
+  .tox .tox-toolbar__primary,
+  .tox .tox-editor-header {
+    background-color: var(--mat-sys-surface-container-high, #f0f0f0) !important;
+    border-bottom: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
+  }
+
+  .tox .tox-tbtn {
+    color: var(--mat-sys-on-surface-variant, #555) !important;
+    background: transparent !important;
+  }
+
+  .tox .tox-tbtn svg {
+    fill: var(--mat-sys-on-surface-variant, #555) !important;
+  }
+
+  .tox .tox-tbtn:hover {
+    background: var(--mat-sys-hover-state-layer-opacity, rgba(0, 0, 0, 0.05)) !important;
+  }
+
+  .tox .tox-tbtn--enabled,
+  .tox .tox-tbtn--enabled:hover {
+    background: var(--mat-sys-secondary-container, #e8def8) !important;
+    color: var(--mat-sys-on-secondary-container, #1d192b) !important;
+  }
+
+  .tox .tox-tbtn--enabled svg {
+    fill: var(--mat-sys-on-secondary-container, #1d192b) !important;
+  }
+
+  .tox .tox-tbtn--select {
+    background-color: transparent !important;
+    margin: 2px 0;
+  }
+
+  .tox .tox-tbtn__select-label {
+    color: var(--mat-sys-on-surface, #000) !important;
+  }
+
+  .tox .tox-tbtn__select-chevron svg {
+    fill: var(--mat-sys-on-surface-variant, #555) !important;
+  }
+
+  .tox .tox-tbtn--select:hover {
+    background-color: var(--mat-sys-hover-state-layer-opacity, rgba(0, 0, 0, 0.05)) !important;
+  }
+
+  .tox .tox-statusbar {
+    background-color: var(--mat-sys-surface-container-high, #f0f0f0) !important;
+    border-top: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
+    color: var(--mat-sys-on-surface-variant, #555) !important;
+  }
+
+  .tox .tox-dialog {
+    background-color: var(--mat-sys-surface-container, #fff) !important;
+    color: var(--mat-sys-on-surface, #000) !important;
+    border: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
+    box-shadow: 0 4px 12px var(--mat-sys-shadow, rgba(0, 0, 0, 0.2)) !important;
+  }
+
+  .tox .tox-dialog__header {
+    background-color: var(--mat-sys-surface-container, #fff) !important;
+    color: var(--mat-sys-on-surface, #000) !important;
+    border-bottom: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
+  }
+
+  .tox .tox-dialog__footer {
+    background-color: var(--mat-sys-surface-container, #fff) !important;
+    border-top: 1px solid var(--mat-sys-outline-variant, #ccc) !important;
+  }
+
+  .tox .tox-dialog-wrap__backdrop {
+    background-color: var(--mat-sys-scrim, rgba(0, 0, 0, 0.5)) !important;
+    opacity: 0.6;
+  }
+
+  .tox .tox-dialog__body input,
+  .tox .tox-dialog__body textarea,
+  .tox .tox-dialog__body select {
+    background-color: transparent !important;
+    color: var(--mat-sys-on-surface, #000) !important;
+    border: 1px solid var(--mat-sys-outline, #ccc) !important;
+    border-radius: 4px !important;
+  }
+
+  .tox .tox-label {
+    color: var(--mat-sys-on-surface-variant, #555) !important;
+  }
+
+  .tox .tox-button--icon--hover:hover {
+    background-color: var(--mat-sys-hover-state-layer-opacity) !important;
+    color: var(--mat-sys-on-surface) !important;
+  }
+
+  .tox .tox-dialog__footer .tox-button {
+    background-color: var(--mat-sys-primary, #6200ee) !important;
+    color: var(--mat-sys-on-primary, #fff) !important;
+    border: none !important;
+  }
+
+  .tox .tox-dialog__footer .tox-button--secondary {
+    background-color: transparent !important;
+    color: var(--mat-sys-primary, #6200ee) !important;
+    border: 1px solid var(--mat-sys-outline, #ccc) !important;
+  }
+}
+
+::ng-deep {
+  .tox .tox-menu {
+    background-color: var(--mat-sys-surface-container, #2e334f) !important;
+    border: 1px solid var(--mat-sys-outline-variant, #404562) !important;
+    box-shadow: 0 4px 10px var(--mat-sys-shadow, rgba(0, 0, 0, 0.3)) !important;
+  }
+
+  .tox .tox-collection__item {
+    color: var(--mat-sys-on-surface, #dde1ff) !important;
+  }
+
+  .tox .tox-collection__item--active {
+    background-color: var(--mat-sys-secondary-container, #810081) !important;
+    color: var(--mat-sys-on-secondary-container, #ffd7f5) !important;
+  }
+
+  .tox .tox-collection__item-icon svg {
+    fill: var(--mat-sys-on-surface, #dde1ff) !important;
+  }
+
+  .tox .tox-collection__item-accessory {
+    color: var(--mat-sys-on-surface-variant, #c0c5e7) !important;
+  }
+
+  .tox .tox-swatches__picker-btn {
+    border-color: var(--mat-sys-outline-variant) !important;
+  }
+
+  .tox .tox-listbox {
+    background-color: transparent !important;
+    border: 1px solid var(--mat-sys-outline, #8a8faf) !important;
+    color: var(--mat-sys-on-surface, #dde1ff) !important;
+  }
+
+  .tox .tox-listbox__select-chevron svg {
+    fill: var(--mat-sys-on-surface-variant, #c0c5e7) !important;
+  }
+
+  .tox .tox-listbox__select-label {
+    color: var(--mat-sys-on-surface, #dde1ff) !important;
+  }
+
+  .tox .tox-listboxfield .tox-listbox--select {
+    background-color: transparent !important;
+    color: var(--mat-sys-on-surface, #dde1ff) !important;
+  }
+}

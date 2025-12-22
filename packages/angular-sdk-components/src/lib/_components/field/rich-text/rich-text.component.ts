@@ -47,6 +47,7 @@ export class RichTextComponent extends FieldBase {
   fieldOnChange(editorValue: any) {
     const oldVal = this.value$ ?? '';
     const newVal = editorValue?.editor?.getBody()?.innerHTML ?? '';
+
     const isValueChanged = newVal.toString() !== oldVal.toString();
 
     if (isValueChanged || this.status === 'error') {
@@ -61,6 +62,7 @@ export class RichTextComponent extends FieldBase {
 
   fieldOnBlur(editorValue: any) {
     const oldVal = this.value$ ?? '';
+
     const isValueChanged = editorValue.toString() !== oldVal.toString();
 
     if (isValueChanged) {
