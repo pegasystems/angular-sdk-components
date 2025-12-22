@@ -7,7 +7,7 @@
     <div *ngIf="bVisible$">
       <component-mapper
         name="RichTextEditor"
-        [props]="configProps$"
+        [props]="{ placeholder, required: bRequired$, disabled: bDisabled$, label: label$, readonly: false, error, info, testId, value: value$ }"
         [parent]="this"
         [outputEvents]="{ onBlur: fieldOnBlur, onChange: fieldOnChange }"
       ></component-mapper>
@@ -17,6 +17,6 @@
 
 <ng-template #noEdit>
   <div *ngIf="bVisible$ !== false">
-    <component-mapper name="RichTextEditor" [props]="configProps$" [parent]="this"></component-mapper>
+    <component-mapper name="RichTextEditor" [props]="{ label: label$, value: value$, readonly: true, testId }" [parent]="this"></component-mapper>
   </div>
 </ng-template>

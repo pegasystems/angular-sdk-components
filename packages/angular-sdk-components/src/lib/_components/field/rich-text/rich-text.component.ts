@@ -26,13 +26,13 @@ export class RichTextComponent extends FieldBase {
    * Updates the component when there are changes in the state.
    */
   override updateSelf(): void {
-    //Resolve config properties
+    // Resolve config properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as RichTextProps;
 
-    //Update component common properties
+    // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
 
-    //Extract and normalize the value property
+    // Extract and normalize the value property
     const { value, helperText } = this.configProps$;
     this.value$ = value;
 
@@ -44,13 +44,14 @@ export class RichTextComponent extends FieldBase {
 
   fieldOnChange(editorValue: any) {
     const oldVal = this.value$ ?? '';
-    const newVal = editorValue?.editor?.getBody()?.innerHTML ?? editorValue ?? '';
+    const newVal = editorValue?.editor?.getBody()?.innerHTML ?? '';
 
     const isValueChanged = newVal.toString() !== oldVal.toString();
 
     if (isValueChanged || this.status === 'error') {
+      const property = this.propName;
       this.pConn$.clearErrorMessages({
-        property: this.propName,
+        property,
         category: '',
         context: ''
       });
