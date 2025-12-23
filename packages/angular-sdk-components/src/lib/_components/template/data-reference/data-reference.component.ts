@@ -6,7 +6,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { getMappedKey } from '../advanced-search/search-group/persist-utils';
 import { componentCachePersistUtils } from '../advanced-search/search-group/persist-utils';
 import { getFirstChildConfig } from '../data-reference/utils';
-import { DataReferenceAdvancedSearchService } from './data-reference-advanced-search.service';
+import { DataReferenceAdvancedSearchService } from '../../../_services/data-reference-advanced-search.service';
 
 const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
 
