@@ -4,13 +4,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import download from 'downloadjs';
+import debounce from 'lodash.debounce';
+
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { getResolvedConstantValue } from '../../../_helpers/object-utils';
 
 interface FileUtilityProps {
   // If any, enter additional props that only exist on this component
   label?: string;
+  caseId?: string;
 }
 
 @Component({
@@ -62,6 +66,8 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   closeSvgIcon$ = '';
 
   currentCaseID = '';
+  debouncedGetAttachments: any;
+  attachSubId;
 
   addAttachmentsActions: any;
 
@@ -77,7 +83,9 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
 
     const configProps: FileUtilityProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
 
-    this.lu_name$ = configProps.label ?? '';
+    const { caseId, label } = configProps;
+
+    this.lu_name$ = label ?? '';
     this.lu_icon$ = 'paper-clip';
 
     this.closeSvgIcon$ = this.utils.getImageSrc('times', this.utils.getSDKStaticContentUrl());
@@ -100,15 +108,23 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     this.removeFileFromList$ = { onClick: this.removeFileFromList.bind(this) };
     this.removeLinksFromList$ = { onClick: this.removeLinksFromList.bind(this) };
 
+    this.debouncedGetAttachments = debounce(this.refreshAttachments.bind(this), 1000);
+
     this.updateSelf();
 
     this.createModalButtons();
 
-    PCore.getPubSubUtils().subscribe(
-      PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW,
-      this.updateSelf.bind(this),
-      'caseAttachmentsUpdateFromCaseview'
-    );
+    const caseID = caseId ?? getResolvedConstantValue(this.pConn$, PCore.getConstants().CASE_INFO.CASE_INFO_ID);
+
+    const attachSubObject = {
+      matcher: 'ATTACHMENTS',
+      criteria: {
+        ID: caseID
+      }
+    };
+    this.attachSubId = PCore.getMessagingServiceManager().subscribe(attachSubObject, this.debouncedGetAttachments, this.pConn$.getContextName());
+
+    this.debouncedGetAttachments();
   }
 
   ngOnDestroy(): void {
@@ -116,7 +132,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       this.angularPConnectData.unsubscribeFn();
     }
 
-    PCore.getPubSubUtils().unsubscribe(PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, 'caseAttachmentsUpdateFromCaseview');
+    PCore.getMessagingServiceManager().unsubscribe(this.attachSubId);
   }
 
   // Callback passed when subscribing to store change
@@ -136,7 +152,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     }
   }
 
-  onAttachFiles(files) {
+  onAttachFiles(files: any[] = []) {
     const attachmentUtils = PCore.getAttachmentUtils();
     const caseID = this.pConn$.getValue(PCore.getConstants().CASE_INFO.CASE_INFO_ID);
 
