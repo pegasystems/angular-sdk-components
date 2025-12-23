@@ -64,7 +64,6 @@ export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
 export * from './lib/_components/template/confirmation/confirmation.component';
 export * from './lib/_components/template/data-reference/data-reference.component';
-export * from './lib/_components/template/data-reference/data-reference-advanced-search.service';
 export * from './lib/_components/template/data-reference/search-form/tabsData';
 export * from './lib/_components/template/data-reference/search-form/search-form.component';
 export * from './lib/_components/template/data-reference/utils';
@@ -138,6 +137,7 @@ export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';
 export * from './lib/_services/google-maps-loader.service';
 export * from './lib/_services/server-config.service';
+export * from './lib/_services/data-reference-advanced-search.service';
 
 export * from './lib/_helpers/case-utils';
 export * from './lib/_helpers/common';
@@ -160,6 +160,7 @@ export * from './lib/_helpers/tab-utils';
 export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
 export * from './lib/_helpers/versionHelpers';
+export * from './lib/_helpers/object-utils';
 
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/progress-spinner.service';

@@ -2,7 +2,7 @@ import { Component, forwardRef, Input, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { DataReferenceAdvancedSearchService } from '../data-reference/data-reference-advanced-search.service';
+import { DataReferenceAdvancedSearchService } from '../../../_services/data-reference-advanced-search.service';
 import { getFirstChildConfig } from '../data-reference/utils';
 
 @Component({
