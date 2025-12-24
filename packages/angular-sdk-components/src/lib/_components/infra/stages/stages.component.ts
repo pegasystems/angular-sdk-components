@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
+import { MatIcon } from '@angular/material/icon';
 
 interface StagesProps {
   // If any, enter additional props that only exist on this component
@@ -13,7 +14,7 @@ interface StagesProps {
   selector: 'app-stages',
   templateUrl: './stages.component.html',
   styleUrls: ['./stages.component.scss'],
-  imports: [CommonModule]
+  imports: [CommonModule, MatIcon]
 })
 export class StagesComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

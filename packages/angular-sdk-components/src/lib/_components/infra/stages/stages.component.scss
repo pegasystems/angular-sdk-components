@@ -24,6 +24,7 @@
   width: 1.4rem;
   display: inline-block;
   vertical-align: top;
+  margin-right: 2px;
 }
 
 .psdk-stages-bar {
@@ -66,6 +67,8 @@
 .psdk-stages-inner-past {
   color: var(--mat-sys-outline-variant);
   font-size: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .psdk-stages-inner-present {

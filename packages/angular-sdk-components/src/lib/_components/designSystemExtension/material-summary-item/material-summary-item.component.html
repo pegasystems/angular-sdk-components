@@ -1,6 +1,7 @@
 <div class="psdk-utility-card">
   <div class="psdk-utility-card-icon">
-    <img class="psdk-utility-card-svg-icon" src="{{ imagePath$ }}{{ item$.visual.icon }}.svg" />
+    <!-- <img class="psdk-utility-card-svg-icon" src="{{ imagePath$ }}{{ item$.visual.icon }}.svg" /> -->
+    <mat-icon class="psdk-attachment-icon" fontSet="material-icons-outlined">description</mat-icon>
   </div>
   <div class="psdk-utility-card-main">
     <div *ngIf="item$.primary.type == 'URL'" class="psdk-utility-card-main-primary-url">
@@ -30,7 +31,7 @@
     </div>
     <ng-template #showCustom>
       <button id="delete-attachment" mat-icon-button (click)="menuIconOverrideAction$.onClick(item$)">
-        <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
+         <mat-icon>delete</mat-icon>
       </button>
     </ng-template>
   </div>

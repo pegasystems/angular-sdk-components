@@ -37,7 +37,6 @@
 .psdk-utility .header-text {
   font-size: 1rem;
   font-weight: bold;
-  padding-bottom: 0.3125rem;
   text-align: left;
   display: inline-block;
 }
@@ -55,7 +54,6 @@
   position: relative;
 }
 .psdk-utility .header {
-  text-align: left;
   display: flex;
   align-items: center;
 }
@@ -129,3 +127,10 @@
   display: inline-block;
   vertical-align: bottom;
 }
+
+.psdk-list-utility-icon {
+    font-size: 1.2rem; /* Adjust the size as needed */
+    width: 1.2rem;
+    height: 1.2rem;
+    line-height: 1.2rem;
+  }

@@ -5,12 +5,13 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-list-utility',
   templateUrl: './list-utility.component.html',
   styleUrls: ['./list-utility.component.scss'],
-  imports: [CommonModule, MatButtonModule, MatMenuModule, MatProgressSpinnerModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, MatButtonModule, MatMenuModule, MatIcon, MatProgressSpinnerModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ListUtilityComponent implements OnInit {
   @Input() name$ = '';

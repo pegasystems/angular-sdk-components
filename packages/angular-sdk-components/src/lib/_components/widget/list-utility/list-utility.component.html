@@ -1,22 +1,18 @@
 <div style="text-align: left">
   <div class="psdk-utility">
     <div class="header">
-      <div class="header-icon">
-        <img class="psdk-utility-svg-icon" src="{{ headerSvgIcon$ }}" />
-      </div>
+      <mat-icon class="psdk-list-utility-icon" fontSet="material-icons-outlined">attach_file</mat-icon>
       <div class="header-text">{{ name$ }}</div>
       <div class="psdk-utility-count" id="attachments-count">{{ count$ }}</div>
       <div style="flex-grow: 1"></div>
-      <div class="header-icon">
-        <button id="file-menu" mat-icon-button [matMenuTriggerFor]="utilityMenu">
-          <img class="psdk-utility-card-actions-svg-icon" src="{{ settingsSvgIcon$ }}" />
-        </button>
-        <mat-menu #utilityMenu="matMenu" overlapTrigger="false">
-          <ng-container *ngFor="let action of arActions$">
-            <button mat-menu-item (click)="action.onClick()">{{ action.text }}</button>
-          </ng-container>
-        </mat-menu>
-      </div>
+      <button mat-icon-button id="file-menu" [matMenuTriggerFor]="utilityMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #utilityMenu="matMenu" overlapTrigger="false">
+        <ng-container *ngFor="let action of arActions$">
+          <button mat-menu-item (click)="action.onClick()">{{ action.text }}</button>
+        </ng-container>
+      </mat-menu>
     </div>
     <div class="psdk-utiltiy-divider"></div>
     <br />
