@@ -1,7 +1,8 @@
 <div class="psdk-stages-bar">
   <div class="psdk-stages-chevron" *ngFor="let stage of arStageResults$">
     <div *ngIf="stage.visited_status == 'completed'" class="psdk-stages-inner-past">
-      <img class="psdk-stages-icon" src="{{ checkSvgIcon$ }}" />{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}
+      <img class="psdk-stages-icon" src="{{ checkSvgIcon$ }}" />
+      <div>{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}</div>
     </div>
     <div *ngIf="stage.visited_status == 'active'" class="psdk-stages-inner-present">
       {{ localizationService.getLocalizedText(stage.name) }}

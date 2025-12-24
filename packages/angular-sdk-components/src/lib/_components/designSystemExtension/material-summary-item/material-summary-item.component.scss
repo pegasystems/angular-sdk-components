@@ -62,6 +62,7 @@
 .psdk-utility-card-icon {
   flex-grow: 1;
   max-width: 2.813rem;
+  filter: var(--app-primary-color-filter);
 }
 
 .psdk-utility-card-svg-icon {
@@ -107,4 +108,5 @@
   width: 1.4rem;
   display: inline-block;
   vertical-align: bottom;
+  filter: var(--app-primary-color-filter);
 }
