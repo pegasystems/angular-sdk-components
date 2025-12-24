@@ -63,6 +63,7 @@
 .psdk-utility-svg-icon {
   width: 1.4rem;
   display: inline-block;
+  filter: var(--app-primary-color-filter);
 }
 
 .psdk-settings-svg-icon {
