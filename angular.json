@@ -110,7 +110,9 @@
               "projects/angular-test-app/src/favicon.ico",
               "projects/angular-test-app/src/assets/img"
             ],
-            "styles": ["projects/angular-test-app/src/styles.scss"],
+            "styles": [
+              "projects/angular-test-app/src/styles.scss"
+            ],
             "scripts": ["./node_modules/tinymce/tinymce.min.js"],
             "customWebpackConfig": {
               "path": "./scripts/extra-webpack.config.js"
