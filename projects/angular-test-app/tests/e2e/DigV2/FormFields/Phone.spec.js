@@ -56,19 +56,19 @@ test.describe('E2E test', () => {
     // /** Disable tests */
     const alwaysDisabledPhone = page.locator('mat-tel-input[data-test-id="d415da67e9764d6e7cdf3d993cb54f51"] >> input');
     attributes = await common.getAttributes(alwaysDisabledPhone);
-    await expect(attributes.includes('disabled')).toBeTruthy();
+    expect(attributes.includes('disabled')).toBeTruthy();
 
     const conditionallyDisabledPhone = page.locator('mat-tel-input[data-test-id="b6cee3728235ed1f6cef7b11ac850ea9"] >> input');
     attributes = await common.getAttributes(conditionallyDisabledPhone);
     if (isDisabled) {
-      await expect(attributes.includes('disabled')).toBeTruthy();
+      expect(attributes.includes('disabled')).toBeTruthy();
     } else {
-      await expect(attributes.includes('disabled')).toBeFalsy();
+      expect(attributes.includes('disabled')).toBeFalsy();
     }
 
     const neverDisabledPhone = page.locator('mat-tel-input[data-test-id="b23e38f877c8a40f18507b39893a8d61"] >> input');
     attributes = await common.getAttributes(neverDisabledPhone);
-    await expect(attributes.includes('disabled')).toBeFalsy();
+    expect(attributes.includes('disabled')).toBeFalsy();
 
     /** Selecting Update from the Sub Category dropdown */
     await common.selectSubCategory('Update', page);
@@ -102,11 +102,14 @@ test.describe('E2E test', () => {
 
     /** Entering a valid Phone number */
     await editablePhoneInput.clear();
+    /** Todo: Modified this script because mat-tel-input doesn't provide blur event and fix need to be implemented in blur callback
+     * Keeping this comment for reference until this control provides blur callback
+     */
+    await editablePhoneInput.fill('6175551212');
+    await editablePhoneInput.blur();
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();
-    await editablePhoneInput.fill('6175551212');
 
-    await editablePhoneInput.blur();
     /** Expecting the invalid Phone number error be no longer present */
     await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeHidden();
 

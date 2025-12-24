@@ -245,7 +245,9 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.fileInput.nativeElement.value = '';
+    if (this.fileInput?.nativeElement) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 
   onFileAdded(event) {

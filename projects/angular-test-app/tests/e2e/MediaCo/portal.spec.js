@@ -105,9 +105,10 @@ test.describe('E2E test', () => {
     const todo = await page.locator('div[class="psdk-todo-assignments"]');
     await expect(todo).toBeVisible();
 
-    // Todo: This will be fixed as part of BUG-960405
-    // const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
-    // await expect(Number(attachmentCount)).toBeGreaterThan(0);
+    await expect(page.locator('button[id="setting-button"] >> nth=0')).toBeVisible();
+
+    const attachmentCount = await page.locator('div[id="attachments-count"]').textContent();
+    expect(Number(attachmentCount)).toBeGreaterThan(0);
   }, 10000);
 
   test('should enter a discount value($) and send to tech', async ({ page }) => {
