@@ -338,7 +338,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   populateErrorAndUpdateRedux(file) {
-    console.log('populateErrorAndUpdateRedux');
     const fieldName = (this.pConn$.getStateProps() as any).value;
     // set errors to property to block submit even on errors in file upload
     PCore.getMessageManager().addMessages({
