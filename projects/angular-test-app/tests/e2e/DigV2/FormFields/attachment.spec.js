@@ -91,24 +91,19 @@ test.describe('E2E test', () => {
     /** Testing invalid attachment case by uploading an empty file */
     await page.setInputFiles(`#AttachmentList`, [zeroBytesFilePath]);
     await expect(page.locator(`div >> text="Empty file can't be uploaded."`)).toBeVisible();
-
     await page.locator('div[class="psdk-attachment-card"]').filter({ hasText: 'Unable to upload file' }).locator('#delete-attachment').click();
-
     await page.locator('button:has-text("submit")').click();
 
-    // Raised bug BUG-960405
-    // await page.locator('button[id="setting-button"] >> nth=0').click();
+    /** Download attachment */
+    await page.locator('button[id="setting-button"] >> nth=0').click();
+    const menuSelector = await page.locator('div[role="menu"]');
+    await menuSelector.locator('button >> text="Download"').click();
 
-    // /** Download attachment */
-    // const menuSelector = await page.locator('div[role="menu"]');
-    // await menuSelector.locator('button >> text="Download"').click();
-
-    // await page.locator('button[id="setting-button"] >> nth=0').click();
-
-    // /** Delete attachment */
-    // await menuSelector.locator('button >> text="Delete"').click();
-    // await expect(page.locator('div >> text="cableinfo.jpg"')).toBeVisible();
-    // await expect(page.locator('div >> text="cablechat.jpg"')).toBeHidden();
+    /** Delete attachment */
+    await page.locator('button[id="setting-button"] >> nth=0').click();
+    await menuSelector.locator('button >> text="Delete"').click();
+    await expect(page.locator('div >> text="cableinfo.jpg"')).toBeVisible();
+    await expect(page.locator('div >> text="cablechat.jpg"')).toBeHidden();
   }, 10000);
 });
 
