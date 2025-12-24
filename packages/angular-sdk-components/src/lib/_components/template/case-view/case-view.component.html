@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div>
+    <div *ngIf="tabData$">
       <component-mapper name="DeferLoad" [props]="{ pConn$, name: tabData$?.config?.name }"></component-mapper>
     </div>
   </div>
