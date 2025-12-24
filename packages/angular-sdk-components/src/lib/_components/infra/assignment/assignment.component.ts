@@ -435,12 +435,13 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
           const finishPromise = this.finishAssignment(this.itemKey$); // JA - was itemID but Nebula/Constellation uses itemKey
           finishPromise
             .then(() => {
-              this.psService.sendMessage(false);
               this.updateChanges();
             })
             .catch(() => {
-              this.psService.sendMessage(false);
               this.snackBarRef = this.snackBar.open(`${this.localizedVal('Submit failed!', this.localeCategory)}`, 'Ok');
+            })
+            .finally(() => {
+              this.psService.sendMessage(false);
             });
           break;
 
@@ -450,8 +451,10 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
           approvePromise
             .then(() => {})
             .catch(() => {
-              this.psService.sendMessage(false);
               this.snackBarRef = this.snackBar.open(`${this.localizedVal('Approve failed!', this.localeCategory)}`, 'Ok');
+            })
+            .finally(() => {
+              this.psService.sendMessage(false);
             });
 
           break;

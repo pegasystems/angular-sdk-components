@@ -156,8 +156,16 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     this.displayMode = displayMode;
     this.isMultiAttachmentInInlineEditTable = isTableFormatter && allowMultiple && editMode === 'tableRows';
 
+    const rawValue = this.pConn$.getComponentConfig().value;
+    const isAttachmentAnnotationPresent = typeof rawValue === 'object' ? false : rawValue?.includes('@ATTACHMENT');
+    const { attachments, isOldAttachment } = isAttachmentAnnotationPresent ? value : PCore.getAttachmentUtils().prepareAttachmentData(value);
+    this.isOldAttachment = isOldAttachment;
+    this.attachments = attachments;
+
     // update the attachments shown in the UI
-    this.updateAttachments();
+    if (this.attachments.length) {
+      this.updateAttachments();
+    }
   }
 
   updateAttachments() {
@@ -330,6 +338,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
   }
 
   populateErrorAndUpdateRedux(file) {
+    console.log('populateErrorAndUpdateRedux');
     const fieldName = (this.pConn$.getStateProps() as any).value;
     // set errors to property to block submit even on errors in file upload
     PCore.getMessageManager().addMessages({
@@ -439,12 +448,13 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           if (this.filesWithError?.length === 0) {
             clearFieldErrorMessages(this.pConn$);
           }
-
-          this.actionSequencer.deRegisterBlockingAction(this.contextName).catch(() => {});
         }
+
+        this.actionSequencer.deRegisterBlockingAction(this.contextName).catch(() => {});
       })
       .catch(error => {
         console.log(error);
+        this.actionSequencer.cancelDeferredActionsOnError(this.contextName);
       });
   }
 
