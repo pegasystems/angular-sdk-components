@@ -126,6 +126,7 @@
 
 .psdk-attachment-card-svg-icon {
   width: 2.5rem;
+  filter: var(--app-primary-color-filter);
 }
 
 .psdk-utility-button {
@@ -138,6 +139,7 @@
 .psdk-utility-card-action-svg-icon {
   width: 1.4rem;
   display: inline-block;
+  filter: var(--app-primary-color-filter);
 }
 
 .file-div {
