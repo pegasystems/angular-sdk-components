@@ -159,11 +159,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     const rawValue = this.pConn$.getComponentConfig().value;
     const isAttachmentAnnotationPresent = typeof rawValue === 'object' ? false : rawValue?.includes('@ATTACHMENT');
     const { attachments, isOldAttachment } = isAttachmentAnnotationPresent ? value : PCore.getAttachmentUtils().prepareAttachmentData(value);
+    const isAttachmentsChanged = !PCore.isDeepEqual(this.attachments, attachments);
     this.isOldAttachment = isOldAttachment;
     this.attachments = attachments;
 
     // update the attachments shown in the UI
-    if (this.attachments.length) {
+    if (isAttachmentsChanged) {
       this.updateAttachments();
     }
   }
@@ -421,6 +422,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
               fileResponses[index].value.thumbnail = localFile.props.thumbnail;
               localFile.inProgress = false;
               localFile.ID = fileResponses[index].value.ID;
+              localFile.props.id = fileResponses[index].value.ID;
               localFile.props.meta = this.localizationService.getLocalizedText('Uploaded successfully');
               localFile.props.progress = 100;
               localFile.handle = fileResponses[index].value.ID;
