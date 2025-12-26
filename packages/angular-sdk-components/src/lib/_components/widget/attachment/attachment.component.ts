@@ -159,7 +159,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     const rawValue = this.pConn$.getComponentConfig().value;
     const isAttachmentAnnotationPresent = typeof rawValue === 'object' ? false : rawValue?.includes('@ATTACHMENT');
     const { attachments, isOldAttachment } = isAttachmentAnnotationPresent ? value : PCore.getAttachmentUtils().prepareAttachmentData(value);
-    const isAttachmentsChanged = !PCore.isDeepEqual(this.attachments, attachments); // JSON.stringify(this.attachments) !== JSON.stringify(attachments);
+    const isAttachmentsChanged = !PCore.isDeepEqual(this.attachments, attachments);
     this.isOldAttachment = isOldAttachment;
     this.attachments = attachments;
 
