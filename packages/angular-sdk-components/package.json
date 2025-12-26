@@ -1,6 +1,6 @@
 {
   "name": "@pega/angular-sdk-components",
-  "version": "0.25.1",
+  "version": "25.1.10",
   "peerDependencies": {
     "@angular/animations": "^19.0.0",
     "@angular/cdk": "^19.0.0",
