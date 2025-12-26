@@ -58,7 +58,10 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     // update itself (re-render)
     const theRequestedAssignment = this.pConn$.getValue(PCore.getConstants().CASE_INFO.ASSIGNMENT_LABEL);
     const lastUpdateCaseTime = this.pConn$.getValue('caseInfo.lastUpdateTime');
-    if (theRequestedAssignment !== this.currentLoadedAssignment || (lastUpdateCaseTime && lastUpdateCaseTime !== this.lastUpdateCaseTime)) {
+    if (
+      (theRequestedAssignment && theRequestedAssignment !== this.currentLoadedAssignment) ||
+      (lastUpdateCaseTime && lastUpdateCaseTime !== this.lastUpdateCaseTime)
+    ) {
       this.currentLoadedAssignment = theRequestedAssignment;
       this.lastUpdateCaseTime = lastUpdateCaseTime;
       this.updateSelf();
@@ -155,6 +158,8 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
         console.error('Cannot load the defer loaded view without container information');
       }
     } else if (this.resourceType === this.PAGE) {
+      if (!this.loadViewCaseID) return;
+
       // Rendering defer loaded tabs in case/ page context
       this.pConn$
         .getActionsApi()
