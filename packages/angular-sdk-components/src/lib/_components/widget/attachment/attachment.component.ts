@@ -159,11 +159,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
     const rawValue = this.pConn$.getComponentConfig().value;
     const isAttachmentAnnotationPresent = typeof rawValue === 'object' ? false : rawValue?.includes('@ATTACHMENT');
     const { attachments, isOldAttachment } = isAttachmentAnnotationPresent ? value : PCore.getAttachmentUtils().prepareAttachmentData(value);
+    const isAttachmentsChanged = !PCore.isDeepEqual(this.attachments, attachments); // JSON.stringify(this.attachments) !== JSON.stringify(attachments);
     this.isOldAttachment = isOldAttachment;
     this.attachments = attachments;
 
     // update the attachments shown in the UI
-    if (this.attachments.length) {
+    if (isAttachmentsChanged) {
       this.updateAttachments();
     }
   }
@@ -339,12 +340,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   populateErrorAndUpdateRedux(file) {
     const fieldName = (this.pConn$.getStateProps() as any).value;
-    insertAttachments([file], this.pConn$, this.multiAttachmentsInInlineEdit, {
-      allowMultiple: this.allowMultiple$,
-      isOldAttachment: this.isOldAttachment,
-      isMultiAttachmentInInlineEditTable: this.isMultiAttachmentInInlineEditTable,
-      attachmentCount: this.attachmentCount
-    } as any);
     // set errors to property to block submit even on errors in file upload
     PCore.getMessageManager().addMessages({
       messages: [
@@ -357,6 +352,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       pageReference: this.pConn$.getPageReference(),
       context: this.contextName
     });
+    insertAttachments([file], this.pConn$, this.multiAttachmentsInInlineEdit, {
+      allowMultiple: this.allowMultiple$,
+      isOldAttachment: this.isOldAttachment,
+      isMultiAttachmentInInlineEditTable: this.isMultiAttachmentInInlineEditTable,
+      attachmentCount: this.attachmentCount
+    } as any);
   }
 
   errorHandler(isFetchCanceled, file) {
@@ -421,6 +422,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
               fileResponses[index].value.thumbnail = localFile.props.thumbnail;
               localFile.inProgress = false;
               localFile.ID = fileResponses[index].value.ID;
+              localFile.props.id = fileResponses[index].value.ID;
               localFile.props.meta = this.localizationService.getLocalizedText('Uploaded successfully');
               localFile.props.progress = 100;
               localFile.handle = fileResponses[index].value.ID;
