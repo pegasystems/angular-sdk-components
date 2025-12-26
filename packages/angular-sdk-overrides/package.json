@@ -1,6 +1,6 @@
 {
   "name": "@pega/angular-sdk-overrides",
-  "version": "0.25.1",
+  "version": "25.1.10",
   "description": "Angular SDK - Code for overriding components",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
