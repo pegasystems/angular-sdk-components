@@ -48,7 +48,7 @@ You can see the full license [here](LICENSE) or directly on [apache.org](https:/
 
 ## Contributing
 
-We welcome contributions to the Anguar SDK Components project.
+We welcome contributions to the Angular SDK Components project.
 
 Refer to our [guidelines for contributors](./docs/CONTRIBUTING.md) if you are interested in contributing to the project.
 
@@ -56,10 +56,10 @@ Refer to our [guidelines for contributors](./docs/CONTRIBUTING.md) if you are in
 
 ## Additional Resources
 
-* [Constellaton Angular SDK on Pega Community](https://community.pega.com/marketplace/component/angular-sdk)
+* [Constellation Angular SDK on Pega Community](https://community.pega.com/marketplace/component/angular-sdk)
 * [Constellation Angular SDK code](https://github.com/pegasystems/angular-sdk)
 * [Constellation SDKs Documentation](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/constellation-sdks.html)
 * [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html)
 * [MediaCo sample application](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/mediaco-sample-application.html)
-* [Angular 15](https://angular.io/)
+* [Angular](https://angular.io/)
 * [Angular Material](https://v15.material.angular.io/)
