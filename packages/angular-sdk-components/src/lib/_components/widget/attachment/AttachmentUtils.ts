@@ -126,8 +126,7 @@ export const updateReduxState = (
   valueRef: string,
   options: PageInstructionOptions
 ) => {
-  const { allowMultiple, isOldAttachment, insertRedux, deleteRedux } = options;
-  let deleteIndex = -1;
+  const { allowMultiple, isOldAttachment, insertRedux, deleteRedux, deleteIndex } = options;
 
   if (allowMultiple || isOldAttachment) {
     transformedAttachments.forEach(attachment => {
@@ -147,11 +146,6 @@ export const updateReduxState = (
         };
         PCore.getStore()?.dispatch(actionPayLoad);
       } else if (deleteRedux) {
-        const uniqueKey = getMappedValue('pzInsKey');
-        deleteIndex = existingAttachments.findIndex(
-          existingAttachment =>
-            existingAttachment[uniqueKey as keyof ReduxAttachments] === transformedAttachments[0][uniqueKey as keyof ReduxAttachments]
-        );
         const actionPayLoad = {
           type: 'LIST_ACTION',
           payload: {

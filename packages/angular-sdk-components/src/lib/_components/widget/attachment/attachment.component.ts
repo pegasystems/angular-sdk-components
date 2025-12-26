@@ -339,6 +339,12 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   populateErrorAndUpdateRedux(file) {
     const fieldName = (this.pConn$.getStateProps() as any).value;
+    insertAttachments([file], this.pConn$, this.multiAttachmentsInInlineEdit, {
+      allowMultiple: this.allowMultiple$,
+      isOldAttachment: this.isOldAttachment,
+      isMultiAttachmentInInlineEditTable: this.isMultiAttachmentInInlineEditTable,
+      attachmentCount: this.attachmentCount
+    } as any);
     // set errors to property to block submit even on errors in file upload
     PCore.getMessageManager().addMessages({
       messages: [
@@ -351,12 +357,6 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       pageReference: this.pConn$.getPageReference(),
       context: this.contextName
     });
-    insertAttachments([file], this.pConn$, this.multiAttachmentsInInlineEdit, {
-      allowMultiple: this.allowMultiple$,
-      isOldAttachment: this.isOldAttachment,
-      isMultiAttachmentInInlineEditTable: this.isMultiAttachmentInInlineEditTable,
-      attachmentCount: this.attachmentCount
-    } as any);
   }
 
   errorHandler(isFetchCanceled, file) {
