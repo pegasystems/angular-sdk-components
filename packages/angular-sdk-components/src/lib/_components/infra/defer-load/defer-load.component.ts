@@ -61,7 +61,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
     if (theRequestedAssignment !== this.currentLoadedAssignment || (lastUpdateCaseTime && lastUpdateCaseTime !== this.lastUpdateCaseTime)) {
       this.currentLoadedAssignment = theRequestedAssignment;
       this.lastUpdateCaseTime = lastUpdateCaseTime;
-      this.updateSelf();
+      this.loadActiveTab();
     }
   }
 
