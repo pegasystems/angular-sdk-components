@@ -12,7 +12,7 @@
     <div [formGroup]="formGroup$" *ngIf="bVisible$">
       <div class="mat-form-field-infix" *ngIf="showLabel$">
         <span>
-          <label class="mat-form-field-label psdk-label-readonly" [ngClass]="{ 'checkbox-label': bRequired$ && selectionMode === 'multi' }">{{
+          <label class="mat-form-field-label psdk-label-readonly" [ngClass]="{ 'label-required': bRequired$ && selectionMode === 'multi' }">{{
             label$
           }}</label>
         </span>
@@ -40,7 +40,7 @@
           [formControl]="fieldControl"
           (change)="fieldOnChange($event)"
           (blur)="fieldOnBlur($event)"
-          ><span [ngClass]="{ 'checkbox-label': bRequired$ }">{{ caption$ }}</span></mat-checkbox
+          ><span [ngClass]="{ 'label-required': bRequired$ }">{{ caption$ }}</span></mat-checkbox
         >
         <p *ngIf="helperText">{{ helperText }}</p>
       </ng-template>

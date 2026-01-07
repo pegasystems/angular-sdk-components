@@ -35,7 +35,7 @@ mat-checkbox {
   margin-left: -16px;
 }
 
-.checkbox-label::after {
+.label-required::after {
   display: inline;
   content: ' *';
   vertical-align: top;
