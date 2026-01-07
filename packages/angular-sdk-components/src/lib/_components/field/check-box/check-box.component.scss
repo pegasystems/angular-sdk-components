@@ -34,3 +34,9 @@ mat-checkbox {
 .mat-mdc-option {
   margin-left: -16px;
 }
+
+.checkbox-label::after {
+  display: inline;
+  content: ' *';
+  vertical-align: top;
+}
