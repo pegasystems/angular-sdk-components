@@ -1,6 +1,6 @@
 {
   "name": "@pega/angular-sdk-components",
-  "version": "25.1.10",
+  "version": "25.1.11",
   "description": "Angular SDK packaging: bridge and components, overrides",
   "main": "index.ts",
   "private": true,
