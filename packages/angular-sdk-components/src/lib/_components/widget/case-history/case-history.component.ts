@@ -11,7 +11,6 @@ interface CaseHistoryProps {
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {

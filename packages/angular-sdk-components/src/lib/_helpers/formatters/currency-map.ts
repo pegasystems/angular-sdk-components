@@ -1,4 +1,3 @@
-/* eslint-disable no-template-curly-in-string */
 const EURO = {
   name: 'Euro (EUR)',
   symbolFormat: '\u20AC{#}',

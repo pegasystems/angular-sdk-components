@@ -44,7 +44,7 @@
           <td mat-cell *matCellDef="let element; index as j">
             <div class="header-icon">
               <button mat-icon-button [matMenuTriggerFor]="utilityMenu">
-                <img class="psdk-utility-card-actions-svg-icon" src="{{ settingsSvgIcon$ }}" />
+                <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #utilityMenu="matMenu" overlapTrigger="false">
                 <button mat-menu-item (click)="editRecord(element, j)">Edit</button>
@@ -58,7 +58,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       <tr class="mat-row psdk-no-records" *matNoDataRow>
         <td id="no-records" class="mat-cell" [attr.colspan]="displayedColumns.length">
-          {{ utils.getGenericFieldsLocalizedValue('CosmosFields.fields.lists', 'No records found.') }}
+          {{ utils.getGenericFieldsLocalizedValue('COSMOSFIELDS.lists', 'No records found.') }}
         </td>
       </tr>
     </table>
@@ -82,7 +82,7 @@
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let element; index as j">
           <button id="delete-button" mat-icon-button (click)="deleteRecord(j)">
-            <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
+            <mat-icon>delete</mat-icon>
           </button>
         </td>
       </ng-container>
@@ -90,7 +90,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       <tr class="mat-row psdk-no-records" *matNoDataRow>
         <td id="no-records" class="mat-cell" [attr.colspan]="displayedColumns.length">
-          {{ utils.getGenericFieldsLocalizedValue('CosmosFields.fields.lists', 'No records found.') }}
+          {{ utils.getGenericFieldsLocalizedValue('COSMOSFIELDS.lists', 'No records found.') }}
         </td>
       </tr>
     </table>

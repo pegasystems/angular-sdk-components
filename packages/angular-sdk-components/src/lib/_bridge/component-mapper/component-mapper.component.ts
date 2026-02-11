@@ -9,7 +9,6 @@ const componentsRequireDisplayOnlyFAProp: string[] = ['HybridViewContainer', 'Mo
   selector: 'component-mapper',
   templateUrl: './component-mapper.component.html',
   styleUrls: ['./component-mapper.component.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
@@ -19,7 +18,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   public componentRef: ComponentRef<any> | undefined;
   public isInitialized = false;
 
-  @Input() name = '';
+  @Input() name?: string = '';
   @Input() props: any;
   @Input() errorMsg = '';
   @Input() outputEvents: any;
@@ -44,7 +43,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   loadComponent() {
-    const component = getComponentFromMap(this.name);
+    const component = getComponentFromMap(this.name || '');
 
     if (this.dynamicComponent) {
       this.dynamicComponent.clear();
@@ -68,8 +67,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
           if (propsValues[i] !== undefined) {
             // We'll set 'displayOnlyFA$' prop only to the components which really need it
             // Eventual plan is to get rid of this particular prop
-            if (propsKeys[i] === 'displayOnlyFA$' && !componentsRequireDisplayOnlyFAProp.includes(this.name)) {
-              // eslint-disable-next-line no-continue
+            if (propsKeys[i] === 'displayOnlyFA$' && !componentsRequireDisplayOnlyFAProp.includes(this.name || '')) {
               continue;
             }
             this.componentRef?.setInput(propsKeys[i], propsValues[i]);

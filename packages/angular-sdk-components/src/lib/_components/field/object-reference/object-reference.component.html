@@ -1,0 +1,17 @@
+<div *ngIf="isDisplayModeEnabled && !canBeChangedInReviewMode; else semanticLinkCheck">
+  <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$ }"></component-mapper>
+</div>
+<ng-template #semanticLinkCheck>
+  <div *ngIf="type === 'SemanticLink' && !canBeChangedInReviewMode; else loadDynamicComp">
+    <component-mapper name="SemanticLink" [props]="{ pConn$: newPconn }"></component-mapper>
+  </div>
+</ng-template>
+<ng-template #loadDynamicComp>
+  <component-mapper
+    *ngIf="newComponentName"
+    [name]="newComponentName"
+    [props]="{ pConn$: newPconn, formGroup$ }"
+    [parent]="this"
+    [outputEvents]="{ onRecordChange: onRecordChange }"
+  ></component-mapper>
+</ng-template>

@@ -1,54 +1,44 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
+import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-cancel-alert',
   templateUrl: './cancel-alert.component.html',
   styleUrls: ['./cancel-alert.component.scss'],
-  standalone: true,
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+  imports: [CommonModule, MatGridListModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() bShowAlert$: boolean;
   @Output() onAlertState$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  heading$: string;
-  body1$: string;
-  body2$: string;
   itemKey: string;
   localizedVal: Function;
   localeCategory = 'ModalContainer';
+  discardButton: any;
+  goBackButton: any;
 
   constructor(private psService: ProgressSpinnerService) {}
   ngOnChanges() {
     if (this.bShowAlert$) {
       this.psService.sendMessage(false);
-
       const contextName = this.pConn$.getContextName();
-      const caseInfo = this.pConn$.getCaseInfo();
-      const caseName = caseInfo.getName();
-      const ID = caseInfo.getID();
       this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
-
       this.itemKey = contextName;
-      this.heading$ = `Delete ${caseName} (${ID})`;
-      this.body1$ = `${this.localizedVal('Are you sure you want to delete ', this.localeCategory) + caseName} (${ID})?`;
-      this.body2$ = this.localizedVal('Alternatively, you can continue working or save your work for later.', this.localeCategory);
-
-      // this.onAlertState$.emit(true);
+      this.createCancelAlertButtons();
     }
   }
 
-  dismissAlert() {
+  dismissAlertOnly() {
     this.bShowAlert$ = false;
     this.onAlertState$.emit(false);
   }
 
-  dismissAlertOnly() {
+  dismissAlert() {
     this.bShowAlert$ = false;
     this.onAlertState$.emit(true);
   }
@@ -57,31 +47,28 @@ export class CancelAlertComponent implements OnChanges {
     alert(sMessage);
   }
 
-  buttonClick(sAction) {
+  createCancelAlertButtons() {
+    this.discardButton = {
+      actionID: 'discard',
+      jsAction: 'discard',
+      name: this.pConn$.getLocalizedValue('Discard', '', '')
+    };
+    this.goBackButton = {
+      actionID: 'continue',
+      jsAction: 'continue',
+      name: this.pConn$.getLocalizedValue('Go back', '', '')
+    };
+  }
+
+  buttonClick({ action }) {
     const actionsAPI = this.pConn$.getActionsApi();
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
-    switch (sAction) {
-      case 'save':
-        this.psService.sendMessage(true);
-        // eslint-disable-next-line no-case-declarations
-        const savePromise = actionsAPI.saveAndClose(this.itemKey);
-        savePromise
-          .then(() => {
-            this.psService.sendMessage(false);
-            this.dismissAlert();
-
-            PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CASE_CREATED);
-          })
-          .catch(() => {
-            this.psService.sendMessage(false);
-            this.sendMessage(this.localizedVal('Save failed', this.localeCategory));
-          });
-        break;
+    switch (action) {
       case 'continue':
         this.dismissAlertOnly();
         break;
-      case 'delete':
+      case 'discard':
         this.psService.sendMessage(true);
 
         // eslint-disable-next-line no-case-declarations

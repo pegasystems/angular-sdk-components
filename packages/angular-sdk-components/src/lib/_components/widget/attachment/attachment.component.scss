@@ -5,7 +5,7 @@
 }
 
 .psdk-modal-file-selector {
-  border: 1px dashed var(--app-neutral-dark-color);
+  border: 1px dashed var(--mat-sys-neutral-variant20);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
@@ -16,15 +16,13 @@
   display: inline;
   content: ' *';
   vertical-align: top;
-  color: var(--app-neutral-dark-color);
 }
 
 .file-error {
-  color: var(--app-error-light-color);
 }
 
 .psdk-modal-file-selector-error {
-  border: 1px dashed var(--app-error-light-color);
+  border: 1px dashed var(--mat-sys-error);
   width: 100%;
   padding: 0.3rem;
   text-align: center;
@@ -47,14 +45,14 @@
 }
 
 .psdk-attachment-list {
-  border: 1px solid var(--app-neutral-color);
+  border: 1px solid var(--mat-sys-secondary);
 }
 
 ::ng-deep .mat-mdc-form-field-infix {
   width: auto;
 }
 .psdk-modal-file-selector {
-  border: 1px dashed var(--app-neutral-dark-color);
+  border: 1px dashed var(--mat-sys-neutral-variant20);
   padding: 0.5rem;
   text-align: center;
   position: relative;
@@ -64,15 +62,13 @@
   display: inline;
   content: ' *';
   vertical-align: top;
-  color: var(--app-neutral-dark-color);
 }
 
 .file-error {
-  color: var(--app-error-light-color);
 }
 
 .psdk-modal-file-selector-error {
-  border: 1px dashed var(--app-error-light-color);
+  border: 1px dashed var(--mat-sys-error);
   padding: 0.5rem;
   text-align: center;
   position: relative;
@@ -94,7 +90,7 @@
 }
 
 .psdk-attachment-list {
-  border: 1px solid var(--app-neutral-color);
+  border: 1px solid var(--mat-sys-secondary);
 }
 
 ::ng-deep .mat-mdc-form-field-infix {
@@ -130,6 +126,7 @@
 
 .psdk-attachment-card-svg-icon {
   width: 2.5rem;
+  filter: var(--app-primary-color-filter);
 }
 
 .psdk-utility-button {
@@ -142,6 +139,7 @@
 .psdk-utility-card-action-svg-icon {
   width: 1.4rem;
   display: inline-block;
+  filter: var(--app-primary-color-filter);
 }
 
 .file-div {
@@ -153,7 +151,7 @@
 }
 
 .file-div-error {
-  border: 1px dashed var(--app-error-light-color);
+  border: 1px dashed var(--mat-sys-error);
   width: 100%;
   padding: 0.5rem;
   text-align: center;
@@ -169,5 +167,4 @@
   display: inline;
   content: ' *';
   vertical-align: top;
-  color: var(--app-neutral-dark-color);
 }

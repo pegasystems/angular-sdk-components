@@ -1,5 +1,3 @@
-/* eslint-disable import/export */
-
 /*
  * Public API Surface of angular-sdk-components
  */
@@ -9,6 +7,8 @@ export * from './sdk-local-component-map';
 export * from './lib/_bridge/component-mapper/component-mapper.component';
 export * from './lib/_bridge/helpers/sdk_component_map';
 export * from './lib/_bridge/angular-pconnect';
+
+export * from './lib/_components/field/field.base';
 
 export * from './lib/_components/field/auto-complete/auto-complete.component';
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
@@ -20,6 +20,7 @@ export * from './lib/_components/field/decimal/decimal.component';
 export * from './lib/_components/field/dropdown/dropdown.component';
 export * from './lib/_components/field/email/email.component';
 export * from './lib/_components/field/integer/integer.component';
+export * from './lib/_components/field/object-reference/object-reference.component';
 export * from './lib/_components/field/percentage/percentage.component';
 export * from './lib/_components/field/phone/phone.component';
 export * from './lib/_components/field/radio-buttons/radio-buttons.component';
@@ -54,14 +55,18 @@ export * from './lib/_components/infra/stages/stages.component';
 export * from './lib/_components/infra/view/view.component';
 export * from './lib/_components/infra/Containers/base-components/flow-container-base.component';
 
+export * from './lib/_components/template/advanced-search/search-group/persist-utils';
+export * from './lib/_components/template/advanced-search/search-groups/utils';
+export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/base/form-template-base';
 export * from './lib/_components/template/base/details-template-base';
-
-export * from './lib/_components/template/app-shell/app-shell.component';
 export * from './lib/_components/template/case-summary/case-summary.component';
 export * from './lib/_components/template/case-view/case-view.component';
 export * from './lib/_components/template/confirmation/confirmation.component';
 export * from './lib/_components/template/data-reference/data-reference.component';
+export * from './lib/_components/template/data-reference/search-form/tabsData';
+export * from './lib/_components/template/data-reference/search-form/search-form.component';
+export * from './lib/_components/template/data-reference/utils';
 export * from './lib/_components/template/default-form/default-form.component';
 export * from './lib/_components/template/details/details.component';
 export * from './lib/_components/template/details-narrow-wide/details-narrow-wide.component';
@@ -79,6 +84,7 @@ export * from './lib/_components/template/list-page/list-page.component';
 export * from './lib/_components/template/list-view/list-view.component';
 export * from './lib/_components/template/multi-reference-readonly/multi-reference-readonly.component';
 export * from './lib/_components/template/narrow-wide-form/narrow-wide-form.component';
+export * from './lib/_components/template/object-page/object-page.component';
 export * from './lib/_components/template/one-column/one-column.component';
 export * from './lib/_components/template/one-column-page/one-column-page.component';
 export * from './lib/_components/template/one-column-tab/one-column-tab.component';
@@ -129,7 +135,9 @@ export * from './lib/_services/banner.service';
 export * from './lib/_services/case.service';
 export * from './lib/_services/datapage.service';
 export * from './lib/_services/endpoints';
+export * from './lib/_services/google-maps-loader.service';
 export * from './lib/_services/server-config.service';
+export * from './lib/_services/data-reference-advanced-search.service';
 
 export * from './lib/_helpers/case-utils';
 export * from './lib/_helpers/common';
@@ -146,10 +154,13 @@ export * from './lib/_helpers/formatters/date';
 export * from './lib/_helpers/formatters/format-utils';
 export * from './lib/_helpers/formatters/index';
 export * from './lib/_helpers/instructions-utils';
+export * from './lib/_helpers/objectReference-utils';
+export * from './lib/_helpers/semanticLink-utils';
 export * from './lib/_helpers/tab-utils';
 export * from './lib/_helpers/template-utils';
 export * from './lib/_helpers/utils';
 export * from './lib/_helpers/versionHelpers';
+export * from './lib/_helpers/object-utils';
 
 export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/progress-spinner.service';

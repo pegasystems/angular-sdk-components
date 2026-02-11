@@ -7,7 +7,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-banner',
   templateUrl: './banner.component.html',
   styleUrls: ['./banner.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class BannerComponent {

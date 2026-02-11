@@ -9,7 +9,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   templateUrl: './multi-step.component.html',
   styleUrls: ['./multi-step.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiStepComponent implements OnInit {

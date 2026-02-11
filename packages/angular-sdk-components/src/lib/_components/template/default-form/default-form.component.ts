@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -28,10 +28,9 @@ interface DefaultFormProps {
   selector: 'app-default-form',
   templateUrl: './default-form.component.html',
   styleUrls: ['./default-form.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class DefaultFormComponent extends FormTemplateBase implements OnInit {
+export class DefaultFormComponent extends FormTemplateBase implements OnInit, OnChanges {
   @Input() override pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -58,6 +57,14 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit {
 
   onStateChange() {
     this.updateSelf();
+  }
+
+  ngOnChanges(changes) {
+    const { pConn$ } = changes;
+
+    if (pConn$.previousValue && !PCore.isDeepEqual(pConn$.previousValue.getConfigProps(), pConn$.currentValue.getConfigProps())) {
+      this.updateSelf();
+    }
   }
 
   updateSelf() {

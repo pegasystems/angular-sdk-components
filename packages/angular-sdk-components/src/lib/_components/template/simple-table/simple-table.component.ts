@@ -28,7 +28,6 @@ interface SimpleTableProps {
   selector: 'app-simple-table',
   templateUrl: './simple-table.component.html',
   styleUrls: ['./simple-table.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableComponent implements OnInit, OnDestroy {
@@ -80,7 +79,6 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableProps;
 
     if (this.configProps$.visibility != null) {
-      // eslint-disable-next-line no-multi-assign
       this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 

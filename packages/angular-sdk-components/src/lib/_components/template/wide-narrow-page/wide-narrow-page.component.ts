@@ -8,7 +8,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-wide-narrow-page',
   templateUrl: './wide-narrow-page.component.html',
   styleUrls: ['./wide-narrow-page.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowPageComponent implements OnInit, OnDestroy {

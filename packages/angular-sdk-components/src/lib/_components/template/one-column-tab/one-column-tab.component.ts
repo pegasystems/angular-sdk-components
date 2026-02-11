@@ -7,7 +7,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-one-column-tab',
   templateUrl: './one-column-tab.component.html',
   styleUrls: ['./one-column-tab.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnTabComponent implements OnInit, OnChanges {

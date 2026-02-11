@@ -21,7 +21,6 @@ interface CaseViewProps {
   templateUrl: './case-view.component.html',
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit, OnDestroy {
@@ -50,7 +49,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
   caseSummaryPConn$: any;
   currentCaseID = '';
   editAction: boolean;
-  bHasNewAttachments = false;
   localizedVal: any;
   localeCategory = 'CaseView';
   localeKey: string;
@@ -114,14 +112,6 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   updateHeaderAndSummary() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseViewProps;
-    const hasNewAttachments = this.pConn$.getDataObject().caseInfo?.hasNewAttachments;
-
-    if (hasNewAttachments !== this.bHasNewAttachments) {
-      this.bHasNewAttachments = hasNewAttachments;
-      if (this.bHasNewAttachments) {
-        PCore.getPubSubUtils().publish(PCore.getEvents().getCaseEvent().CASE_ATTACHMENTS_UPDATED_FROM_CASEVIEW, true);
-      }
-    }
 
     const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
@@ -135,7 +125,7 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     const timer = interval(100).subscribe(() => {
       timer.unsubscribe();
 
-      this.heading$ = PCore.getLocaleUtils().getLocaleValue(this.configProps$.header, '', this.localeKey);
+      this.heading$ = this.pConn$.getLocalizationService().getLocalizedText(this.configProps$.header);
       this.id$ = this.configProps$.subheader;
       this.status$ = this.pConn$.getValue('.pyStatusWork');
     });

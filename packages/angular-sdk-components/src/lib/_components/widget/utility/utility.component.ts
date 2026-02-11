@@ -13,7 +13,6 @@ interface UtilityProps {
   selector: 'app-utility',
   templateUrl: './utility.component.html',
   styleUrls: ['./utility.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class UtilityComponent implements OnInit, OnChanges {

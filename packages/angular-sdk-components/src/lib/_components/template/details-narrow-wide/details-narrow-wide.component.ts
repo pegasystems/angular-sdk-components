@@ -6,7 +6,6 @@ import { DetailsTemplateBase } from '../base/details-template-base';
   selector: 'app-details-narrow-wide',
   templateUrl: './details-narrow-wide.component.html',
   styleUrls: ['./details-narrow-wide.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsNarrowWideComponent extends DetailsTemplateBase {

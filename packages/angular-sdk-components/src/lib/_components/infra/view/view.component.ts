@@ -7,7 +7,7 @@ import { getAllFields } from '../../template/utils';
 import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs'];
+const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs', 'ListView'];
 const DETAILS_TEMPLATES = [
   'Details',
   'DetailsFields',
@@ -82,7 +82,6 @@ interface ViewProps {
   selector: 'app-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit, OnDestroy, OnChanges {
@@ -159,14 +158,11 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
 
     this.templateName$ = this.configProps$.template || '';
     this.title$ = this.configProps$.title || '';
-    this.label$ = this.configProps$.label || '';
-    this.showLabel$ = this.configProps$.showLabel || isDetailsTemplate(this.templateName$) || this.showLabel$;
     // label & showLabel within inheritedProps takes precedence over configProps
-    this.label$ = this.inheritedProps$.label || this.label$;
-    this.showLabel$ = this.inheritedProps$.showLabel || this.showLabel$;
+    this.label$ = this.inheritedProps$.label || this.configProps$.label || '';
+    this.showLabel$ = this.inheritedProps$.showLabel || this.configProps$.showLabel || isDetailsTemplate(this.templateName$);
     // children may have a 'reference' so normalize the children array
     this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
-
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 
     /**

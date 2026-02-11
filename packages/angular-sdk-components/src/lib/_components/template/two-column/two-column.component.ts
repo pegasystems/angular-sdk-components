@@ -8,7 +8,6 @@ import { FormTemplateBase } from '../base/form-template-base';
   selector: 'app-two-column',
   templateUrl: './two-column.component.html',
   styleUrls: ['./two-column.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnComponent extends FormTemplateBase implements OnInit, OnChanges {

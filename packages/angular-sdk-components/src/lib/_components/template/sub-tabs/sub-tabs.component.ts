@@ -10,7 +10,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-sub-tabs',
   templateUrl: './sub-tabs.component.html',
   styleUrls: ['./sub-tabs.component.scss'],
-  standalone: true,
   imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SubTabsComponent implements OnInit, OnDestroy {

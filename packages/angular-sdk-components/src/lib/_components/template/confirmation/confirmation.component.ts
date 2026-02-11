@@ -18,7 +18,6 @@ interface ConfirmationProps {
   selector: 'app-confirmation',
   templateUrl: './confirmation.component.html',
   styleUrls: ['./confirmation.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ConfirmationComponent implements OnInit, OnDestroy {

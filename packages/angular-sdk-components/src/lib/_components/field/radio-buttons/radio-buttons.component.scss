@@ -15,11 +15,13 @@
 .psdk-radio-horizontal {
   display: flex;
   flex-direction: row;
+  margin-top: 1rem;
 }
 
 .psdk-radio-vertical {
   display: flex;
   flex-direction: column;
+  margin-top: 1rem;
 }
 
 .psdk-radio-button {
@@ -30,8 +32,8 @@
   width: 100%;
 }
 
-.psdk-radio-form ::ng-deep .mat-form-field-underline {
-  background-color: transparent;
+.psdk-radio-form ::ng-deep .mdc-line-ripple {
+  display: none;
 }
 
 .psdk-radio-form ::ng-deep .mat-form-field-label {

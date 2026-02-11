@@ -1,12 +1,16 @@
 .psdk-list-header {
-  background-color: var(--app-form-color);
-  padding: 1rem;
-  margin: 0.5rem;
-  border-radius: 0.6125rem;
+  border: 1px solid var(--mat-sys-outline-variant);
+  background-color: var(--mat-sys-surface-container);
 }
 
 table {
   width: 100%;
+  border-bottom: 1px solid var(--mat-sys-on-secondary-container);
+}
+
+.search-label {
+  display: flex;
+  align-items: center;
 }
 
 ::ng-deep .mat-sort-header-content {
@@ -69,6 +73,7 @@ td.mat-mdc-footer-cell {
   padding: 0.125rem 0.125rem;
   min-width: unset;
   width: 1.1rem;
+  margin-right: 1rem;
 }
 
 .psdk-outer-div-in-form {
@@ -110,11 +115,11 @@ td.mat-mdc-footer-cell {
   display: table;
   margin: auto;
   min-width: 100px;
-  background-color: var(--app-form-color);
-  border: 1px solid var(--app-inverse-form-color);
+  background-color: var(--mat-sys-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
+  box-shadow: 0 0 10px 3px var(--mat-sys-level3);
   position: absolute;
   z-index: 99;
 }
@@ -126,7 +131,7 @@ td.mat-mdc-footer-cell {
   align-items: center;
   height: 100%;
   width: 100%;
-  background-color: var(--app-dialog-background-color);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   z-index: 999;
   top: 0px;
@@ -137,11 +142,11 @@ td.mat-mdc-footer-cell {
   display: table;
   margin: auto;
   min-width: 150px;
-  background-color: var(--app-form-color);
-  border: 1px solid var(--app-inverse-form-color);
+  background-color: var(--mat-sys-surface-container);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
+  box-shadow: 0 0 10px 3px var(--mat-sys-level3);
 }
 
 tr.mat-mdc-row {
@@ -153,17 +158,8 @@ tr.mat-mdc-row {
   justify-content: center;
   display: flex;
   align-items: center;
-  border: 1px solid var(--app-neutral-light-color);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-top: none;
-}
-
-.psdk-table-field-link {
-  color: var(--app-primary-color);
-  padding: 0;
-  cursor: pointer;
-  border: 0;
-  background-color: transparent;
-  align-items: center;
 }
 
 .results-count {
@@ -175,4 +171,12 @@ tr.mat-mdc-row {
 
 .label {
   margin: 8px;
+}
+
+::ng-deep th.mat-mdc-header-cell,
+td.mat-mdc-cell,
+td.mat-mdc-footer-cell {
+  border-right: 1px solid var(--mat-sys-on-secondary-container);
+  padding: 8px !important;
+  // min-width: 10rem;
 }

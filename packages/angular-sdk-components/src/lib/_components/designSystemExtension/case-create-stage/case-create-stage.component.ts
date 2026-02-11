@@ -8,7 +8,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-case-create-stage',
   templateUrl: './case-create-stage.component.html',
   styleUrls: ['./case-create-stage.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseCreateStageComponent implements OnInit, OnDestroy {

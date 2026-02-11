@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatOptionModule } from '@angular/material/core';
@@ -42,6 +43,10 @@ interface ListViewProps {
   value: any;
   readonlyContextList: any;
   label?: string;
+  displayAs?: string;
+  showRecords: boolean;
+  viewName?: string;
+  localeReference?: any;
 }
 
 export class Group {
@@ -58,7 +63,6 @@ export class Group {
   selector: 'app-list-view',
   templateUrl: './list-view.component.html',
   styleUrls: ['./list-view.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatFormFieldModule,
@@ -89,6 +93,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   @Input() payload;
 
   repeatList$: MatTableDataSource<any>;
+  selection = new SelectionModel<any>(true, []);
   fields$: any[];
 
   displayedColumns$ = Array<any>();
@@ -156,11 +161,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
   query: any = null;
   paging: any;
   fieldDefs: any;
-  xRayApis = PCore.getDebugger().getXRayRuntime();
-  xRayUid = this.xRayApis.startXRay();
   checkBoxValue: string;
   label?: string = '';
-
+  uniqueId = crypto.randomUUID();
+  displayAs: any;
+  showRecords: any;
+  identifier: string;
+  promotedFiltersId: string;
   constructor(
     private psService: ProgressSpinnerService,
     public utils: Utils
@@ -172,12 +179,13 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const defRowID = this.configProps$?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
     /** If compositeKeys is defined, use dynamic value, else fallback to pyID or pyGUID. */
     this.compositeKeys = this.configProps$?.compositeKeys;
-    this.rowID = this.compositeKeys && this.compositeKeys?.length === 1 ? this.compositeKeys[0] : defRowID;
+    this.rowID = this.payload?.compositeKeys?.length === 1 ? this.payload?.compositeKeys[0] : defRowID;
     this.bShowSearch$ = this.utils.getBooleanValue(this.configProps$?.globalSearch ? this.configProps$.globalSearch : this.payload?.globalSearch);
     this.bColumnReorder$ = this.utils.getBooleanValue(this.configProps$.reorderFields);
     this.bGrouping$ = this.utils.getBooleanValue(this.configProps$.grouping);
     this.showDynamicFields = this.configProps$?.showDynamicFields;
-
+    this.displayAs = this.configProps$.displayAs;
+    this.showRecords = this.configProps$.showRecords;
     this.menuSvgIcon$ = this.utils.getImageSrc('more', this.utils.getSDKStaticContentUrl());
     this.arrowDownSvgIcon$ = this.utils.getImageSrc('arrow-down', this.utils.getSDKStaticContentUrl());
     this.arrowUpSvgIcon$ = this.utils.getImageSrc('arrow-up', this.utils.getSDKStaticContentUrl());
@@ -206,6 +214,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.label = title;
 
     this.searchIcon$ = this.utils.getImageSrc('search', this.utils.getSDKStaticContentUrl());
+    this.promotedFiltersId = `promoted-filters-queryable-${this.uniqueId}`;
     setTimeout(() => {
       PCore.getPubSubUtils().subscribe(
         PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
@@ -226,6 +235,15 @@ export class ListViewComponent implements OnInit, OnDestroy {
         false,
         this.pConn$.getContextName()
       );
+      PCore.getPubSubUtils().subscribe(
+        PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS,
+        data => {
+          this.showRecords = data.showRecords;
+          const filterData = this.prepareFilters(data);
+          this.processFilterChange(filterData);
+        },
+        this.promotedFiltersId
+      );
     }, 0);
     if (this.configProps$) {
       if (!this.payload) {
@@ -238,7 +256,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
         listContext: this.listContext,
         ref: this.ref,
         showDynamicFields: this.showDynamicFields,
-        xRayUid: this.xRayUid,
         cosmosTableRef: this.cosmosTableRef,
         selectionMode: this.selectionMode
       }).then(response => {
@@ -246,6 +263,29 @@ export class ListViewComponent implements OnInit, OnDestroy {
         this.getListData();
       });
     }
+    this.clearSelectionsAndUpdateTable(this.pConn$, this.uniqueId, this.configProps$?.viewName);
+  }
+
+  clearSelectionsAndUpdateTable(getPConnect: any, uniqueId: string, viewName): void {
+    const clearSelectionsAndRefreshList = ({ viewName: name, clearSelections }: any) => {
+      if (name === viewName) {
+        const { selectionMode } = getPConnect.getRawConfigProps();
+        if (!selectionMode) {
+          return;
+        }
+        if (clearSelections) {
+          if (selectionMode === 'single') {
+            getPConnect.getListActions().setSelectedRows({});
+          } else {
+            getPConnect.getListActions().clearSelectedRows();
+          }
+        }
+      }
+    };
+
+    this.identifier = `clear-and-update-advanced-search-selections-${uniqueId}`;
+
+    PCore.getPubSubUtils().subscribe('update-advanced-search-selections', clearSelectionsAndRefreshList, this.identifier);
   }
 
   getFieldFromFilter(filter, dateRange = false) {
@@ -260,82 +300,22 @@ export class ListViewComponent implements OnInit, OnDestroy {
 
   // Will be triggered when EVENT_DASHBOARD_FILTER_CHANGE fires
   processFilterChange(data) {
-    const { filterId, filterExpression } = data;
-    let dashboardFilterPayload: any = {
-      query: {
-        filter: {},
-        select: []
-      }
-    };
+    this.updateFiltersFromData(data);
 
-    this.filters[filterId] = filterExpression;
-    let isDateRange = !!data.filterExpression?.AND;
-    // Will be AND by default but making it dynamic in case we support dynamic relational ops in future
-    const relationalOp = 'AND';
+    const selectParam = this.displayedColumns$?.map(col => ({ field: col })) || [];
 
-    let field = this.getFieldFromFilter(filterExpression, isDateRange);
-    const selectParam: any[] = [];
-    // Constructing the select parameters list (will be sent in dashboardFilterPayload)
-    this.displayedColumns$?.forEach(col => {
-      selectParam.push({
-        field: col
-      });
-    });
+    if (this.displayAs !== 'advancedSearch') {
+      const { filterExpression } = data;
+      const isDateRange = !!filterExpression?.AND;
+      const field = this.getFieldFromFilter(filterExpression, isDateRange);
 
-    // Checking if the triggered filter is applicable for this list
-    if (data.filterExpression !== null && !(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
-      return;
-    }
-    // This is a flag which will be used to reset dashboardFilterPayload in case we don't find any valid filters
-    let validFilter = false;
-
-    let index = 1;
-    // Iterating over the current filters list to create filter data which will be POSTed
-    const filterKeys: any[] = Object.keys(this.filters);
-    const filterValues: any[] = Object.values(this.filters);
-    for (let filterIndex = 0; filterIndex < filterKeys.length; filterIndex++) {
-      const filter = filterValues[filterIndex];
-      // If the filter is null then we can skip this iteration
-      if (filter === null) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-
-      // Checking if the filter is of type- Date Range
-      isDateRange = !!filter?.AND;
-      field = this.getFieldFromFilter(filter, isDateRange);
-
-      if (!(this.displayedColumns$?.length && this.displayedColumns$?.includes(field))) {
-        // eslint-disable-next-line no-continue
-        continue;
-      }
-      // If we reach here that implies we've at least one valid filter, hence setting the flag
-      validFilter = true;
-      /** Below are the 2 cases for- Text & Date-Range filter types where we'll construct filter data which will be sent in the dashboardFilterPayload
-       * In Constellation DX Components, through Repeating Structures they might be using several APIs to do it. We're doing it here
-       */
-      if (isDateRange) {
-        dashboardFilterPayload = this.filterBasedOnDateRange(dashboardFilterPayload, filter, relationalOp, selectParam, index);
-      } else {
-        dashboardFilterPayload.query.filter.filterConditions = {
-          ...dashboardFilterPayload.query.filter.filterConditions,
-          [`T${index++}`]: { ...filter.condition, ignoreCase: true }
-        };
-
-        if (dashboardFilterPayload.query.filter.logic) {
-          dashboardFilterPayload.query.filter.logic = `${dashboardFilterPayload.query.filter.logic} ${relationalOp} T${index - 1}`;
-        } else {
-          dashboardFilterPayload.query.filter.logic = `T${index - 1}`;
-        }
-
-        dashboardFilterPayload.query.select = selectParam;
+      if (filterExpression !== null && !this.displayedColumns$?.includes(field)) {
+        return;
       }
     }
 
-    // Reset the dashboardFilterPayload if we end up with no valid filters for the list
-    if (!validFilter) {
-      dashboardFilterPayload = undefined;
-    }
+    const dashboardFilterPayload = this.buildFilterPayload(selectParam);
+
     this.filterPayload = dashboardFilterPayload;
     this.getListData();
   }
@@ -370,10 +350,22 @@ export class ListViewComponent implements OnInit, OnDestroy {
     return PCore.getAnalyticsUtils().getDataViewMetadata(refList, this.showDynamicFields);
   }
 
+  getValue(col) {
+    return this.fieldDefs.find(f => f.name === col)?.label;
+  }
+
   getListData() {
+    this.preparePayload();
     const componentConfig = this.pConn$.getComponentConfig();
-    if (this.configProps$) {
-      this.preparePayload();
+    const columnFields = componentConfig.presets[0].children[0].children;
+    const columns = this.getHeaderCells(columnFields, this.fieldDefs);
+    this.fields$ = this.configProps$.presets[0].children[0].children;
+    this.displayedColumns$ = columns.map(col => {
+      return col.id;
+    });
+    if (this.displayAs === 'advancedSearch' && !this.showRecords) {
+      Promise.resolve({ data: null });
+    } else if (this.configProps$) {
       const refList = this.configProps$.referenceList;
       const fieldsMetaDataPromise = this.getFieldsMetadata(refList);
       // returns a promise
@@ -399,17 +391,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
           const fieldsMetaData = results[0];
           const workListData = results[1];
 
-          this.fields$ = this.configProps$.presets[0].children[0].children;
-          // this is an unresovled version of this.fields$, need unresolved, so can get the property reference
-          const columnFields = componentConfig.presets[0].children[0].children;
-
           const tableDataResults = !this.bInForm$ ? workListData.data.data : workListData.data;
 
-          const columns = this.getHeaderCells(columnFields, this.fieldDefs);
           this.fields$ = this.updateFields(this.fields$, fieldsMetaData.data.fields, columns);
-          this.displayedColumns$ = columns.map(col => {
-            return col.id;
-          });
           this.response = tableDataResults;
           this.updatedRefList = this.updateData(tableDataResults, this.fields$);
           if (this.selectionMode === SELECTION_MODE.SINGLE && this.updatedRefList?.length > 0) {
@@ -421,6 +405,14 @@ export class ListViewComponent implements OnInit, OnDestroy {
           }
 
           this.repeatList$ = new MatTableDataSource(this.updatedRefList);
+
+          if (this.configProps$?.readonlyContextList?.length > 0) {
+            const readonlyIds = new Set(this.configProps$.readonlyContextList.map(element => element[this.rowID]));
+            const rowsToSelect = this.repeatList$.data.filter(row => readonlyIds.has(row[this.rowID]));
+            if (rowsToSelect.length > 0) {
+              this.selection.select(...rowsToSelect);
+            }
+          }
           this.repeatList$.filterPredicate = this.customFilterPredicate.bind(this);
 
           // keeping an original copy to get back after possible sorts, filters and groupBy
@@ -435,6 +427,33 @@ export class ListViewComponent implements OnInit, OnDestroy {
           this.psService.sendMessage(false);
         });
     }
+  }
+
+  prepareFilters(data) {
+    return Object.entries(data.payload).reduce((acc, [field, value]) => {
+      if (value) {
+        let comparator = 'EQ';
+        const filterRecord = this.listContext.meta.fieldDefs.filter(item => item.id === field);
+        if (filterRecord?.[0]?.meta.type === 'TextInput') {
+          comparator = 'CONTAINS';
+        }
+        acc[field] = {
+          filterExpression: {
+            condition: {
+              lhs: {
+                field
+              },
+              comparator,
+              rhs: {
+                value
+              }
+            }
+          },
+          filterId: field
+        };
+      }
+      return acc;
+    }, {});
   }
 
   preparePayload() {
@@ -478,6 +497,8 @@ export class ListViewComponent implements OnInit, OnDestroy {
       `dashboard-component-${'id'}`,
       this.pConn$.getContextName()
     );
+    PCore.getPubSubUtils().unsubscribe('update-advanced-search-selections', this.identifier);
+    PCore.getPubSubUtils().unsubscribe(PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS, this.promotedFiltersId);
   }
 
   // ngAfterViewInit() {
@@ -496,6 +517,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const arReturn = arFields;
     arReturn.forEach((field, i) => {
       field.config = { ...field.config, ...fields[i], name: fields[i].id };
+      field.config.label = PCore.getLocaleUtils().getLocaleValue(field.config.label, this.configProps$.localeReference);
     });
     return arReturn;
   }
@@ -521,13 +543,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  isChecked(rowIn): any {
-    const initialVal = false;
-    return this.configProps$?.readonlyContextList?.reduce((acc, currRow) => {
-      return acc || rowIn[this.rowID] === currRow[this.rowID];
-    }, initialVal);
-  }
-
   fieldOnChange(row) {
     const value = row[this.rowID];
     const reqObj = {};
@@ -544,32 +559,31 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.pConn$?.getListActions?.()?.setSelectedRows([reqObj]);
   }
 
-  onCheckboxClick(row, event) {
-    const value = row[this.rowID];
-    const checked = event?.checked;
-    const reqObj: any = {};
-    if (this.compositeKeys?.length > 1) {
-      const index = this.response.findIndex(element => element[this.rowID] === value);
-      const selectedRow = this.response[index];
-      this.compositeKeys.forEach(element => {
-        reqObj[element] = selectedRow[element];
-      });
-      reqObj.$selected = checked;
-    } else {
-      reqObj[this.rowID] = value;
-      reqObj.$selected = checked;
-    }
-    this.pConn$?.getListActions()?.setSelectedRows([reqObj]);
+  onCheckboxClick(row) {
+    this.selection.toggle(row);
+    const requiredValue = this.getSelectedValue(row);
+    this.pConn$?.getListActions()?.setSelectedRows([requiredValue]);
   }
 
-  // rowClick(row) {
-  //   switch (this.configProps$.rowClickAction) {
-  //     case 'openAssignment':
-  //       this.psService.sendMessage(true);
-  //       this.openAssignment(row);
-  //       break;
-  //   }
-  // }
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.repeatList$.data.length;
+    return numSelected === numRows;
+  }
+
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.selection.clear();
+      this.pConn$?.getListActions()?.clearSelectedRows();
+      return;
+    }
+    if (this.selection.hasValue() && !this.isAllSelected()) {
+      this.pConn$?.getListActions()?.clearSelectedRows();
+    }
+    this.selection.select(...this.repeatList$.data);
+    const requiredValues = this.repeatList$.data.map(row => this.getSelectedValue(row));
+    this.pConn$?.getListActions()?.setSelectedRows(requiredValues);
+  }
 
   _getIconStyle(level): string {
     let sReturn = '';
@@ -1157,7 +1171,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     const seen = {};
     return a.filter(item => {
       const k = key(item);
-      // eslint-disable-next-line no-return-assign, no-prototype-builtins
+      // eslint-disable-next-line no-prototype-builtins
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     });
   }
@@ -1430,5 +1444,79 @@ export class ListViewComponent implements OnInit, OnDestroy {
     }
 
     return select;
+  }
+
+  private getSelectedValue(row) {
+    const value = row[this.rowID];
+    const checked = this.selection.isSelected(row);
+    const reqObj: any = {};
+    if (this.compositeKeys?.length > 1) {
+      const index = this.response.findIndex(element => element[this.rowID] === value);
+      const selectedRow = this.response[index];
+      this.compositeKeys.forEach(element => {
+        reqObj[element] = selectedRow[element];
+      });
+      reqObj.$selected = checked;
+    } else {
+      reqObj[this.rowID] = value;
+      reqObj.$selected = checked;
+    }
+    return reqObj;
+  }
+
+  private updateFiltersFromData(data) {
+    if (this.displayAs === 'advancedSearch') {
+      this.filters = {};
+      Object.values(data).forEach((value: any) => {
+        this.filters[value.filterId] = value.filterExpression;
+      });
+    } else {
+      const { filterId, filterExpression } = data;
+      this.filters[filterId] = filterExpression;
+    }
+  }
+
+  private buildFilterPayload(selectParam: any[]) {
+    const filterConditions = {};
+    let logic = '';
+    let index = 1;
+    const relationalOp = 'AND';
+
+    for (const currentFilter of Object.values(this.filters)) {
+      const filter: any = currentFilter;
+      if (!filter) continue;
+
+      const isDateRange = !!filter.AND;
+      const field = this.getFieldFromFilter(filter, isDateRange);
+
+      if (!this.displayedColumns$?.includes(field)) continue;
+
+      if (logic) {
+        logic += ` ${relationalOp} `;
+      }
+
+      if (isDateRange) {
+        const dateRelationalOp = filter.AND ? 'AND' : 'OR';
+        filterConditions[`T${index}`] = { ...filter[relationalOp][0].condition };
+        filterConditions[`T${index + 1}`] = { ...filter[relationalOp][1].condition };
+        logic += `(T${index} ${dateRelationalOp} T${index + 1})`;
+        index += 2;
+      } else {
+        filterConditions[`T${index}`] = { ...filter.condition, ...(filter.condition.comparator === 'CONTAINS' && { ignoreCase: true }) };
+        logic += `T${index}`;
+        index++;
+      }
+    }
+
+    if (!logic) {
+      return undefined;
+    }
+
+    return {
+      query: {
+        filter: { filterConditions, logic },
+        select: selectParam
+      }
+    };
   }
 }

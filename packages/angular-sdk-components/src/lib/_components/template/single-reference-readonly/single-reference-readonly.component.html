@@ -1,1 +1,4 @@
-<component-mapper name="SemanticLink" [props]="{ pConn$ }"></component-mapper>
+<div [ngClass]="displayMode ? 'psdk-grid-display' : 'psdk-grid-nondisplay'">
+  <div *ngIf="label" class="psdk-grid-label">{{ label }}</div>
+  <component-mapper name="SemanticLink" [props]="{ pConn$: newPconn, formGroup$ }"></component-mapper>
+</div>

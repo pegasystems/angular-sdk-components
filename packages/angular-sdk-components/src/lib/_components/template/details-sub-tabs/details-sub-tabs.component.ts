@@ -9,7 +9,6 @@ import { DetailsTemplateBase } from '../base/details-template-base';
   selector: 'app-details-sub-tabs',
   templateUrl: './details-sub-tabs.component.html',
   styleUrls: ['./details-sub-tabs.component.scss'],
-  standalone: true,
   imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsSubTabsComponent extends DetailsTemplateBase {

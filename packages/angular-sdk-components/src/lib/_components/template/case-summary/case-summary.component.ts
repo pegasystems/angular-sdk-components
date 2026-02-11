@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { Utils } from '../../../_helpers/utils';
 
 interface CaseSummaryProps {
   // If any, enter additional props that only exist on this component
@@ -16,7 +17,6 @@ interface CaseSummaryProps {
   selector: 'app-case-summary',
   templateUrl: './case-summary.component.html',
   styleUrls: ['./case-summary.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
@@ -33,7 +33,10 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
   primaryFields$: any[] = [];
   secondaryFields$: any[] = [];
 
-  constructor(private angularPConnect: AngularPConnectService) {}
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private utils: Utils
+  ) {}
 
   ngOnInit(): void {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
@@ -101,30 +104,11 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  prepareComponentInCaseSummary(pConnectMeta, getPConnect) {
-    const { config, children } = pConnectMeta;
-    const pConnect = getPConnect();
-
-    const caseSummaryComponentObject: any = {};
-
-    const { type } = pConnectMeta;
-    const createdComponent = pConnect.createComponent({
-      type,
-      children: children ? [...children] : [],
-      config: {
-        ...config
-      }
-    });
-
-    caseSummaryComponentObject.value = createdComponent;
-    return caseSummaryComponentObject;
-  }
-
   prepareCaseSummaryData(summaryFieldChildren) {
     const convertChildrenToSummaryData = kid => {
       return kid?.map((childItem, index) => {
         const childMeta = childItem.getPConnect().meta;
-        const caseSummaryComponentObject = this.prepareComponentInCaseSummary(childMeta, childItem.getPConnect);
+        const caseSummaryComponentObject = this.utils.prepareComponentInCaseSummary(childMeta, childItem.getPConnect);
         caseSummaryComponentObject.id = index + 1;
         return caseSummaryComponentObject;
       });

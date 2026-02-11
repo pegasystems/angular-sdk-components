@@ -1,32 +1,19 @@
 <div [attr.data-test-id]="testId">
   <label [ngClass]="{ 'label-required': required === true }" class="rich-text-label">{{ label }}</label>
+
   <div class="rich-text-editor" *ngIf="!readonly">
     <editor
       [formControl]="richText"
       [attr.disabled]="disabled"
       [initialValue]="value"
-      [init]="{
-        base_url: '/tinymce',
-        suffix: '.min',
-        menubar: false,
-        placeholder,
-        statusbar: false,
-        min_height: 130,
-        plugins: ['lists', 'advlist', 'autolink', 'image', 'link', 'autoresize'],
-        autoresize_bottom_margin: 0,
-        toolbar: disabled ? false : 'blocks | bold italic strikethrough | bullist numlist outdent indent | link image',
-        toolbar_location: 'bottom',
-        content_style: 'body { font-family:Helvetica, Arial,sans-serif; font-size:14px }',
-        branding: false,
-        paste_data_images: true,
-        file_picker_types: 'image',
-        file_picker_callback: filePickerCallback
-      }"
+      [init]="editorConfig"
       (onBlur)="blur()"
       (onChange)="change($event)"
     ></editor>
+
     <p *ngIf="richText.invalid" [ngClass]="'text-editor-error'">{{ info }}</p>
   </div>
+
   <div *ngIf="readonly">
     <div class="readonly-richtext-editor" style="margin: 10px 5px" [innerHTML]="value || '--'"></div>
   </div>

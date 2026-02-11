@@ -1,7 +1,7 @@
 <div class="psdk-case-view" id="case-view">
   <div class="psdk-case-view-info">
-    <mat-toolbar color="primary" class="psdk-case-view-toolbar">
-      <mat-toolbar-row style="padding-left: 1rem">
+    <mat-toolbar class="psdk-case-view-toolbar">
+      <mat-toolbar-row class="psdk-case-view-toolbar-row">
         <div class="psdk-case-icon-div">
           <img class="psdk-case-svg-icon" src="{{ svgCase$ }}" />
         </div>
@@ -73,8 +73,8 @@
       </div>
     </div>
 
-    <div>
-      <component-mapper name="DeferLoad" [props]="{ pConn$, loadData$: tabData$, name: tabData$?.config?.name }"></component-mapper>
+    <div *ngIf="tabData$">
+      <component-mapper name="DeferLoad" [props]="{ pConn$, name: tabData$?.config?.name }"></component-mapper>
     </div>
   </div>
   <div>

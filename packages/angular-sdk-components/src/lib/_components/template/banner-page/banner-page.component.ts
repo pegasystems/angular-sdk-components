@@ -16,7 +16,6 @@ interface BannerPageProps {
   selector: 'app-banner-page',
   templateUrl: './banner-page.component.html',
   styleUrls: ['./banner-page.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class BannerPageComponent implements OnInit, OnChanges {

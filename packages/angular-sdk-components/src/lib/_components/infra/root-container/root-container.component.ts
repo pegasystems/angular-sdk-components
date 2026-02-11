@@ -8,7 +8,6 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
-import { HybridViewContainerComponent } from '../Containers/hybrid-view-container/hybrid-view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 /**
@@ -23,11 +22,9 @@ const options = { context: 'app' };
   selector: 'app-root-container',
   templateUrl: './root-container.component.html',
   styleUrls: ['./root-container.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatProgressSpinnerModule,
-    HybridViewContainerComponent,
     ModalViewContainerComponent,
     PreviewViewContainerComponent,
     forwardRef(() => ComponentMapperComponent)
@@ -219,7 +216,6 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   showHideProgress(bShow: boolean) {
     // only show spinner after 500ms wait, so if server fast, won't see
     if (bShow) {
-      // eslint-disable-next-line sonarjs/no-collapsible-if
       if (!this.bIsProgress$) {
         // makes sure Angular tracks these changes
         if (!this.spinnerTimer || this.spinnerTimer.isStopped) {
@@ -227,7 +223,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
             try {
               this.spinnerTimer.unsubscribe();
             } catch (ex) {
-              /* empty */
+              console.log(ex);
             }
 
             this.ngZone.run(() => {

@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-field-group',
   templateUrl: './field-group.component.html',
   styleUrls: ['./field-group.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatGridListModule, MatIconModule]
 })
 export class FieldGroupComponent {

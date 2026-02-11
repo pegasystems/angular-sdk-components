@@ -1,12 +1,11 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
-import { interval } from 'rxjs';
-import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { Utils } from '../../../_helpers/utils';
+
+import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
@@ -26,38 +25,22 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   primaryField: string;
   readonlyContextList: any;
   referenceList: string;
+  variant?: string;
+  renderMode: string;
 }
 
 @Component({
   selector: 'app-check-box',
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
-  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class CheckBoxComponent implements OnInit, OnDestroy {
-  @Input() pConn$: typeof PConnect;
-  @Input() formGroup$: FormGroup;
-
-  // Used with AngularPConnect
-  angularPConnectData: AngularPConnectData = {};
+export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
   configProps$: CheckboxProps;
 
-  label$ = '';
-  value$: any = '';
   caption$?: string = '';
-  testId = '';
   showLabel$ = false;
   isChecked$ = false;
-  bRequired$ = false;
-  bReadonly$ = false;
-  bDisabled$ = false;
-  bVisible$ = true;
-  displayMode$?: string = '';
-  controlName$: string;
-  bHasForm$ = true;
-  componentReference = '';
-  helperText: string;
   trueLabel$?: string;
   falseLabel$?: string;
 
@@ -69,84 +52,35 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
   selectedvalues: any;
   referenceList: string;
   listOfCheckboxes: any[] = [];
-  actionsApi: Object;
-  propName: string;
+  variant?: string;
 
-  fieldControl = new FormControl('', null);
+  // Override ngOnInit method
+  override ngOnInit(): void {
+    super.ngOnInit();
 
-  constructor(
-    private angularPConnect: AngularPConnectService,
-    private cdRef: ChangeDetectorRef,
-    private utils: Utils
-  ) {}
-
-  ngOnInit(): void {
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.controlName$ = this.angularPConnect.getComponentID(this);
-
-    // Then, continue on with other initialization
-
-    // call updateSelf when initializing
-    // this.updateSelf();
-    this.checkAndUpdate();
-
-    if (this.selectionMode === 'multi' && this.referenceList?.length > 0) {
+    if (this.selectionMode === 'multi' && this.referenceList?.length > 0 && !this.bReadonly$) {
       this.pConn$.setReferenceList(this.selectionList);
       updateNewInstructions(this.pConn$, this.selectionList);
     }
-
-    if (this.formGroup$) {
-      // add control to formGroup
-      this.formGroup$.addControl(this.controlName$, this.fieldControl);
-      this.fieldControl.setValue(this.value$);
-      this.bHasForm$ = true;
-    } else {
-      this.bReadonly$ = true;
-      this.bHasForm$ = false;
-    }
   }
 
-  ngOnDestroy(): void {
-    if (this.formGroup$) {
-      this.formGroup$.removeControl(this.controlName$);
-    }
-
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    this.checkAndUpdate();
-  }
-
-  checkAndUpdate() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
-  // updateSelf
-  updateSelf(): void {
+  /**
+   * Updates the component when there are changes in the state.
+   */
+  override updateSelf(): void {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CheckboxProps;
 
-    this.testId = this.configProps$.testId;
-    this.displayMode$ = this.configProps$.displayMode;
-    this.label$ = this.configProps$.label;
+    // Update component common properties
+    this.updateComponentCommonProperties(this.configProps$);
+
     if (this.label$ != '') {
       this.showLabel$ = true;
     }
-
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
+    this.variant = this.configProps$.variant;
+    if (this.bReadonly$) {
+      this.fieldControl?.disable();
+    }
 
     // multi case
     this.selectionMode = this.configProps$.selectionMode;
@@ -155,6 +89,7 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
       this.selectionList = this.configProps$.selectionList;
       this.selectedvalues = this.configProps$.readonlyContextList;
       this.primaryField = this.configProps$.primaryField;
+      this.bReadonly$ = this.configProps$.renderMode === 'ReadOnly' || this.displayMode$ === 'DISPLAY_ONLY' || this.configProps$.readOnly;
 
       this.datasource = this.configProps$.datasource;
       this.selectionKey = this.configProps$.selectionKey;
@@ -172,54 +107,10 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
       }
 
       this.caption$ = this.configProps$.caption;
-      this.helperText = this.configProps$.helperText;
       this.trueLabel$ = this.configProps$.trueLabel || 'Yes';
       this.falseLabel$ = this.configProps$.falseLabel || 'No';
 
-      // timeout and detectChanges to avoid ExpressionChangedAfterItHasBeenCheckedError
-      setTimeout(() => {
-        if (this.configProps$.required != null) {
-          this.bRequired$ = this.utils.getBooleanValue(this.configProps$.required);
-        }
-        this.cdRef.detectChanges();
-      });
-
-      if (this.configProps$.visibility != null) {
-        this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
-      }
-
-      // disabled
-      if (this.configProps$.disabled != undefined) {
-        this.bDisabled$ = this.utils.getBooleanValue(this.configProps$.disabled);
-      }
-
-      if (this.configProps$.readOnly != null) {
-        this.bReadonly$ = this.utils.getBooleanValue(this.configProps$.readOnly);
-      }
-
-      if (this.bDisabled$ || this.bReadonly$) {
-        this.fieldControl.disable();
-      } else {
-        this.fieldControl.enable();
-      }
-
-      this.componentReference = this.pConn$.getStateProps().value;
-
-      // eslint-disable-next-line sonarjs/no-redundant-boolean
-      if (this.value$ === 'true' || this.value$ == true) {
-        this.isChecked$ = true;
-      } else {
-        this.isChecked$ = false;
-      }
-      // trigger display of error message with field control
-      if (this.angularPConnectData.validateMessage != null && this.angularPConnectData.validateMessage != '') {
-        const timer = interval(100).subscribe(() => {
-          this.fieldControl.setErrors({ message: true });
-          this.fieldControl.markAsTouched();
-
-          timer.unsubscribe();
-        });
-      }
+      this.isChecked$ = this.value$ === 'true' || this.value$ == true;
     }
   }
 
@@ -256,22 +147,5 @@ export class CheckBoxComponent implements OnInit, OnDestroy {
       category: '',
       context: ''
     });
-  }
-
-  getErrorMessage() {
-    let errMessage = '';
-
-    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
-    if (this.fieldControl.hasError('message')) {
-      errMessage = this.angularPConnectData.validateMessage ?? '';
-      return errMessage;
-    }
-    if (this.fieldControl.hasError('required')) {
-      errMessage = 'You must enter a value';
-    } else if (this.fieldControl.errors) {
-      errMessage = this.fieldControl.errors.toString();
-    }
-
-    return errMessage;
   }
 }

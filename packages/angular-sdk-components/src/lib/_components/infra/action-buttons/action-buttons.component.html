@@ -1,12 +1,17 @@
-<mat-grid-list *ngIf="arMainButtons$ && arSecondaryButtons$" cols="2" rowHeight="6.25rem">
-  <mat-grid-tile>
-    <button *ngFor="let aButton of arSecondaryButtons$" mat-raised-button color="secondary" (click)="buttonClick(aButton.jsAction, 'secondary')">
+<div class="button-bar" *ngIf="arMainButtons$ && arSecondaryButtons$">
+  <div class="left-group">
+    <button
+      *ngFor="let aButton of arSecondaryButtons$"
+      mat-stroked-button
+      class="secondary-button"
+      (click)="buttonClick(aButton.jsAction, 'secondary')"
+    >
       {{ localizedVal(aButton.name, localeCategory) }}
     </button>
-  </mat-grid-tile>
-  <mat-grid-tile>
-    <button *ngFor="let aButton of arMainButtons$" mat-raised-button color="primary" (click)="buttonClick(aButton.jsAction, 'primary')">
+  </div>
+  <div class="right-group">
+    <button *ngFor="let aButton of arMainButtons$" mat-flat-button (click)="buttonClick(aButton.jsAction, 'primary')">
       {{ localizedVal(aButton.name, localeCategory) }}
     </button>
-  </mat-grid-tile>
-</mat-grid-list>
+  </div>
+</div>

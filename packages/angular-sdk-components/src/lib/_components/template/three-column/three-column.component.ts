@@ -8,7 +8,6 @@ import { FormTemplateBase } from '../base/form-template-base';
   selector: 'app-three-column',
   templateUrl: './three-column.component.html',
   styleUrls: ['./three-column.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ThreeColumnComponent extends FormTemplateBase implements OnInit, OnChanges {

@@ -8,7 +8,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-simple-table-select',
   templateUrl: './simple-table-select.component.html',
   styleUrls: ['./simple-table-select.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SimpleTableSelectComponent implements OnInit, OnDestroy {

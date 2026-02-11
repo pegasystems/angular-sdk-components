@@ -8,7 +8,6 @@ import { FormTemplateBase } from '../base/form-template-base';
   selector: 'app-wide-narrow-form',
   templateUrl: './wide-narrow-form.component.html',
   styleUrls: ['./wide-narrow-form.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowFormComponent extends FormTemplateBase implements OnInit, OnChanges {

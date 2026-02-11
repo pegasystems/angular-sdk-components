@@ -5,7 +5,6 @@ import { Component, Input } from '@angular/core';
   selector: 'app-field-value-list',
   templateUrl: './field-value-list.component.html',
   styleUrls: ['./field-value-list.component.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class FieldValueListComponent {

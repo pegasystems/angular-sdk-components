@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,10 +29,9 @@ interface FieldGroupTemplateProps {
   selector: 'app-field-group-template',
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges {
   @Input() configProps$: FieldGroupTemplateProps;
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
@@ -46,7 +45,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   heading: any;
   children: any;
   menuIconOverride$: any;
-  referenceListLength: number;
+  referenceListLength = signal<number | null>(null);
   fieldHeader: any;
 
   allowAdd = true;
@@ -59,10 +58,6 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   ) {}
 
   ngOnInit(): void {
-    // First thing in initialization is registering and subscribing to the AngularPConnect service
-    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
-    this.updateSelf();
-
     this.menuIconOverride$ = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
 
     const { allowActions, allowTableEdit, referenceList } = this.configProps$;
@@ -87,16 +82,6 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
     }
   }
 
-  onStateChange() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
-    }
-  }
-
   ngOnChanges(changes) {
     if (changes && changes.configProps$) {
       const props = changes.configProps$;
@@ -108,14 +93,12 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
         }
 
         this.updateSelf();
+
+        setTimeout(() => {
+          this.angularPConnect.shouldComponentUpdate(this);
+        }, 100);
       }
     }
-  }
-
-  ngAfterViewInit() {
-    const resolvedList = getReferenceList(this.pConn$);
-    // @ts-ignore - Expected 3 arguments, but got 1
-    this.pConn$.getListActions().initDefaultPageInstructions(resolvedList);
   }
 
   updateSelf() {
@@ -142,7 +125,10 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
       this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
     }
 
-    if (this.referenceListLength != referenceList?.length) {
+    if (this.referenceListLength() != referenceList?.length) {
+      // @ts-ignore - Expected 3 arguments, but got 1
+      this.pConn$.getListActions().initDefaultPageInstructions(resolvedList);
+
       this.children = referenceList?.map((item, index) => {
         return {
           id: index,
@@ -152,7 +138,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
         };
       });
     }
-    this.referenceListLength = referenceList?.length || 0;
+    this.referenceListLength.set(referenceList?.length || 0);
   }
 
   getStaticHeader = (heading, index) => {
@@ -160,14 +146,14 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   };
 
   getDynamicHeader = (item, index) => {
-    if (this.fieldHeader === 'propertyRef' && this.heading && item[this.heading.substring(1)]) {
+    if (this.heading && item[this.heading.substring(1)]) {
       return item[this.heading.substring(1)];
     }
     return `Row ${index + 1}`;
   };
 
   addFieldGroupItem() {
-    this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceListLength);
+    this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceListLength() as number);
   }
 
   deleteFieldGroupItem(index) {

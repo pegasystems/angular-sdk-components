@@ -7,7 +7,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-narrow-wide-form',
   templateUrl: './narrow-wide-form.component.html',
   styleUrls: ['./narrow-wide-form.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class NarrowWideFormComponent implements OnInit, OnChanges {

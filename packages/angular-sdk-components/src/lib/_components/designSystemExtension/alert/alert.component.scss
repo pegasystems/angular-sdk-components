@@ -14,10 +14,10 @@
 }
 
 .psdk-alert-error {
-  color: var(--app-alert-error-color);
-  border: 1px solid var(--app-alert-error-border-color);
+  color: var(--mat-sys-error);
+  border: 1px solid var(--mat-sys-error);
   .mat-icon {
-    color: var(--app-alert-error-border-color);
+    color: var(--mat-sys-error);
   }
 }
 

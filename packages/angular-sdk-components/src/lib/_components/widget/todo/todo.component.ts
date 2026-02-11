@@ -64,7 +64,6 @@ interface ToDoProps {
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit, OnDestroy {
@@ -88,9 +87,11 @@ export class TodoComponent implements OnInit, OnDestroy {
   CONSTS: typeof publicConstants;
   bLogging = true;
   localizedVal = PCore.getLocaleUtils().getLocaleValue;
+  localeUtils = PCore.getLocaleUtils();
   localeCategory = 'Todo';
   showlessLocalizedValue = this.localizedVal('show_less', 'CosmosFields');
   showMoreLocalizedValue = this.localizedVal('show_more', 'CosmosFields');
+  goLocalizedValue = this.localizedVal('go', 'CosmosFields');
   count: number;
 
   constructor(
@@ -128,7 +129,7 @@ export class TodoComponent implements OnInit, OnDestroy {
         DATA_PAGES: { D__PY_MY_WORK_LIST }
       }
     } = PCore.getConstants();
-    updateWorkList(getPConnect, getMappedValue(D__PY_MY_WORK_LIST));
+    updateWorkList(this.pConn$, getMappedValue(D__PY_MY_WORK_LIST));
   }
 
   updateToDo() {
@@ -153,7 +154,7 @@ export class TodoComponent implements OnInit, OnDestroy {
       }
     } else {
       // get caseInfoId assignment.
-      // eslint-disable-next-line no-lonely-if
+
       if (this.caseInfoID$ != undefined) {
         this.arAssignments$ = this.getCaseInfoAssignment(this.assignmentsSource$, this.caseInfoID$);
       }
@@ -191,7 +192,9 @@ export class TodoComponent implements OnInit, OnDestroy {
   }
 
   getAssignmentName(assignment) {
-    return this.type$ === this.CONSTS.TODO ? assignment.name : assignment.stepName;
+    return this.type$ === this.CONSTS.TODO
+      ? this.localizedVal(assignment.name, '', PCore.getLocaleUtils().getCaseLocaleReference(assignment.classname))
+      : this.localizedVal(assignment.stepName, '', PCore.getLocaleUtils().getCaseLocaleReference(assignment.classname));
   }
 
   getCaseInfoAssignment(assignmentsSource: any[], caseInfoID: string) {

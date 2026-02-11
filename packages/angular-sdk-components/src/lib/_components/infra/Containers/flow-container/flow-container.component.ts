@@ -29,7 +29,6 @@ interface FlowContainerProps {
   templateUrl: './flow-container.component.html',
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {
@@ -71,6 +70,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   pConnectOfActiveContainerItem;
+  isMultiStep: any;
 
   constructor(
     injector: Injector,
@@ -90,8 +90,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
-    const caseInfo = this.pConn$.getCaseInfo();
-    this.localeReference = `${caseInfo?.getClassName()}!CASE!${caseInfo.getName()}`.toUpperCase();
+    this.localeReference = this.pConn$?.getCaseLocaleReference();
 
     // Then, continue on with other initialization
 
@@ -170,7 +169,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     // ONLY call updateSelf when the component should update
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
-    // eslint-disable-next-line sonarjs/no-collapsible-if
+
     if (bUpdateSelf || caseViewModeFromProps !== caseViewModeFromRedux) {
       // don't want to redraw the flow container when there are page messages, because
       // the redraw causes us to loose the errors on the elements
@@ -203,9 +202,9 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       const kid = this.pConn$.getChildren()[0];
       const todoKid = kid.getPConnect().getChildren()[0];
 
-      this.todo_pConn$ = todoKid.getPConnect();
+      this.todo_pConn$ = todoKid?.getPConnect();
 
-      return true;
+      return !!this.todo_pConn$;
     }
 
     return !(caseViewMode && caseViewMode === 'perform');
@@ -282,7 +281,8 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     // this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
-      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments[0].name, undefined, this.localeReference);
+      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
+      this.isMultiStep = this.utils.getBooleanValue(oWorkData.caseInfo.assignments?.[0].isMultiStep);
     }
 
     // turn off spinner
@@ -465,7 +465,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       // @ts-ignore - Property 'getLoadingStatus' is private and only accessible within class 'C11nEnv'
       loadingInfo = this.pConn$.getLoadingStatus();
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
 
     // this check in routingInfo, mimic Nebula/Constellation (React) to check and get the internals of the
@@ -487,7 +487,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
           }
         });
 
-        // eslint-disable-next-line sonarjs/no-collapsible-if
         if (currentOrder.length > 0) {
           if (currentItems[key] && currentItems[key].view && type === 'single' && Object.keys(currentItems[key].view).length > 0) {
             // when we get here, it it because the flow action data has changed

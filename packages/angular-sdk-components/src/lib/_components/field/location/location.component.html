@@ -1,0 +1,46 @@
+<div *ngIf="mapReady && bVisible$">
+  <!-- Google suggestions -->
+  <mat-form-field class="psdk-full-width" [hintLabel]="helperText">
+    <mat-label>{{ label$ }}</mat-label>
+    <input
+      matInput
+      type="text"
+      [placeholder]="placeholder"
+      [formControl]="fieldControl"
+      [required]="bRequired$"
+      [matAutocomplete]="auto"
+      [readonly]="bReadonly$"
+      [attr.data-test-id]="testId"
+      (blur)="fieldOnBlur()"
+    />
+    <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      (click)="locateMe()"
+      [disabled]="isLocating || bDisabled$ || bReadonly$"
+      aria-label="Use my location"
+    >
+      <ng-container *ngIf="!isLocating; else loadingSpinner">
+        <mat-icon>location_on</mat-icon>
+      </ng-container>
+      <ng-template #loadingSpinner>
+        <mat-progress-spinner diameter="24" mode="indeterminate" strokeWidth="3"></mat-progress-spinner>
+      </ng-template>
+    </button>
+
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+      <mat-option *ngFor="let option of filteredOptions" [value]="option">
+        {{ option }}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+  <!-- Google map -->
+  <div *ngIf="showMap" class="map-wrapper">
+    <google-map height="400px" width="100%" [center]="center" [zoom]="13" (mapClick)="onMapClick($event)">
+      <map-marker *ngIf="markerPosition" [position]="markerPosition" [title]="'Selected Location'"></map-marker>
+    </google-map>
+    <div class="map-blocker" *ngIf="bDisabled$ || bReadonly$"></div>
+  </div>
+</div>

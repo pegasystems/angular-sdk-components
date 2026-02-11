@@ -22,7 +22,6 @@ declare global {
   selector: 'app-full-portal',
   templateUrl: './full-portal.component.html',
   styleUrls: ['./full-portal.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatProgressSpinnerModule, ComponentMapperComponent]
 })
 export class FullPortalComponent implements OnInit, OnDestroy {
@@ -48,10 +47,11 @@ export class FullPortalComponent implements OnInit, OnDestroy {
     private scservice: ServerConfigService
   ) {}
 
-  ngOnInit() {
-    this.scservice.readSdkConfig().then(() => {
-      this.initialize();
-    });
+  async ngOnInit() {
+    const { theme } = await this.scservice.readSdkConfig();
+    document.body.classList.remove(...['light', 'dark']);
+    document.body.classList.add(theme || 'dark');
+    this.initialize();
   }
 
   ngOnDestroy() {
@@ -74,10 +74,11 @@ export class FullPortalComponent implements OnInit, OnDestroy {
     // Add event listener for when logged out
     document.addEventListener('SdkLoggedOut', () => {
       this.bLoggedIn$ = false;
+      sessionStorage.clear();
     });
 
     /* Login if needed */
-    // eslint-disable-next-line no-restricted-globals
+
     const sAppName = location.pathname.substring(location.pathname.indexOf('/') + 1);
     loginIfNecessary({ appName: sAppName, mainRedirect: true });
 

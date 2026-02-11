@@ -6,7 +6,6 @@ import { DetailsTemplateBase } from '../base/details-template-base';
   selector: 'app-details',
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsComponent extends DetailsTemplateBase {

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { Utils } from '../../../_helpers/utils';
 
 interface IPage {
   classID: string;
@@ -24,14 +25,13 @@ interface AppShellProps {
   portalTemplate: string;
   readOnly?: boolean;
   showAppHeaderBar: boolean;
-  showAppName: boolean;
+  showAppName: any;
 }
 
 @Component({
   selector: 'app-app-shell',
   templateUrl: './app-shell.component.html',
   styleUrls: ['./app-shell.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AppShellComponent implements OnInit, OnDestroy {
@@ -45,19 +45,22 @@ export class AppShellComponent implements OnInit, OnDestroy {
   caseTypes$?: object[];
   arChildren$: any[];
   bShowAppShell$ = false;
-  appName$ = 'PEGA';
+  appName$ = '';
   errorMessagesSubscription: Subscription;
   sErrorMessages = '';
   snackBarRef: any;
   bOkDisplayError = false;
   portalTemplate: string;
   links: any = [];
+  imageURL: string | Blob;
+  localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
   constructor(
     private angularPConnect: AngularPConnectService,
     private erService: ErrorMessagesService,
     private snackBar: MatSnackBar,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private utils: Utils
   ) {}
 
   ngOnInit() {
@@ -68,6 +71,8 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AppShellProps;
 
+    this.portalTemplate = this.configProps$.portalTemplate;
+
     // making a copy, so can add info
     this.pages$ = this.configProps$.pages;
 
@@ -77,6 +82,11 @@ export class AppShellComponent implements OnInit, OnDestroy {
 
     if (this.pages$) {
       this.bShowAppShell$ = true;
+    }
+
+    /* TODO: We're setting the `pyPortalTemplate` for now, this would be handled by the CoreJS in the future releases */
+    if (this.portalTemplate === 'wss') {
+      PCore.getEnvironmentInfo().setEnvironmentInfo({ ...PCore.getEnvironmentInfo().environmentInfoObject, pyPortalTemplate: 'wss' } as any);
     }
 
     // @ts-ignore - Property 'pyCaseTypesAvailableToCreateDP' does not exist on type pxApplication
@@ -99,8 +109,6 @@ export class AppShellComponent implements OnInit, OnDestroy {
     this.caseTypes$ = this.configProps$.caseTypes;
 
     this.arChildren$ = this.pConn$.getChildren();
-
-    this.portalTemplate = this.configProps$.portalTemplate;
 
     // handle showing and hiding the progress spinner
     this.errorMessagesSubscription = this.erService.getMessage().subscribe(message => {
@@ -138,6 +146,12 @@ export class AppShellComponent implements OnInit, OnDestroy {
   updateSelf() {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AppShellProps;
 
+    const showAppName = this.configProps$.showAppName;
+    const envInfo = PCore.getEnvironmentInfo();
+    const appNameToDisplay = showAppName ? envInfo.getApplicationLabel() : '';
+    const portalClass = this.pConn$.getValue('.classID', ''); // 2nd arg empty string until typedef marked correctly
+    const envPortalName = envInfo.getPortalName();
+
     this.ngZone.run(() => {
       // making a copy, so can add info
       this.pages$ = this.configProps$.pages;
@@ -149,6 +163,30 @@ export class AppShellComponent implements OnInit, OnDestroy {
       this.caseTypes$ = this.configProps$.caseTypes;
       this.arChildren$ = this.pConn$.getChildren();
     });
+
+    const portalLogo = this.configProps$.portalLogo;
+    // using the default icon then fetch it from the static folder (not auth involved)
+    if (
+      !portalLogo ||
+      portalLogo.toLowerCase().includes('pzpega-logo-mark') ||
+      portalLogo.toLowerCase().includes('py-logo') ||
+      portalLogo.toLowerCase().includes('py-full-logo')
+    ) {
+      const portalLogoImage = this.utils.getIconPath(this.utils.getSDKStaticContentUrl()).concat('pzpega-logo-mark.svg');
+      this.imageURL = portalLogoImage;
+    }
+    // not using default icon to fetch it using the way which uses authentication
+    else {
+      PCore.getAssetLoader()
+        .getSvcImageUrl(portalLogo)
+        .then(data => {
+          this.imageURL = data;
+        })
+        .catch(() => {
+          console.error(`${this.localizedVal('Unable to load the image for the portal logo/icon with the insName', 'AppShell')}:${portalLogo}`);
+        });
+    }
+    this.appName$ = this.localizedVal(appNameToDisplay || '', '', `${portalClass}!PORTAL!${envPortalName}`.toUpperCase());
   }
 
   // fpr show/hiding error messages in the SnackBar component
@@ -156,7 +194,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
     switch (errorMessages.action) {
       case 'update':
         // won't show unless publish is turned on
-        // eslint-disable-next-line @typescript-eslint/prefer-includes
+
         if (this.sErrorMessages.indexOf(errorMessages.actionMessage) < 0) {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
 
@@ -169,7 +207,7 @@ export class AppShellComponent implements OnInit, OnDestroy {
       case 'show':
         // add error message if not in the list
         // won't show unless publish is turned on
-        // eslint-disable-next-line @typescript-eslint/prefer-includes
+
         if (this.sErrorMessages.indexOf(errorMessages.actionMessage) < 0) {
           this.sErrorMessages = this.sErrorMessages.concat(errorMessages.actionMessage).concat('\n');
         }

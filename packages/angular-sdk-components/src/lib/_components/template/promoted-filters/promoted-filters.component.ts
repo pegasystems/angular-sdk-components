@@ -26,7 +26,6 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   selector: 'app-promoted-filters',
   templateUrl: './promoted-filters.component.html',
   styleUrls: ['./promoted-filters.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PromotedFiltersComponent implements OnInit, OnDestroy {

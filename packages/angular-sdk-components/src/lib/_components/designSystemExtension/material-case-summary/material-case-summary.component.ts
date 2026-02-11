@@ -7,7 +7,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-material-case-summary',
   templateUrl: './material-case-summary.component.html',
   styleUrls: ['./material-case-summary.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialCaseSummaryComponent implements OnInit, OnChanges {

@@ -6,7 +6,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-alert-banner',
   templateUrl: './alert-banner.component.html',
   styleUrls: ['./alert-banner.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AlertBannerComponent {

@@ -15,7 +15,6 @@ interface AppAnnouncementProps {
   selector: 'app-app-announcement',
   templateUrl: './app-announcement.component.html',
   styleUrls: ['./app-announcement.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
 export class AppAnnouncementComponent implements OnInit {

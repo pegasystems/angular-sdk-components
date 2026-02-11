@@ -13,7 +13,6 @@ interface StagesProps {
   selector: 'app-stages',
   templateUrl: './stages.component.html',
   styleUrls: ['./stages.component.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class StagesComponent implements OnInit, OnDestroy {
@@ -27,7 +26,8 @@ export class StagesComponent implements OnInit, OnDestroy {
   arStageResults$: any[];
   lastStage$: any;
   checkSvgIcon$: string;
-  key: string;
+  key: any;
+  localizationService: any;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -40,7 +40,8 @@ export class StagesComponent implements OnInit, OnDestroy {
 
     // const imagePath = this.utils.getIconPath(this.utils.getSDKStaticContentUrl());
     this.checkSvgIcon$ = this.utils.getImageSrc('check', this.utils.getSDKStaticContentUrl());
-    this.key = `${this.pConn$.getCaseInfo().getClassName()}!CASE!${this.pConn$.getCaseInfo().getName()}`.toUpperCase();
+    this.key = this.pConn$?.getCaseLocaleReference();
+    this.localizationService = this.pConn$?.getLocalizationService();
   }
 
   ngOnDestroy(): void {

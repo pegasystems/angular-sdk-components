@@ -15,7 +15,6 @@ interface TextProps extends PConnFieldProps {
   selector: 'app-text',
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextComponent implements OnInit, OnDestroy {

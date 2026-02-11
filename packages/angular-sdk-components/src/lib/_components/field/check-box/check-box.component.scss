@@ -11,7 +11,6 @@
   transform: translateY(-1.28125em) scale(0.75) perspective(100px) translateZ(0.001px);
   -ms-transform: translateY(-1.28125em) scale(0.75);
   width: 133.33333%;
-  color: rgba(0, 0, 0, 0.6);
 }
 
 .psdk-data-readonly {
@@ -34,4 +33,10 @@ mat-checkbox {
 
 .mat-mdc-option {
   margin-left: -16px;
+}
+
+.label-required::after {
+  display: inline;
+  content: ' *';
+  vertical-align: top;
 }

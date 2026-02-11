@@ -1,0 +1,34 @@
+<div *ngIf="enableBanner$; else nonBannerMode">
+  <component-mapper
+    name="Banner"
+    [props]="{
+      configProps$,
+      arChildren$,
+      title: heading,
+      message,
+      backgroundImage,
+      layout$
+    }"
+  ></component-mapper>
+</div>
+
+<ng-template #nonBannerMode>
+  <div>
+    <h1 *ngIf="title">{{ title }}</h1>
+    <p *ngIf="heading">{{ heading }}</p>
+    <div
+      [ngClass]="{
+        'psdk-grid-filter-1': this.layout$ === 'one-column',
+        'psdk-grid-filter-2': this.layout$ === 'two-column',
+        'psdk-grid-filter-wide-narrow': this.layout$ === 'wide-narrow',
+        'psdk-grid-filter-narrow-wide': this.layout$ === 'narrow-wide'
+      }"
+    >
+      <component-mapper
+        *ngFor="let child of arChildren$"
+        [name]="child.getPConnect().getComponentName()"
+        [props]="{ pConn$: child.getPConnect() }"
+      ></component-mapper>
+    </div>
+  </div>
+</ng-template>

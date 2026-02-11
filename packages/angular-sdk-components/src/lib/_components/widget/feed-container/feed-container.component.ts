@@ -14,7 +14,6 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './feed-container.component.html',
   styleUrls: ['./feed-container.component.scss'],
   providers: [Utils],
-  standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit, OnDestroy {
@@ -30,7 +29,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   currentUserName$: string;
 
   pulseMessages$: any[];
-  showReplyComment$: Object = {};
+  showReplyComment$: object = {};
 
   svgComment$: string;
   svgLike$: string;
@@ -40,7 +39,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   pulseConversation: string;
   userData: Map<any, any> = new Map();
 
-  pulseComment: Object = {};
+  pulseComment: object = {};
 
   // functions
   actionsAPI: any;

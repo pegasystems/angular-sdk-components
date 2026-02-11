@@ -8,7 +8,6 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-material-summary-item',
   templateUrl: './material-summary-item.component.html',
   styleUrls: ['./material-summary-item.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule, MatMenuModule]
 })
 export class MaterialSummaryItemComponent implements OnInit {

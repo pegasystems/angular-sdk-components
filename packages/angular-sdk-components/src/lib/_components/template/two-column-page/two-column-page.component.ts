@@ -7,7 +7,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-two-column-page',
   templateUrl: './two-column-page.component.html',
   styleUrls: ['./two-column-page.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnPageComponent implements OnInit, OnDestroy {

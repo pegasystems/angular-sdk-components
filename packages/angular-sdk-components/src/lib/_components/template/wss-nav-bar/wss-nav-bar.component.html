@@ -1,21 +1,23 @@
-<mat-toolbar style="margin-bottom: 5px; background-color: #262626">
+<mat-toolbar>
   <mat-toolbar-row mat-icon-button>
     <div class="psdk-nav-header" (click)="navPanelButtonClick(homePage)">
       <div>
         <img src="{{ portalLogoImage$ }}" class="psdk-nav-logo" />
       </div>
       <div class="psdk-nav-portal-info">
-        <div class="psdk-nav-portal-app">{{ portalApp$ }}</div>
-      </div>
-    </div>
-
-    <div *ngFor="let page of navPages$">
-      <div class="flex-box mat-list-item" style="cursor: pointer" (click)="navPanelButtonClick(page)">
-        <div mat-button class="psdk-nav-button-span">{{ page.pyLabel }}</div>
+        <div class="psdk-nav-portal-app">{{ appName$ }}</div>
       </div>
     </div>
 
     <span class="spacer"></span>
+
+    <div *ngFor="let page of navPages$">
+      <div class="flex-box mat-list-item" style="cursor: pointer; font-size: 1rem; text-transform: capitalize" (click)="navPanelButtonClick(page)">
+        <div mat-button class="psdk-nav-button-span">{{ page.pyLabel }}</div>
+      </div>
+    </div>
+
+    <!-- <span class="spacer"></span> -->
 
     <mat-list>
       <mat-list-item [matMenuTriggerFor]="menu" class="psdk-profile-list-item">
@@ -24,7 +26,6 @@
         </div>
       </mat-list-item>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>Profile</button>
         <button mat-menu-item (click)="navPanelLogoutClick()">{{ localizedVal('Log off', localeCategory) }}</button>
       </mat-menu>
     </mat-list>

@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup } from '@angular/forms';
@@ -18,6 +18,11 @@ function getRefreshProps(refreshConditions) {
   return refreshConditions.filter(item => item.event && item.event === 'Changes').map(item => [item.field, item.field?.substring(1)]) || [];
 }
 
+function scrollToTop() {
+  const scrollElement = document.querySelector('.psdk-view-container-top');
+  scrollElement?.scrollIntoView();
+}
+
 interface AssignmentProps {
   // If any, enter additional props that only exist on this component
   template: string;
@@ -27,7 +32,6 @@ interface AssignmentProps {
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
@@ -57,6 +61,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
   bHasNavigation$ = false;
   bIsVertical$ = false;
+  prevNavigationSteps: any[] = [];
   arCurrentStepIndicies$: number[] = [];
   arNavigationSteps$: any[] = [];
 
@@ -83,7 +88,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
     private erService: ErrorMessagesService,
-    private ngZone: NgZone,
     private snackBar: MatSnackBar,
     public bannerService: BannerService
   ) {}
@@ -129,7 +133,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
         this.psService.sendMessage(loadingInfo);
       } catch (ex) {
-        /* empty */
+        console.log(ex);
       }
     }
   }
@@ -141,6 +145,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateChanges() {
+    scrollToTop();
+
     this.registerForRefresh();
 
     // pConn$ may be a 'reference' component, so normalize it
@@ -251,17 +257,19 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
     // iterate through steps to find current one(s)
     // immutable, so we want to change the local copy, so need to make a copy
-    this.ngZone.run(() => {
+
+    if (!PCore.isDeepEqual(this.prevNavigationSteps, oCaseInfo.navigation.steps)) {
       // what comes back now in configObject is the children of the flowContainer
       this.arNavigationSteps$ = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
+      this.prevNavigationSteps = JSON.parse(JSON.stringify(oCaseInfo.navigation.steps));
       this.arNavigationSteps$.forEach(step => {
         if (step.name) {
-          step.name = PCore.getLocaleUtils().getLocaleValue(step.name, undefined, this.localeReference);
+          step.name = this.pConn$.getLocalizationService().getLocalizedText(step.name);
         }
       });
       this.arCurrentStepIndicies$ = [];
       this.arCurrentStepIndicies$ = this.findCurrentIndicies(this.arNavigationSteps$, this.arCurrentStepIndicies$, 0);
-    });
+    }
   }
 
   findCurrentIndicies(arStepperSteps: any[], arIndicies: number[], depth: number): number[] {
@@ -427,12 +435,13 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
           const finishPromise = this.finishAssignment(this.itemKey$); // JA - was itemID but Nebula/Constellation uses itemKey
           finishPromise
             .then(() => {
-              this.psService.sendMessage(false);
               this.updateChanges();
             })
             .catch(() => {
-              this.psService.sendMessage(false);
               this.snackBarRef = this.snackBar.open(`${this.localizedVal('Submit failed!', this.localeCategory)}`, 'Ok');
+            })
+            .finally(() => {
+              this.psService.sendMessage(false);
             });
           break;
 
@@ -442,8 +451,10 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
           approvePromise
             .then(() => {})
             .catch(() => {
-              this.psService.sendMessage(false);
               this.snackBarRef = this.snackBar.open(`${this.localizedVal('Approve failed!', this.localeCategory)}`, 'Ok');
+            })
+            .finally(() => {
+              this.psService.sendMessage(false);
             });
 
           break;

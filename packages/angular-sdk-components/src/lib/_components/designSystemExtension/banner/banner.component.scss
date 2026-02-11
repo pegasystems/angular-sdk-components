@@ -1,6 +1,14 @@
 .psdk-grid-filter-1 {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  column-gap: calc(2 * 0.5rem);
+  row-gap: calc(2 * 0.5rem);
+  align-items: start;
+}
+
+.psdk-grid-filter-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
@@ -12,7 +20,10 @@
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
-  padding: 1rem;
+
+  & > *:nth-child(1) {
+    min-width: 0;
+  }
 }
 
 .psdk-grid-filter-narrow-wide {
@@ -21,6 +32,10 @@
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
+
+  & > *:nth-child(2) {
+    min-width: 0;
+  }
 }
 
 .background-image-style {
@@ -33,7 +48,6 @@
 
 .background-style {
   background-color: transparent;
-  color: var(--app-inverse-form-color);
   width: 100%;
   height: 100%;
   text-align: center;

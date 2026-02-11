@@ -62,7 +62,7 @@ export class Utils {
         }
       }
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
   }
 
@@ -428,7 +428,7 @@ export class Utils {
     return sessionStorage.getItem('asdk_AH') as string;
   }
 
-  static isEmptyObject(obj: Object): boolean {
+  static isEmptyObject(obj: object): boolean {
     return Object.keys(obj).length === 0;
   }
 
@@ -439,20 +439,89 @@ export class Utils {
    * @returns The localized string or the key itself if no translation is found
    */
   getGenericFieldsLocalizedValue(path: string, key: string): string {
-    const GENERIC_BUNDLE_KEY = PCore.getLocaleUtils().GENERIC_BUNDLE_KEY;
-    const localeStore = PCore.getLocaleUtils().localeStore[GENERIC_BUNDLE_KEY];
+    const localeStore = PCore.getLocaleUtils().localeStore;
 
     if (!localeStore) return key;
 
     // Split the path and traverse the object
     const pathParts = path.split('.');
-    let currentObj = localeStore;
+    let currentObj: any = localeStore;
 
     for (const part of pathParts) {
       if (!currentObj[part]) return key;
-      currentObj = currentObj[part];
+      currentObj = currentObj[part] as any;
     }
 
     return currentObj[key] || key;
+  }
+
+  prepareComponentInCaseSummary(pConnectMeta, getPConnect) {
+    const { config, children } = pConnectMeta;
+    const pConnect = getPConnect();
+
+    const caseSummaryComponentObject: any = {};
+
+    caseSummaryComponentObject.name = pConnect.resolveConfigProps({ label: config.label }).label;
+
+    const { type } = pConnectMeta;
+    const createdComponent = pConnect.createComponent({
+      type,
+      children: children ? [...children] : [],
+      config: {
+        ...config
+      }
+    });
+
+    caseSummaryComponentObject.value = createdComponent;
+    return caseSummaryComponentObject;
+  }
+
+  resolveReferenceFields(
+    item: {
+      [key: string]: unknown;
+    },
+    hideFieldLabels: boolean,
+    recordKey: string,
+    pConnect: typeof PConnect
+  ) {
+    const presets: {
+      children?: {
+        children?: {
+          config;
+          type;
+        };
+        config?;
+      };
+    } = (pConnect.getRawMetadata()?.config as any).presets ?? [];
+
+    const presetChildren = presets[0]?.children?.[0]?.children ?? [];
+
+    const maxFields = 5;
+    return presetChildren.slice(0, maxFields).map((preset, index) => {
+      const fieldMeta = {
+        meta: {
+          ...preset,
+          config: {
+            ...preset.config,
+            displayMode: 'DISPLAY_ONLY'
+          }
+        },
+        useCustomContext: item
+      };
+      const configObj = PCore.createPConnect(fieldMeta);
+      const meta = configObj.getPConnect().getMetadata();
+      const fieldInfo: {
+        name?: string;
+        value?: any;
+      } = meta ? this.prepareComponentInCaseSummary(meta, configObj.getPConnect) : {};
+      return hideFieldLabels
+        ? { id: `${item[recordKey]} - ${index}`, value: fieldInfo.value }
+        : {
+            id: `${item[recordKey]} - ${index}`,
+            name: fieldInfo.name,
+            value: fieldInfo.value,
+            type: preset.type
+          };
+    });
   }
 }

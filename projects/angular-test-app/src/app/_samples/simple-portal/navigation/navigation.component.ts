@@ -27,7 +27,6 @@ declare global {
   selector: 'app-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatProgressSpinnerModule,

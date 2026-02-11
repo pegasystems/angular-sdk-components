@@ -6,7 +6,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-field-group-list',
   templateUrl: './field-group-list.component.html',
   styleUrls: ['./field-group-list.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupListComponent {

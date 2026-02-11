@@ -7,7 +7,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   selector: 'app-material-vertical-tabs',
   templateUrl: './material-vertical-tabs.component.html',
   styleUrls: ['./material-vertical-tabs.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonToggleModule, MatBadgeModule]
 })
 export class MaterialVerticalTabsComponent implements OnInit {

@@ -550,6 +550,27 @@ function populateRenderingOptions(name, config, field) {
     config.cellRenderer = formatConstants.Integer;
   }
 }
+function isFLProperty(label) {
+  return label?.startsWith('@FL');
+}
+
+function getFieldLabel(fieldConfig) {
+  const { label, classID, caption } = fieldConfig;
+  let fieldLabel = (label ?? caption)?.substring(4);
+  const labelSplit = fieldLabel?.split('.');
+  const propertyName = labelSplit?.pop();
+  const fieldMetaData: any = PCore.getMetadataUtils().getPropertyMetadata(propertyName, classID) ?? {};
+  fieldLabel = fieldMetaData.label ?? fieldMetaData.caption ?? propertyName;
+
+  const definedOnClassID = fieldMetaData.definedOnClassID;
+  const localeValue = PCore.getLocaleUtils().getLocaleValue(
+    fieldLabel,
+    `${definedOnClassID ?? fieldMetaData.classID ?? classID}.${propertyName}`,
+    PCore.getLocaleUtils().FIELD_LABELS_BUNDLE_KEY,
+    null
+  );
+  return localeValue || fieldLabel;
+}
 export function initializeColumns(fields: any[] = [], getMappedProperty: any = null) {
   return fields.map((field, originalColIndex) => {
     let name = field.config.value;
@@ -562,7 +583,9 @@ export function initializeColumns(fields: any[] = [], getMappedProperty: any = n
 
     let label = field.config.label || field.config.caption;
     const { show = true, displayAs } = field.config;
-    if (label.startsWith('@')) {
+    if (isFLProperty(label)) {
+      label = getFieldLabel(field.config);
+    } else if (label.startsWith('@')) {
       label = label.substring(3);
     }
 
@@ -653,7 +676,7 @@ export const readContextResponse = async (context, params) => {
   const { pConn$, apiContext, children, showDynamicFields, referenceList, isDataObject } = params;
   // let { listContext } = params;
   const { promisesResponseArray, apiContext: otherContext } = context;
-  // eslint-disable-next-line sonarjs/no-unused-collection
+
   const listOfComponents: any[] = [];
   const {
     data: { fields: metaFields, classID, isQueryable }

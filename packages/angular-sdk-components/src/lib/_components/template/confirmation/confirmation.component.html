@@ -1,7 +1,7 @@
 <div>
   <div *ngIf="showConfirmView">
     <h2 id="confirm-label" class="confirm-label">{{ label }}</h2>
-    <div *ngIf="showDetails">
+    <div *ngIf="showDetails" class="confirmation-details">
       <component-mapper name="Details" [props]="{ pConn$ }"></component-mapper>
     </div>
     <div *ngIf="showTasks && toDoList?.length > 0">

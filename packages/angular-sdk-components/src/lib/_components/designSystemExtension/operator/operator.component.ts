@@ -7,7 +7,6 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-operator',
   templateUrl: './operator.component.html',
   styleUrls: ['./operator.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatButtonModule]
 })
 export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
@@ -46,7 +45,6 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
   ngOnDestroy(): void {
     // Ref: https://medium.com/@kamil.galek/mythical-angular-component-styles-cleanup-in-angular-17-f799a08b2abc
     // Commenting the below line as it is causing the Operator component's styles not getting applied.

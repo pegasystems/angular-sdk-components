@@ -9,6 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatIcon } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import isEqual from 'fast-deep-equal';
 
@@ -62,7 +63,6 @@ class Group {
   selector: 'app-simple-table-manual',
   templateUrl: './simple-table-manual.component.html',
   styleUrls: ['./simple-table-manual.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatTableModule,
@@ -74,8 +74,10 @@ class Group {
     MatOptionModule,
     MatSelectModule,
     MatInputModule,
+    MatIcon,
     forwardRef(() => ComponentMapperComponent)
-  ]
+  ],
+  providers: [DatapageService]
 })
 export class SimpleTableManualComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort: MatSort;
@@ -216,7 +218,6 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableManualProps;
 
     if (this.configProps$.visibility != null) {
-      // eslint-disable-next-line no-multi-assign
       this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
 
@@ -307,6 +308,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.defaultView = editModeConfig ? editModeConfig.defaultView : viewForAddAndEditModal;
     this.bUseSeparateViewForEdit = editModeConfig ? editModeConfig.useSeparateViewForEdit : useSeparateViewForEdit;
     this.editView = editModeConfig ? editModeConfig.editView : viewForEditModal;
+    const primaryFieldsViewIndex = resolvedFields.findIndex(field => field.config.value === 'pyPrimaryFields');
     // const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
 
     // Nebula has other handling for isReadOnlyMode but has Cosmos-specific code
@@ -317,8 +319,11 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  Nebula does). It will also have the "label", and "meta" contains the original,
     //  unchanged config info. For now, much of the info here is carried over from
     //  Nebula and we may not end up using it all.
-    this.fieldDefs = buildFieldsForTable(rawFields, resolvedFields, showDeleteButton);
-
+    this.fieldDefs = buildFieldsForTable(rawFields, this.pConn$, showDeleteButton, {
+      primaryFieldsViewIndex,
+      fields: resolvedFields
+    });
+    this.fieldDefs = this.fieldDefs?.filter(field => !(field.meta?.config?.hide === true));
     this.initializeDefaultPageInstructions();
 
     // end of from Nebula
@@ -334,10 +339,15 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  from from the fieldDefs. This "name" is the value that
     //  we'll share to connect things together in the table.
 
+    const labelsMap = this.fieldDefs.reduce((acc, curr) => {
+      return { ...acc, [curr.name]: curr.label };
+    }, {});
+
     this.processedFields = [];
 
     this.processedFields = resolvedFields.map((field, i) => {
       field.config.name = this.displayedColumns[i]; // .config["value"].replace(/ ./g,"_");   // replace space dot with underscore
+      field.config.label = labelsMap[field.config.name] || field.config.label;
       return field;
     });
 
@@ -817,7 +827,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const seen = {};
     return a.filter(item => {
       const k = key(item);
-      // eslint-disable-next-line no-return-assign, no-prototype-builtins
+      // eslint-disable-next-line no-prototype-builtins
       return seen.hasOwnProperty(k) ? false : (seen[k] = true);
     });
   }
@@ -908,7 +918,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   // return the value that should be shown as the contents for the given row data
   //  of the given row field
-  getRowValue(inRowData: Object, inColKey: string): any {
+  getRowValue(inRowData: object, inColKey: string): any {
     // See what data (if any) we have to display
     const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;
@@ -951,6 +961,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     if (this.allowEditingInModal && this.defaultView) {
       this.pConn$
         .getActionsApi()
+        // @ts-expect-error
         .openEmbeddedDataModal(
           this.defaultView,
           this.pConn$ as any,
@@ -972,6 +983,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     if (data) {
       this.pConn$
         .getActionsApi()
+        // @ts-expect-error
         .openEmbeddedDataModal(
           this.bUseSeparateViewForEdit ? this.editView : this.defaultView,
           this.pConn$ as any,
@@ -993,24 +1005,32 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.referenceList.forEach((element, index) => {
       const data: any = [];
       this.rawFields?.forEach(item => {
-        item = {
-          ...item,
-          config: { ...item.config, label: '', displayMode: this.readOnlyMode || this.allowEditingInModal ? 'DISPLAY_ONLY' : undefined }
-        };
-        const referenceListData = getReferenceList(this.pConn$);
-        const isDatapage = referenceListData.startsWith('D_');
-        const pageReferenceValue = isDatapage ? `${referenceListData}[${index}]` : `${this.pConn$.getPageReference()}${referenceListData}[${index}]`;
-        const config = {
-          meta: item,
-          options: {
-            context,
-            pageReference: pageReferenceValue,
-            referenceList: referenceListData,
-            hasForm: true
-          }
-        };
-        const view = PCore.createPConnect(config);
-        data.push(view);
+        if (!item?.config?.hide) {
+          item = {
+            ...item,
+            config: {
+              ...item.config,
+              label: '',
+              displayMode: this.readOnlyMode || this.allowEditingInModal ? 'DISPLAY_ONLY' : undefined
+            }
+          };
+          const referenceListData = getReferenceList(this.pConn$);
+          const isDatapage = referenceListData.startsWith('D_');
+          const pageReferenceValue = isDatapage
+            ? `${referenceListData}[${index}]`
+            : `${this.pConn$.getPageReference()}${referenceListData}[${index}]`;
+          const config = {
+            meta: item,
+            options: {
+              context,
+              pageReference: pageReferenceValue,
+              referenceList: referenceListData,
+              hasForm: true
+            }
+          };
+          const view = PCore.createPConnect(config);
+          data.push(view);
+        }
       });
       eleData.push(data);
     });

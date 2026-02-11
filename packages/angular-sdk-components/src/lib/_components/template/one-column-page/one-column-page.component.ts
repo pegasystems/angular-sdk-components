@@ -6,7 +6,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-one-column-page',
   templateUrl: './one-column-page.component.html',
   styleUrls: ['./one-column-page.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class OneColumnPageComponent {

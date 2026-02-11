@@ -7,7 +7,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-material-details-fields',
   templateUrl: './material-details-fields.component.html',
   styleUrls: ['./material-details-fields.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialDetailsFieldsComponent {

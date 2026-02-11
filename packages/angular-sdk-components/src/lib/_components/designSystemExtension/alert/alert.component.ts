@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatIconModule]
 })
 export class AlertComponent {

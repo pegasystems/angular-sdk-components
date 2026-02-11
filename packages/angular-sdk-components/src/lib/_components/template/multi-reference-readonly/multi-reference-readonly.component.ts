@@ -12,7 +12,6 @@ interface MultiReferenceReadOnlyProps {
   selector: 'app-multi-reference-readonly',
   templateUrl: './multi-reference-readonly.component.html',
   styleUrls: ['./multi-reference-readonly.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiReferenceReadonlyComponent implements OnInit, OnDestroy {

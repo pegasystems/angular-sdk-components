@@ -10,7 +10,6 @@ interface PulseProps {
   selector: 'app-pulse',
   templateUrl: './pulse.component.html',
   styleUrls: ['./pulse.component.scss'],
-  standalone: true,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class PulseComponent implements OnInit {

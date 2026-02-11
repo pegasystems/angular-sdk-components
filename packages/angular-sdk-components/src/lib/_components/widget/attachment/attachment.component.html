@@ -25,7 +25,7 @@
   </div>
   <span *ngIf="validateMessage" class="file-error">{{ validateMessage }}</span>
   <div *ngIf="files && files.length > 0">
-    <div *ngFor="let file of files">
+    <div *ngFor="let file of files; let i = index">
       <div class="psdk-attachment-card">
         <div className="psdk-utility-card-icon">
           <img *ngIf="!file.inProgress" class="psdk-attachment-card-svg-icon" src="{{ srcImg }}" />
@@ -36,7 +36,7 @@
           <div *ngIf="file.props.meta" [ngStyle]="{ color: file.props.error ? 'red' : null }">{{ file.props.meta }}</div>
         </div>
         <div class="psdk-attachment-action">
-          <button id="delete-attachment" *ngIf="file.ID" class="psdk-utility-button" (click)="deleteFile(file)">
+          <button id="delete-attachment" *ngIf="file.ID" class="psdk-utility-button" (click)="deleteFile(file, i)">
             <img class="psdk-utility-card-action-svg-icon" src="{{ deleteIcon }}" />
           </button>
           <div *ngIf="!file.ID">
@@ -45,7 +45,7 @@
             </button>
             <mat-menu #actionMenu="matMenu">
               <button mat-menu-item (click)="downloadFile(file.responseProps ? file.responseProps : {})">Download</button>
-              <button mat-menu-item (click)="deleteFile(file)">Delete</button>
+              <button mat-menu-item (click)="deleteFile(file, i)">Delete</button>
             </mat-menu>
           </div>
         </div>

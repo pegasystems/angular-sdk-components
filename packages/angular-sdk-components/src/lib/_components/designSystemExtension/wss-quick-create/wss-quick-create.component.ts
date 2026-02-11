@@ -6,7 +6,6 @@ import { Component, Input } from '@angular/core';
   selector: 'wss-quick-create',
   templateUrl: './wss-quick-create.component.html',
   styleUrls: ['./wss-quick-create.component.scss'],
-  standalone: true,
   imports: [CommonModule]
 })
 export class WssQuickCreateComponent {

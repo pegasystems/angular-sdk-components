@@ -28,7 +28,6 @@ interface ViewContainerProps {
   selector: 'app-view-container',
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit, OnDestroy {
@@ -162,7 +161,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
 
       this.psService.sendMessage(loadingInfo);
     } catch (ex) {
-      /* empty */
+      console.log(ex);
     }
 
     // const buildName = this.buildName();

@@ -13,7 +13,6 @@ interface InlineDashboardProps {
   selector: 'app-inline-dashboard',
   templateUrl: './inline-dashboard.component.html',
   styleUrls: ['./inline-dashboard.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardComponent {

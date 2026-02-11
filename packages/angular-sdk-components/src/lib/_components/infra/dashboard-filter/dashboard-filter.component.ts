@@ -14,7 +14,6 @@ import { getFilterExpression, getFormattedDate, createFilter, combineFilters } f
   selector: 'app-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
-  standalone: true,
   imports: [
     CommonModule,
     MatFormFieldModule,

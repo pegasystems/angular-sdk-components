@@ -18,7 +18,6 @@ interface RepeatingStructuresProps {
   selector: 'app-repeating-structures',
   templateUrl: './repeating-structures.component.html',
   styleUrls: ['./repeating-structures.component.scss'],
-  standalone: true,
   imports: [CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule]
 })
 export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
@@ -69,7 +68,6 @@ export class RepeatingStructuresComponent implements OnInit, AfterViewInit {
   }
 
   rowClick(row) {
-    // eslint-disable-next-line sonarjs/no-small-switch
     switch (this.configProps$.rowClickAction) {
       case 'openAssignment':
         this.psService.sendMessage(true);

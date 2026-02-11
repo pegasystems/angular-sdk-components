@@ -1,0 +1,8 @@
+{
+  "name": "Location",
+  "label": "Location",
+  "description": "Location",
+  "type": "Field",
+  "subtype": "Location",
+  "properties": []
+}

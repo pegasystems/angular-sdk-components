@@ -30,6 +30,8 @@ import { EmailComponent } from '../../_components/field/email/email.component';
 import { GroupComponent } from '../../_components/field/group/group.component';
 import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
+import { LocationComponent } from '../../_components/field/location/location.component';
+import { ObjectReferenceComponent } from '../../_components/field/object-reference/object-reference.component';
 import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
 import { RadioButtonsComponent } from '../../_components/field/radio-buttons/radio-buttons.component';
@@ -42,9 +44,12 @@ import { TimeComponent } from '../../_components/field/time/time.component';
 import { UrlComponent } from '../../_components/field/url/url.component';
 import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';
 import { ScalarListComponent } from '../../_components/field/scalar-list/scalar-list.component';
+import { SearchFormComponent } from '../../_components/template/data-reference/search-form/search-form.component';
+import { SelectableCardComponent } from '../../_components/field/selectable-card/selectable-card.component';
 import { RichTextComponent } from '../../_components/field/rich-text/rich-text.component';
 
 // Template components
+import { AdvancedSearchComponent } from '../../_components/template/advanced-search/advanced-search.component';
 import { AppShellComponent } from '../../_components/template/app-shell/app-shell.component';
 import { BannerPageComponent } from '../../_components/template/banner-page/banner-page.component';
 import { CaseSummaryComponent } from '../../_components/template/case-summary/case-summary.component';
@@ -52,6 +57,7 @@ import { CaseViewComponent } from '../../_components/template/case-view/case-vie
 import { ConfirmationComponent } from '../../_components/template/confirmation/confirmation.component';
 import { DataReferenceComponent } from '../../_components/template/data-reference/data-reference.component';
 import { DefaultFormComponent } from '../../_components/template/default-form/default-form.component';
+import { DefaultPageComponent } from '../../_components/template/default-page/default-page.component';
 import { DetailsComponent } from '../../_components/template/details/details.component';
 import { DetailsNarrowWideComponent } from '../../_components/template/details-narrow-wide/details-narrow-wide.component';
 import { DetailsOneColumnComponent } from '../../_components/template/details-one-column/details-one-column.component';
@@ -70,11 +76,14 @@ import { ListViewComponent } from '../../_components/template/list-view/list-vie
 import { MultiReferenceReadonlyComponent } from '../../_components/template/multi-reference-readonly/multi-reference-readonly.component';
 import { MultiselectComponent } from '../../_components/field/multiselect/multiselect.component';
 import { NarrowWideFormComponent } from '../../_components/template/narrow-wide-form/narrow-wide-form.component';
+import { ObjectPageComponent } from '../../_components/template/object-page/object-page.component';
 import { OneColumnComponent } from '../../_components/template/one-column/one-column.component';
 import { OneColumnPageComponent } from '../../_components/template/one-column-page/one-column-page.component';
 import { OneColumnTabComponent } from '../../_components/template/one-column-tab/one-column-tab.component';
 import { PageComponent } from '../../_components/template/page/page.component';
 import { PromotedFiltersComponent } from '../../_components/template/promoted-filters/promoted-filters.component';
+import { SearchGroupsComponent } from '../../_components/template/advanced-search/search-groups/search-groups.component';
+import { SelfServiceCaseViewComponent } from '../../_components/template/self-service-case-view/self-service-case-view.component';
 import { SimpleTableComponent } from '../../_components/template/simple-table/simple-table.component';
 import { SimpleTableManualComponent } from '../../_components/template/simple-table-manual/simple-table-manual.component';
 import { SimpleTableSelectComponent } from '../../_components/template/simple-table-select/simple-table-select.component';
@@ -126,6 +135,7 @@ import { WssQuickCreateComponent } from '../../_components/designSystemExtension
 //  Also, note that "Checkbox" component is named/exported as CheckboxComponent
 
 const pegaSdkComponentMap = {
+  AdvancedSearch: AdvancedSearchComponent,
   ActionButtons: ActionButtonsComponent,
   Alert: AlertComponent,
   AlertBanner: AlertBannerComponent,
@@ -154,6 +164,7 @@ const pegaSdkComponentMap = {
   DateTime: DateTimeComponent,
   Decimal: DecimalComponent,
   DefaultForm: DefaultFormComponent,
+  DefaultPage: DefaultPageComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
   DetailsFields: MaterialDetailsFieldsComponent,
@@ -182,6 +193,7 @@ const pegaSdkComponentMap = {
   ListUtility: ListUtilityComponent,
   ListView: ListViewComponent,
   ListViewActionButtons: ListViewActionButtonsComponent,
+  Location: LocationComponent,
   MaterialDetails: MaterialDetailsComponent,
   MaterialUtility: MaterialUtilityComponent,
   ModalViewContainer: ModalViewContainerComponent,
@@ -193,6 +205,8 @@ const pegaSdkComponentMap = {
   NarrowWideForm: NarrowWideFormComponent,
   //   'NarrowWidePage': NarrowWidePage,
   NavBar: NavbarComponent,
+  ObjectPage: ObjectPageComponent,
+  ObjectReference: ObjectReferenceComponent,
   OneColumn: OneColumnComponent,
   OneColumnPage: OneColumnPageComponent,
   OneColumnTab: OneColumnTabComponent,
@@ -210,6 +224,10 @@ const pegaSdkComponentMap = {
   RichTextEditor: RichTextEditorComponent,
   RootContainer: RootContainerComponent,
   ScalarList: ScalarListComponent,
+  SearchForm: SearchFormComponent,
+  SearchGroups: SearchGroupsComponent,
+  SelectableCard: SelectableCardComponent,
+  SelfServiceCaseView: SelfServiceCaseViewComponent,
   SemanticLink: SemanticLinkComponent,
   SimpleTable: SimpleTableComponent,
   SimpleTableManual: SimpleTableManualComponent,

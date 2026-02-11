@@ -85,6 +85,31 @@ function prepareSearchResults(listObjData, displayFieldMeta) {
   return searchResults;
 }
 
+function handleGroupedDataSearch(dataApiObj, searchText, clickedGroup, initialCaseClass, itemsTree) {
+  const localDataApiObj = cloneDeep(dataApiObj);
+  localDataApiObj.fetchedNQData = false;
+  localDataApiObj.cache = {};
+
+  if (!searchText && !clickedGroup) {
+    return { shouldReturn: true, value: itemsTree };
+  }
+
+  localDataApiObj.parameters[Object.keys(localDataApiObj.parameters)[1]] = searchText;
+  localDataApiObj.parameters[Object.keys(localDataApiObj.parameters)[0]] = initialCaseClass;
+
+  if (clickedGroup) {
+    if (!searchText) {
+      const containsData = itemsTree.find(item => item.id === clickedGroup);
+      if (containsData?.items?.length) {
+        return { shouldReturn: true, value: itemsTree };
+      }
+    }
+    localDataApiObj.parameters[Object.keys(localDataApiObj.parameters)[0]] = JSON.stringify([clickedGroup]);
+  }
+
+  return { shouldReturn: false, value: localDataApiObj };
+}
+
 async function doSearch(
   searchText,
   clickedGroup,
@@ -96,61 +121,44 @@ async function doSearch(
   showSecondaryInSearchOnly,
   selected
 ) {
-  let searchTextForUngroupedData = '';
-  if (dataApiObj) {
-    // creating dataApiObject in grouped data cases
-    if (isGroupData) {
-      dataApiObj = cloneDeep(dataApiObj);
-      dataApiObj.fetchedNQData = false;
-      dataApiObj.cache = {};
-
-      // if we have no search text and no group selected, return the original tree
-      if (searchText === '' && clickedGroup === '') {
-        return itemsTree;
-      }
-
-      // setting the inital search text & search classes in ApiObject
-      dataApiObj.parameters[Object.keys(dataApiObj.parameters)[1]] = searchText;
-      dataApiObj.parameters[Object.keys(dataApiObj.parameters)[0]] = initialCaseClass;
-
-      // if we have a selected group
-      if (clickedGroup) {
-        // check if the data for this group is already present and no search text
-        if (searchText === '') {
-          const containsData = itemsTree.find(item => item.id === clickedGroup);
-          // do not make API call when items of respective group are already fetched
-          if (containsData?.items?.length) return itemsTree;
-        }
-
-        dataApiObj.parameters[Object.keys(dataApiObj.parameters)[0]] = JSON.stringify([clickedGroup]);
-      }
-    } else {
-      searchTextForUngroupedData = searchText;
-    }
-
-    // search API call
-    const response = await dataApiObj.fetchData(searchTextForUngroupedData).catch(() => {
-      return itemsTree;
-    });
-
-    let listObjData = response.data;
-    let newItemsTree = [];
-    if (isGroupData) {
-      if (searchText) {
-        listObjData = prepareSearchResults(listObjData, displayFieldMeta);
-      } else {
-        newItemsTree = putItemsDataInItemsTree(listObjData, displayFieldMeta, itemsTree, showSecondaryInSearchOnly, selected);
-        return newItemsTree;
-      }
-    }
-    const showSecondaryData = showSecondaryInSearchOnly ? !!searchText : true;
-    if (listObjData !== undefined && listObjData.length > 0) {
-      newItemsTree = listObjData.map(entry => createSingleTreeObejct(entry, displayFieldMeta, showSecondaryData, selected));
-    }
-    return newItemsTree;
+  if (!dataApiObj) {
+    return itemsTree;
   }
 
-  return itemsTree;
+  let searchTextForApi = '';
+  let localDataApiObj = dataApiObj;
+
+  if (isGroupData) {
+    const groupResult = handleGroupedDataSearch(dataApiObj, searchText, clickedGroup, initialCaseClass, itemsTree);
+    if (groupResult.shouldReturn) {
+      return groupResult.value;
+    }
+    localDataApiObj = groupResult.value;
+  } else {
+    searchTextForApi = searchText;
+  }
+
+  const response = await localDataApiObj.fetchData(searchTextForApi).catch(() => ({ data: undefined }));
+
+  let listObjData = response.data;
+  if (!listObjData) {
+    return itemsTree;
+  }
+
+  if (isGroupData) {
+    if (searchText) {
+      listObjData = prepareSearchResults(listObjData, displayFieldMeta);
+    } else {
+      return putItemsDataInItemsTree(listObjData, displayFieldMeta, itemsTree, showSecondaryInSearchOnly, selected);
+    }
+  }
+
+  if (listObjData.length === 0) {
+    return [];
+  }
+
+  const showSecondaryData = showSecondaryInSearchOnly ? !!searchText : true;
+  return listObjData.map(entry => createSingleTreeObejct(entry, displayFieldMeta, showSecondaryData, selected));
 }
 
 function setValuesToPropertyList(searchText, assocProp, items, columns, actions, updatePropertyInRedux = true) {

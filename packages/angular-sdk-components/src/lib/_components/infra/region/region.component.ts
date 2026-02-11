@@ -8,7 +8,6 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-region',
   templateUrl: './region.component.html',
   styleUrls: ['./region.component.scss'],
-  standalone: true,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RegionComponent implements OnInit, OnChanges {

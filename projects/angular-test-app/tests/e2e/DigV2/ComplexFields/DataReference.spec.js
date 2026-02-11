@@ -12,35 +12,20 @@ test.describe('E2E test', () => {
   test('should login, create case and run different test cases for Data Reference', async ({ page }) => {
     await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
-    /** Testing announcement banner presence */
-    const announcementBanner = page.locator('h2:has-text("Announcements")');
-    await expect(announcementBanner).toBeVisible();
-
-    /** Testing worklist presence */
-    const worklist = page.locator('div[id="worklist"]:has-text("My Worklist")');
-    await expect(worklist).toBeVisible();
+    await common.verifyHomePage(page);
 
     /** Click on the Create Case button */
-    const createCase = page.locator('mat-list-item[id="create-case-button"]');
-    await createCase.click();
-
-    /** Creating a Complex Fields case-type */
-    const complexFieldsCase = page.locator('mat-list-item[id="case-list-item"] > span:has-text("Complex Fields")');
-    await complexFieldsCase.click();
+    await common.createCase('Complex Fields', page);
 
     /** Selecting Data Reference from the Category dropdown */
-    const selectedCategory = page.locator('mat-select[data-test-id="76729937a5eb6b0fd88c42581161facd"]');
-    await selectedCategory.click();
-    await page.locator('mat-option >> span').getByText('DataReference', { exact: true }).click();
+    await common.selectCategory('DataReference', page, true);
 
     await page.locator('button:has-text("submit")').click();
 
     /** Display subcategory tests */
 
     /** Autocomplete display type test */
-    let selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Display' }).click();
+    await common.selectSubCategory('Display', page);
 
     let selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
@@ -57,7 +42,7 @@ test.describe('E2E test', () => {
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
     let price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
     // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -65,9 +50,7 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Previous")').click();
 
     /** Dropdown display type tests */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Display' }).click();
+    await common.selectSubCategory('Display', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
@@ -94,13 +77,11 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Previous")').click();
 
     /** Table display type tests */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Display' }).click();
+    await common.selectSubCategory('Display', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
-    await page.getByRole('option', { name: 'Table' }).click();
+    await page.getByRole('option', { name: 'Table', exact: true }).click();
 
     selectedProduct = page.locator('tr:has-text("Basic Product")');
     const selectedProductRow = selectedProduct.locator('td >> mat-radio-button');
@@ -124,9 +105,7 @@ test.describe('E2E test', () => {
     /** Options subcategory tests */
 
     /** SingleRecord options type test */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Options' }).click();
+    await common.selectSubCategory('Options', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
@@ -143,9 +122,8 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
     price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
 
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -153,9 +131,7 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Previous")').click();
 
     /** ListOfRecords options type test */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Options' }).click();
+    await common.selectSubCategory('Options', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
@@ -182,16 +158,13 @@ test.describe('E2E test', () => {
     /** Mode subcategory tests */
 
     /** SingleSelect mode type test */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Mode' }).click();
+    await common.selectSubCategory('Mode', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
     await page.getByRole('option', { name: 'SingleSelect' }).click();
 
     selectedProduct = page.getByLabel('Selected Product');
-    // selectedProduct = page.locator('input[id="mat-input-6"]');
     await selectedProduct.click();
     await page.getByRole('option', { name: 'Basic Product' }).click();
     await expect(selectedProduct).toBeVisible();
@@ -202,9 +175,8 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    price = assignment.locator('app-currency >> input');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
 
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -212,9 +184,7 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Previous")').click();
 
     /** MultiSelect mode type test */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Mode' }).click();
+    await common.selectSubCategory('Mode', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
@@ -273,15 +243,13 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Previous")').click();
 
     /** Readonly mode type test */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Mode' }).click();
+    await common.selectSubCategory('Mode', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
     await page.getByRole('option', { name: 'Readonly' }).click();
 
-    selectedProduct = page.locator('app-data-reference >> app-semantic-link >> div >> div:has-text("Basic Product")');
+    selectedProduct = page.locator('app-data-reference >> app-semantic-link >> div >> a:has-text("Basic Product")');
     await expect(selectedProduct).toBeVisible();
 
     await page.locator('button:has-text("Next")').click();
@@ -290,9 +258,8 @@ test.describe('E2E test', () => {
 
     /** Testing the values present on Confirm screen */
     await expect(assignment.locator('app-text >> div[class="psdk-data-readonly"]').getByText('Basic Product')).toBeVisible();
-    // await expect(assignment.locator('app-text >> label').getByText("Basic Product")).toBeVisible();
-    price = await assignment.locator('app-currency >> input');
-    await expect(await price.inputValue()).toBe('$75.00');
+    price = assignment.locator('app-currency >> input');
+    expect(await price.inputValue()).toBe('$75.00');
     expect(price).toBeVisible();
 
     await expect(assignment.locator('app-text >> label').getByText('9f2584c2-5cb4-4abe-a261-d68050ee0f66')).toBeVisible();
@@ -300,9 +267,7 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("Previous")').click();
 
     /** Testing Sorting(both ascending and descending) */
-    selectedSubCategory = page.locator('mat-select[data-test-id="9463d5f18a8924b3200b56efaad63bda"]');
-    await selectedSubCategory.click();
-    await page.getByRole('option', { name: 'Options' }).click();
+    await common.selectSubCategory('Options', page);
 
     selectedTestName = page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]');
     await selectedTestName.click();
@@ -314,23 +279,129 @@ test.describe('E2E test', () => {
 
     let tableCell = table.locator('tbody >> tr >> td >> nth=1');
     // "---" should come at the top in the ascending order, since it's a Falsy value
-    await expect(await tableCell.textContent()).toBe('---');
+    expect(await tableCell.textContent()).toBe('---');
 
     await table.locator('div:has-text("Product Name") >> nth=0').click();
 
     tableCell = table.locator('tbody >> tr >> td >> nth=1');
-    // "Luxury Product" should be at the top in the descending order
-    await expect(await tableCell.textContent()).toBe('Luxury Product');
+    // "Red Item" should be at the top in the descending order
+    await expect(await tableCell.textContent()).toBe('Red Item');
 
-    const lastRow = table.locator('tbody >> tr >> nth=3');
+    const lastRow = table.locator('tbody >> tr').last();
     tableCell = lastRow.locator('td >> nth=1');
     // "---" should be at the bottom in the descending order
-    await expect(await tableCell.textContent()).toBe('---');
+    expect(await tableCell.textContent()).toBe('---');
 
     await page.locator('button:has-text("Next")').click();
 
     /** Submitting the case */
     await page.locator('button:has-text("submit")').click();
+  }, 10000);
+
+  test('should login, create case and run select all scenario in Simple Table for Data Reference', async ({ page }) => {
+    await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
+
+    await common.verifyHomePage(page);
+
+    /** Click on the Create Case button */
+    await common.createCase('Complex Fields', page);
+
+    /** Selecting Data Reference from the Category dropdown */
+    await common.selectCategory('DataReference', page, true);
+
+    await page.locator('button:has-text("submit")').click();
+
+    /** MultiSelect mode type test */
+    await common.selectSubCategory('Mode', page);
+
+    await page.locator('mat-select[data-test-id="6f64b45d01d11d8efd1693dfcb63b735"]').click();
+    await page.getByRole('option', { name: 'MultiSelect' }).click();
+
+    /** Combo-Box mode type test */
+    let displayAs = page.locator('mat-select[data-test-id="4aa668349e0970901aa6b11528f95223"]');
+    await displayAs.click();
+    await page.getByRole('option', { name: 'Simple table' }).click();
+
+    const table = page.locator('table[id="list-view"]');
+    await expect(table).toBeVisible();
+
+    /** find and click the select all checkbox */
+    const selectAllCheckbox = table.locator('thead >> mat-checkbox');
+    await selectAllCheckbox.click();
+
+    await page.locator('button:has-text("Next")').click();
+
+    const assignment = page.locator('app-default-form');
+
+    await expect(assignment.locator('td:has-text("Mobile")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Television")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Washing Machine")')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** 'Unselect all' logic here */
+    await expect(table).toBeVisible();
+
+    /** click the select all checkbox to unselect all */
+    await selectAllCheckbox.click();
+
+    await page.locator('button:has-text("Next")').click();
+
+    await expect(assignment.locator('td:has-text("Mobile")')).not.toBeVisible();
+    await expect(assignment.locator('td:has-text("Television")')).not.toBeVisible();
+    await expect(assignment.locator('td:has-text("Washing Machine")')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    await expect(table).toBeVisible();
+
+    /** select mobile, washing machine checkbox rows */
+    await table.locator('tr:has-text("Mobile")').locator('mat-checkbox').click();
+    await table.locator('tr:has-text("Washing Machine")').locator('mat-checkbox').click();
+
+    /** now select all checkbox should be in indeterminate state */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).toHaveAttribute('aria-checked', 'mixed');
+
+    await page.locator('button:has-text("Next")').click();
+
+    /** confirm screen should display mobile, washing machine */
+    await expect(assignment.locator('td:has-text("Mobile")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Washing Machine")')).toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** now unselect mobile checkbox row */
+    await table.locator('tr:has-text("Mobile")').locator('mat-checkbox').click();
+    /** now select all checkbox should be in indeterminate state */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).toHaveAttribute('aria-checked', 'mixed');
+
+    await page.locator('button:has-text("Next")').click();
+
+    /** confirm screen should display only washing machine */
+    await expect(assignment.locator('td:has-text("Washing Machine")')).toBeVisible();
+    await expect(assignment.locator('td:has-text("Mobile")')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** now unselect washing machine checkbox row */
+    await table.locator('tr:has-text("Washing Machine")').locator('mat-checkbox').click();
+    /** now select all checkbox should be unchecked */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).not.toHaveAttribute('aria-checked', 'mixed');
+    /** now click on next button */
+    await page.locator('button:has-text("Next")').click();
+
+    /** confirm screen should not display any selected rows */
+    await expect(assignment.locator('td:has-text("Washing Machine")')).not.toBeVisible();
+    await expect(assignment.locator('td:has-text("Mobile")')).not.toBeVisible();
+
+    await page.locator('button:has-text("Previous")').click();
+
+    /** Now select each of the rows one by one and verify that the select all checkbox gets checked */
+    await table.locator('tr:has-text("Mobile")').locator('mat-checkbox').click();
+    await table.locator('tr:has-text("Television")').locator('mat-checkbox').click();
+    await table.locator('tr:has-text("Washing Machine")').locator('mat-checkbox').click();
+    /** now select all checkbox should be checked */
+    await expect(selectAllCheckbox.locator('input[type="checkbox"]')).toBeChecked();
   }, 10000);
 });
 
