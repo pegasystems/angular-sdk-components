@@ -4,6 +4,8 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 interface MultiReferenceReadOnlyProps {
+  readonlyContextList: string;
+  referenceList: string;
   label: string;
   hideLabel: boolean;
 }
@@ -21,6 +23,7 @@ export class MultiReferenceReadonlyComponent implements OnInit, OnDestroy {
   angularPConnectData: AngularPConnectData = {};
   configProps$: MultiReferenceReadOnlyProps;
   label: string;
+  newPConn: any;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -49,5 +52,29 @@ export class MultiReferenceReadonlyComponent implements OnInit, OnDestroy {
   updateSelf() {
     this.configProps$ = this.pConn$.getConfigProps() as MultiReferenceReadOnlyProps;
     this.label = this.configProps$.label;
+
+    const config = (this.pConn$.getMetadata() as any)?.config;
+    const { referenceList, readonlyContextList } = config;
+    let readonlyContextObject;
+    if (!PCore.getAnnotationUtils().isProperty(referenceList)) {
+      readonlyContextObject = {
+        referenceList: readonlyContextList
+      };
+    }
+    const hideLabel = this.configProps$.hideLabel ?? false;
+    this.newPConn = this.pConn$.createComponent(
+      {
+        type: 'SimpleTable',
+        config: {
+          ...config,
+          ...readonlyContextObject,
+          label: this.label,
+          hideLabel
+        }
+      },
+      '',
+      0,
+      {}
+    );
   }
 }

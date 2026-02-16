@@ -46,7 +46,7 @@ export const getContext = thePConn => {
   const pageReference = thePConn.getPageReference();
   const { readonlyContextList, referenceList = readonlyContextList } = thePConn.getStateProps()?.config || thePConn.getStateProps();
 
-  const pageReferenceForRows = referenceList.startsWith('.') ? `${pageReference}.${referenceList.substring(1)}` : referenceList;
+  const pageReferenceForRows = referenceList?.startsWith('.') ? `${pageReference}.${referenceList?.substring(1)}` : referenceList;
   const viewName = thePConn.viewName;
 
   // removing "caseInfo.content" prefix to avoid setting it as a target while preparing pageInstructions
