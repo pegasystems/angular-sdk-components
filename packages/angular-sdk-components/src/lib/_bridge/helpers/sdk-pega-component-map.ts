@@ -39,7 +39,7 @@ import { SemanticLinkComponent } from '../../_components/field/semantic-link/sem
 import { TextAreaComponent } from '../../_components/field/text-area/text-area.component';
 import { TextComponent } from '../../_components/field/text/text.component';
 import { TextContentComponent } from '../../_components/field/text-content/text-content.component';
-import { TextInputComponent } from '../../_components/field/text-input/text-input.component';
+import { TextInputComponent } from '../../_components/field/text-input-new/text-input.component';
 import { TimeComponent } from '../../_components/field/time/time.component';
 import { UrlComponent } from '../../_components/field/url/url.component';
 import { UserReferenceComponent } from '../../_components/field/user-reference/user-reference.component';

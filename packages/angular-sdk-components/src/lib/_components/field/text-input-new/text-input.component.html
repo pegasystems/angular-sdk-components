@@ -1,0 +1,26 @@
+<!-- No *ngIf, use @if -->
+@if (visibility()) {
+  <mat-form-field [appearance]="'outline'" [class.readonly]="readOnly()">
+    <mat-label>{{ label() }}</mat-label>
+
+    <input
+      matInput
+      [value]="value()"
+      [placeholder]="placeholder()"
+      [required]="required()"
+      [readonly]="readOnly()"
+      [disabled]="disabled()"
+      [attr.data-test-id]="testId()"
+      (input)="fieldOnChange($event)"
+      (blur)="fieldOnBlur($event)"
+    />
+
+    @if (helperText()) {
+      <mat-hint>{{ helperText() }}</mat-hint>
+    }
+
+    @if (props().validatemessage) {
+      <mat-error>{{ props().validatemessage }}</mat-error>
+    }
+  </mat-form-field>
+}
