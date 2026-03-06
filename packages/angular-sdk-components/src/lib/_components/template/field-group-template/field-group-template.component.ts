@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, signal } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,32 +48,26 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   referenceListLength = signal<number | null>(null);
   fieldHeader: any;
 
-  allowAdd = true;
-  allowEdit = true;
+  allowAdd = signal(true);
+  allowEdit = signal(true);
   allowDelete = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils
-  ) {}
+  ) {
+    effect(() => {
+      const allowAdd = this.allowAdd();
+      const allowEdit = this.allowEdit();
+      const referenceList = this.configProps$?.referenceList;
+      if (referenceList?.length === 0 && (allowAdd || allowEdit)) {
+        this.pConn$.getListActions().insert({ classID: this.contextClass }, referenceList.length);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.menuIconOverride$ = this.utils.getImageSrc('trash', this.utils.getSDKStaticContentUrl());
-
-    const { allowActions, allowTableEdit, referenceList } = this.configProps$;
-
-    if (allowActions && Object.keys(allowActions).length > 0) {
-      this.allowAdd = allowActions.allowAdd ?? allowTableEdit ?? true;
-      this.allowEdit = allowActions.allowEdit ?? true;
-      this.allowDelete = allowActions.allowDelete ?? allowTableEdit ?? true;
-    } else {
-      this.allowAdd = allowTableEdit ?? true;
-      this.allowDelete = allowTableEdit ?? true;
-    }
-
-    if (referenceList?.length === 0 && (this.allowAdd || this.allowEdit)) {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, referenceList.length);
-    }
   }
 
   ngOnDestroy(): void {
@@ -120,6 +114,17 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
 
     const resolvedList = getReferenceList(this.pConn$);
     this.pConn$.setReferenceList(resolvedList);
+
+    const { allowActions, allowTableEdit } = this.configProps$;
+
+    if (allowActions && Object.keys(allowActions).length > 0) {
+      this.allowAdd.set(allowActions.allowAdd ?? allowTableEdit ?? true);
+      this.allowEdit.set(allowActions.allowEdit ?? true);
+      this.allowDelete = allowActions.allowDelete ?? allowTableEdit ?? true;
+    } else {
+      this.allowAdd.set(allowTableEdit ?? true);
+      this.allowDelete = allowTableEdit ?? true;
+    }
 
     if (this.readonlyMode) {
       this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
