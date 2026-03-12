@@ -53,7 +53,9 @@
     "_comment_2": "Commands related to running tests against the Angular SDK",
     "test": "node ./scripts/playwright-message.js && playwright test --project=chromium MediaCo/portal MediaCo/embedded",
     "test:headed": "playwright test --headed --project=chromium MediaCo/portal MediaCo/embedded",
-    "test-report": "playwright show-report"
+    "test-report": "playwright show-report",
+    "test:unit": "ng test",
+    "test:unit:ci": "ng test --no-watch --browsers=ChromeHeadless --code-coverage"
   },
   "dependencies": {
     "@angular/animations": "^20.3.15",

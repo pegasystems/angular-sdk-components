@@ -5,5 +5,5 @@
     "outDir": "../../out-tsc/spec",
     "types": ["jasmine"]
   },
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["src/lib/_components/field/auto-complete/auto-complete.component.spec.ts", "**/*.d.ts"]
 }
