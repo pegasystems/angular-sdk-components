@@ -3,7 +3,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
-    "types": ["jasmine"]
+    "types": ["jasmine", "jest", "node"]
   },
   "include": ["src/lib/_components/field/auto-complete/auto-complete.component.spec.ts", "**/*.d.ts"]
 }
