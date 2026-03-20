@@ -2,7 +2,7 @@
   <div *ngIf="!bShowConfirm">
     <div *ngIf="!todo_showTodo$">
       <h2 *ngIf="!isMultiStep">{{ containerName$ }}</h2>
-      <div *ngIf="banners?.length">
+      <div *ngIf="banners.length">
         <component-mapper name="AlertBanner" [props]="{ banners }"></component-mapper>
       </div>
     </div>

@@ -65,7 +65,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   localizedVal: any;
   localeCategory = 'Messages';
   localeReference: any;
-  banners: any[];
+  banners: any[] = [];
   // itemKey: string = "";   // JA - this is what Nebula/Constellation uses to pass to finishAssignment, navigateToStep
 
   pConnectOfActiveContainerItem;

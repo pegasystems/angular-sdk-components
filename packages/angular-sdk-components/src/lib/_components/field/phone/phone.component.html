@@ -4,7 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="bHasForm$ && bVisible$; else noEdit">
     <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText" floatLabel="always">
-      <mat-tel-input
+      <ngx-mat-input-tel
         [attr.data-test-id]="testId"
         [formControl]="fieldControl"
         [preferredCountries]="preferredCountries"
@@ -16,7 +16,7 @@
         (change)="fieldOnChange()"
         (blur)="fieldOnBlur()"
       >
-      </mat-tel-input>
+      </ngx-mat-input-tel>
       <mat-label>{{ label$ }}</mat-label>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
     </mat-form-field>

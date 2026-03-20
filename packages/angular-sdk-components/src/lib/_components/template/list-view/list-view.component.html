@@ -176,7 +176,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns$"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns$"></tr>
         </table>
-        <div *ngIf="repeatListData?.length === 0">
+        <div *ngIf="repeatListData.length === 0">
           <table id="list-view" mat-table [dataSource]="[]">
             <!-- Define columns for headers -->
             <ng-container *ngFor="let col of displayedColumns$" [matColumnDef]="col">
@@ -189,7 +189,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns$"></tr>
           </table>
         </div>
-        <div class="psdk-no-records" *ngIf="repeatListData?.length === 0">
+        <div class="psdk-no-records" *ngIf="repeatListData.length === 0">
           {{ utils.getGenericFieldsLocalizedValue('COSMOSFIELDS.lists', 'No records found.') }}
         </div>
       </div>
