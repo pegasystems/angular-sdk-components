@@ -137,13 +137,13 @@
       "@angular/forms": "$@angular/forms"
     },
     "mat-tel-input": {
-      "@angular/platform-browser": "$@angular/platform-browser",
-      "@angular/platform-browser-dynamic": "$@angular/platform-browser-dynamic",
-      "@angular/core": "$@angular/core",
       "@angular/common": "$@angular/common",
+      "@angular/compiler": "$@angular/compiler",
+      "@angular/core": "$@angular/core",
       "@angular/forms": "$@angular/forms",
       "@angular/material": "$@angular/material",
-      "@angular/compiler": "$@angular/compiler",
+      "@angular/platform-browser": "$@angular/platform-browser",
+      "@angular/platform-browser-dynamic": "$@angular/platform-browser-dynamic",
       "rxjs": "$rxjs"
     }
   }
