@@ -79,6 +79,7 @@
     "libphonenumber-js": "^1.12.40",
     "lodash.clonedeep": "^4.5.0",
     "ngx-currency": "^19.0.0",
+    "mat-tel-input": "^21.1.0",
     "ngx-mat-input-tel": "^21.3.0",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.1",
@@ -95,7 +96,7 @@
     "@angular/compiler-cli": "^21.2.4",
     "@angular/language-service": "^21.2.4",
     "@pega/configs": "^0.16.3",
-    "@pega/constellationjs": "~25.1.0",
+    "@pega/constellationjs": "~25.1.2",
     "@pega/pcore-pconnect-typedefs": "~4.1.0",
     "@playwright/test": "^1.54.2",
     "@types/jasmine": "~5.1.4",
@@ -134,6 +135,16 @@
       "@angular/common": "$@angular/common",
       "@angular/core": "$@angular/core",
       "@angular/forms": "$@angular/forms"
+    },
+    "mat-tel-input": {
+      "@angular/platform-browser": "$@angular/platform-browser",
+      "@angular/platform-browser-dynamic": "$@angular/platform-browser-dynamic",
+      "@angular/core": "$@angular/core",
+      "@angular/common": "$@angular/common",
+      "@angular/forms": "$@angular/forms",
+      "@angular/material": "$@angular/material",
+      "@angular/compiler": "$@angular/compiler",
+      "rxjs": "$rxjs"
     }
   }
 }
