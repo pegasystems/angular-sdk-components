@@ -28,6 +28,6 @@
         </div>
       </div>
     </div>
-    <button *ngIf="allowAdd" mat-button color="primary" style="font-size: 16px" (click)="addFieldGroupItem()">{{ getAddBtnLabel() }}</button>
+    <button *ngIf="allowAdd()" mat-button color="primary" style="font-size: 16px" (click)="addFieldGroupItem()">{{ getAddBtnLabel() }}</button>
   </ng-template>
 </div>
