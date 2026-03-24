@@ -108,7 +108,7 @@ describe('SemanticLinkComponent', () => {
     fixture = TestBed.createComponent(SemanticLinkComponent);
     component = fixture.componentInstance;
     component.pConn$ = mockPConn;
-        component.formGroup$ = new FormGroup({});
+    component.formGroup$ = new FormGroup({});
   });
 
   it('should create', () => {
@@ -259,7 +259,7 @@ describe('SemanticLinkComponent', () => {
 
   describe('isLinkTextEmpty', () => {
     it('should set isLinkTextEmpty flag correctly', () => {
-      mockPConn.resolveConfigProps.mockReturnValue({ ...mockConfigProps, text: '' , value: '' });
+      mockPConn.resolveConfigProps.mockReturnValue({ ...mockConfigProps, text: '', value: '' });
       component.updateSelf();
       expect(component.isLinkTextEmpty).toBe(true);
     });

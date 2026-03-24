@@ -62,13 +62,7 @@ describe('EmailComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        EmailComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
+      imports: [EmailComponent, ReactiveFormsModule, NoopAnimationsModule, MatFormFieldModule, MatInputModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }

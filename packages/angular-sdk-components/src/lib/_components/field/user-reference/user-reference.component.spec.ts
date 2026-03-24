@@ -431,11 +431,7 @@ describe('UserReferenceComponent', () => {
 
   describe('_filter', () => {
     beforeEach(() => {
-      component.options$ = [
-        { value: 'John Doe' },
-        { value: 'Jane Smith' },
-        { value: 'Bob Johnson' }
-      ];
+      component.options$ = [{ value: 'John Doe' }, { value: 'Jane Smith' }, { value: 'Bob Johnson' }];
     });
 
     it('should filter options by value', () => {

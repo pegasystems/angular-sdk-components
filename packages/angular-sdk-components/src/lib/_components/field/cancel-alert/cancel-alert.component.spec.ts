@@ -11,7 +11,7 @@ import { ProgressSpinnerService } from '../../../_messages/progress-spinner.serv
 // Mock PCore global
 const mockPCore = {
   getLocaleUtils: vi.fn().mockReturnValue({
-    getLocaleValue: vi.fn().mockImplementation((text) => text)
+    getLocaleValue: vi.fn().mockImplementation(text => text)
   }),
   getPubSubUtils: vi.fn().mockReturnValue({
     publish: vi.fn()
@@ -40,7 +40,7 @@ describe('CancelAlertComponent', () => {
 
     mockPConn = {
       getContextName: vi.fn().mockReturnValue('app/primary_1'),
-      getLocalizedValue: vi.fn().mockImplementation((text) => text),
+      getLocalizedValue: vi.fn().mockImplementation(text => text),
       getActionsApi: vi.fn().mockReturnValue({
         cancelAssignment: vi.fn(),
         deleteCaseInCreateStage: vi.fn().mockResolvedValue({})

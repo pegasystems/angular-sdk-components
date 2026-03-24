@@ -76,13 +76,7 @@ describe('RadioButtonsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        RadioButtonsComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatRadioModule,
-        MatFormFieldModule
-      ],
+      imports: [RadioButtonsComponent, ReactiveFormsModule, NoopAnimationsModule, MatRadioModule, MatFormFieldModule],
       providers: [{ provide: AngularPConnectService, useValue: mockAngularPConnectService }]
     })
       .overrideComponent(RadioButtonsComponent, {

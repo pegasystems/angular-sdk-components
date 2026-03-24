@@ -4,10 +4,7 @@
     places: {
       AutocompleteService: class {
         getPlacePredictions(request: any, callback: Function) {
-          callback(
-            [{ description: 'Test Place', place_id: 'test-place-id' }],
-            'OK'
-          );
+          callback([{ description: 'Test Place', place_id: 'test-place-id' }], 'OK');
         }
       },
       PlacesServiceStatus: {
@@ -17,15 +14,17 @@
     Geocoder: class {
       geocode(request: any, callback: Function) {
         callback(
-          [{
-            formatted_address: 'Test Address',
-            geometry: {
-              location: {
-                lat: () => 37.7749,
-                lng: () => -122.4194
+          [
+            {
+              formatted_address: 'Test Address',
+              geometry: {
+                location: {
+                  lat: () => 37.7749,
+                  lng: () => -122.4194
+                }
               }
             }
-          }],
+          ],
           'OK'
         );
       }
@@ -34,7 +33,10 @@
       OK: 'OK'
     },
     LatLng: class {
-      constructor(public lat: number, public lng: number) {}
+      constructor(
+        public lat: number,
+        public lng: number
+      ) {}
     }
   }
 };
@@ -113,14 +115,7 @@ describe('LocationComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        LocationComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule
-      ],
+      imports: [LocationComponent, ReactiveFormsModule, NoopAnimationsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils },
@@ -184,8 +179,8 @@ describe('LocationComponent', () => {
     });
 
     it('should parse coordinates when provided', () => {
-      mockPConn.resolveConfigProps.mockReturnValue({ 
-        ...mockConfigProps, 
+      mockPConn.resolveConfigProps.mockReturnValue({
+        ...mockConfigProps,
         coordinates: '37.7749,-122.4194',
         value: 'San Francisco, CA'
       });
@@ -344,10 +339,10 @@ describe('LocationComponent', () => {
   describe('readonly mode', () => {
     it('should use showMapReadOnly when readonly', () => {
       component.bReadonly$ = true;
-      mockPConn.resolveConfigProps.mockReturnValue({ 
-        ...mockConfigProps, 
+      mockPConn.resolveConfigProps.mockReturnValue({
+        ...mockConfigProps,
         readOnly: true,
-        showMapReadOnly: false 
+        showMapReadOnly: false
       });
       component.updateSelf();
       expect(component.showMap).toBe(false);

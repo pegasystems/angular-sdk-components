@@ -64,13 +64,7 @@ describe('TextInputComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        TextInputComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
+      imports: [TextInputComponent, ReactiveFormsModule, NoopAnimationsModule, MatFormFieldModule, MatInputModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }

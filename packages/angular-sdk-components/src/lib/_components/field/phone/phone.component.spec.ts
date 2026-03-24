@@ -62,13 +62,7 @@ describe('PhoneComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        PhoneComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
+      imports: [PhoneComponent, ReactiveFormsModule, NoopAnimationsModule, MatFormFieldModule, MatInputModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }

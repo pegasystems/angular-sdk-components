@@ -80,13 +80,7 @@ describe('DecimalComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        DecimalComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
+      imports: [DecimalComponent, ReactiveFormsModule, NoopAnimationsModule, MatFormFieldModule, MatInputModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }

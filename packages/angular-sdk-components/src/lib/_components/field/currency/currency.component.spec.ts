@@ -76,13 +76,7 @@ describe('CurrencyComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        CurrencyComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatFormFieldModule,
-        MatInputModule
-      ],
+      imports: [CurrencyComponent, ReactiveFormsModule, NoopAnimationsModule, MatFormFieldModule, MatInputModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }
@@ -214,7 +208,8 @@ describe('CurrencyComponent', () => {
       const event = { target: { value: '$1.234,56' } };
       component.fieldOnBlur(event);
       expect(mockPConn.getActionsApi).toHaveBeenCalled();
-    });    it('should replace decimal separator when not a dot', () => {
+    });
+    it('should replace decimal separator when not a dot', () => {
       component.value$ = 1234.56;
       component.thousandSeparator = ' ';
       component.decimalSeparator = ',';

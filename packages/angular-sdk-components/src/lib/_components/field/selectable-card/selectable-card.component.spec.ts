@@ -74,14 +74,7 @@ describe('SelectableCardComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        SelectableCardComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatCardModule,
-        MatRadioModule,
-        MatCheckboxModule
-      ],
+      imports: [SelectableCardComponent, ReactiveFormsModule, NoopAnimationsModule, MatCardModule, MatRadioModule, MatCheckboxModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }

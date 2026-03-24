@@ -68,13 +68,7 @@ describe('CheckBoxComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        CheckBoxComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatCheckboxModule,
-        MatFormFieldModule
-      ],
+      imports: [CheckBoxComponent, ReactiveFormsModule, NoopAnimationsModule, MatCheckboxModule, MatFormFieldModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }
@@ -198,7 +192,12 @@ describe('CheckBoxComponent', () => {
       selectionMode: 'multi',
       referenceList: 'SelectedItems',
       selectionList: [],
-      datasource: { source: [{ key: '1', value: 'Option 1' }, { key: '2', value: 'Option 2' }] },
+      datasource: {
+        source: [
+          { key: '1', value: 'Option 1' },
+          { key: '2', value: 'Option 2' }
+        ]
+      },
       selectionKey: '.ID',
       primaryField: 'Name',
       readonlyContextList: [],

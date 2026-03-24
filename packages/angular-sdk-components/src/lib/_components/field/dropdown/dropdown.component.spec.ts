@@ -81,14 +81,7 @@ describe('DropdownComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [
-        DropdownComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatOptionModule
-      ],
+      imports: [DropdownComponent, ReactiveFormsModule, NoopAnimationsModule, MatSelectModule, MatFormFieldModule, MatOptionModule],
       providers: [
         { provide: AngularPConnectService, useValue: mockAngularPConnectService },
         { provide: Utils, useValue: mockUtils }
@@ -483,9 +476,7 @@ describe('DropdownComponent', () => {
       fixture.detectChanges();
       component.displayMode$ = 'DISPLAY_ONLY';
       component.value$ = 'unknownOption';
-      component.options = [
-        { key: 'option1', value: 'Option One' }
-      ];
+      component.options = [{ key: 'option1', value: 'Option One' }];
       expect(component.value$).toBe('unknownOption');
     });
 
