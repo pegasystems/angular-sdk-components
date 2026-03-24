@@ -546,7 +546,11 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       const oWorkItem = configObject.getPConnect();
       const oWorkData: any = oWorkItem.getDataObject();
 
-      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
+      this.containerName$ = this.localizedVal(
+        this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0]?.name,
+        undefined,
+        this.localeReference
+      );
     });
   }
 
