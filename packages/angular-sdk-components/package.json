@@ -19,7 +19,7 @@
     "fast-deep-equal": "^3.1.3",
     "libphonenumber-js": "^1.10.53",
     "lodash.clonedeep": "^4.5.0",
-    "ngx-mat-input-tel": "^21.3.0",
+    "mat-tel-input": "^21.1.0",
     "ngx-currency": "^19.0.0"
   },
   "dependencies": {
