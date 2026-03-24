@@ -18,7 +18,7 @@
         />
         <mat-datepicker-toggle matSuffix [owlDateTimeTrigger]="dtPicker"></mat-datepicker-toggle>
         <owl-date-time #dtPicker [disabled]="bDisabled$" [scrollStrategy]="scrollStrategy"></owl-date-time>
-        <mat-error *ngIf="fieldControl?.invalid">{{ getErrorMessage() }}</mat-error>
+        <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>
   </div>
