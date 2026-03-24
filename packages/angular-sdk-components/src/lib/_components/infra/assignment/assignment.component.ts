@@ -225,7 +225,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       // this.containerName$ = oWorkMeta["name"];
 
       if (oWorkData.caseInfo && oWorkData.caseInfo.assignments !== null) {
-        this.containerName$ = oWorkData.caseInfo.assignments?.[0].name;
+        this.containerName$ = oWorkData.caseInfo.assignments?.[0]?.name;
 
         // get caseInfo
         const oCaseInfo = oData.caseInfo;
