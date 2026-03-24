@@ -39,7 +39,7 @@ test.describe('E2E test', () => {
 
     await common.fillTextInput(page, '643a860f992333b8600ea264aca7c4fc', 'Johndoe@gmail.com');
 
-    const phoneControl = page.locator('mat-tel-input[data-test-id="1e4dbc7eaa78468a3bc1448a3d68d906"]');
+    const phoneControl = page.locator('ngx-mat-input-tel[data-test-id="1e4dbc7eaa78468a3bc1448a3d68d906"]');
     const countrySelector = phoneControl.locator('button');
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();

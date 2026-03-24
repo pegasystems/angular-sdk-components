@@ -62,7 +62,7 @@ test.describe('E2E test', () => {
     await postalCodeInput.click();
     await postalCodeInput.fill('02142');
 
-    const phone = page.locator('mat-tel-input[data-test-id="1F8261D17452A959E013666C5DF45E07"]');
+    const phone = page.locator('ngx-mat-input-tel[data-test-id="1F8261D17452A959E013666C5DF45E07"]');
     const countrySelector = phone.locator('button');
     await countrySelector.click();
     await page.locator('div.flag.US >> nth=0').click();
