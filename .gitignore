@@ -24,5 +24,6 @@ packages/angular-sdk-overrides/SECURITY.md
 /test-results
 /tests/coverage
 /tests/playwright-report
+/coverage
 
 **/tsconfig.*.tsbuildinfo
