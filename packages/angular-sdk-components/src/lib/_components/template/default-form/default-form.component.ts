@@ -53,7 +53,6 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    // Snapshot the store's current pyViewName so we can detect if the view transitions away
     const contextName = this.pConn$?.getContextName?.();
     this.viewNameAtInit = contextName ? PCore.getStore().getState()?.data?.[contextName]?.caseInfo?.content?.pyViewName : undefined;
     console.log('DefaultFormComponent initialized with viewName:', this.viewNameAtInit);
@@ -65,12 +64,10 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     // If the store's pyViewName has changed since this component was initialized,
     // this component is stale (e.g. user submitted and moved to the next step).
     // Skip the update to avoid triggering unnecessary refresh API calls from the old pConn$.
-    // Within-view changes (radio button toggling when-conditions) keep the same pyViewName,
-    // so they pass through and updateSelf() runs normally.
+    // Within-view changes keep the same pyViewName, so they pass through and updateSelf() runs normally.
     if (this.viewNameAtInit) {
       const contextName = this.pConn$?.getContextName?.();
       const currentViewName = contextName ? PCore.getStore().getState()?.data?.[contextName]?.caseInfo?.content?.pyViewName : undefined;
-      console.log('DefaultFormComponent onStateChange detected viewName:', currentViewName);
       if (currentViewName && currentViewName !== this.viewNameAtInit) {
         return;
       }
