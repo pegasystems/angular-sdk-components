@@ -193,6 +193,13 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // EmbeddedInsightTable type
+    if (this.type === 'EmbeddedInsightTable') {
+      this.buildEmbeddedInsightTableChild(rawConfig, referenceType, propsToUse);
+      this.renderMode = 'dynamicComponent';
+      return;
+    }
+
     // Cards type
     if (this.type === 'Cards') {
       this.buildCardsChild(rawConfig);
@@ -803,6 +810,55 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       0,
       {}
     );
+    this.newComponentName = component?.getPConnect().getComponentName();
+    this.newPconn = component?.getPConnect();
+  }
+
+  private buildEmbeddedInsightTableChild(rawConfig: any, referenceType: string, propsToUse: any) {
+    // Extract columns from insightModel.query.columns and convert to presets format
+    const insightModel = propsToUse.insightModel;
+    const insightColumns: any[] = insightModel?.query?.columns ?? [];
+
+    const columnChildren = insightColumns
+      .filter((col: any) => col.type === 'column' && col.field)
+      .map((col: any) => ({
+        type: 'TextInput',
+        config: {
+          value: `@P .${col.field.fieldID}`,
+          label: col.field.name || col.field.fieldID
+        }
+      }));
+
+    const presets = [
+      {
+        children: [{ children: columnChildren, name: 'Columns', type: 'Region' }],
+        config: {},
+        id: 'P_',
+        label: '',
+        name: 'presets',
+        template: 'Table'
+      }
+    ];
+
+    const componentConfig = {
+      type: 'SimpleTableManual',
+      config: {
+        contextClass: rawConfig.targetObjectClass,
+        presets,
+        label: propsToUse.label,
+        readonlyContextList: rawConfig.pagelistValue,
+        referenceList: rawConfig.pagelistValue,
+        renderMode: 'ReadOnly',
+        dataPageName: rawConfig.referenceList,
+        fieldMetadata: {
+          datasource: {
+            parameters: this.configProps.parameters ?? {}
+          }
+        }
+      }
+    };
+
+    const component = this.pConn$.createComponent(componentConfig as any, '', 0, {});
     this.newComponentName = component?.getPConnect().getComponentName();
     this.newPconn = component?.getPConnect();
   }
