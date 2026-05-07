@@ -1,0 +1,6 @@
+<div *ngIf="bVisible$ && simpleTableComponentName">
+  <component-mapper
+    [name]="simpleTableComponentName"
+    [props]="{ pConn$: simpleTablePConn, formGroup$ }"
+  ></component-mapper>
+</div>

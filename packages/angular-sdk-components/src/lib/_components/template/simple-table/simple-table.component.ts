@@ -82,6 +82,11 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     // moved this from ngOnInit() and call this from there instead...
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as SimpleTableProps;
 
+    // Reset rendering state on every update
+    this.fieldGroupProps = null;
+    this.listViewProps = null;
+    this.refToPConnect = null;
+
     if (this.configProps$.visibility != null) {
       this.bVisible$ = this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
@@ -95,6 +100,7 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     }
     if (multiRecordDisplayAs === 'fieldGroup') {
       this.fieldGroupProps = { ...this.configProps$, contextClass };
+      return;
     }
 
     const {
