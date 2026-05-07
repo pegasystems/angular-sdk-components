@@ -2,7 +2,7 @@
   <div key="instructions" id="instruction-text" [innerHTML]="instructions"></div>
 </div>
 <div [className]="divClass$">
-  <div *ngFor="let kid of arChildren$" [ngClass]="{ 'grid-column': kid.getPConnect().getComponentName() === 'View' }">
+  <div *ngFor="let kid of arChildren$" [ngClass]="{ 'grid-column': kid.getPConnect().getComponentName() === 'reference' }">
     <component-mapper
       [name]="kid.getPConnect().getComponentName()"
       [props]="{

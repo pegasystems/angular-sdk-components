@@ -4,7 +4,6 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { getAllFields } from '../../template/utils';
-import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs', 'ListView'];
@@ -145,9 +144,6 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
 
     // debugger;
 
-    // normalize this.pConn$ in case it contains a 'reference'
-    this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewProps;
     this.inheritedProps$ = this.pConn$.getInheritedProps();
 
@@ -160,8 +156,7 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     // label & showLabel within inheritedProps takes precedence over configProps
     this.label$ = this.inheritedProps$.label || this.configProps$.label || '';
     this.showLabel$ = this.inheritedProps$.showLabel || this.configProps$.showLabel || isDetailsTemplate(this.templateName$);
-    // children may have a 'reference' so normalize the children array
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+    this.arChildren$ = this.pConn$.getChildren();
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 
     /**

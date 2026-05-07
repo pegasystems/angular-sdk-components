@@ -7,7 +7,6 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { ErrorMessagesService } from '../../../_messages/error-messages.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { BannerService } from '../../../_services/banner.service';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 function getRefreshProps(refreshConditions) {
@@ -149,8 +148,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
     this.registerForRefresh();
 
-    // pConn$ may be a 'reference' component, so normalize it
-    this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
+    this.newPConn$ = this.pConn$;
 
     if (this.arChildren$) {
       this.createButtons();
@@ -158,9 +156,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   initComponent() {
-    // pConn$ may be a 'reference' component, so normalize it
-    // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-    this.newPConn$ = ReferenceComponent.normalizePConn(this.pConn$);
+    this.newPConn$ = this.pConn$;
 
     // prevent re-intializing with flowContainer update unless an action is taken
     this.bReInit = false;
@@ -203,7 +199,6 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     this.cancelCreateStageAssignment = actionsAPI.cancelCreateStageAssignment.bind(actionsAPI);
     this.approveCase = actionsAPI.approveCase?.bind(actionsAPI);
     this.rejectCase = actionsAPI.rejectCase?.bind(actionsAPI);
-
     if (this.arChildren$) {
       this.createButtons();
     }

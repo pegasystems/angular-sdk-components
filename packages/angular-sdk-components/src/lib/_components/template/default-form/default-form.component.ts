@@ -2,7 +2,6 @@ import { Component, OnInit, Input, forwardRef, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
 import { FormTemplateBase } from '../base/form-template-base';
@@ -40,7 +39,6 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
   arChildren$: any[];
   divClass$: string;
   instructions: string;
-  private viewNameAtInit: string;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -53,25 +51,10 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    const contextName = this.pConn$?.getContextName?.();
-    this.viewNameAtInit = contextName ? PCore.getStore().getState()?.data?.[contextName]?.caseInfo?.content?.pyViewName : undefined;
-    console.log('DefaultFormComponent initialized with viewName:', this.viewNameAtInit);
-
     this.updateSelf();
   }
 
   onStateChange() {
-    // If the store's pyViewName has changed since this component was initialized,
-    // this component is stale (e.g. user submitted and moved to the next step).
-    // Skip the update to avoid triggering unnecessary refresh API calls from the old pConn$.
-    // Within-view changes keep the same pyViewName, so they pass through and updateSelf() runs normally.
-    if (this.viewNameAtInit) {
-      const contextName = this.pConn$?.getContextName?.();
-      const currentViewName = contextName ? PCore.getStore().getState()?.data?.[contextName]?.caseInfo?.content?.pyViewName : undefined;
-      if (currentViewName && currentViewName !== this.viewNameAtInit) {
-        return;
-      }
-    }
     this.updateSelf();
   }
 
@@ -107,7 +90,7 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     // repoint children before getting templateArray
     // Children may contain 'reference' component, so we need to
     //  normalize them
-    const children = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
+    const children = kids[0].getPConnect().getChildren();
 
     if (areViewsChanged(this.arChildren$, children)) {
       this.arChildren$ = children;

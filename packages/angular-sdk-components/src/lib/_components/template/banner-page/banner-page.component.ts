@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef } from '@angular/core';
 
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -59,6 +58,6 @@ export class BannerPageComponent implements OnInit, OnChanges {
     this.backgroundImage = this.configProps$.backgroundImage;
 
     // The children may contain 'reference' components, so normalize the children...
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+    this.arChildren$ = this.pConn$.getChildren();
   }
 }

@@ -5,7 +5,7 @@
     </div>
     <ng-template #noGroup>
       <div *ngIf="field.type === 'reference'; else showDetails">
-        <component-mapper name="View" [props]="{ pConn$: field.pConn }"></component-mapper>
+        <component-mapper name="reference" [props]="{ pConn$: field.pConn }"></component-mapper>
       </div>
     </ng-template>
 
