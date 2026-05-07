@@ -35,12 +35,7 @@ interface ObjectReferenceProps extends PConnFieldProps {
 /**
  * Rendering modes for the template
  */
-type RenderMode =
-  | 'singleReferenceReadonly'
-  | 'multiReferenceReadonly'
-  | 'semanticLink'
-  | 'searchAndSelect'
-  | 'dynamicComponent';
+type RenderMode = 'singleReferenceReadonly' | 'multiReferenceReadonly' | 'semanticLink' | 'searchAndSelect' | 'dynamicComponent';
 
 @Component({
   selector: 'app-object-reference',
@@ -132,9 +127,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     const rawConfig = this.rawViewMetadata?.config as any;
 
     const refFieldMetadata = this.pConn$.getFieldMetadata(
-      rawConfig?.mode === SELECTION_MODE.SINGLE
-        ? rawConfig?.value?.split('.', 2)[1]
-        : rawConfig?.pagelistValue?.substring(4)
+      rawConfig?.mode === SELECTION_MODE.SINGLE ? rawConfig?.value?.split('.', 2)[1] : rawConfig?.pagelistValue?.substring(4)
     );
 
     const propsToUse: any = { ...this.pConn$.getInheritedProps(), ...this.configProps };
@@ -307,7 +300,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     this.renderMode = 'dynamicComponent';
   }
 
-  onRecordChange = (event) => {
+  onRecordChange = event => {
     const pConn = this.pConn$;
     const caseKey = pConn.getCaseInfo().getKey() ?? '';
     const refreshOptions: any = { autoDetectRefresh: true, propertyName: '' };
@@ -409,7 +402,15 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     return fieldMetaData;
   }
 
-  private buildSingleReferenceReadonly(rawConfig: any, displayMode: string | undefined, referenceType: string, hideLabel: boolean, linkReference: any, propsToUse: any, additionalFields: any) {
+  private buildSingleReferenceReadonly(
+    rawConfig: any,
+    displayMode: string | undefined,
+    referenceType: string,
+    hideLabel: boolean,
+    linkReference: any,
+    propsToUse: any,
+    additionalFields: any
+  ) {
     // SingleReferenceReadonly is rendered via component-mapper with pConn$ which internally resolves config
     // Setting properties needed by the child component on config
     rawConfig.primaryField = rawConfig.displayField;
@@ -420,15 +421,21 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     this.renderMode = 'singleReferenceReadonly';
   }
 
-  private buildMultiReferenceReadonly(rawConfig: any, referenceType: string, propsToUse: any, displayMode: string | undefined, hideLabel: boolean, linkReference: any) {
+  private buildMultiReferenceReadonly(
+    rawConfig: any,
+    referenceType: string,
+    propsToUse: any,
+    displayMode: string | undefined,
+    hideLabel: boolean,
+    linkReference: any
+  ) {
     this.renderMode = 'multiReferenceReadonly';
   }
 
   private buildCardsChild(rawConfig: any) {
     const selectionMode = rawConfig.mode;
     const datasourceKeyField =
-      rawConfig.selectionKey ||
-      (rawConfig.isCalculated ? '.pzInsKey' : `.${rawConfig.value.trim().split('.').pop()?.trim()}`);
+      rawConfig.selectionKey || (rawConfig.isCalculated ? '.pzInsKey' : `.${rawConfig.value.trim().split('.').pop()?.trim()}`);
 
     const componentMeta = {
       type: selectionMode === 'single' ? 'RadioButtons' : 'Checkbox',
@@ -492,15 +499,21 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
         disabled: rawConfig.disabled,
         labelOption: rawConfig.labelOption,
         primaryField: rawConfig.displayField || datasourceKeyField,
-        dataRelationshipContext: rawConfig.displayField
-          ? getDataRelationshipContextFromKey(rawConfig.displayField)
-          : null
+        dataRelationshipContext: rawConfig.displayField ? getDataRelationshipContextFromKey(rawConfig.displayField) : null
       }
     };
 
     const component = this.pConn$.createComponent(componentMeta as any, '', 0, {});
     this.newComponentName = component?.getPConnect().getComponentName();
     this.newPconn = component?.getPConnect();
+
+    // For multi-mode, pre-set the reference list on the child PConnect so that
+    // getListActions() resolves the correct path even if the child's updateSelf()
+    // doesn't re-run after a setInput update.
+    if (selectionMode.includes('multi') && this.newPconn) {
+      const selectionList = rawConfig.pagelistValue.substring(3);
+      this.newPconn.setReferenceList(selectionList);
+    }
   }
 
   private buildMapChild(rawConfig: any, targetObjectType: any, propsToUse: any) {
@@ -597,9 +610,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
           disabled: propsToUse.disabled,
           required: propsToUse.required,
           visibility: propsToUse.visibility,
-          additionalInfo: refFieldMetadata?.additionalInformation
-            ? { content: refFieldMetadata.additionalInformation }
-            : undefined
+          additionalInfo: refFieldMetadata?.additionalInformation ? { content: refFieldMetadata.additionalInformation } : undefined
         }
       } as any,
       '',
@@ -608,6 +619,12 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     );
     this.newComponentName = component?.getPConnect().getComponentName();
     this.newPconn = component?.getPConnect();
+
+    // For multi-mode, pre-set the reference list on the child PConnect so that
+    // getListActions() resolves the correct path on every re-render.
+    if (mode === 'multi' && this.newPconn && selectionList) {
+      this.newPconn.setReferenceList(selectionList);
+    }
   }
 
   private buildTableChild(type: string, rawConfig: any, mode: string, referenceType: string, propsToUse: any) {
@@ -783,27 +800,24 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
           localeReference: rawConfig.localeReference,
           ...(mode === SELECTION_MODE.MULTI ? { referenceType } : {}),
           contextClass: rawConfig.targetObjectClass,
-          primaryField: rawConfig.displayField?.startsWith('@P')
-            ? rawConfig.displayField.slice(3)
-            : rawConfig.displayField,
+          primaryField: rawConfig.displayField?.startsWith('@P') ? rawConfig.displayField.slice(3) : rawConfig.displayField,
           dataRelationshipContext: rawConfig.pagelistValue?.substring(4),
           hideLabel: hideLabel ?? false,
           onRecordChange: this.onRecordChange,
           createNewRecord: isCreateNewReferenceEnabled
-            ? () => createNewRecord({
-                referenceType: rawConfig.targetObjectType === 'case' ? 'Case' : 'Data',
-                pConn: this.pConn$,
-                getPConnect: () => this.pConn$,
-                disableStartingFieldsForReference,
-                startingFields: {},
-                contextClass
-              })
+            ? () =>
+                createNewRecord({
+                  referenceType: rawConfig.targetObjectType === 'case' ? 'Case' : 'Data',
+                  pConn: this.pConn$,
+                  getPConnect: () => this.pConn$,
+                  disableStartingFieldsForReference,
+                  startingFields: {},
+                  contextClass
+                })
             : undefined,
           inline,
           columnsFormatter: rawConfig.secondaryFields,
-          additionalInfo: refFieldMetadata?.additionalInformation
-            ? { content: refFieldMetadata.additionalInformation }
-            : undefined
+          additionalInfo: refFieldMetadata?.additionalInformation ? { content: refFieldMetadata.additionalInformation } : undefined
         }
       } as any,
       '',
@@ -812,6 +826,13 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     );
     this.newComponentName = component?.getPConnect().getComponentName();
     this.newPconn = component?.getPConnect();
+
+    // Pre-set the reference list on the child PConnect so that
+    // getListActions() resolves the correct path on every re-render.
+    const selectionList = rawConfig.pagelistValue?.substring(3);
+    if (this.newPconn && selectionList) {
+      this.newPconn.setReferenceList(selectionList);
+    }
   }
 
   private buildEmbeddedInsightTableChild(rawConfig: any, referenceType: string, propsToUse: any) {
@@ -899,14 +920,15 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
           hideLabel,
           onRecordChange: this.onRecordChange,
           createNewRecord: isCreateNewReferenceEnabled
-            ? () => createNewRecord({
-                referenceType: rawConfig.targetObjectType === 'case' ? 'Case' : 'Data',
-                pConn: this.pConn$,
-                getPConnect: () => this.pConn$,
-                disableStartingFieldsForReference,
-                startingFields: {},
-                contextClass
-              })
+            ? () =>
+                createNewRecord({
+                  referenceType: rawConfig.targetObjectType === 'case' ? 'Case' : 'Data',
+                  pConn: this.pConn$,
+                  getPConnect: () => this.pConn$,
+                  disableStartingFieldsForReference,
+                  startingFields: {},
+                  contextClass
+                })
             : undefined,
           inline,
           columnsFormatter: rawConfig.secondaryFields,

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
+import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { FieldBase } from '../field.base';
@@ -145,6 +145,12 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
       this.selectedvalues = this.configProps$.readonlyContextList;
       this.showNoValue = this.readOnly && this.selectedvalues?.length === 0; // not used
       this.primaryField = this.configProps$.primaryField;
+
+      // Set reference list so getListActions() uses the correct path on every re-render
+      if (this.selectionList && !this.readOnly) {
+        this.pConn$.setReferenceList(this.selectionList);
+        updateNewInstructions(this.pConn$, this.selectionList);
+      }
     }
 
     this.commonProps = { hideFieldLabels, datasource, additionalProps, image, recordKey, cardLabel, radioBtnValue: this.radioBtnValue ?? '' };

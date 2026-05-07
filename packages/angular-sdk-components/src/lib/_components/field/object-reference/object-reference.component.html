@@ -16,10 +16,7 @@
 
   <!-- SearchAndSelect mode -->
   <div *ngSwitchCase="'searchAndSelect'">
-    <component-mapper
-      name="SearchForm"
-      [props]="{ pConn$, formGroup$, searchSelectCacheKey, type: 'ObjectReference' }"
-    ></component-mapper>
+    <component-mapper name="SearchForm" [props]="{ pConn$, formGroup$, searchSelectCacheKey, type: 'ObjectReference' }"></component-mapper>
   </div>
 
   <!-- Dynamic component mode (Cards, Map, CheckboxGroup, Table, Multiselect, Dropdown, AutoComplete, etc.) -->
