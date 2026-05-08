@@ -103,7 +103,6 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     this.useOutputEvents = false;
     this.configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ObjectReferenceProps;
 
-    // Check visibility — if false, hide the entire component
     const { visibility = true } = this.configProps;
     this.bVisible$ = visibility !== false;
     const {
@@ -116,11 +115,10 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       inline = false,
       showPromotedFilters = false,
       linkReference,
-      matchPosition = 'contains',
-      additionalFields
+      matchPosition = 'contains'
     } = this.configProps;
 
-    let displayMode = this.configProps.displayMode;
+    let displayMode = this.configProps.displayMode ?? '';
 
     const referenceType: string = targetObjectType?.toLowerCase() === 'case' ? 'Case' : 'Data';
     this.rawViewMetadata = this.pConn$.getRawMetadata();
@@ -135,93 +133,134 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       propsToUse.label = this.configProps.label;
     }
 
-    const { allowImplicitRefresh } = (PCore as any).getFieldDefaultUtils().fieldDefaults.DataReference || {};
+    this.normalizeComboboxType(rawConfig, mode);
 
-    // Combobox → Multiselect/AutoComplete conversion
-    if (rawConfig?.componentType === 'Combobox') {
-      if (mode === SELECTION_MODE.MULTI) {
-        rawConfig.componentType = 'Multiselect';
-      } else {
-        rawConfig.componentType = 'AutoComplete';
-      }
-    }
-
-    // Load parameterized data for CheckboxGroup
     if (rawConfig?.parameters && ['CheckboxGroup'].includes(rawConfig.componentType)) {
-      this.loadParameterizedDataSource(rawConfig, parameters);
+      this.loadParameterizedDataSource(rawConfig, parameters ?? {});
     }
 
-    // Handle readOnly prop
-    if (displayMode !== 'DISPLAY_ONLY' && this.configProps.readOnly) {
-      if (rawConfig?.componentType === 'Multiselect') {
-        rawConfig.componentType = 'SemanticLink';
-      } else if (mode === 'readonly-single') {
-        displayMode = this.configProps.displayMode;
-      } else {
-        displayMode = 'DISPLAY_ONLY';
-      }
-    }
+    displayMode = this.resolveDisplayMode(rawConfig, displayMode, mode);
 
-    // Computed variables
     this.isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
     this.type = rawConfig?.componentType;
     this.canBeChangedInReviewMode = editableInReview && ['AutoComplete', 'Dropdown'].includes(this.type);
 
-    // Read-only variants (readOnly or SemanticLink)
-    if ((this.configProps.readOnly || this.type === 'SemanticLink') && !this.canBeChangedInReviewMode) {
+    if (this.handleReadOnlyMode(rawConfig, mode)) {
+      return;
+    }
+
+    this.routeToEditableComponent(
+      rawConfig,
+      mode,
+      refFieldMetadata,
+      propsToUse,
+      referenceType,
+      displayMode,
+      parameters,
+      hideLabel,
+      inline,
+      showPromotedFilters,
+      matchPosition,
+      linkReference,
+      targetObjectType,
+      allowCreatingRecords
+    );
+  }
+
+  private normalizeComboboxType(rawConfig: any, mode: string): void {
+    if (rawConfig?.componentType === 'Combobox') {
+      rawConfig.componentType = mode === SELECTION_MODE.MULTI ? 'Multiselect' : 'AutoComplete';
+    }
+  }
+
+  private resolveDisplayMode(rawConfig: any, displayMode: string, mode: string): string {
+    if (displayMode === 'DISPLAY_ONLY' || !this.configProps.readOnly) {
+      return displayMode;
+    }
+    if (rawConfig?.componentType === 'Multiselect') {
+      rawConfig.componentType = 'SemanticLink';
+      return displayMode;
+    }
+    if (mode === 'readonly-single') {
+      return this.configProps.displayMode ?? displayMode;
+    }
+    return 'DISPLAY_ONLY';
+  }
+
+  private handleReadOnlyMode(rawConfig: any, mode: string): boolean {
+    const isReadOnlyOrSemanticLink = (this.configProps.readOnly || this.type === 'SemanticLink') && !this.canBeChangedInReviewMode;
+    if (isReadOnlyOrSemanticLink) {
       if (mode !== 'readonly-multi') {
-        this.buildSingleReferenceReadonly(rawConfig, displayMode, referenceType, hideLabel, linkReference, propsToUse, additionalFields);
-        this.renderMode = 'singleReferenceReadonly';
+        this.buildSingleReferenceReadonly(rawConfig);
       } else {
-        this.buildMultiReferenceReadonly(rawConfig, referenceType, propsToUse, displayMode, hideLabel, linkReference);
-        this.renderMode = 'multiReferenceReadonly';
+        this.buildMultiReferenceReadonly();
       }
-      return;
+      return true;
     }
-
-    // Display-only mode (readonly)
     if (this.isDisplayModeEnabled && !this.canBeChangedInReviewMode) {
-      this.buildSingleReferenceReadonly(rawConfig, displayMode, referenceType, hideLabel, linkReference, propsToUse, additionalFields);
-      this.renderMode = 'singleReferenceReadonly';
-      return;
+      this.buildSingleReferenceReadonly(rawConfig);
+      return true;
     }
+    return false;
+  }
 
-    // EmbeddedInsightTable type
+  private resolveCreatePermissions(rawConfig: any, allowCreatingRecords: boolean | undefined) {
+    const { disableStartingFieldsForReference = false } = (PCore as any).getEnvironmentInfo().environmentInfoObject?.features?.form || {};
+    const contextClass = rawConfig.targetObjectClass;
+    const formFeaturesAvailable = (PCore as any).getEnvironmentInfo().environmentInfoObject?.features?.form;
+    const createAuthoringEnabled = allowCreatingRecords ?? formFeaturesAvailable?.isCreateNewReferenceEnabled;
+    const userHasCreateAccess = formFeaturesAvailable
+      ? formFeaturesAvailable.isCreateNewReferenceEnabled && PCore.getAccessPrivilege().hasCreateAccess(contextClass)
+      : PCore.getAccessPrivilege().hasCreateAccess(contextClass);
+    return {
+      isCreateNewReferenceEnabled: createAuthoringEnabled && userHasCreateAccess,
+      disableStartingFieldsForReference,
+      contextClass
+    };
+  }
+
+  private routeToEditableComponent(
+    rawConfig: any,
+    mode: string,
+    refFieldMetadata: any,
+    propsToUse: any,
+    referenceType: string,
+    displayMode: string,
+    parameters: any,
+    hideLabel: boolean,
+    inline: boolean,
+    showPromotedFilters: boolean,
+    matchPosition: string,
+    linkReference: any,
+    targetObjectType: any,
+    allowCreatingRecords: boolean | undefined
+  ): void {
     if (this.type === 'EmbeddedInsightTable') {
       this.buildEmbeddedInsightTableChild(rawConfig, referenceType, propsToUse);
       this.renderMode = 'dynamicComponent';
       return;
     }
-
-    // Cards type
     if (this.type === 'Cards') {
       this.buildCardsChild(rawConfig);
       this.renderMode = 'dynamicComponent';
       return;
     }
-
-    // Map type
     if (this.type === 'Map') {
-      this.buildMapChild(rawConfig, targetObjectType, propsToUse);
+      this.buildMapChild(rawConfig, targetObjectType);
       this.renderMode = 'dynamicComponent';
       return;
     }
-
-    // CheckboxGroup type
     if (this.type === 'CheckboxGroup') {
       this.buildCheckboxGroupChild(rawConfig, mode, refFieldMetadata, propsToUse, hideLabel);
       this.renderMode = 'dynamicComponent';
       return;
     }
-
-    // Table / SimpleTable type
     if (this.type === 'Table' || this.type === 'SimpleTable') {
       this.buildTableChild(this.type, rawConfig, mode, referenceType, propsToUse);
       this.renderMode = 'dynamicComponent';
       return;
     }
 
-    // Common setup for remaining types (Dropdown, AutoComplete, SearchAndSelect, Multiselect)
     generateColumns(rawConfig, this.pConn$, referenceType);
     addCompositeKeysToConfig(rawConfig, this.pConn$);
     rawConfig.deferDatasource = true;
@@ -234,19 +273,12 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       rawConfig.displayMode = displayMode;
     }
 
-    // Build field metadata
     const fieldMetaData = this.buildFieldMetaData(rawConfig, parameters);
+    const { isCreateNewReferenceEnabled, disableStartingFieldsForReference, contextClass } = this.resolveCreatePermissions(
+      rawConfig,
+      allowCreatingRecords
+    );
 
-    const { disableStartingFieldsForReference = false } = (PCore as any).getEnvironmentInfo().environmentInfoObject?.features?.form || {};
-    const contextClass = rawConfig.targetObjectClass;
-    const formFeaturesAvailable = (PCore as any).getEnvironmentInfo().environmentInfoObject?.features?.form;
-    const createAuthoringEnabled = allowCreatingRecords ?? formFeaturesAvailable?.isCreateNewReferenceEnabled;
-    const userHasCreateAccess = formFeaturesAvailable
-      ? formFeaturesAvailable.isCreateNewReferenceEnabled && PCore.getAccessPrivilege().hasCreateAccess(contextClass)
-      : PCore.getAccessPrivilege().hasCreateAccess(contextClass);
-    const isCreateNewReferenceEnabled = createAuthoringEnabled && userHasCreateAccess;
-
-    // SearchAndSelect type
     if (this.type === 'SearchAndSelect') {
       this.buildSearchAndSelectChild(
         rawConfig,
@@ -262,8 +294,6 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       this.renderMode = 'searchAndSelect';
       return;
     }
-
-    // Multiselect type
     if (this.type === 'Multiselect') {
       this.buildMultiselectChild(
         rawConfig,
@@ -281,8 +311,6 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       this.renderMode = 'dynamicComponent';
       return;
     }
-
-    // Default: Dropdown, AutoComplete, etc.
     this.buildDefaultChild(
       rawConfig,
       mode,
@@ -402,15 +430,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     return fieldMetaData;
   }
 
-  private buildSingleReferenceReadonly(
-    rawConfig: any,
-    displayMode: string | undefined,
-    referenceType: string,
-    hideLabel: boolean,
-    linkReference: any,
-    propsToUse: any,
-    additionalFields: any
-  ) {
+  private buildSingleReferenceReadonly(rawConfig: any) {
     // SingleReferenceReadonly is rendered via component-mapper with pConn$ which internally resolves config
     // Setting properties needed by the child component on config
     rawConfig.primaryField = rawConfig.displayField;
@@ -421,14 +441,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     this.renderMode = 'singleReferenceReadonly';
   }
 
-  private buildMultiReferenceReadonly(
-    rawConfig: any,
-    referenceType: string,
-    propsToUse: any,
-    displayMode: string | undefined,
-    hideLabel: boolean,
-    linkReference: any
-  ) {
+  private buildMultiReferenceReadonly() {
     this.renderMode = 'multiReferenceReadonly';
   }
 
@@ -516,7 +529,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildMapChild(rawConfig: any, targetObjectType: any, propsToUse: any) {
+  private buildMapChild(rawConfig: any, targetObjectType: any) {
     const displayField = getDataRelationshipContextFromKey(rawConfig.displayField);
     const displayFieldMetadata = this.pConn$.getFieldMetadata(displayField);
 

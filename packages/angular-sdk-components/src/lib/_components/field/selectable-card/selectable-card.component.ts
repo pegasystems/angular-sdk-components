@@ -93,21 +93,9 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
     const imagePosition = this.configProps$.imagePosition;
 
     // dynamic styling based on image position and readOnly option
-    let imageWidth = '100%';
-    this.cardStyle = { display: 'flex', flexDirection: 'column', height: '100%' };
-    if (imagePosition && imagePosition !== 'block-start') {
-      imageWidth = '30%';
-      if (imagePosition === 'inline-start') {
-        this.cardStyle = { display: 'flex', flexDirection: 'row', alignItems: this.readOnly ? 'center' : '' };
-      } else if (imagePosition === 'inline-end') {
-        this.cardStyle = {
-          display: 'flex',
-          flexDirection: 'row-reverse',
-          justifyContent: this.readOnly ? 'space-between' : '',
-          alignItems: this.readOnly ? 'center' : ''
-        };
-      }
-    }
+    const { imageWidth, cardStyle } = this.resolveImageLayout(imagePosition);
+    this.cardStyle = cardStyle;
+
     if (this.type === 'radio') {
       const stateProps = this.pConn$.getStateProps();
       image = {
@@ -186,6 +174,27 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
 
       return { cardImage, commonCardProps };
     });
+  }
+
+  private resolveImageLayout(imagePosition: string | undefined): { imageWidth: string; cardStyle: object } {
+    if (!imagePosition || imagePosition === 'block-start') {
+      return { imageWidth: '100%', cardStyle: { display: 'flex', flexDirection: 'column', height: '100%' } };
+    }
+    if (imagePosition === 'inline-start') {
+      return { imageWidth: '30%', cardStyle: { display: 'flex', flexDirection: 'row', alignItems: this.readOnly ? 'center' : '' } };
+    }
+    if (imagePosition === 'inline-end') {
+      return {
+        imageWidth: '30%',
+        cardStyle: {
+          display: 'flex',
+          flexDirection: 'row-reverse',
+          justifyContent: this.readOnly ? 'space-between' : '',
+          alignItems: this.readOnly ? 'center' : ''
+        }
+      };
+    }
+    return { imageWidth: '30%', cardStyle: { display: 'flex', flexDirection: 'column', height: '100%' } };
   }
 
   fieldOnChange(value: any) {

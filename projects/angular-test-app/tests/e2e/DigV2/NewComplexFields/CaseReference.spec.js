@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 const selectComplexFieldType = async (type, page) => {
   await page.locator('mat-select[data-test-id="d1b79d3f-1b8c-4347-bdd8-f86a5967bebf"]').click();
   await page.getByRole('option', { name: type, exact: true }).click();
-}
+};
 
 const selectMode = async (mode, page) => {
   const modeDropdown = page.locator('mat-select[data-test-id="5131692e-09b6-45f1-83fa-3c280566f0fa"]');
@@ -20,14 +20,14 @@ const selectMode = async (mode, page) => {
     await expect(page.locator('.cdk-overlay-pane mat-option').first()).toBeVisible({ timeout: 2000 });
   }).toPass({ timeout: 30000 });
   await page.locator(`mat-option > span:has-text("${mode}")`).click();
-}
+};
 
 const selectDisplayAs = async (displayAs, page) => {
   const displayDropdown = page.locator('mat-select[data-test-id="a97b483b-34e0-48c5-8f48-a09cee7d74a3"]');
   await displayDropdown.waitFor({ state: 'visible' });
   await displayDropdown.click();
   await page.locator(`mat-option > span:has-text("${displayAs}")`).click();
-}
+};
 
 test.describe('Single select mode of Case Reference', () => {
   test('Verify Single select mode of Case Reference displayed as Cards', async ({ page }) => {
@@ -125,7 +125,6 @@ test.describe('Single select mode of Case Reference', () => {
     await dropdown.click();
     await page.locator(`mat-option:has-text("${caseID}")`).click();
     await page.locator('button:has-text("submit")').click();
-
 
     // Verify the selected case reference displays the correct case ID
     await expect(page.locator('app-semantic-link a.psdk-value')).toBeVisible();

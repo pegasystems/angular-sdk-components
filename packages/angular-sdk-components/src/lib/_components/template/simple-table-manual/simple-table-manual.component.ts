@@ -314,9 +314,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.editType = editModeConfig?.editType;
     this.defaultActionId = this.editType === 'action' ? editModeConfig?.defaultAction : undefined;
     this.editActionId =
-      this.editType === 'action' && editModeConfig?.useSeparateActionForEdit
-        ? editModeConfig?.editAction
-        : editModeConfig?.defaultAction;
+      this.editType === 'action' && editModeConfig?.useSeparateActionForEdit ? editModeConfig?.editAction : editModeConfig?.defaultAction;
     const primaryFieldsViewIndex = resolvedFields.findIndex(field => field.config.value === 'pyPrimaryFields');
     // const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
 
