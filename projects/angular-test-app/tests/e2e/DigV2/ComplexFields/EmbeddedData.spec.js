@@ -184,7 +184,7 @@ test.describe('E2E test', () => {
     // await page.locator('button:has-text("Previous")').click();
 
     /** Delete Row tests */
-    await table.locator('div[class="header-icon"] >> nth=0').click();
+    await table.locator('div[class="header-icon"] >> button >> nth=0').click();
     editMenu = await page.locator('div[role="menu"]');
     await editMenu.locator('button:has-text("Delete")').click();
 
@@ -205,6 +205,8 @@ test.describe('E2E test', () => {
 
     /** Entering values in the first Row */
     await page.locator('input[data-test-id="202003240938510823869"]').fill('Main St');
+
+    await page.locator('input[data-test-id="202003240938510831291"]').fill('');
     await page.locator('input[data-test-id="202003240938510831291"]').fill('Cambridge');
     await page.locator('input[data-test-id="202003240938510831411"]').fill('MA');
     await page.locator('input[data-test-id="202003240938510832734"]').fill('02142');
@@ -219,6 +221,7 @@ test.describe('E2E test', () => {
 
     /** Entering values in the second Row */
     await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').fill('Global St');
+    await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('');
     await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('California');
     await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').fill('AK');
     await page.locator('input[data-test-id="202003240938510832734"] >> nth=1').fill('03142');

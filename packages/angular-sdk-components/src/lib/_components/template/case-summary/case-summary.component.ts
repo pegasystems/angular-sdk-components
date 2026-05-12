@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
 
@@ -52,11 +51,6 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   initComponent() {
-    // dereference the View in case the incoming pConn$ is a 'reference'
-    this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-
-    // Then, continue on with other initialization
-
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseSummaryProps;
     this.arChildren$ = this.pConn$.getChildren();
 

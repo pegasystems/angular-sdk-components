@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 interface DefaultPageProps {
@@ -59,6 +58,6 @@ export class DefaultPageComponent implements OnInit, OnChanges {
     this.backgroundImage = this.configProps$.backgroundImage;
     this.enableBanner$ = this.configProps$.enableBanner;
 
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+    this.arChildren$ = this.pConn$.getChildren();
   }
 }

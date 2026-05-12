@@ -1018,7 +1018,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
           const isDatapage = referenceListData.startsWith('D_');
           const pageReferenceValue = isDatapage
             ? `${referenceListData}[${index}]`
-            : `${this.pConn$.getPageReference()}${referenceListData}[${index}]`;
+            : `${this.pConn$.getPageReference()}${referenceListData.substring(referenceListData.lastIndexOf('.'))}[${index}]`;
           const config = {
             meta: item,
             options: {

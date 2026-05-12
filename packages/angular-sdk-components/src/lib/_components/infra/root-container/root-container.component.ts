@@ -5,7 +5,6 @@ import { interval, Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ServerConfigService } from '../../../_services/server-config.service';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../reference/reference.component';
 import { PreviewViewContainerComponent } from '../Containers/preview-view-container/preview-view-container.component';
 import { ModalViewContainerComponent } from '../Containers/modal-view-container/modal-view-container.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -39,7 +38,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  componentName$ = '';
+  componentName$: any;
   bIsProgress$ = false;
 
   // preview and modalview pConn
@@ -140,9 +139,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             // makes sure Angular tracks these changes
             this.ngZone.run(() => {
-              // the new rootObject may be a 'reference'. So,
-              //  normalize it to get the referencedView if that's the case
-              const theNewPConn = ReferenceComponent.normalizePConn(rootObject.getPConnect());
+              const theNewPConn = rootObject.getPConnect();
               // update ComponentName$ before we update pConn$ to make sure they're in sync
               //  when rendering...
               this.componentName$ = theNewPConn.getComponentName();

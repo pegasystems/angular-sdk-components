@@ -10,6 +10,7 @@
       name="ViewContainer"
       [props]="{ pConn$: viewContainerPConn$, displayOnlyFA$ }"
     ></component-mapper>
+    <component-mapper *ngSwitchCase="'reference'" name="reference" [props]="{ pConn$ }"></component-mapper>
     <div *ngSwitchDefault>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
   </div>
 </div>

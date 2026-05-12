@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../../reference/reference.component';
 import { Utils } from '../../../../_helpers/utils';
 import { getToDoAssignments, hasAssignments, showBanner } from './helpers';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
@@ -415,7 +414,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
         // let kid = this.pConn$.getChildren()[0];
 
         // kid.getPConnect() can be a Reference component. So normalize it just in case
-        //        let todoKid = ReferenceComponent.normalizePConn(kid.getPConnect()).getChildren()[0];
+        //        let todoKid = kid.getPConnect().getChildren()[0];
 
         //        this.todo_pConn$ = todoKid.getPConnect();
 
@@ -528,7 +527,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     //  the View if it is a Reference component. And need to pass in the getPConnect
     //  to have normalize do a c11Env createComponent (that makes sure options.hasForm
     //  is passed along to all the component's children)
-    const normalizedConfigObject = ReferenceComponent.normalizePConn(configObject.getPConnect());
+    const normalizedConfigObject = configObject.getPConnect();
     // We want the children to be the PConnect itself, not the result of calling getPConnect(),
     //  So need to get the PConnect of the normalized component we just created...
     const normalizedConfigObjectAsPConnect = normalizedConfigObject.getComponent();

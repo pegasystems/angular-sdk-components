@@ -5,6 +5,9 @@
   <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'View'">
     <component-mapper name="View" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
   </div>
+  <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'reference'">
+    <component-mapper name="reference" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+  </div>
   <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'CaseCreateStage'">
     <component-mapper name="CaseCreateStage" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
   </div>

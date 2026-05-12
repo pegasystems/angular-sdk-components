@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { buildFilterComponents } from '../../../_helpers/filter-utils';
@@ -17,7 +17,7 @@ interface InlineDashboardPageProps {
   styleUrls: ['./inline-dashboard-page.component.scss'],
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class InlineDashboardPageComponent implements OnInit, OnChanges {
+export class InlineDashboardPageComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
 
   configProps$: InlineDashboardPageProps;
@@ -32,14 +32,6 @@ export class InlineDashboardPageComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.updateSelf();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const { pConn$ } = changes;
-
-    if (pConn$.previousValue && pConn$.previousValue !== pConn$.currentValue) {
-      this.updateSelf();
-    }
   }
 
   updateSelf() {

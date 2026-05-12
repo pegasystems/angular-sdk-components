@@ -22,9 +22,6 @@ export class WideNarrowPageComponent implements OnInit, OnDestroy {
   constructor(private angularPConnect: AngularPConnectService) {}
 
   ngOnInit(): void {
-    // normalize the pConn$ in case the incoming pConn$ is a 'reference'
-    // this.pConn$ = ReferenceComponent.normalizePConn(this.pConn$);
-
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     // this.updateSelf();
