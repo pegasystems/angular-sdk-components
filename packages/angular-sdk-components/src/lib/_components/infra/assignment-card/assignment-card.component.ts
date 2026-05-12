@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ReferenceComponent } from '../reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 function isChildrenUpdated(children) {
@@ -34,18 +33,13 @@ export class AssignmentCardComponent implements OnInit, OnChanges {
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
 
   ngOnInit(): void {
-    // Children may contain 'reference' component, so we need to
-    //  normalize them
-    this.childrenArray = ReferenceComponent.normalizePConnArray(this.arChildren$);
+    this.childrenArray = this.arChildren$;
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Children may contain 'reference' component, so we need to
-    //  normalize them
-
     const { arChildren$ } = changes;
     if (isChildrenUpdated(arChildren$)) {
-      this.childrenArray = ReferenceComponent.normalizePConnArray(this.arChildren$);
+      this.childrenArray = this.arChildren$;
     }
   }
 

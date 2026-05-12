@@ -7,8 +7,6 @@ export class FormTemplateBase implements OnDestroy {
   angularPConnectData: AngularPConnectData;
 
   ngOnDestroy(): void {
-    PCore.getContextTreeManager().removeContextTreeNode(this.pConn$.getContextName());
-
     if (this.angularPConnectData?.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }

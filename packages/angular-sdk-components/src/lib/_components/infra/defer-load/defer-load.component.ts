@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 
@@ -127,7 +126,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
       const configObject = PCore.createPConnect(config);
       configObject.getPConnect().setInheritedProp('displayMode', 'DISPLAY_ONLY');
 
-      this.childComponentPConnect = ReferenceComponent.normalizePConn(configObject.getPConnect());
+      this.childComponentPConnect = configObject.getPConnect();
 
       if (this.deferLoadId) {
         PCore.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
