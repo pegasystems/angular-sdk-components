@@ -2,7 +2,6 @@ import { Component, OnInit, Input, forwardRef, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { TemplateUtils } from '../../../_helpers/template-utils';
 import { FormTemplateBase } from '../base/form-template-base';
@@ -91,7 +90,7 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     // repoint children before getting templateArray
     // Children may contain 'reference' component, so we need to
     //  normalize them
-    const children = ReferenceComponent.normalizePConnArray(kids[0].getPConnect().getChildren());
+    const children = kids[0].getPConnect().getChildren();
 
     if (areViewsChanged(this.arChildren$, children)) {
       this.arChildren$ = children;

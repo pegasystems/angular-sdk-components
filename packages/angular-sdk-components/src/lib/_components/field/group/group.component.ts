@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ReferenceComponent } from '../../infra/reference/reference.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -64,7 +63,7 @@ export class GroupComponent implements OnInit {
    */
   updateSelf(): void {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as GroupProps;
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+    this.arChildren$ = this.pConn$.getChildren();
     this.visibility$ = this.configProps$.visibility;
     this.showHeading$ = this.configProps$.showHeading;
     this.heading$ = this.configProps$.heading;

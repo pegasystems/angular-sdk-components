@@ -5,6 +5,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { buildMetaForListView, getContext } from '../simple-table-manual/helpers';
+import { getReferenceList } from '../../../_helpers/field-group-utils';
 
 interface SimpleTableProps {
   // If any, enter additional props that only exist on this component
@@ -66,9 +67,12 @@ export class SimpleTableComponent implements OnInit, OnDestroy {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
+    const resolvedList = getReferenceList(this.pConn$);
+    this.pConn$.setReferenceList(resolvedList);
     // ONLY call updateSelf when the component should update
     if (bUpdateSelf) {
+      const resolvedList = getReferenceList(this.pConn$);
+      this.pConn$.setReferenceList(resolvedList);
       this.updateSelf();
     }
   }

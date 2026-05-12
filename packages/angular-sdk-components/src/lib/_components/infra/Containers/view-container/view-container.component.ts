@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
-import { ReferenceComponent } from '../../reference/reference.component';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 import { configureBrowserBookmark } from './helper';
 
@@ -73,8 +72,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
     // Then, continue on with other initialization
 
     //    this.configProps$ = this.pConn$.getConfigProps();
-    // children may have a 'reference' so normalize the children array
-    this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+    this.arChildren$ = this.pConn$.getChildren();
 
     this.buildName$ = this.buildName();
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewContainerProps;
@@ -146,8 +144,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
     //   *** DON'T call updateSelf in ngInit!!  ***
 
     if (this.arChildren$ == null) {
-      // children may have a 'reference' so normalize the children array
-      this.arChildren$ = ReferenceComponent.normalizePConnArray(this.pConn$.getChildren());
+      this.arChildren$ = this.pConn$.getChildren();
     }
 
     // routingInfo was added as component prop in populateAdditionalProps
@@ -222,12 +219,12 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
 
               /*
 
-              const theDereferencedView = ReferenceComponent.normalizePConn(newComp);
+              const theDereferencedView = newComp;
               const newConfigProps = theDereferencedView.getConfigProps();
 
               // children may have a 'reference' so normalize the children arra
 
-              const theDereferencedViewChildren = ReferenceComponent.normalizePConnArray(theDereferencedView.getChildren());
+              const theDereferencedViewChildren = theDereferencedView.getChildren();
               this.templateName$ = ('template' in newConfigProps) ? newConfigProps["template"] : "";
               this.title$ = ('title' in newConfigProps) ? newConfigProps["title"] : "";
               this.arChildren$ = theDereferencedViewChildren;
@@ -244,8 +241,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
               this.templateName$ = newConfigProps.template || '';
               this.title$ = newConfigProps.title || '';
               // update children with new view's children
-              // children may have a 'reference' so normalize the children array
-              this.arChildren$ = ReferenceComponent.normalizePConnArray(newComp.getChildren());
+              this.arChildren$ = newComp.getChildren();
             }
           });
         }

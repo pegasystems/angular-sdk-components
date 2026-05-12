@@ -6,7 +6,6 @@ import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 import { getBanners } from '../../../../_helpers/case-utils';
-import { ReferenceComponent } from '../../reference/reference.component';
 
 /**
  * WARNING: This file is part of the infrastructure component responsible for working with Redux and managing the creation and update of Redux containers and PConnect.
@@ -238,8 +237,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
         const bIsRefComponent = this.checkIfRefComponent(newComp);
 
         if (bIsRefComponent) {
-          const newPConn = ReferenceComponent.normalizePConn(newComp);
-          this.arChildren$ = ReferenceComponent.normalizePConnArray(newPConn.getChildren());
+          this.arChildren$ = [newComp.getComponent()];
         } else {
           // update children with new view's children
           this.arChildren$ = newComp.getChildren();
