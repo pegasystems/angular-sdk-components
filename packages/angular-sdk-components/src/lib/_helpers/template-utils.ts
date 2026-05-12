@@ -53,7 +53,7 @@ export class TemplateUtils {
     // it is evaluated by core logic to the content
     if (instructions !== 'casestep' && instructions !== 'none') {
       // if the instructions contains a link, and the link is external, add a target attribute to open in a new window
-      if (instructions.includes('<a')) {
+      if (instructions?.includes('<a')) {
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(instructions, 'text/html');
         const anchorNode = htmlDoc.querySelector('a');
