@@ -37,6 +37,7 @@ export class SearchFormComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() searchSelectCacheKey;
+  @Input() type: string;
 
   configProps$: any;
   isInitialized = false;
@@ -58,7 +59,12 @@ export class SearchFormComponent implements OnInit, OnChanges {
     this.isInitialized = true;
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.propsToUse = { ...this.pConn$.getInheritedProps() };
-    this.deferLoadedTabs = this.pConn$.getChildren()[2];
+    // When called from ObjectReference, pConn$ itself acts as deferLoadedTabs (no children[2])
+    if (this.type === 'ObjectReference') {
+      this.deferLoadedTabs = { getPConnect: () => this.pConn$ };
+    } else {
+      this.deferLoadedTabs = this.pConn$.getChildren()[2];
+    }
     const cache: any = PCore.getNavigationUtils().getComponentCache(this.searchSelectCacheKey) ?? {};
     const { selectedCategory } = cache;
     const firstTabId = getFirstVisibleTabId(this.deferLoadedTabs, selectedCategory);
