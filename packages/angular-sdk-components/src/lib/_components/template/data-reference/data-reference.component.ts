@@ -69,8 +69,6 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.children = this.pConn$.getChildren();
     this.updateSelf();
-
-    
   }
 
   ngOnDestroy(): void {
@@ -91,7 +89,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     }
   }
 
-  getData(){
+  getData() {
     if (
       this.rawViewMetadata.config?.parameters &&
       !this.isDDSourceDeferred &&
