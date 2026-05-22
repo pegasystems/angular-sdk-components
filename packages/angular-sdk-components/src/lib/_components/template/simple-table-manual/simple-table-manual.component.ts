@@ -159,12 +159,15 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   referenceListStr: any;
   bUseSeparateViewForEdit: any;
   editView: any;
+  defaultActionId: any;
+  editActionId: any;
   settingsSvgIcon$: string;
 
   isInitialized = false;
   targetClassLabel: string;
   localizedVal = PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'SimpleTable';
+  editType: any;
   constructor(
     private angularPConnect: AngularPConnectService,
     public utils: Utils,
@@ -308,6 +311,10 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.defaultView = editModeConfig ? editModeConfig.defaultView : viewForAddAndEditModal;
     this.bUseSeparateViewForEdit = editModeConfig ? editModeConfig.useSeparateViewForEdit : useSeparateViewForEdit;
     this.editView = editModeConfig ? editModeConfig.editView : viewForEditModal;
+    this.editType = editModeConfig?.editType;
+    this.defaultActionId = this.editType === 'action' ? editModeConfig?.defaultAction : undefined;
+    this.editActionId =
+      this.editType === 'action' && editModeConfig?.useSeparateActionForEdit ? editModeConfig?.editAction : editModeConfig?.defaultAction;
     const primaryFieldsViewIndex = resolvedFields.findIndex(field => field.config.value === 'pyPrimaryFields');
     // const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
 
@@ -958,17 +965,18 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   addRecord() {
-    if (this.allowEditingInModal && this.defaultView) {
+    if (this.allowEditingInModal && (this.defaultView || this.defaultActionId)) {
       this.pConn$
         .getActionsApi()
-        // @ts-expect-error
         .openEmbeddedDataModal(
           this.defaultView,
           this.pConn$ as any,
           this.referenceListStr,
           this.referenceList.length,
           PCore.getConstants().RESOURCE_STATUS.CREATE,
-          this.targetClassLabel
+          this.targetClassLabel,
+          this.editType,
+          this.defaultActionId
         );
     } else {
       this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
