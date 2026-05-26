@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
+import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { FieldBase } from '../field.base';
@@ -93,21 +93,9 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
     const imagePosition = this.configProps$.imagePosition;
 
     // dynamic styling based on image position and readOnly option
-    let imageWidth = '100%';
-    this.cardStyle = { display: 'flex', flexDirection: 'column', height: '100%' };
-    if (imagePosition && imagePosition !== 'block-start') {
-      imageWidth = '30%';
-      if (imagePosition === 'inline-start') {
-        this.cardStyle = { display: 'flex', flexDirection: 'row', alignItems: this.readOnly ? 'center' : '' };
-      } else if (imagePosition === 'inline-end') {
-        this.cardStyle = {
-          display: 'flex',
-          flexDirection: 'row-reverse',
-          justifyContent: this.readOnly ? 'space-between' : '',
-          alignItems: this.readOnly ? 'center' : ''
-        };
-      }
-    }
+    const { imageWidth, cardStyle } = this.resolveImageLayout(imagePosition);
+    this.cardStyle = cardStyle;
+
     if (this.type === 'radio') {
       const stateProps = this.pConn$.getStateProps();
       image = {
@@ -145,6 +133,12 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
       this.selectedvalues = this.configProps$.readonlyContextList;
       this.showNoValue = this.readOnly && this.selectedvalues?.length === 0; // not used
       this.primaryField = this.configProps$.primaryField;
+
+      // Set reference list so getListActions() uses the correct path on every re-render
+      if (this.selectionList && !this.readOnly) {
+        this.pConn$.setReferenceList(this.selectionList);
+        updateNewInstructions(this.pConn$, this.selectionList);
+      }
     }
 
     this.commonProps = { hideFieldLabels, datasource, additionalProps, image, recordKey, cardLabel, radioBtnValue: this.radioBtnValue ?? '' };
@@ -180,6 +174,27 @@ export class SelectableCardComponent extends FieldBase implements OnInit {
 
       return { cardImage, commonCardProps };
     });
+  }
+
+  private resolveImageLayout(imagePosition: string | undefined): { imageWidth: string; cardStyle: object } {
+    if (!imagePosition || imagePosition === 'block-start') {
+      return { imageWidth: '100%', cardStyle: { display: 'flex', flexDirection: 'column', height: '100%' } };
+    }
+    if (imagePosition === 'inline-start') {
+      return { imageWidth: '30%', cardStyle: { display: 'flex', flexDirection: 'row', alignItems: this.readOnly ? 'center' : '' } };
+    }
+    if (imagePosition === 'inline-end') {
+      return {
+        imageWidth: '30%',
+        cardStyle: {
+          display: 'flex',
+          flexDirection: 'row-reverse',
+          justifyContent: this.readOnly ? 'space-between' : '',
+          alignItems: this.readOnly ? 'center' : ''
+        }
+      };
+    }
+    return { imageWidth: '30%', cardStyle: { display: 'flex', flexDirection: 'column', height: '100%' } };
   }
 
   fieldOnChange(value: any) {

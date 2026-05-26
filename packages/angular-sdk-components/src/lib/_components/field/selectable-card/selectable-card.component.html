@@ -17,6 +17,7 @@
           [checked]="cardContent.commonCardProps.selected"
           [disabled]="disabled || readOnly"
           [attr.data-test-id]="testId + ':' + cardContent.commonCardProps.label"
+          (click)="$event.stopPropagation()"
           (change)="handleChangeMultiMode($event, cardContent.commonCardProps)"
           (blur)="fieldOnBlur()"
           >{{ cardContent.commonCardProps.label }}</mat-checkbox
