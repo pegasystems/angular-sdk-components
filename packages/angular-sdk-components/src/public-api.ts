@@ -20,6 +20,7 @@ export * from './lib/_components/field/decimal/decimal.component';
 export * from './lib/_components/field/dropdown/dropdown.component';
 export * from './lib/_components/field/email/email.component';
 export * from './lib/_components/field/integer/integer.component';
+export * from './lib/_components/field/multiselect/multiselect.component';
 export * from './lib/_components/field/object-reference/object-reference.component';
 export * from './lib/_components/field/percentage/percentage.component';
 export * from './lib/_components/field/phone/phone.component';
