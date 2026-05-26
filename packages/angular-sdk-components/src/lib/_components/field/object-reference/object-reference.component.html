@@ -1,17 +1,32 @@
-<div *ngIf="isDisplayModeEnabled && !canBeChangedInReviewMode; else semanticLinkCheck">
-  <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$ }"></component-mapper>
-</div>
-<ng-template #semanticLinkCheck>
-  <div *ngIf="type === 'SemanticLink' && !canBeChangedInReviewMode; else loadDynamicComp">
+<ng-container *ngIf="bVisible$" [ngSwitch]="renderMode">
+  <!-- SingleReferenceReadOnly mode -->
+  <div *ngSwitchCase="'singleReferenceReadonly'">
+    <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$ }"></component-mapper>
+  </div>
+
+  <!-- MultiReferenceReadonly mode -->
+  <div *ngSwitchCase="'multiReferenceReadonly'">
+    <component-mapper name="MultiReferenceReadOnly" [props]="{ pConn$ }"></component-mapper>
+  </div>
+
+  <!-- SemanticLink mode -->
+  <div *ngSwitchCase="'semanticLink'">
     <component-mapper name="SemanticLink" [props]="{ pConn$: newPconn }"></component-mapper>
   </div>
-</ng-template>
-<ng-template #loadDynamicComp>
-  <component-mapper
-    *ngIf="newComponentName"
-    [name]="newComponentName"
-    [props]="{ pConn$: newPconn, formGroup$ }"
-    [parent]="this"
-    [outputEvents]="{ onRecordChange: onRecordChange }"
-  ></component-mapper>
-</ng-template>
+
+  <!-- SearchAndSelect mode -->
+  <div *ngSwitchCase="'searchAndSelect'">
+    <component-mapper name="SearchForm" [props]="{ pConn$, formGroup$, searchSelectCacheKey, type: 'ObjectReference' }"></component-mapper>
+  </div>
+
+  <!-- Dynamic component mode (Cards, Map, CheckboxGroup, Table, Multiselect, Dropdown, AutoComplete, etc.) -->
+  <div *ngSwitchCase="'dynamicComponent'">
+    <component-mapper
+      *ngIf="newComponentName"
+      [name]="newComponentName"
+      [props]="{ pConn$: newPconn, formGroup$ }"
+      [parent]="this"
+      [outputEvents]="useOutputEvents ? { onRecordChange: onRecordChange } : undefined"
+    ></component-mapper>
+  </div>
+</ng-container>

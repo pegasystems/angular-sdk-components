@@ -31,6 +31,7 @@ import { GroupComponent } from '../../_components/field/group/group.component';
 import { IntegerComponent } from '../../_components/field/integer/integer.component';
 import { ListViewActionButtonsComponent } from '../../_components/field/list-view-action-buttons/list-view-action-buttons.component';
 import { LocationComponent } from '../../_components/field/location/location.component';
+import { EmbeddedDataMultiComponent } from '../../_components/field/embedded-data-multi/embedded-data-multi.component';
 import { ObjectReferenceComponent } from '../../_components/field/object-reference/object-reference.component';
 import { PercentageComponent } from '../../_components/field/percentage/percentage.component';
 import { PhoneComponent } from '../../_components/field/phone/phone.component';
@@ -175,6 +176,7 @@ const pegaSdkComponentMap = {
   Dropdown: DropdownComponent,
   DynamicTabs: DynamicTabsComponent,
   Email: EmailComponent,
+  EmbeddedDataMulti: EmbeddedDataMultiComponent,
   ErrorBoundary: ErrorBoundaryComponent,
   FeedContainer: FeedContainerComponent,
   FieldGroup: FieldGroupComponent,

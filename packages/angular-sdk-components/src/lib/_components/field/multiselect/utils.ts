@@ -11,9 +11,11 @@ export function setVisibilityForList(c11nEnv, visibility) {
 function preProcessColumns(columns) {
   return columns?.map(col => {
     const tempColObj = { ...col };
-    tempColObj.value = col.value && col.value.startsWith('.') ? col.value.substring(1) : col.value;
-    if (tempColObj.setProperty) {
-      tempColObj.setProperty = col.setProperty && col.setProperty.startsWith('.') ? col.setProperty.substring(1) : col.setProperty;
+    if (typeof col.value === 'string') {
+      tempColObj.value = col.value.startsWith('.') ? col.value.substring(1) : col.value;
+    }
+    if (typeof col.setProperty === 'string') {
+      tempColObj.setProperty = col.setProperty.startsWith('.') ? col.setProperty.substring(1) : col.setProperty;
     }
     return tempColObj;
   });
