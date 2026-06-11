@@ -279,8 +279,12 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
 
     // this.containerName$ = oWorkMeta["name"];
     if (bLoadChildren && oWorkData) {
-      this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0].name, undefined, this.localeReference);
-      this.isMultiStep = this.utils.getBooleanValue(oWorkData.caseInfo.assignments?.[0].isMultiStep);
+      this.containerName$ = this.localizedVal(
+        this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0]?.name,
+        undefined,
+        this.localeReference
+      );
+      this.isMultiStep = this.utils.getBooleanValue(oWorkData.caseInfo.assignments?.[0]?.isMultiStep);
     }
 
     // turn off spinner
