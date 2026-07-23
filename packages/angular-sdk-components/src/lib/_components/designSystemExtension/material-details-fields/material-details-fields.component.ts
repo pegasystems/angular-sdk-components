@@ -43,9 +43,8 @@ export class MaterialDetailsFieldsComponent {
 
   _formatCurrency(field: any): string {
     const { currencyISOCode = 'USD', formatter } = field.config;
-    let formattedValue = '';
 
-    formattedValue = format(
+    const formattedValue = format(
       field.config.value,
       formatter ? (formatter.toLowerCase() === 'defaultcurrency' ? 'currency' : formatter.toLowerCase()) : 'currency',
       getCurrencyOptions(currencyISOCode)
