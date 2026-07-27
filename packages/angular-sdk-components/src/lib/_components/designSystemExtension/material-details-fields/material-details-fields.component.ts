@@ -53,7 +53,7 @@ export class MaterialDetailsFieldsComponent {
     return formattedValue;
   }
 
-  getVisibility(config): boolean {
+  _getVisibility(config): boolean {
     const { visibility = true } = config;
 
     return this.utils.getBooleanValue(visibility);
