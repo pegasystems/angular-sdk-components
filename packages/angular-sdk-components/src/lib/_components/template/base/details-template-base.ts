@@ -1,9 +1,11 @@
 import { Directive, OnInit, OnDestroy, Injector, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 
 @Directive()
 export class DetailsTemplateBase implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
+  @Input() formGroup$: FormGroup;
 
   // For interaction with AngularPConnect
   protected angularPConnectData: AngularPConnectData = {};
