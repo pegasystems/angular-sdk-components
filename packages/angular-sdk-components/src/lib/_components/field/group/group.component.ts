@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -19,7 +19,7 @@ interface GroupProps extends PConnFieldProps {
   styleUrls: ['./group.component.scss'],
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
-export class GroupComponent implements OnInit {
+export class GroupComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
@@ -40,6 +40,12 @@ export class GroupComponent implements OnInit {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
     this.checkAndUpdate();
+  }
+
+  additionalProps() {
+    return {
+      visibility: this.pConn$.getComputedVisibility()
+    };
   }
 
   // Callback passed when subscribing to store change
@@ -84,6 +90,12 @@ export class GroupComponent implements OnInit {
 
         return child;
       });
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
     }
   }
 }
