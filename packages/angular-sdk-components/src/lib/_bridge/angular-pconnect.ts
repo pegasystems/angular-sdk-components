@@ -145,10 +145,18 @@ export class AngularPConnectService {
       // console.log( `   validatemessage for ${inComp.constructor.name} ${inComp.angularPConnectData.compID}: ${compProps.validatemessage}`);
     }
 
-    return {
+    const result: any = {
       ...compProps,
       ...addProps
     };
+
+    // Include inheritedProps in comparison (matches React SDK areStatePropsEqual in react_pconnect.jsx)
+    const stateProps = inComp.pConn$.getStateProps();
+    if (stateProps?.inheritedProps) {
+      result.inheritedProps = inComp.pConn$.getInheritedProps();
+    }
+
+    return result;
   }
 
   /**
