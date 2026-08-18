@@ -1,7 +1,7 @@
-<div *ngIf="viewComponentPConnect">
+<div *ngIf="viewComponentPConnect() as viewComponent">
   <component-mapper
-    [name]="viewComponentPConnect.getComponentName()"
-    [props]="{ pConn$: viewComponentPConnect, formGroup$ }"
-    errorMsg="Reference Missing: {{ viewComponentPConnect.getComponentName() }}"
+    [name]="viewComponent.getComponentName()"
+    [props]="{ pConn$: viewComponent, formGroup$ }"
+    errorMsg="Reference Missing: {{ viewComponent.getComponentName() }}"
   ></component-mapper>
 </div>

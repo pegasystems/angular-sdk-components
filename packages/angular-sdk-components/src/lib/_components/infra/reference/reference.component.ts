@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -19,7 +19,7 @@ export class ReferenceComponent implements OnInit, OnDestroy, OnChanges {
   @Input() formGroup$: any;
 
   angularPConnectData: AngularPConnectData = {};
-  viewComponentPConnect: typeof PConnect | null = null;
+  viewComponentPConnect = signal<typeof PConnect | null>(null);
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -76,7 +76,7 @@ export class ReferenceComponent implements OnInit, OnDestroy, OnChanges {
     const viewMetadata: any = pConnect.getReferencedView();
 
     if (!viewMetadata) {
-      this.viewComponentPConnect = null;
+      this.viewComponentPConnect.set(null);
       return;
     }
 
@@ -106,6 +106,6 @@ export class ReferenceComponent implements OnInit, OnDestroy, OnChanges {
       displayMode
     });
 
-    this.viewComponentPConnect = visibility !== false ? newCompPConnect : null;
+    this.viewComponentPConnect.set(visibility !== false ? newCompPConnect : null);
   }
 }
