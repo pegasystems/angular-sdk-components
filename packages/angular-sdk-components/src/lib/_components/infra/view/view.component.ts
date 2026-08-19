@@ -146,7 +146,6 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
 
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as ViewProps;
     this.inheritedProps$ = this.pConn$.getInheritedProps();
-
     // NOTE: this.configProps$.visibility'] is used in view.component.ts such that
     //  the View will only be rendered when this.configProps$.visibility'] is false.
     //  It WILL render if true or undefined.
@@ -155,7 +154,10 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     this.title$ = this.configProps$.title || '';
     // label & showLabel within inheritedProps takes precedence over configProps
     this.label$ = this.inheritedProps$.label || this.configProps$.label || '';
-    this.showLabel$ = this.inheritedProps$.showLabel || this.configProps$.showLabel || isDetailsTemplate(this.templateName$);
+    this.showLabel$ =
+      this.inheritedProps$.showLabel !== undefined
+        ? this.inheritedProps$.showLabel
+        : this.configProps$.showLabel || isDetailsTemplate(this.templateName$);
     this.arChildren$ = this.pConn$.getChildren();
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 

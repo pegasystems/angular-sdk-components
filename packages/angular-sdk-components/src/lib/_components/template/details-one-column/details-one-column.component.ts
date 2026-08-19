@@ -1,6 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DetailsTemplateBase } from '../base/details-template-base';
+import { processDetailFields } from '../../../_helpers/template-utils';
 
 @Component({
   selector: 'app-details-one-column',
@@ -39,10 +40,8 @@ export class DetailsOneColumnComponent extends DetailsTemplateBase {
 
     const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
-      const pKid = kid.getPConnect();
-      const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());
       if (kids.indexOf(kid) == 0) {
-        this.arFields$ = pKidData.children;
+        this.arFields$ = processDetailFields(kid);
       }
     }
   }
