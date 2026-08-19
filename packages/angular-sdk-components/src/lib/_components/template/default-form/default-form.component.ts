@@ -37,6 +37,7 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
   override angularPConnectData: AngularPConnectData = {};
 
   arChildren$: any[];
+  childrenVisibility$: boolean[] = [];
   divClass$: string;
   instructions: string;
 
@@ -95,5 +96,9 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     if (areViewsChanged(this.arChildren$, children)) {
       this.arChildren$ = children;
     }
+
+    // Recompute each child's visibility on every state change so nested "when"
+    // conditions re-evaluate (mirrors the React SDK DefaultForm getComputedVisibility).
+    this.childrenVisibility$ = (this.arChildren$ ?? []).map(kid => kid.getPConnect().getComputedVisibility());
   }
 }
