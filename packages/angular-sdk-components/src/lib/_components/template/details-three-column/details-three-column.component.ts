@@ -1,7 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DetailsTemplateBase } from '../base/details-template-base';
-import { processDetailFields } from '../../../_helpers/template-utils';
 
 @Component({
   selector: 'app-details-three-column',
@@ -45,11 +44,11 @@ export class DetailsThreeColumnComponent extends DetailsTemplateBase {
     const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       if (kids.indexOf(kid) == 0) {
-        this.arFields$ = processDetailFields(kid);
+        this.arFields$ = this.processDetailFields(kid);
       } else if (kids.indexOf(kid) == 1) {
-        this.arFields2$ = processDetailFields(kid);
+        this.arFields2$ = this.processDetailFields(kid);
       } else {
-        this.arFields3$ = processDetailFields(kid);
+        this.arFields3$ = this.processDetailFields(kid);
       }
     }
   }

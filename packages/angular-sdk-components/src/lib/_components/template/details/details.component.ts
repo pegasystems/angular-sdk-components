@@ -1,7 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DetailsTemplateBase } from '../base/details-template-base';
-import { processDetailFields } from '../../../_helpers/template-utils';
 
 @Component({
   selector: 'app-details',
@@ -36,7 +35,7 @@ export class DetailsComponent extends DetailsTemplateBase {
 
     const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
-      this.arFields$ = processDetailFields(kid);
+      this.arFields$ = this.processDetailFields(kid);
     }
   }
 }

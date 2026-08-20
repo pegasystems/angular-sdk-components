@@ -1,7 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DetailsTemplateBase } from '../base/details-template-base';
-import { processDetailFields } from '../../../_helpers/template-utils';
 
 @Component({
   selector: 'app-details-wide-narrow',
@@ -42,9 +41,9 @@ export class DetailsWideNarrowComponent extends DetailsTemplateBase {
     const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
       if (kids.indexOf(kid) == 0) {
-        this.arFields$ = processDetailFields(kid);
+        this.arFields$ = this.processDetailFields(kid);
       } else {
-        this.arFields2$ = processDetailFields(kid);
+        this.arFields2$ = this.processDetailFields(kid);
       }
     }
   }
