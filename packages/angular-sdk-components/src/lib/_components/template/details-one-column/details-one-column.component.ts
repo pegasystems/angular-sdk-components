@@ -39,10 +39,8 @@ export class DetailsOneColumnComponent extends DetailsTemplateBase {
 
     const kids = this.pConn$.getChildren() as any[];
     for (const kid of kids) {
-      const pKid = kid.getPConnect();
-      const pKidData = pKid.resolveConfigProps(pKid.getRawMetadata());
       if (kids.indexOf(kid) == 0) {
-        this.arFields$ = pKidData.children;
+        this.arFields$ = this.processDetailFields(kid);
       }
     }
   }
