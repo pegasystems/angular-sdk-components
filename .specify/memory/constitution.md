@@ -244,8 +244,4 @@ any conflicting local conventions.
 - Complexity or principle relaxation MUST be justified and tracked
   in the plan's Complexity Tracking section.
 
-Refer to `AGENTS.md` for project identity, commands, and
-prohibitions. Refer to `.github/instructions/` for implementation-
-level details (bridge, components, build scripts, testing).
-
 **Version**: 2.0.0 | **Ratified**: 2026-08-13 | **Last Amended**: 2026-08-19
