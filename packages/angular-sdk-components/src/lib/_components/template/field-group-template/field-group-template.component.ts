@@ -43,6 +43,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   readonlyMode: boolean;
   contextClass: any;
   heading: any;
+  headingPath: string[] = [];
   children: any;
   menuIconOverride$: any;
   referenceListLength = signal<number | null>(null);
@@ -150,11 +151,24 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
     return `${heading} ${index + 1}`;
   };
 
-  getDynamicHeader = (item, index) => {
-    if (this.heading && item[this.heading.substring(1)]) {
-      return item[this.heading.substring(1)];
+  getDynamicHeader = (item: Record<string, unknown>, index: number): string => {
+    if (this.heading) {
+      let value: any = item;
+      this.headingPath = this.heading.substring(1).split('.');
+
+      for (const key of this.headingPath) {
+        if (value === null || typeof value !== 'object' || !(key in value)) {
+          value = undefined;
+          break;
+        }
+        value = Reflect.get(value, key);
+      }
+
+      if (value !== undefined && value !== null && value !== '') {
+        return value.toString();
+      }
     }
-    return `Row ${index + 1}`;
+    return `${PCore.getLocaleUtils().getLocaleValue('Row', 'SimpleTable')} ${index + 1}`;
   };
 
   addFieldGroupItem() {
