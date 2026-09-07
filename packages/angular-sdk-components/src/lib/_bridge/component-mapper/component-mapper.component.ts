@@ -38,7 +38,12 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
         this.loadComponent();
       }
     } else if (this.isInitialized) {
+      const prevPConn = this.componentRef?.instance?.pConn$;
       this.bindInputProps();
+      // When pConn$ changes, re-evaluate the component
+      if (prevPConn && this.props?.pConn$ && prevPConn !== this.props.pConn$) {
+        this.componentRef?.instance?.onStateChange?.();
+      }
     }
   }
 
