@@ -58,6 +58,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   dataRelationshipContext: any;
   imagePosition: any;
   showImageDescription: any;
+  private isUpdatingFromDataCallback = false;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -69,7 +70,30 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
     this.children = this.pConn$.getChildren();
     this.updateSelf();
+  }
 
+  ngOnDestroy(): void {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
+    }
+  }
+
+  // Callback passed when subscribing to store change
+  onStateChange() {
+    // Should always check the bridge to see if the component should
+    // update itself (re-render)
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    // ONLY call updateSelf when the component should update
+    if (bUpdateSelf) {
+      this.updateSelf();
+    }
+  }
+
+  getData() {
+    if (this.isUpdatingFromDataCallback) {
+      return;
+    }
     if (
       this.rawViewMetadata.config?.parameters &&
       !this.isDDSourceDeferred &&
@@ -94,7 +118,9 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
                     }))
                     .filter(item => item.key); // Filtering out undefined entries
               this.dropDownDataSource = ddDataSource;
+              this.isUpdatingFromDataCallback = true;
               this.updateSelf();
+              this.isUpdatingFromDataCallback = false;
             } else {
               const ddDataSource: any = [];
               this.dropDownDataSource = ddDataSource;
@@ -107,24 +133,6 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
             });
           });
       }
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.angularPConnectData.unsubscribeFn) {
-      this.angularPConnectData.unsubscribeFn();
-    }
-  }
-
-  // Callback passed when subscribing to store change
-  onStateChange() {
-    // Should always check the bridge to see if the component should
-    // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
-      this.updateSelf();
     }
   }
 
@@ -186,6 +194,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
 
     this.generateChildrenToRender();
     this.displayChild = !(this.displaySingleRef || this.displayMultiRef);
+    this.getData();
   }
 
   updatePropertiesFromProps(theConfigProps) {
