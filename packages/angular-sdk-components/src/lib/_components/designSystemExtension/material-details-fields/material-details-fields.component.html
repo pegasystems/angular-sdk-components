@@ -22,6 +22,7 @@
           <span *ngSwitchCase="'date'" class="psdk-details-text-style">{{ _formatDate(field.config.value, field.type) }}</span>
           <span *ngSwitchCase="'decimal'" class="psdk-details-text-style">{{ _formatDecimal(field) }}</span>
           <span *ngSwitchCase="'currency'" class="psdk-details-text-style">{{ _formatCurrency(field) }}</span>
+          <span *ngSwitchCase="'richtext'" class="psdk-details-text-style" [innerHTML]="_getValue(field.config.value)"></span>
           <ng-container *ngSwitchCase="'scalarlist'">
             <span *ngIf="field.config.componentType?.toLowerCase() === 'decimal'" class="psdk-details-text-style">{{ _formatDecimal(field) }}</span>
             <span *ngIf="field.config.componentType?.toLowerCase() === 'currency'" class="psdk-details-text-style">{{ _formatCurrency(field) }}</span>
