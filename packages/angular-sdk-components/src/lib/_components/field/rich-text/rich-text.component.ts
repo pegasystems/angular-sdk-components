@@ -46,7 +46,7 @@ export class RichTextComponent extends FieldBase {
 
   fieldOnChange(editorValue: any) {
     const oldVal = this.value$ ?? '';
-    const newVal = editorValue?.editor?.getBody()?.innerHTML ?? '';
+    const newVal = typeof editorValue === 'string' ? editorValue : (editorValue ?? '');
 
     const isValueChanged = newVal.toString() !== oldVal.toString();
 
