@@ -92,7 +92,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
 
   bVisible$ = true;
   displayedColumns: string[] = [];
-  rowData: MatTableDataSource<any>;
+  rowData = new MatTableDataSource<any>([]);
   originalData: any[] = [];
   processedFields: any[] = [];
   fieldDefs: any[] = [];

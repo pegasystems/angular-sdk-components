@@ -130,6 +130,7 @@ td.mat-mdc-cell:last-child {
   align-items: center;
   height: 100%;
   width: 100%;
+  background-color: var(--app-dialog-background-color);
   position: fixed;
   z-index: 999;
   top: 0px;
@@ -140,10 +141,11 @@ td.mat-mdc-cell:last-child {
   display: table;
   margin: auto;
   min-width: 150px;
-  border: 1px solid var(--app-inverse-form-color);
+  background-color: var(--mat-sys-surface-container);
+  border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 0 10px 3px var(--app-box-shadow-color);
+  box-shadow: 0 0 10px 3px var(--mat-sys-level3);
 }
 
 tr.mat-mdc-row {
