@@ -3,6 +3,8 @@
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
       * Github: [PR-533](https://github.com/pegasystems/angular-sdk-components/pull/533)
+*   **Fixed the issue where filtering did not work on empty tables and corrected the filter pop-up styling.**
+    * Github: [PR-543](https://github.com/pegasystems/angular-sdk-components/pull/543)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
