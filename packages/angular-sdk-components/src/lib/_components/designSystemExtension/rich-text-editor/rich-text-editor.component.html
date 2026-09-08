@@ -2,14 +2,69 @@
   <label [ngClass]="{ 'label-required': required === true }" class="rich-text-label">{{ label }}</label>
 
   <div class="rich-text-editor" *ngIf="!readonly">
-    <editor
-      [formControl]="richText"
-      [attr.disabled]="disabled"
-      [initialValue]="value"
-      [init]="editorConfig"
-      (onBlur)="blur()"
-      (onChange)="change($event)"
-    ></editor>
+    <div class="tiptap-container" [class.disabled]="disabled">
+      <div #editorEl class="tiptap-editor-area"></div>
+
+      <div class="tiptap-toolbar" *ngIf="!disabled" (mousedown)="$event.preventDefault()">
+        <select class="tiptap-block-select" [value]="currentBlock" (change)="setBlock($any($event.target).value)" aria-label="Text block type">
+          <option value="paragraph">Paragraph</option>
+          <option value="h1">Heading 1</option>
+          <option value="h2">Heading 2</option>
+          <option value="h3">Heading 3</option>
+        </select>
+
+        <span class="tiptap-sep"></span>
+
+        <button type="button" class="tiptap-btn" [class.active]="isActive('bold')" (click)="toggleBold()" title="Bold" aria-label="Bold">
+          <strong>B</strong>
+        </button>
+        <button type="button" class="tiptap-btn" [class.active]="isActive('italic')" (click)="toggleItalic()" title="Italic" aria-label="Italic">
+          <em>I</em>
+        </button>
+        <button
+          type="button"
+          class="tiptap-btn"
+          [class.active]="isActive('strike')"
+          (click)="toggleStrike()"
+          title="Strikethrough"
+          aria-label="Strikethrough"
+        >
+          <s>S</s>
+        </button>
+
+        <span class="tiptap-sep"></span>
+
+        <button
+          type="button"
+          class="tiptap-btn"
+          [class.active]="isActive('bulletList')"
+          (click)="toggleBulletList()"
+          title="Bulleted list"
+          aria-label="Bulleted list"
+        >
+          • List
+        </button>
+        <button
+          type="button"
+          class="tiptap-btn"
+          [class.active]="isActive('orderedList')"
+          (click)="toggleOrderedList()"
+          title="Numbered list"
+          aria-label="Numbered list"
+        >
+          1. List
+        </button>
+        <button type="button" class="tiptap-btn" (click)="outdent()" title="Decrease indent" aria-label="Decrease indent">⇤</button>
+        <button type="button" class="tiptap-btn" (click)="indent()" title="Increase indent" aria-label="Increase indent">⇥</button>
+
+        <span class="tiptap-sep"></span>
+
+        <button type="button" class="tiptap-btn" [class.active]="isActive('link')" (click)="addLink()" title="Insert link" aria-label="Insert link">
+          Link
+        </button>
+        <button type="button" class="tiptap-btn" (click)="addImage()" title="Insert image" aria-label="Insert image">Image</button>
+      </div>
+    </div>
 
     <p *ngIf="richText.invalid" [ngClass]="'text-editor-error'">{{ info }}</p>
   </div>
