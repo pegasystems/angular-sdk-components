@@ -102,16 +102,11 @@
                 "input": "./projects/angular-test-app/src/assets/icons/",
                 "output": "./constellation/assets/icons"
               },
-              {
-                "glob": "**/*",
-                "input": "./node_modules/tinymce",
-                "output": "./tinymce"
-              },
               "projects/angular-test-app/src/favicon.ico",
               "projects/angular-test-app/src/assets/img"
             ],
             "styles": ["projects/angular-test-app/src/styles.scss"],
-            "scripts": ["./node_modules/tinymce/tinymce.min.js"],
+            "scripts": [],
             "customWebpackConfig": {
               "path": "./scripts/extra-webpack.config.js"
             },

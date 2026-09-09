@@ -16,3 +16,105 @@
 .text-editor-error {
   color: var(--app-error-light-color);
 }
+
+.tiptap-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--mat-sys-outline, #ccc);
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: transparent;
+
+  &.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.tiptap-editor-area {
+  min-height: 130px;
+  padding: 8px 12px;
+  color: var(--mat-sys-on-surface, #000);
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  outline: none;
+  background: transparent;
+
+  ::ng-deep .ProseMirror {
+    min-height: 130px;
+    outline: none;
+
+    > * + * {
+      margin-top: 0.5em;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.25rem;
+    }
+
+    a {
+      color: var(--mat-sys-primary, #6200ee);
+      text-decoration: underline;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  ::ng-deep .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: var(--mat-sys-on-surface-variant, #888);
+    pointer-events: none;
+    height: 0;
+  }
+}
+
+.tiptap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: var(--mat-sys-surface-container-high, #f0f0f0);
+  border-top: 1px solid var(--mat-sys-outline-variant, #ccc);
+}
+
+.tiptap-btn {
+  background: transparent;
+  border: none;
+  color: var(--mat-sys-on-surface-variant, #555);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1;
+
+  &:hover {
+    background: var(--mat-sys-hover-state-layer-opacity, rgba(0, 0, 0, 0.05));
+  }
+
+  &.active {
+    background: var(--mat-sys-secondary-container, #e8def8);
+    color: var(--mat-sys-on-secondary-container, #1d192b);
+  }
+}
+
+.tiptap-block-select {
+  background: transparent;
+  color: var(--mat-sys-on-surface, #000);
+  border: 1px solid var(--mat-sys-outline, #ccc);
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 14px;
+}
+
+.tiptap-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--mat-sys-outline-variant, #ccc);
+  margin: 0 4px;
+}
