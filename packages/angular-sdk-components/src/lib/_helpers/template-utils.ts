@@ -67,25 +67,7 @@ export class TemplateUtils {
     // The raw metadata for `instructions` will be something like '@PARAGRAPH .SomeParagraphRule' but
     // it is evaluated by core logic to the content
     if (instructions !== 'casestep' && instructions !== 'none') {
-      // if the instructions contains a link, and the link is external, add a target attribute to open in a new window
-      if (instructions?.includes('<a')) {
-        const parser = new DOMParser();
-        const htmlDoc = parser.parseFromString(instructions, 'text/html');
-        const anchorNode = htmlDoc.querySelector('a');
-        if (anchorNode) {
-          try {
-            const url = new URL(anchorNode.href);
-            if (url.origin !== window.location.origin) {
-              anchorNode.setAttribute('target', '_blank');
-              anchorNode.setAttribute('rel', 'noopener');
-              return htmlDoc.body.innerHTML;
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      }
-      return instructions;
+      return this.addExternalLinkTarget(instructions);
     }
     return undefined;
   }
@@ -115,5 +97,32 @@ export class TemplateUtils {
 
   private isInstructionObject(instructions: unknown): instructions is InstructionObject {
     return typeof instructions === 'object' && instructions !== null;
+  }
+
+  private addExternalLinkTarget(instructions: string): string {
+    if (!instructions.includes('<a')) {
+      return instructions;
+    }
+
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(instructions, 'text/html');
+    const anchorNode = htmlDoc.querySelector('a');
+
+    if (!anchorNode) {
+      return instructions;
+    }
+
+    try {
+      const url = new URL(anchorNode.href);
+      if (url.origin !== window.location.origin) {
+        anchorNode.setAttribute('target', '_blank');
+        anchorNode.setAttribute('rel', 'noopener');
+        return htmlDoc.body.innerHTML;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    return instructions;
   }
 }
