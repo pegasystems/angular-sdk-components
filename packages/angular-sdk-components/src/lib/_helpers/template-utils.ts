@@ -27,7 +27,7 @@ export class TemplateUtils {
    * @param {Function} pConnect PConnect object for the component
    * @param {string} [instructions="casestep"] 'casestep', 'none', or the html content of a Rule-UI-Paragraph rule (processed via core's paragraph annotation handler)
    */
-  getInstructions(pConnect, instructions = 'casestep') {
+  getInstructions(pConnect, instructions: string | { htmlContent?: string } = 'casestep') {
     const caseStepInstructions = PCore.getConstants().CASE_INFO.INSTRUCTIONS && pConnect.getValue(PCore.getConstants().CASE_INFO.INSTRUCTIONS);
 
     // Determine if this view is the current assignment/step view
@@ -41,6 +41,11 @@ export class TemplateUtils {
     // No instructions
     if (instructions === 'none') {
       return undefined;
+    }
+
+    // Paragraph annotation processing returns the resolved HTML in an object.
+    if (typeof instructions === 'object' && instructions !== null) {
+      return instructions.htmlContent;
     }
 
     // If the annotation wasn't processed correctly, don't return any instruction text
