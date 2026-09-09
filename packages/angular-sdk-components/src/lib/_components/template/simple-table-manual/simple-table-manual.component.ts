@@ -934,14 +934,13 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;
     let index = 0;
-    
+
     for (const key of refKeys) {
       index += 1;
       valBuilder = valBuilder[key] !== undefined || index === refKeys.length ? valBuilder[key] : valBuilder;
     }
 
     return valBuilder;
-
   }
 
   generateRowsData() {
