@@ -270,18 +270,26 @@ export const onFileDownload = (responseProps, context) => {
 
 // Prepares new structure as per Cosmos component
 export const transformAttachments = attachments => {
-  const transformedFiles = [...attachments];
   let deleteIndex = -1;
-  transformedFiles.forEach(attachment => {
-    attachment.props.id = attachment.responseProps.ID;
-    attachment.props.format = attachment.props.name.split('.').pop();
-    if (attachment.props.error) {
-      attachment.responseProps.deleteIndex = deleteIndex;
-    } else {
-      deleteIndex += 1;
-      attachment.responseProps.deleteIndex = deleteIndex;
-    }
-  });
 
-  return transformedFiles;
+  return attachments.map(attachment => {
+    const props = {
+      ...attachment.props,
+      id: attachment.responseProps.ID,
+      format: attachment.props.name.split('.').pop()
+    };
+
+    if (!props.error) {
+      deleteIndex += 1;
+    }
+
+    return {
+      ...attachment,
+      props,
+      responseProps: {
+        ...attachment.responseProps,
+        deleteIndex
+      }
+    };
+  });
 };
