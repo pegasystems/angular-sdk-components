@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+export interface InstructionObject {
+  htmlContent?: string;
+  messageType?: string;
+  dismissBanner?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,7 +33,7 @@ export class TemplateUtils {
    * @param {Function} pConnect PConnect object for the component
    * @param {string} [instructions="casestep"] 'casestep', 'none', or the html content of a Rule-UI-Paragraph rule (processed via core's paragraph annotation handler)
    */
-  getInstructions(pConnect, instructions: string | { htmlContent?: string } = 'casestep') {
+  getInstructions(pConnect, instructions: string | InstructionObject | null | undefined = 'casestep'): string | undefined {
     const caseStepInstructions = PCore.getConstants().CASE_INFO.INSTRUCTIONS && pConnect.getValue(PCore.getConstants().CASE_INFO.INSTRUCTIONS);
 
     // Determine if this view is the current assignment/step view
@@ -44,8 +50,12 @@ export class TemplateUtils {
     }
 
     // Paragraph annotation processing returns the resolved HTML in an object.
-    if (typeof instructions === 'object' && instructions !== null) {
-      return instructions.htmlContent;
+    if (this.isInstructionObject(instructions)) {
+      return typeof instructions.htmlContent === 'string' ? instructions.htmlContent : undefined;
+    }
+
+    if (instructions == null) {
+      return undefined;
     }
 
     // If the annotation wasn't processed correctly, don't return any instruction text
@@ -78,5 +88,32 @@ export class TemplateUtils {
       return instructions;
     }
     return undefined;
+  }
+
+  getInstructionsType(instructions: string | InstructionObject | null | undefined): string | undefined {
+    if (this.isInstructionObject(instructions) && typeof instructions.messageType === 'string') {
+      return instructions.messageType;
+    }
+    return undefined;
+  }
+
+  getDismissBanner(instructions: string | InstructionObject | null | undefined): boolean {
+    return this.isInstructionObject(instructions) && instructions.dismissBanner === true;
+  }
+
+  mapInstructionsTypeToBannerVariant(instructionsType: string): 'warning' | 'info' | 'success' {
+    switch (instructionsType) {
+      case 'Caution':
+        return 'warning';
+      case 'Good':
+        return 'success';
+      case 'Information':
+      default:
+        return 'info';
+    }
+  }
+
+  private isInstructionObject(instructions: unknown): instructions is InstructionObject {
+    return typeof instructions === 'object' && instructions !== null;
   }
 }
