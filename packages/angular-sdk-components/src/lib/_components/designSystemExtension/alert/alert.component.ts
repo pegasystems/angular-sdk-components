@@ -9,10 +9,15 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, MatIconModule]
 })
 export class AlertComponent {
-  @Input() message: any[];
+  @Input() message: unknown;
+  @Input() messageIsHtml = false;
   @Input() severity;
   @Input() hideClose;
   @Output() onClose: EventEmitter<any> = new EventEmitter();
+
+  get messageText(): string {
+    return this.message == null ? '' : String(this.message);
+  }
 
   getMatIcon(severity) {
     let variant;
@@ -36,7 +41,6 @@ export class AlertComponent {
   }
 
   onCloseClick() {
-    alert('Close clicked');
     this.onClose.emit({ Page: 'Page', target: 'target', type: 'type' });
   }
 }

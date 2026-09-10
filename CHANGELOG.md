@@ -1,5 +1,9 @@
 # [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10) - Released: 24/06/2026
 
+### **Features**
+*   **Added support for instructions in the DefaultForm template.**
+    * Github: [PR-548](https://github.com/pegasystems/angular-sdk-components/pull/548)
+
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
       * Github: [PR-533](https://github.com/pegasystems/angular-sdk-components/pull/533)

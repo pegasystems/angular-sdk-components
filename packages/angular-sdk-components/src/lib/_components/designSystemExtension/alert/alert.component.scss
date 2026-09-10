@@ -1,8 +1,10 @@
 .psdk-alert {
-  border: 1px solid;
+  background-color: var(--mat-sys-surface-container-high);
+  border: 1px solid var(--mat-sys-outline-variant);
   display: flex;
   align-items: center;
   border-radius: 4px;
+  color: var(--mat-sys-on-surface);
   padding: 10px;
   margin: 5px 0px;
 }
@@ -22,26 +24,23 @@
 }
 
 .psdk-grid-warning {
-  color: var(--app-alert-warning-color);
-  border: 1px solid var(--app-alert-warning-border-color);
+  border-color: var(--mat-sys-secondary);
   .mat-icon {
-    color: var(--app-alert-warning-border-color);
+    color: var(--mat-sys-secondary);
   }
 }
 
 .psdk-grid-success {
-  color: var(--app-alert-success-color);
-  border: 1px solid var(--app-alert-success-border-color);
+  border-color: var(--mat-sys-tertiary);
   .mat-icon {
-    color: var(--app-alert-success-border-color);
+    color: var(--mat-sys-tertiary);
   }
 }
 
 .psdk-grid-info {
-  color: var(--app-alert-info-color);
-  border: 1px solid var(--app-alert-info-border-color);
+  border-color: var(--mat-sys-primary);
   .mat-icon {
-    color: var(--app-alert-info-border-color);
+    color: var(--mat-sys-primary);
   }
 }
 
