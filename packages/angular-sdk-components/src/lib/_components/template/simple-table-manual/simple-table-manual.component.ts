@@ -391,13 +391,19 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   initializeDefaultPageInstructions() {
+    if (!this.isInitialized) {
+      return;
+    }
+
+    this.isInitialized = false;
+
     if (this.allowEditingInModal) {
       this.pConn$.getListActions().initDefaultPageInstructions(
         this.pConn$.getReferenceList(),
-        this.fieldDefs.filter(item => item.name).map(item => item.name)
+        // Temporary filter for attachments to align with constellation payload behavior.
+        this.fieldDefs.filter(item => item.name && item.meta?.type !== 'Attachment').map(item => item.name)
       );
-    } else if (this.isInitialized) {
-      this.isInitialized = false;
+    } else {
       // @ts-ignore - An argument for 'propertyNames' was not provided.
       this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
     }
@@ -927,9 +933,13 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     // See what data (if any) we have to display
     const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;
+    let index = 0;
+
     for (const key of refKeys) {
-      valBuilder = valBuilder[key] ? valBuilder[key] : valBuilder;
+      index += 1;
+      valBuilder = valBuilder[key] !== undefined || index === refKeys.length ? valBuilder[key] : valBuilder;
     }
+
     return valBuilder;
   }
 
@@ -986,7 +996,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   editRecord(data, index) {
-    if (data) {
+    if (data && Number.isInteger(index) && index >= 0 && index < this.referenceList.length) {
       const viewForEdit = this.bUseSeparateViewForEdit ? this.editView : this.defaultView;
       this.pConn$
         .getActionsApi()
@@ -1004,7 +1014,9 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   deleteRecord(index) {
-    this.pConn$.getListActions().deleteEntry(index);
+    if (Number.isInteger(index) && index >= 0 && index < this.referenceList.length) {
+      this.pConn$.getListActions().deleteEntry(index);
+    }
   }
 
   buildElementsForTable() {
@@ -1012,6 +1024,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     const eleData: any = [];
     this.referenceList.forEach((element, index) => {
       const data: any = [];
+      data.__originalIndex = index;
       this.rawFields?.forEach(item => {
         if (!item?.config?.hide) {
           item = {
