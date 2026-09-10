@@ -10,7 +10,10 @@
   <div class="psdk-alert-icon">
     <mat-icon>{{ getMatIcon(severity) }}</mat-icon>
   </div>
-  <div>{{ message }}</div>
+  <div *ngIf="messageIsHtml; else textMessage" [innerHTML]="messageText"></div>
+  <ng-template #textMessage>
+    <div>{{ messageText }}</div>
+  </ng-template>
   <div *ngIf="!hideClose" style="margin-left: auto">
     <button class="close-button" mat-icon-button (click)="onCloseClick()">
       <mat-icon>close</mat-icon>
