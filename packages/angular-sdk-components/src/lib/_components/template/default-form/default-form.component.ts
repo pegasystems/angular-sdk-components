@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { TemplateUtils } from '../../../_helpers/template-utils';
+import { InstructionObject, TemplateUtils } from '../../../_helpers/template-utils';
 import { FormTemplateBase } from '../base/form-template-base';
 
 function areViewsChanged(oldViews: any[], newViews: any[]): boolean {
@@ -20,7 +20,7 @@ function areViewsChanged(oldViews: any[], newViews: any[]): boolean {
 interface DefaultFormProps {
   // If any, enter additional props that only exist on this component
   NumCols: string;
-  instructions: string;
+  instructions?: string | InstructionObject;
 }
 
 @Component({
@@ -38,7 +38,10 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
 
   arChildren$: any[];
   divClass$: string;
-  instructions: string;
+  instructions: string | undefined;
+  instructionBannerVariant$: 'warning' | 'info' | 'success' | undefined;
+  bDismissInstructions$ = false;
+  bShowInstructions$ = true;
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -70,6 +73,9 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     const configProps = this.pConn$.getConfigProps() as DefaultFormProps;
     const kids = this.pConn$.getChildren();
     this.instructions = this.templateUtils.getInstructions(this.pConn$, configProps?.instructions);
+    const instructionsType = this.templateUtils.getInstructionsType(configProps?.instructions);
+    this.instructionBannerVariant$ = instructionsType ? this.templateUtils.mapInstructionsTypeToBannerVariant(instructionsType) : undefined;
+    this.bDismissInstructions$ = this.templateUtils.getDismissBanner(configProps?.instructions);
 
     const numCols = configProps.NumCols ? configProps.NumCols : '1';
     switch (numCols) {
@@ -95,5 +101,9 @@ export class DefaultFormComponent extends FormTemplateBase implements OnInit, On
     if (areViewsChanged(this.arChildren$, children)) {
       this.arChildren$ = children;
     }
+  }
+
+  dismissInstructions() {
+    this.bShowInstructions$ = false;
   }
 }

@@ -1,5 +1,11 @@
 import { Injectable } from '@angular/core';
 
+export interface InstructionObject {
+  htmlContent?: string;
+  messageType?: string;
+  dismissBanner?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -27,7 +33,7 @@ export class TemplateUtils {
    * @param {Function} pConnect PConnect object for the component
    * @param {string} [instructions="casestep"] 'casestep', 'none', or the html content of a Rule-UI-Paragraph rule (processed via core's paragraph annotation handler)
    */
-  getInstructions(pConnect, instructions = 'casestep') {
+  getInstructions(pConnect, instructions: string | InstructionObject | null | undefined = 'casestep'): string | undefined {
     const caseStepInstructions = PCore.getConstants().CASE_INFO.INSTRUCTIONS && pConnect.getValue(PCore.getConstants().CASE_INFO.INSTRUCTIONS);
 
     // Determine if this view is the current assignment/step view
@@ -43,6 +49,15 @@ export class TemplateUtils {
       return undefined;
     }
 
+    // Paragraph annotation processing returns the resolved HTML in an object.
+    if (this.isInstructionObject(instructions)) {
+      return typeof instructions.htmlContent === 'string' ? instructions.htmlContent : undefined;
+    }
+
+    if (instructions == null) {
+      return undefined;
+    }
+
     // If the annotation wasn't processed correctly, don't return any instruction text
     if (instructions?.startsWith('@PARAGRAPH')) {
       return undefined;
@@ -52,26 +67,62 @@ export class TemplateUtils {
     // The raw metadata for `instructions` will be something like '@PARAGRAPH .SomeParagraphRule' but
     // it is evaluated by core logic to the content
     if (instructions !== 'casestep' && instructions !== 'none') {
-      // if the instructions contains a link, and the link is external, add a target attribute to open in a new window
-      if (instructions?.includes('<a')) {
-        const parser = new DOMParser();
-        const htmlDoc = parser.parseFromString(instructions, 'text/html');
-        const anchorNode = htmlDoc.querySelector('a');
-        if (anchorNode) {
-          try {
-            const url = new URL(anchorNode.href);
-            if (url.origin !== window.location.origin) {
-              anchorNode.setAttribute('target', '_blank');
-              anchorNode.setAttribute('rel', 'noopener');
-              return htmlDoc.body.innerHTML;
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        }
-      }
-      return instructions;
+      return this.addExternalLinkTarget(instructions);
     }
     return undefined;
+  }
+
+  getInstructionsType(instructions: string | InstructionObject | null | undefined): string | undefined {
+    if (this.isInstructionObject(instructions) && typeof instructions.messageType === 'string') {
+      return instructions.messageType;
+    }
+    return undefined;
+  }
+
+  getDismissBanner(instructions: string | InstructionObject | null | undefined): boolean {
+    return this.isInstructionObject(instructions) && instructions.dismissBanner === true;
+  }
+
+  mapInstructionsTypeToBannerVariant(instructionsType: string): 'warning' | 'info' | 'success' {
+    switch (instructionsType) {
+      case 'Caution':
+        return 'warning';
+      case 'Good':
+        return 'success';
+      case 'Information':
+      default:
+        return 'info';
+    }
+  }
+
+  private isInstructionObject(instructions: unknown): instructions is InstructionObject {
+    return typeof instructions === 'object' && instructions !== null;
+  }
+
+  private addExternalLinkTarget(instructions: string): string {
+    if (!instructions.includes('<a')) {
+      return instructions;
+    }
+
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(instructions, 'text/html');
+    const anchorNode = htmlDoc.querySelector('a');
+
+    if (!anchorNode) {
+      return instructions;
+    }
+
+    try {
+      const url = new URL(anchorNode.href);
+      if (url.origin !== window.location.origin) {
+        anchorNode.setAttribute('target', '_blank');
+        anchorNode.setAttribute('rel', 'noopener');
+        return htmlDoc.body.innerHTML;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    return instructions;
   }
 }

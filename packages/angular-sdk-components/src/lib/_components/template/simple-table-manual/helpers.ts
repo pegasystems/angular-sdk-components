@@ -354,8 +354,8 @@ export const filterDataByDate = (item, filterObj) => {
 
 export const filterDataByCommonFields = (item, filterObj) => {
   let bKeep = true;
-  const value = item[filterObj.ref].toLowerCase();
-  const filterValue = filterObj.containsFilterValue.toLowerCase();
+  const value = String(item?.[filterObj.ref] ?? '').toLowerCase();
+  const filterValue = String(filterObj.containsFilterValue ?? '').toLowerCase();
 
   switch (filterObj.containsFilter) {
     case 'contains':
