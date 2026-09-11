@@ -5,6 +5,8 @@
     * Github: [PR-547](https://github.com/pegasystems/angular-sdk-components/pull/547)
 *   **Added support for instructions in the DefaultForm template.**
     * Github: [PR-548](https://github.com/pegasystems/angular-sdk-components/pull/548)
+*   **Added support for conditional Add, Edit, and Delete actions, including record-level conditions, in editable EmbeddedData table.**
+    * Github: [PR-553](https://github.com/pegasystems/angular-sdk-components/pull/553)
 
 
 ### **Bug fixes**
