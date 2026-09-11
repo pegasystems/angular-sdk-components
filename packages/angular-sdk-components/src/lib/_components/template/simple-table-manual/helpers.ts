@@ -233,7 +233,7 @@ export const updateFieldLabels = (fields, configFields, primaryFieldsViewIndex, 
   return labelsOfFields;
 };
 
-export const buildFieldsForTable = (configFields, pConnect, showDeleteButton, options) => {
+export const buildFieldsForTable = (configFields, pConnect, showActionColumn, options) => {
   const { primaryFieldsViewIndex, fields } = options;
 
   // get resolved field labels for primary fields raw config included in configFields
@@ -260,8 +260,8 @@ export const buildFieldsForTable = (configFields, pConnect, showDeleteButton, op
     };
   });
 
-  // ONLY add DELETE_ICON to fields when the table is requested as EDITABLE
-  if (showDeleteButton) {
+  // Add the action column when either edit or delete is available.
+  if (showActionColumn) {
     fieldDefs.push({
       type: 'text',
       label: '',
