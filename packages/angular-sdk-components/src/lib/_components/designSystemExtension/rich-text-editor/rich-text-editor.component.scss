@@ -14,7 +14,8 @@
 }
 
 .text-editor-error {
-  color: var(--app-error-light-color);
+  margin: 4px 0 0;
+  color: var(--mat-sys-error, var(--app-error-light-color, #ba1a1a));
 }
 
 .tiptap-container {
@@ -24,6 +25,10 @@
   border-radius: 4px;
   overflow: hidden;
   background-color: transparent;
+
+  &.tiptap-container-invalid {
+    border-color: var(--mat-sys-error, var(--app-error-light-color, #ba1a1a));
+  }
 
   &.disabled {
     opacity: 0.6;
@@ -38,7 +43,7 @@
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
   outline: none;
-  background: transparent;
+  background: var(--mat-sys-surface, #fff);
 
   ::ng-deep .ProseMirror {
     min-height: 130px;
@@ -78,9 +83,36 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
+  min-height: 56px;
+  padding: 5px 12px;
   background-color: var(--mat-sys-surface-container-high, #f0f0f0);
   border-top: 1px solid var(--mat-sys-outline-variant, #ccc);
+}
+
+.tiptap-block-select {
+  width: 176px;
+  margin: 0;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep .mat-mdc-text-field-wrapper {
+    height: 40px;
+  }
+
+  ::ng-deep .mat-mdc-form-field-flex,
+  ::ng-deep .mat-mdc-form-field-infix {
+    min-height: 40px;
+    height: 40px;
+  }
+
+  ::ng-deep .mat-mdc-form-field-infix {
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
 }
 
 .tiptap-btn {
@@ -88,10 +120,18 @@
   border: none;
   color: var(--mat-sys-on-surface-variant, #555);
   cursor: pointer;
-  padding: 4px 8px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
   border-radius: 4px;
-  font-size: 14px;
   line-height: 1;
+
+  ::ng-deep .mat-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 22px;
+    line-height: 22px;
+  }
 
   &:hover {
     background: var(--mat-sys-hover-state-layer-opacity, rgba(0, 0, 0, 0.05));
@@ -103,18 +143,16 @@
   }
 }
 
-.tiptap-block-select {
-  background: transparent;
-  color: var(--mat-sys-on-surface, #000);
-  border: 1px solid var(--mat-sys-outline, #ccc);
-  border-radius: 4px;
-  padding: 2px 4px;
-  font-size: 14px;
-}
-
 .tiptap-sep {
   width: 1px;
-  height: 20px;
+  height: 24px;
   background: var(--mat-sys-outline-variant, #ccc);
   margin: 0 4px;
+}
+
+.readonly-richtext-editor {
+  ::ng-deep img {
+    max-width: 100%;
+    height: auto;
+  }
 }

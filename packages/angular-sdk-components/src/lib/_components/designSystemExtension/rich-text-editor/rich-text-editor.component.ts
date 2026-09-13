@@ -5,7 +5,6 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  NgZone,
   OnChanges,
   OnDestroy,
   Output,
@@ -14,6 +13,10 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -26,7 +29,7 @@ type BlockType = 'paragraph' | 'h1' | 'h2' | 'h3';
   selector: 'app-rich-text-editor',
   templateUrl: './rich-text-editor.component.html',
   styleUrls: ['./rich-text-editor.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule]
 })
 export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() placeholder;
@@ -42,7 +45,7 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
-  @ViewChild('editorEl') editorEl!: ElementRef<HTMLDivElement>;
+  private editorEl?: ElementRef<HTMLDivElement>;
 
   richText = new FormControl('');
   editor?: Editor;
@@ -50,15 +53,19 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
 
   private viewInitialized = false;
 
-  constructor(
-    private zone: NgZone,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  @ViewChild('editorEl')
+  set editorElement(element: ElementRef<HTMLDivElement> | undefined) {
+    this.editorEl = element;
+    if (element && this.viewInitialized && !this.readonly && !this.editor) {
+      this.initializeEditor();
+    }
+  }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.required) {
-      this.richText.addValidators(Validators.required);
-    }
+    this.richText.setValidators(this.required ? Validators.required : null);
+    this.richText.updateValueAndValidity({ emitEvent: false });
 
     if (this.disabled) {
       this.richText.disable();
@@ -66,62 +73,80 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       this.richText.enable();
     }
 
-    if (this.value !== undefined && this.value !== null) {
-      this.richText.setValue(this.value, { emitEvent: false });
+    this.richText.setValue(this.value ?? '', { emitEvent: false });
+
+    if (!this.viewInitialized) return;
+
+    if (this.readonly) {
+      this.destroyEditor();
+      return;
     }
 
-    if (this.viewInitialized && this.editor) {
-      if (changes['value'] && this.value !== undefined && this.value !== this.editor.getHTML()) {
-        this.editor.commands.setContent(this.value || '', false);
-      }
-      if (changes['disabled']) {
-        this.editor.setEditable(!this.disabled);
-      }
+    if (!this.editor && this.editorEl) {
+      this.initializeEditor();
+    }
+
+    if (this.editor && changes['value'] && this.value !== this.editor.getHTML()) {
+      this.editor.commands.setContent(this.value ?? '', false);
+    }
+    if (this.editor && changes['disabled']) {
+      this.editor.setEditable(!this.disabled);
     }
   }
 
   ngAfterViewInit(): void {
-    if (this.readonly) {
-      this.viewInitialized = true;
-      return;
-    }
-    this.zone.runOutsideAngular(() => {
-      this.editor = new Editor({
-        element: this.editorEl.nativeElement,
-        extensions: [
-          StarterKit,
-          Placeholder.configure({ placeholder: this.placeholder || '' }),
-          Image.configure({ inline: false, allowBase64: true }),
-          Link.configure({ openOnClick: false, autolink: true })
-        ],
-        content: this.value || '',
-        editable: !this.disabled,
-        onUpdate: ({ editor }) => {
-          const html = editor.getHTML();
-          this.zone.run(() => {
-            this.richText.setValue(html, { emitEvent: false });
-            this.onChange.emit(html);
-          });
-        },
-        onBlur: ({ editor }) => {
-          this.zone.run(() => this.onBlur.emit(editor.getHTML()));
-        },
-        onSelectionUpdate: ({ editor }) => {
-          this.zone.run(() => {
-            if (editor.isActive('heading', { level: 1 })) this.currentBlock = 'h1';
-            else if (editor.isActive('heading', { level: 2 })) this.currentBlock = 'h2';
-            else if (editor.isActive('heading', { level: 3 })) this.currentBlock = 'h3';
-            else this.currentBlock = 'paragraph';
-            this.cdr.markForCheck();
-          });
-        }
-      });
-      this.viewInitialized = true;
+    this.viewInitialized = true;
+    if (!this.readonly) this.initializeEditor();
+  }
+
+  private initializeEditor(): void {
+    if (!this.editorEl || this.editor) return;
+
+    this.editor = new Editor({
+      element: this.editorEl.nativeElement,
+      extensions: [
+        StarterKit,
+        Placeholder.configure({ placeholder: this.placeholder || '' }),
+        Image.configure({ inline: false, allowBase64: true }),
+        Link.configure({ openOnClick: false, autolink: true })
+      ],
+      content: this.value || '',
+      editable: !this.disabled,
+      onUpdate: ({ editor }) => {
+        const html = editor.getHTML();
+        this.richText.setValue(html, { emitEvent: false });
+        this.richText.markAsDirty();
+        this.onChange.emit(html);
+        this.cdr.markForCheck();
+      },
+      onBlur: ({ editor }) => {
+        this.richText.markAsTouched();
+        this.onBlur.emit(editor.getHTML());
+        this.cdr.markForCheck();
+      },
+      onSelectionUpdate: ({ editor }) => {
+        this.updateCurrentBlock(editor);
+        this.cdr.markForCheck();
+      }
     });
+    this.updateCurrentBlock(this.editor);
+  }
+
+  private updateCurrentBlock(editor: Editor): void {
+    if (editor.isActive('heading', { level: 1 })) this.currentBlock = 'h1';
+    else if (editor.isActive('heading', { level: 2 })) this.currentBlock = 'h2';
+    else if (editor.isActive('heading', { level: 3 })) this.currentBlock = 'h3';
+    else this.currentBlock = 'paragraph';
+  }
+
+  private destroyEditor(): void {
+    this.editor?.destroy();
+    this.editor = undefined;
+    this.currentBlock = 'paragraph';
   }
 
   ngOnDestroy(): void {
-    this.editor?.destroy();
+    this.destroyEditor();
   }
 
   isActive(name: string, attrs?: Record<string, any>): boolean {
@@ -190,6 +215,8 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       this.editor.chain().focus().setTextSelection({ from, to }).extendMarkRange('link').unsetLink().run();
       return;
     }
+    const normalizedUrl = this.normalizeUrl(url);
+    if (!normalizedUrl) return;
     if (empty) {
       this.editor
         .chain()
@@ -197,16 +224,26 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
         .insertContentAt(from, {
           type: 'text',
           text: url,
-          marks: [{ type: 'link', attrs: { href: url } }]
+          marks: [{ type: 'link', attrs: { href: normalizedUrl } }]
         })
         .run();
       return;
     }
-    this.editor.chain().focus().setTextSelection({ from, to }).extendMarkRange('link').setLink({ href: url }).run();
+    this.editor.chain().focus().setTextSelection({ from, to }).extendMarkRange('link').setLink({ href: normalizedUrl }).run();
+  }
+
+  private normalizeUrl(url: string): string | null {
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) return null;
+    if (/^\/\//.test(trimmedUrl)) return `https:${trimmedUrl}`;
+    if (/^(?:https?|mailto|tel|ftp):/i.test(trimmedUrl)) return trimmedUrl;
+    if (/^[a-z][a-z\d+.-]*:/i.test(trimmedUrl)) return null;
+    return `https://${trimmedUrl}`;
   }
 
   addImage() {
     if (!this.editor) return;
+    const insertPosition = this.editor.state.selection.to;
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
@@ -217,8 +254,14 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       const reader = new FileReader();
       reader.addEventListener('load', () => {
         const src = reader.result as string;
-        this.editor?.chain().focus().setImage({ src, alt: file.name, title: file.name }).run();
+        this.editor
+          ?.chain()
+          .focus()
+          .setTextSelection(insertPosition)
+          .insertContent({ type: 'image', attrs: { src, alt: file.name, title: file.name } })
+          .run();
       });
+      reader.addEventListener('error', () => this.cdr.markForCheck());
       reader.readAsDataURL(file);
     });
 

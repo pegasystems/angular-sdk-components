@@ -2,26 +2,49 @@
   <label [ngClass]="{ 'label-required': required === true }" class="rich-text-label">{{ label }}</label>
 
   <div class="rich-text-editor" *ngIf="!readonly">
-    <div class="tiptap-container" [class.disabled]="disabled">
-      <div #editorEl class="tiptap-editor-area"></div>
+    <div
+      class="tiptap-container"
+      [class.disabled]="disabled"
+      [class.tiptap-container-invalid]="richText.invalid && (error || richText.touched || richText.dirty)"
+    >
+      <div #editorEl class="tiptap-editor-area" [attr.aria-invalid]="richText.invalid && (error || richText.touched || richText.dirty)"></div>
 
       <div class="tiptap-toolbar" *ngIf="!disabled" (mousedown)="$event.preventDefault()">
-        <select class="tiptap-block-select" [value]="currentBlock" (change)="setBlock($any($event.target).value)" aria-label="Text block type">
-          <option value="paragraph">Paragraph</option>
-          <option value="h1">Heading 1</option>
-          <option value="h2">Heading 2</option>
-          <option value="h3">Heading 3</option>
-        </select>
+        <mat-form-field class="tiptap-block-select" appearance="outline" subscriptSizing="dynamic">
+          <mat-select [value]="currentBlock" (selectionChange)="setBlock($event.value)" aria-label="Text block type">
+            <mat-option value="paragraph">Paragraph</mat-option>
+            <mat-option value="h1">Heading 1</mat-option>
+            <mat-option value="h2">Heading 2</mat-option>
+            <mat-option value="h3">Heading 3</mat-option>
+          </mat-select>
+        </mat-form-field>
 
         <span class="tiptap-sep"></span>
 
-        <button type="button" class="tiptap-btn" [class.active]="isActive('bold')" (click)="toggleBold()" title="Bold" aria-label="Bold">
-          <strong>B</strong>
-        </button>
-        <button type="button" class="tiptap-btn" [class.active]="isActive('italic')" (click)="toggleItalic()" title="Italic" aria-label="Italic">
-          <em>I</em>
+        <button
+          mat-icon-button
+          type="button"
+          class="tiptap-btn"
+          [class.active]="isActive('bold')"
+          (click)="toggleBold()"
+          title="Bold"
+          aria-label="Bold"
+        >
+          <mat-icon>format_bold</mat-icon>
         </button>
         <button
+          mat-icon-button
+          type="button"
+          class="tiptap-btn"
+          [class.active]="isActive('italic')"
+          (click)="toggleItalic()"
+          title="Italic"
+          aria-label="Italic"
+        >
+          <mat-icon>format_italic</mat-icon>
+        </button>
+        <button
+          mat-icon-button
           type="button"
           class="tiptap-btn"
           [class.active]="isActive('strike')"
@@ -29,12 +52,13 @@
           title="Strikethrough"
           aria-label="Strikethrough"
         >
-          <s>S</s>
+          <mat-icon>strikethrough_s</mat-icon>
         </button>
 
         <span class="tiptap-sep"></span>
 
         <button
+          mat-icon-button
           type="button"
           class="tiptap-btn"
           [class.active]="isActive('bulletList')"
@@ -42,9 +66,10 @@
           title="Bulleted list"
           aria-label="Bulleted list"
         >
-          • List
+          <mat-icon>format_list_bulleted</mat-icon>
         </button>
         <button
+          mat-icon-button
           type="button"
           class="tiptap-btn"
           [class.active]="isActive('orderedList')"
@@ -52,21 +77,35 @@
           title="Numbered list"
           aria-label="Numbered list"
         >
-          1. List
+          <mat-icon>format_list_numbered</mat-icon>
         </button>
-        <button type="button" class="tiptap-btn" (click)="outdent()" title="Decrease indent" aria-label="Decrease indent">⇤</button>
-        <button type="button" class="tiptap-btn" (click)="indent()" title="Increase indent" aria-label="Increase indent">⇥</button>
+        <button mat-icon-button type="button" class="tiptap-btn" (click)="outdent()" title="Decrease indent" aria-label="Decrease indent">
+          <mat-icon>format_indent_decrease</mat-icon>
+        </button>
+        <button mat-icon-button type="button" class="tiptap-btn" (click)="indent()" title="Increase indent" aria-label="Increase indent">
+          <mat-icon>format_indent_increase</mat-icon>
+        </button>
 
         <span class="tiptap-sep"></span>
 
-        <button type="button" class="tiptap-btn" [class.active]="isActive('link')" (click)="addLink()" title="Insert link" aria-label="Insert link">
-          Link
+        <button
+          mat-icon-button
+          type="button"
+          class="tiptap-btn"
+          [class.active]="isActive('link')"
+          (click)="addLink()"
+          title="Insert link"
+          aria-label="Insert link"
+        >
+          <mat-icon>link</mat-icon>
         </button>
-        <button type="button" class="tiptap-btn" (click)="addImage()" title="Insert image" aria-label="Insert image">Image</button>
+        <button mat-icon-button type="button" class="tiptap-btn" (click)="addImage()" title="Insert image" aria-label="Insert image">
+          <mat-icon>image</mat-icon>
+        </button>
       </div>
     </div>
 
-    <p *ngIf="richText.invalid" [ngClass]="'text-editor-error'">{{ info }}</p>
+    <p *ngIf="richText.invalid && (error || richText.touched || richText.dirty)" [ngClass]="'text-editor-error'">{{ info }}</p>
   </div>
 
   <div *ngIf="readonly">
