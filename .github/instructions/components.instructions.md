@@ -303,7 +303,7 @@ DSE components:
 - **MaterialVerticalTabs** — vertical tab layout
 - **Operator** — operator info display
 - **Pulse** — activity feed display
-- **RichTextEditor** — TinyMCE wrapper
+- **RichTextEditor** — Tiptap wrapper
 - **WssQuickCreate** — workspace quick-create UI
 
 ---
@@ -349,7 +349,7 @@ All components use **Angular Material** with **SCSS** for styling.
 | `@danielmoncada/angular-datetime-picker` | Extended datetime picker |
 | `ngx-currency` | Currency input formatting |
 | `mat-tel-input` | Phone number input with country codes |
-| `@tinymce/tinymce-angular` | Rich text editor |
+| `@tiptap/core` + `@tiptap/starter-kit` | Rich text editor |
 
 ### Theming
 - Light/dark modes controlled by `sdk-config.json` → `theme` property

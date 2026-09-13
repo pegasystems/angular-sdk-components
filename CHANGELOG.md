@@ -7,7 +7,8 @@
     * Github: [PR-548](https://github.com/pegasystems/angular-sdk-components/pull/548)
 *   **Added support for conditional Add, Edit, and Delete actions, including record-level conditions, in editable EmbeddedData table.**
     * Github: [PR-553](https://github.com/pegasystems/angular-sdk-components/pull/553)
-
+*   **Replaced the TinyMCE dependency with Tiptap for rich text editing capabilities.**
+    * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
