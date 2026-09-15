@@ -39,12 +39,34 @@ function getDataReferenceInfo(pConnect, dataRelationshipContext, contextPage) {
     return {};
   }
 
-  const contextProperty = getContextProperty(pageReference, dataRelationshipContext);
-  const fieldMetadata = pConnect.getFieldMetadata(contextProperty);
+  let contextProperty = getContextProperty(pageReference, dataRelationshipContext);
+  let fieldMetadata = pConnect.getFieldMetadata(contextProperty);
+  let resolvedDataRelationshipContext = dataRelationshipContext;
+
+  if (!fieldMetadata?.datasource && contextPage) {
+    const configProps = pConnect.resolveConfigProps(pConnect.getConfigProps());
+    const matchingField = Object.keys(contextPage).find(fieldName => {
+      const fieldValue = contextPage[fieldName];
+      const metadata = pConnect.getFieldMetadata(fieldName);
+      return (
+        fieldValue &&
+        typeof fieldValue === 'object' &&
+        metadata?.datasource &&
+        metadata.pageClass === configProps.targetObjectClass &&
+        Object.values(fieldValue).includes(configProps.value)
+      );
+    });
+
+    if (matchingField) {
+      contextProperty = matchingField;
+      fieldMetadata = pConnect.getFieldMetadata(contextProperty);
+      resolvedDataRelationshipContext = contextProperty;
+    }
+  }
 
   if (fieldMetadata?.datasource) {
     const { name, parameters } = fieldMetadata.datasource;
-    const payload = buildPayload(parameters, pConnect, contextPage, dataRelationshipContext);
+    const payload = buildPayload(parameters, pConnect, contextPage, resolvedDataRelationshipContext);
     return { dataContext: name, dataContextParameters: payload };
   }
 

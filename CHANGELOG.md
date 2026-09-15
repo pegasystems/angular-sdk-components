@@ -9,6 +9,8 @@
     * Github: [PR-553](https://github.com/pegasystems/angular-sdk-components/pull/553)
 *   **Replaced the TinyMCE dependency with Tiptap for rich text editing capabilities.**
     * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
+*   **Fixed DataReference field value rendering in the Details template.**
+    * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
@@ -20,7 +22,7 @@
 *   **Fixed the issue where filtering did not work on empty tables and corrected the filter pop-up styling.**
       * Github: [PR-543](https://github.com/pegasystems/angular-sdk-components/pull/543)
 *   **Fixed DateTime component theme colors.**
-    * Github: [PR-561](https://github.com/pegasystems/angular-sdk-components/pull/561)
+      * Github: [PR-561](https://github.com/pegasystems/angular-sdk-components/pull/561)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 

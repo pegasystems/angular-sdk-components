@@ -98,11 +98,14 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
           };
         }, {});
       }
-      this.pConn$.getActionsApi().showData('pyDetails', lookUpDataPage, {
-        ...this.payload
-      });
+      if (lookUpDataPage) {
+        this.pConn$.getActionsApi().showData('pyDetails', lookUpDataPage, {
+          ...this.payload
+        });
+      }
+      return;
     }
-    if ((this.referenceType && this.referenceType.toUpperCase() === 'DATA') || this.shouldTreatAsDataReference) {
+    if (this.dataViewName && ((this.referenceType && this.referenceType.toUpperCase() === 'DATA') || this.shouldTreatAsDataReference)) {
       this.pConn$.getActionsApi().showData('pyDetails', this.dataViewName, {
         ...this.payload
       });
@@ -153,7 +156,8 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
   }
 
   private buildDataPayload() {
-    const { dataRelationshipContext = null, contextPage } = this.configProps$;
+    const { dataRelationshipContext: configuredDataRelationshipContext, contextPage } = this.configProps$;
+    const dataRelationshipContext = configuredDataRelationshipContext ?? null;
     const {
       RESOURCE_TYPES: { DATA }
     } = PCore.getConstants();

@@ -14,27 +14,36 @@
         <div class="psdk-details-fields-label">
           {{ field.config.label }}
         </div>
-        <div [ngSwitch]="field.type.toLowerCase()" class="psdk-csf-primary-field-value">
-          <span *ngSwitchCase="'textinput'" class="psdk-details-text-style">{{ _getValue(field.config.value) }}</span>
-          <span *ngSwitchCase="'status'" class="psdk-details-status-style">{{ _getValue(field.config.value) }}</span>
-          <a *ngSwitchCase="'phone'" class="psdk-primary-color" as="a" href="tel: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
-          <a *ngSwitchCase="'email'" class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
-          <span *ngSwitchCase="'date'" class="psdk-details-text-style">{{ _formatDate(field.config.value, field.type) }}</span>
-          <span *ngSwitchCase="'decimal'" class="psdk-details-text-style">{{ _formatDecimal(field) }}</span>
-          <span *ngSwitchCase="'currency'" class="psdk-details-text-style">{{ _formatCurrency(field) }}</span>
-          <span *ngSwitchCase="'richtext'" class="psdk-details-text-style" [innerHTML]="_getValue(field.config.value)"></span>
-          <ng-container *ngSwitchCase="'scalarlist'">
-            <span *ngIf="field.config.componentType?.toLowerCase() === 'decimal'" class="psdk-details-text-style">{{ _formatDecimal(field) }}</span>
-            <span *ngIf="field.config.componentType?.toLowerCase() === 'currency'" class="psdk-details-text-style">{{ _formatCurrency(field) }}</span>
-            <span
-              *ngIf="field.config.componentType?.toLowerCase() !== 'decimal' && field.config.componentType?.toLowerCase() !== 'currency'"
-              class="psdk-details-text-style"
-              >{{ _getValue(field.config.value) }}</span
-            >
-          </ng-container>
-          <span *ngSwitchCase="'caseoperator'"></span>
-          <span *ngSwitchDefault>{{ _getValue(field.config.value, field) }}</span>
-        </div>
+        <ng-container *ngIf="field.type.toLowerCase() === 'objectreference'; else standardFieldValue">
+          <div>
+            <component-mapper name="ObjectReference" [props]="{ pConn$: field.pConn, isDetails$: true }"></component-mapper>
+          </div>
+        </ng-container>
+        <ng-template #standardFieldValue>
+          <div [ngSwitch]="field.type.toLowerCase()" class="psdk-csf-primary-field-value">
+            <span *ngSwitchCase="'textinput'" class="psdk-details-text-style">{{ _getValue(field.config.value) }}</span>
+            <span *ngSwitchCase="'status'" class="psdk-details-status-style">{{ _getValue(field.config.value) }}</span>
+            <a *ngSwitchCase="'phone'" class="psdk-primary-color" as="a" href="tel: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
+            <a *ngSwitchCase="'email'" class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ _getValue(field.config.value) }}</a>
+            <span *ngSwitchCase="'date'" class="psdk-details-text-style">{{ _formatDate(field.config.value, field.type) }}</span>
+            <span *ngSwitchCase="'decimal'" class="psdk-details-text-style">{{ _formatDecimal(field) }}</span>
+            <span *ngSwitchCase="'currency'" class="psdk-details-text-style">{{ _formatCurrency(field) }}</span>
+            <span *ngSwitchCase="'richtext'" class="psdk-details-text-style" [innerHTML]="_getValue(field.config.value)"></span>
+            <ng-container *ngSwitchCase="'scalarlist'">
+              <span *ngIf="field.config.componentType?.toLowerCase() === 'decimal'" class="psdk-details-text-style">{{ _formatDecimal(field) }}</span>
+              <span *ngIf="field.config.componentType?.toLowerCase() === 'currency'" class="psdk-details-text-style">{{
+                _formatCurrency(field)
+              }}</span>
+              <span
+                *ngIf="field.config.componentType?.toLowerCase() !== 'decimal' && field.config.componentType?.toLowerCase() !== 'currency'"
+                class="psdk-details-text-style"
+                >{{ _getValue(field.config.value) }}</span
+              >
+            </ng-container>
+            <span *ngSwitchCase="'caseoperator'"></span>
+            <span *ngSwitchDefault>{{ _getValue(field.config.value, field) }}</span>
+          </div>
+        </ng-template>
       </div>
     </ng-template>
   </div>
