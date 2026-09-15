@@ -6,6 +6,7 @@ import { MatTelInput } from 'mat-tel-input';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -18,7 +19,7 @@ interface PhoneProps extends PConnFieldProps {
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatTelInput, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatTelInput, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent extends FieldBase {
   configProps$: PhoneProps;

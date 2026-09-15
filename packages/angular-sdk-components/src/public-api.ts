@@ -131,6 +131,7 @@ export * from './lib/_components/designSystemExtension/pulse/pulse.component';
 export * from './lib/_components/designSystemExtension/rich-text-editor/rich-text-editor.component';
 
 export * from './lib/_directives/thousand-seperator.directive';
+export * from './lib/_directives/field-warning.directive';
 
 export * from './lib/_services/banner.service';
 export * from './lib/_services/case.service';

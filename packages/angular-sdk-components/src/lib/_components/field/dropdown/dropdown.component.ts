@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import isEqual from 'fast-deep-equal';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -66,7 +67,15 @@ interface DropdownProps extends PConnFieldProps {
   selector: 'app-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    FieldWarningDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
   @Output() onRecordChange: EventEmitter<any> = new EventEmitter();

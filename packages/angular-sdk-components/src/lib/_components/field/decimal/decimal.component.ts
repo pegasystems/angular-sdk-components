@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
@@ -31,6 +32,7 @@ interface DecimalProps extends PConnFieldProps {
     MatFormFieldModule,
     MatInputModule,
     NgxCurrencyDirective,
+    FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ]
 })

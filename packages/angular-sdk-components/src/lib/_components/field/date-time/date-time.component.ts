@@ -9,6 +9,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angul
 import dayjs from 'dayjs';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -31,6 +32,7 @@ interface DateTimeProps extends PConnFieldProps {
     MatDatepickerModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ]
 })
