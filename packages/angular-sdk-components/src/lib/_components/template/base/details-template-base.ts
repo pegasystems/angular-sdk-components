@@ -75,7 +75,7 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
     fields?.forEach(field => {
       const thePConn = field.getPConnect();
       const theCompType = thePConn.getComponentName().toLowerCase();
-      if (theCompType === 'reference' || theCompType === 'group') {
+      if (theCompType === 'reference' || theCompType === 'group' || theCompType === 'objectreference') {
         const configProps = thePConn.getConfigProps();
         configProps.readOnly = true;
         configProps.displayMode = 'DISPLAY_ONLY';
@@ -97,6 +97,7 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
         const theViewCont = PCore.createPConnect(viewContConfig);
         processedFields.push({
           type: theCompType,
+          config: thePConn.getConfigProps(),
           pConn: theViewCont?.getPConnect()
         });
       } else {

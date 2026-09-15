@@ -14,7 +14,8 @@ import { getDataRelationshipContextFromKey } from '../../../_helpers/objectRefer
 export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() dataRelationshipContext?: any;
+  @Input() dataRelationshipContext: any = null;
+  @Input() isDetails$ = false;
 
   angularPConnectData: AngularPConnectData = {};
   configProps: any;
@@ -66,9 +67,8 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const hideLabel = this.configProps.hideLabel;
     // const additionalFields = this.configProps.additionalFields;
     const displayAs = this.configProps.displayAs ?? 'readonly';
-    const dataRelationshipContext = (rawViewMetadata?.config as any)?.displayField
-      ? getDataRelationshipContextFromKey((rawViewMetadata?.config as any)?.displayField)
-      : this.dataRelationshipContext;
+    const dataRelationshipContext =
+      this.dataRelationshipContext ?? getDataRelationshipContextFromKey((rawViewMetadata?.config as any)?.displayField ?? '');
     if (propsToUse.showLabel === false) {
       propsToUse.label = '';
     }

@@ -174,13 +174,15 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
           const latestItem = items[key];
           const rootView = latestItem.view;
           const { context, name: viewName } = rootView.config;
+          const target = key.substring(0, key.lastIndexOf('_'));
           const config: any = { meta: rootView };
           config.options = {
             context: latestItem.context,
             pageReference: context || this.pConn$.getPageReference(),
             containerName: this.pConn$.getContainerName(),
             containerItemName: key,
-            hasForm: viewName === CREATE_DETAILS_VIEW_NAME
+            hasForm: viewName === CREATE_DETAILS_VIEW_NAME,
+            target
           };
           const configObject = PCore.createPConnect(config);
 

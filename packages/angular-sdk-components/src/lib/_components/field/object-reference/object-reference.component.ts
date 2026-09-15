@@ -46,6 +46,7 @@ type RenderMode = 'singleReferenceReadonly' | 'multiReferenceReadonly' | 'semant
 export class ObjectReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
+  @Input() isDetails$ = false;
 
   angularPConnectData: AngularPConnectData = {};
   configProps: ObjectReferenceProps;
@@ -56,6 +57,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
   newComponentName: string;
   newPconn: typeof PConnect;
   rawViewMetadata: ComponentMetadataConfig | undefined;
+  dataRelationshipContext: string | null = null;
 
   // Rendering mode
   renderMode: RenderMode = 'dynamicComponent';
@@ -143,6 +145,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
 
     this.isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
     this.type = rawConfig?.componentType;
+    this.dataRelationshipContext = rawConfig?.displayField ? getDataRelationshipContextFromKey(rawConfig.displayField) : null;
     this.canBeChangedInReviewMode = editableInReview && ['AutoComplete', 'Dropdown'].includes(this.type);
 
     if (this.handleReadOnlyMode(rawConfig, mode)) {
