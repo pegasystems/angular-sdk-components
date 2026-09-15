@@ -207,6 +207,13 @@ export class AttachmentComponent implements OnInit, OnDestroy {
           isArrayDeepMerge: false,
           removePropertyFromChangedList: true
         });
+      } else if (this.filesWithError.length === 0) {
+        const hasActiveUpload = this.files.some(file => file.inProgress);
+        if (!hasActiveUpload) {
+          this.files = transformAttachments(this.attachments);
+          this.attachmentCount = this.attachments.length;
+          this.filesWithError = [];
+        }
       }
     }
   }

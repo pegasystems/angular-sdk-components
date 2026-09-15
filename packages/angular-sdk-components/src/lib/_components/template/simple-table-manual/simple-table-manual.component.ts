@@ -39,6 +39,7 @@ interface SimpleTableManualProps {
   allowActions?: any;
   allowTableEdit?: boolean;
   allowRowDelete?: any;
+  allowRowEdit?: any;
   editMode?: string;
   addAndEditRowsWithin?: any;
   viewForAddAndEditModal?: any;
@@ -57,6 +58,12 @@ class Group {
   get visible(): boolean {
     return !this.parent || (this.parent.visible && this.parent.expanded);
   }
+}
+
+interface RowActions {
+  canEdit: boolean;
+  canDelete: boolean;
+  hasAnyAction: boolean;
 }
 
 @Component({
@@ -168,6 +175,12 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   targetClassLabel: string;
   localizedVal = PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'SimpleTable';
+  hideEditRow: any;
+  hideDeleteRow: boolean;
+  showEditButton: boolean;
+  showDeleteButton: boolean;
+  showActionColumn: boolean;
+  rowActions: RowActions[] = [];
   constructor(
     private angularPConnect: AngularPConnectService,
     public utils: Utils,
@@ -238,7 +251,6 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       presets,
       allowActions,
       allowTableEdit,
-      allowRowDelete,
       label: labelProp,
       propertyLabel,
       fieldMetadata,
@@ -305,9 +317,15 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.editableMode = renderMode === 'Editable';
     const isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
     this.showAddRowButton = !this.readOnlyMode && !simpleTableManualProps.hideAddRow;
+    this.hideEditRow = simpleTableManualProps.hideEditRow;
+    this.hideDeleteRow = simpleTableManualProps.hideDeleteRow;
     this.allowEditingInModal =
       (editMode ? editMode === 'modal' : addAndEditRowsWithin === 'modal') && !(renderMode === 'ReadOnly' || isDisplayModeEnabled);
-    const showDeleteButton = this.editableMode && !simpleTableManualProps.hideDeleteRow && evaluateAllowRowAction(allowRowDelete, this.rowData);
+    this.showEditButton = this.allowEditingInModal && !this.hideEditRow;
+    this.showDeleteButton = this.editableMode && !this.hideDeleteRow;
+    this.showActionColumn = this.showEditButton || this.showDeleteButton;
+    const { allowRowEdit, allowRowDelete } = this.pConn$.getComponentConfig?.() ?? {};
+    this.rowActions = this.referenceList.map(row => this.getRowActions(row, allowRowEdit, allowRowDelete));
     this.defaultView = editModeConfig ? editModeConfig.defaultView : viewForAddAndEditModal;
     this.bUseSeparateViewForEdit = editModeConfig ? editModeConfig.useSeparateViewForEdit : useSeparateViewForEdit;
     this.editView = editModeConfig ? editModeConfig.editView : viewForEditModal;
@@ -326,7 +344,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  Nebula does). It will also have the "label", and "meta" contains the original,
     //  unchanged config info. For now, much of the info here is carried over from
     //  Nebula and we may not end up using it all.
-    this.fieldDefs = buildFieldsForTable(rawFields, this.pConn$, showDeleteButton, {
+    this.fieldDefs = buildFieldsForTable(rawFields, this.pConn$, this.showActionColumn, {
       primaryFieldsViewIndex,
       fields: resolvedFields
     });
@@ -364,7 +382,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     }
 
     // for edit and adding rows in modal view and to generate readonly list
-    if (!isEqual(this.prevReferenceList, this.referenceList) && (this.readOnlyMode || this.allowEditingInModal)) {
+    if (!isEqual(this.prevReferenceList, this.referenceList) && (this.readOnlyMode || this.allowEditingInModal || this.hideEditRow)) {
       this.generateRowsData();
     }
 
@@ -391,13 +409,19 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   initializeDefaultPageInstructions() {
+    if (!this.isInitialized) {
+      return;
+    }
+
+    this.isInitialized = false;
+
     if (this.allowEditingInModal) {
       this.pConn$.getListActions().initDefaultPageInstructions(
         this.pConn$.getReferenceList(),
-        this.fieldDefs.filter(item => item.name).map(item => item.name)
+        // Temporary filter for attachments to align with constellation payload behavior.
+        this.fieldDefs.filter(item => item.name && item.meta?.type !== 'Attachment').map(item => item.name)
       );
-    } else if (this.isInitialized) {
-      this.isInitialized = false;
+    } else {
       // @ts-ignore - An argument for 'propertyNames' was not provided.
       this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
     }
@@ -406,6 +430,31 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   getResultsText() {
     const recordsCount = this.readOnlyMode ? this.rowData?.data.length : this.referenceList?.length;
     return `${recordsCount || 0} result${recordsCount > 1 ? 's' : ''}`;
+  }
+
+  private getRowActions(row: any, allowRowEdit: any, allowRowDelete: any): RowActions {
+    const canEdit = this.showEditButton && evaluateAllowRowAction(allowRowEdit, row);
+    const canDelete = this.showDeleteButton && this.isDeleteAllowedForRow(row, allowRowDelete);
+
+    return {
+      canEdit,
+      canDelete,
+      hasAnyAction: canEdit || canDelete
+    };
+  }
+
+  private isDeleteAllowedForRow(row: any, allowRowDelete: any): boolean {
+    if (allowRowDelete === undefined || allowRowDelete === true) return true;
+    if (typeof allowRowDelete === 'string' && allowRowDelete.startsWith('@E ')) {
+      try {
+        const expression = allowRowDelete.replace('@E ', '');
+        // @ts-expect-error - options param is optional per corejs docs
+        return PCore.getExpressionEngine().evaluate(expression, row);
+      } catch {
+        return true;
+      }
+    }
+    return false;
   }
 
   sortCompare(a, b): number {
@@ -927,9 +976,13 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     // See what data (if any) we have to display
     const refKeys: string[] = inColKey.split('.');
     let valBuilder = inRowData;
+    let index = 0;
+
     for (const key of refKeys) {
-      valBuilder = valBuilder[key] ? valBuilder[key] : valBuilder;
+      index += 1;
+      valBuilder = valBuilder[key] !== undefined || index === refKeys.length ? valBuilder[key] : valBuilder;
     }
+
     return valBuilder;
   }
 
@@ -986,7 +1039,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   editRecord(data, index) {
-    if (data) {
+    if (data && Number.isInteger(index) && index >= 0 && index < this.referenceList.length) {
       const viewForEdit = this.bUseSeparateViewForEdit ? this.editView : this.defaultView;
       this.pConn$
         .getActionsApi()
@@ -1004,14 +1057,19 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   deleteRecord(index) {
-    this.pConn$.getListActions().deleteEntry(index);
+    if (Number.isInteger(index) && index >= 0 && index < this.referenceList.length) {
+      this.pConn$.getListActions().deleteEntry(index);
+    }
   }
 
   buildElementsForTable() {
     const context = this.pConn$.getContextName();
+    const { allowRowEdit } = this.pConn$.getComponentConfig?.() ?? {};
     const eleData: any = [];
     this.referenceList.forEach((element, index) => {
+      const isRowEditable = evaluateAllowRowAction(allowRowEdit, element);
       const data: any = [];
+      data.__originalIndex = index;
       this.rawFields?.forEach(item => {
         if (!item?.config?.hide) {
           item = {
@@ -1019,7 +1077,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
             config: {
               ...item.config,
               label: '',
-              displayMode: this.readOnlyMode || this.allowEditingInModal ? 'DISPLAY_ONLY' : undefined
+              displayMode: this.readOnlyMode || this.allowEditingInModal || this.hideEditRow || !isRowEditable ? 'DISPLAY_ONLY' : undefined
             }
           };
           const referenceListData = getReferenceList(this.pConn$);
