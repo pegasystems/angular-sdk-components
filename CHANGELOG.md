@@ -3,6 +3,8 @@
 ### **Features**
 *   **Added support for instructions in the DefaultForm template.**
     * Github: [PR-548](https://github.com/pegasystems/angular-sdk-components/pull/548)
+*   **Added support for contextual warning messages in field components.**
+    * Github: [PR-559](https://github.com/pegasystems/angular-sdk-components/pull/559)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
