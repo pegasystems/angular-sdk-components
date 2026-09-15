@@ -20,61 +20,67 @@
     width: auto;
   }
 
-  .mat-datepicker-content,
-  .time-container {
-    box-shadow:
-      0px 2px 4px -1px rgba(0, 0, 0, 0.2),
-      0px 4px 5px 0px rgba(0, 0, 0, 0.14),
-      0px 1px 10px 0px rgba(0, 0, 0, 0.12);
-    display: block;
-    border-radius: 4px;
-    background-color: var(--mat-datepicker-calendar-container-background-color);
-    color: var(--mat-datepicker-calendar-container-text-color);
+  .owl-dt-container {
+    background-color: var(--mat-sys-surface-container);
+    color: var(--mat-sys-on-surface);
   }
 
-  .mat-calendar-body-cell-content {
-    color: var(--mat-datepicker-calendar-date-text-color);
-    border-color: var(--mat-datepicker-calendar-date-outline-color);
+  .owl-dt-container-row,
+  .owl-dt-container-info .owl-dt-container-range:last-child {
+    border-color: var(--mat-sys-outline-variant);
   }
 
-  .mat-calendar-body-selected {
-    background-color: var(--mat-datepicker-calendar-date-selected-state-background-color);
-    color: var(--mat-datepicker-calendar-date-selected-state-text-color);
+  .owl-dt-calendar-control,
+  .owl-dt-calendar-table .owl-dt-calendar-cell {
+    color: var(--mat-sys-on-surface);
   }
 
-  .mat-calendar-body-cell-content {
-    border: none !important;
+  .owl-dt-calendar-table .owl-dt-calendar-header,
+  .owl-dt-calendar-table .owl-dt-calendar-cell-disabled > .owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-selected) {
+    color: var(--mat-sys-on-surface-variant);
   }
 
-  .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
-    > .mat-calendar-body-cell-content:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
-    background-color: var(--mat-datepicker-calendar-date-hover-state-background-color);
+  .owl-dt-calendar-table .owl-dt-calendar-header .owl-dt-calendar-table-divider::after {
+    background-color: var(--mat-sys-outline-variant);
   }
 
-  .mat-calendar-arrow {
-    fill: var(--mat-datepicker-calendar-period-button-icon-color);
+  .owl-dt-calendar-table .owl-dt-calendar-cell-today:not(.owl-dt-calendar-cell-selected) {
+    border-color: var(--mat-sys-outline);
   }
 
-  .mat-calendar-table-header th {
-    text-align: center;
-    padding: 0 0 8px 0;
-    color: var(--mat-datepicker-calendar-header-text-color);
-    font-size: var(--mat-datepicker-calendar-header-text-size);
-    font-weight: var(--mat-datepicker-calendar-header-text-weight);
+  .owl-dt-calendar-table .owl-dt-calendar-cell-selected {
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
   }
 
-  .mat-datepicker-content .mat-calendar-previous-button,
-  .mat-datepicker-content .mat-calendar-next-button {
-    color: var(--mat-datepicker-calendar-navigation-button-icon-color);
+  .owl-dt-calendar-table .owl-dt-calendar-cell-active:focus > .owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-selected),
+  .owl-dt-calendar-table :not(.owl-dt-calendar-cell-disabled):hover > .owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-selected),
+  .owl-dt-calendar-control .owl-dt-calendar-control-content .owl-dt-calendar-control-button:hover,
+  .owl-dt-control-period-button:hover > .owl-dt-control-button-content,
+  .owl-dt-container-control-button:hover .owl-dt-control-button-content,
+  .owl-dt-control:focus > .owl-dt-control-content {
+    background-color: var(--mat-sys-surface-container-high);
   }
 
-  .mat-calendar-table-header-divider::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -8px;
-    right: -8px;
-    height: 1px;
-    background: var(--mat-datepicker-calendar-header-divider-color);
+  .owl-dt-timer-content .owl-dt-timer-input {
+    border-color: var(--mat-sys-outline);
+    background-color: var(--mat-sys-surface-container-highest);
+    color: var(--mat-sys-on-surface);
+  }
+
+  .owl-dt-container-buttons,
+  .owl-dt-container-info .owl-dt-container-info-active,
+  .owl-dt-timer-hour12 {
+    color: var(--mat-sys-primary);
+  }
+
+  .owl-dt-control-arrow-button[disabled] {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .owl-dt-timer-hour12 .owl-dt-timer-hour12-box:focus .owl-dt-control-button-content,
+  .owl-dt-timer-hour12 .owl-dt-timer-hour12-box:hover .owl-dt-control-button-content {
+    background-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary);
   }
 }
