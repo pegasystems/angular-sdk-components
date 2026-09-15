@@ -87,7 +87,7 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
     }
 
     if (this.editor && changes['value'] && this.value !== this.editor.getHTML()) {
-      this.editor.commands.setContent(this.value ?? '', false);
+      this.editor.commands.setContent(this.value ?? '', { emitUpdate: false });
     }
     if (this.editor && changes['disabled']) {
       this.editor.setEditable(!this.disabled);

@@ -5,6 +5,7 @@
 // localSdkComponentMap is the JSON object where we'll store the components that are
 // found locally. If not found here, we'll look in the Pega-provided component map
 
+// prettier-ignore
 const localSdkComponentMap = {
   /* map end - DO NOT REMOVE */
 };
