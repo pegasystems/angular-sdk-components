@@ -112,7 +112,7 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
         ];
 
         this.bShowPopover$ = true;
-        this.cdRef.detectChanges();
+        this.cdRef.markForCheck();
       } else {
         console.log(
           `Operator: PCore.getUserApi().getOperatorDetails(${this.id$}); returned empty res.data.pyOperatorInfo.pyUserName - adding default`
@@ -144,6 +144,7 @@ export class OperatorComponent implements OnInit, OnChanges, OnDestroy {
             value: fillerString
           }
         ];
+        this.cdRef.markForCheck();
       }
     });
   }

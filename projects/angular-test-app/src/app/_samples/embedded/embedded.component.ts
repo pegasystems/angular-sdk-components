@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,7 +43,7 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
 
   constructor(
     private psservice: ProgressSpinnerService,
-    private ngZone: NgZone
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -77,6 +77,7 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
     this.bLoggedIn$ = true;
     // start the portal
     this.startMashup();
+    this.cdRef.markForCheck();
   }
 
   startMashup() {
@@ -107,14 +108,14 @@ export class EmbeddedComponent implements OnInit, OnDestroy {
     // Change to reflect new use of arg in the callback:
     const { props } = renderObj;
 
-    this.ngZone.run(() => {
-      this.pConn$ = props.getPConnect();
-      this.bHasPConnect$ = true;
-      this.showHideProgress(false);
-    });
+    this.pConn$ = props.getPConnect();
+    this.bHasPConnect$ = true;
+    this.showHideProgress(false);
+    this.cdRef.markForCheck();
   }
 
   showHideProgress(bShow: boolean) {
     this.isProgress$ = bShow;
+    this.cdRef.markForCheck();
   }
 }

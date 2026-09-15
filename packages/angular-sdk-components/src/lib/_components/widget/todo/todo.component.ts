@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
@@ -97,7 +97,8 @@ export class TodoComponent implements OnInit, OnDestroy {
   constructor(
     private psService: ProgressSpinnerService,
     private erService: ErrorMessagesService,
-    private utils: Utils
+    private utils: Utils,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -167,6 +168,7 @@ export class TodoComponent implements OnInit, OnDestroy {
   deferLoadWorklistItems(responseData) {
     this.count = responseData.totalCount;
     this.arAssignments$ = responseData.data;
+    this.cdRef.markForCheck();
   }
 
   getID(assignment: any) {
@@ -221,6 +223,7 @@ export class TodoComponent implements OnInit, OnDestroy {
       fetchMyWorkList(this.myWorkList$.datapage, this.pConn$.getComponentConfig()?.myWorkList.fields, this.count, false, this.context$).then(
         response => {
           this.arAssignments$ = response.data;
+          this.cdRef.markForCheck();
         }
       );
     } else {
@@ -268,6 +271,7 @@ export class TodoComponent implements OnInit, OnDestroy {
       .openAssignment(id, classname, options)
       .then(() => {
         this.psService.sendMessage(false);
+        this.cdRef.markForCheck();
         if (this.bLogging) {
           console.log(`openAssignment completed`);
         }
@@ -275,6 +279,7 @@ export class TodoComponent implements OnInit, OnDestroy {
       .catch(() => {
         this.psService.sendMessage(false);
         this.erService.sendMessage('show', 'Failed to open');
+        this.cdRef.markForCheck();
       });
   }
 }

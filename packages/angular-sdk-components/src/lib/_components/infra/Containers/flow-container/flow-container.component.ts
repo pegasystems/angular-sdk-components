@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, forwardRef, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -75,7 +75,6 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private fb: FormBuilder,
-    private ngZone: NgZone,
     private utils: Utils
   ) {
     super(injector);
@@ -123,6 +122,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
       'clearBannerMessages',
       () => {
         this.banners = [];
+        this.cdRef.markForCheck();
       },
       'clearBannerMessages'
     );
@@ -188,10 +188,9 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
   }
 
   showPageMessages(completeProps: FlowContainerProps) {
-    this.ngZone.run(() => {
-      const pageMessages = completeProps.pageMessages;
-      this.banners = [{ messages: pageMessages?.map(msg => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
-    });
+    const pageMessages = completeProps.pageMessages;
+    this.banners = [{ messages: pageMessages?.map(msg => this.localizedVal(msg.message, 'Messages')), variant: 'urgent' }];
+    this.cdRef.markForCheck();
   }
 
   getTodoVisibilty() {
@@ -384,8 +383,7 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     const { CASE_INFO: CASE_CONSTS } = PCore.getConstants();
 
     setTimeout(() => {
-      this.ngZone.run(() => {
-        /*
+      /*
           *** renove this commmented out code when React/WC is updated
           *** this code is replace with the call to "getToDoAssigments" function below
 
@@ -403,32 +401,32 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
           const caseActions = localPConn.getValue(CASE_CONSTS.CASE_INFO_ACTIONS);
           */
 
-        const todoAssignments = getToDoAssignments(this.pConn$);
+      const todoAssignments = getToDoAssignments(this.pConn$);
 
-        if (todoAssignments && todoAssignments.length > 0) {
-          this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
-          this.todo_datasource$ = { source: todoAssignments };
-        }
+      if (todoAssignments && todoAssignments.length > 0) {
+        this.todo_caseInfoID$ = this.pConn$.getValue(CASE_CONSTS.CASE_INFO_ID);
+        this.todo_datasource$ = { source: todoAssignments };
+      }
 
-        /* remove this commented out code when update React/WC */
-        // let kid = this.pConn$.getChildren()[0];
+      /* remove this commented out code when update React/WC */
+      // let kid = this.pConn$.getChildren()[0];
 
-        // kid.getPConnect() can be a Reference component. So normalize it just in case
-        //        let todoKid = kid.getPConnect().getChildren()[0];
+      // kid.getPConnect() can be a Reference component. So normalize it just in case
+      //        let todoKid = kid.getPConnect().getChildren()[0];
 
-        //        this.todo_pConn$ = todoKid.getPConnect();
+      //        this.todo_pConn$ = todoKid.getPConnect();
 
-        /* code change here to note for React/WC  */
-        // todo now needs pConn to open the work item on click "go"
-        this.todo_pConn$ = this.pConn$;
+      /* code change here to note for React/WC  */
+      // todo now needs pConn to open the work item on click "go"
+      this.todo_pConn$ = this.pConn$;
 
-        // still needs the context of the original work item
-        this.todo_context$ = localPConn.getContextName();
+      // still needs the context of the original work item
+      this.todo_context$ = localPConn.getContextName();
 
-        this.todo_showTodo$ = true;
+      this.todo_showTodo$ = true;
 
-        this.psService.sendMessage(false);
-      });
+      this.psService.sendMessage(false);
+      this.cdRef.markForCheck();
     });
   }
 
@@ -533,24 +531,19 @@ export class FlowContainerComponent extends FlowContainerBaseComponent implement
     const normalizedConfigObjectAsPConnect = normalizedConfigObject.getComponent();
 
     // makes sure Angular tracks these changes
-    this.ngZone.run(() => {
-      this.buildName$ = this.getBuildName();
-      // what comes back now in configObject is the children of the flowContainer
+    this.buildName$ = this.getBuildName();
+    // what comes back now in configObject is the children of the flowContainer
 
-      this.arChildren$ = [];
-      this.arChildren$.push(normalizedConfigObjectAsPConnect);
+    this.arChildren$ = [];
+    this.arChildren$.push(normalizedConfigObjectAsPConnect);
 
-      this.psService.sendMessage(false);
+    this.psService.sendMessage(false);
 
-      const oWorkItem = configObject.getPConnect();
-      const oWorkData: any = oWorkItem.getDataObject();
+    const oWorkItem = configObject.getPConnect();
+    const oWorkData: any = oWorkItem.getDataObject();
 
-      this.containerName$ = this.localizedVal(
-        this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0]?.name,
-        undefined,
-        this.localeReference
-      );
-    });
+    this.containerName$ = this.localizedVal(this.getActiveViewLabel() || oWorkData.caseInfo.assignments?.[0]?.name, undefined, this.localeReference);
+    this.cdRef.markForCheck();
   }
 
   getBuildName(): string {
