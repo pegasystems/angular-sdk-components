@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -52,7 +52,6 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
-    private ngZone: NgZone,
     private utils: Utils
   ) {}
 
@@ -102,30 +101,29 @@ export class WssNavBarComponent implements OnInit, OnDestroy {
   }
 
   initComponent() {
-    this.ngZone.run(() => {
-      this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-      this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
+    this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+    this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
 
-      // Then, continue on with other initialization
+    // Then, continue on with other initialization
 
-      // making a copy, so can add info
-      this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
+    // making a copy, so can add info
+    this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
 
-      this.navPages$.forEach(page => {
-        page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
-      });
-
-      this.actionsAPI = this.pConn$.getActionsApi();
-      this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
-      this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
-      this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as WssNavBarProps;
-      this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
-
-      // const oData = this.pConn$.getDataObject();
-
-      this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
-      this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
+    this.navPages$.forEach(page => {
+      page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
     });
+
+    this.actionsAPI = this.pConn$.getActionsApi();
+    this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
+    this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as WssNavBarProps;
+    this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
+
+    // const oData = this.pConn$.getDataObject();
+
+    this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
+    this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
+    this.cdRef.markForCheck();
   }
 
   navPanelButtonClick(oPageData: any) {

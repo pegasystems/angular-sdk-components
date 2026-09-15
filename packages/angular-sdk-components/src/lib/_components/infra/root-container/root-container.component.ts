@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -56,7 +56,7 @@ export class RootContainerComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
-    private ngZone: NgZone
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -137,18 +137,16 @@ export class RootContainerComponent implements OnInit, OnDestroy {
           });
 
           setTimeout(() => {
-            // makes sure Angular tracks these changes
-            this.ngZone.run(() => {
-              const theNewPConn = rootObject.getPConnect();
-              // update ComponentName$ before we update pConn$ to make sure they're in sync
-              //  when rendering...
-              this.componentName$ = theNewPConn.getComponentName();
+            const theNewPConn = rootObject.getPConnect();
+            // update ComponentName$ before we update pConn$ to make sure they're in sync
+            //  when rendering...
+            this.componentName$ = theNewPConn.getComponentName();
 
-              this.pConn$ = theNewPConn;
-              // this.pConn$ = rootObject.getPConnect();
+            this.pConn$ = theNewPConn;
+            // this.pConn$ = rootObject.getPConnect();
 
-              console.log(`RootContainer updated pConn$ to be: ${this.componentName$}`);
-            });
+            console.log(`RootContainer updated pConn$ to be: ${this.componentName$}`);
+            this.cdRef.markForCheck();
           });
         }
       }
@@ -187,24 +185,23 @@ export class RootContainerComponent implements OnInit, OnDestroy {
     if (arChildren && arChildren.length == 1) {
       // have to have a quick timeout or get an "expressions changed" angular error
       setTimeout(() => {
-        this.ngZone.run(() => {
-          const localPConn = arChildren[0].getPConnect();
+        const localPConn = arChildren[0].getPConnect();
 
-          this.componentName$ = localPConn.getComponentName();
-          if (this.componentName$ === 'ViewContainer') {
-            const configProps = this.pConn$.getConfigProps();
-            const viewContConfig = {
-              meta: {
-                type: 'ViewContainer',
-                config: configProps
-              },
-              options
-            };
+        this.componentName$ = localPConn.getComponentName();
+        if (this.componentName$ === 'ViewContainer') {
+          const configProps = this.pConn$.getConfigProps();
+          const viewContConfig = {
+            meta: {
+              type: 'ViewContainer',
+              config: configProps
+            },
+            options
+          };
 
-            this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
-          }
-          this.bShowRoot$ = true;
-        });
+          this.viewContainerPConn$ = PCore.createPConnect(viewContConfig).getPConnect();
+        }
+        this.bShowRoot$ = true;
+        this.cdRef.markForCheck();
       });
     }
   }
@@ -222,9 +219,8 @@ export class RootContainerComponent implements OnInit, OnDestroy {
               console.log(ex);
             }
 
-            this.ngZone.run(() => {
-              this.bIsProgress$ = true;
-            });
+            this.bIsProgress$ = true;
+            this.cdRef.markForCheck();
           });
         }
       }
@@ -236,9 +232,8 @@ export class RootContainerComponent implements OnInit, OnDestroy {
       // don't touch bIsProgress$ unless differnent
       if (bShow != this.bIsProgress$) {
         // makes sure Angular tracks these changes
-        this.ngZone.run(() => {
-          this.bIsProgress$ = bShow;
-        });
+        this.bIsProgress$ = bShow;
+        this.cdRef.markForCheck();
       }
     }
   }
