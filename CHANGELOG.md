@@ -13,6 +13,8 @@
       * Github: [PR-540](https://github.com/pegasystems/angular-sdk-components/pull/540)
 *   **Fixed the issue where filtering did not work on empty tables and corrected the filter pop-up styling.**
       * Github: [PR-543](https://github.com/pegasystems/angular-sdk-components/pull/543)
+*   **Fixed DateTime component theme colors.**
+    * Github: [PR-561](https://github.com/pegasystems/angular-sdk-components/pull/561)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
