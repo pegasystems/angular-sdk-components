@@ -94,12 +94,6 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     // Set component specific properties
     const { value, listType, parameters } = this.configProps$;
 
-    if (value != undefined) {
-      const index = this.options$?.findIndex(element => element.key === value);
-      this.value$ = index > -1 ? this.options$[index].value : value;
-      this.fieldControl.setValue(this.value$);
-    }
-
     this.listType = listType;
     this.parameters = parameters;
 
@@ -118,6 +112,12 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     if (!this.displayMode$ && this.listType !== 'associated') {
       const results = await this.dataPageService.getDataPageData(datasource, this.parameters, context);
       this.fillOptions(results);
+    }
+
+    if (value != undefined) {
+      const index = this.options$?.findIndex(element => element.key === value);
+      this.value$ = index > -1 ? this.options$[index].value : value;
+      this.fieldControl.setValue(this.value$);
     }
   }
 

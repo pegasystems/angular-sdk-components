@@ -1,18 +1,37 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { Editor } from '@tiptap/core';
+import StarterKit from '@tiptap/starter-kit';
+import Placeholder from '@tiptap/extension-placeholder';
+import Image from '@tiptap/extension-image';
+import Link from '@tiptap/extension-link';
 
-declare let tinymce: any;
+type BlockType = 'paragraph' | 'h1' | 'h2' | 'h3';
 
 @Component({
   selector: 'app-rich-text-editor',
   templateUrl: './rich-text-editor.component.html',
   styleUrls: ['./rich-text-editor.component.scss'],
-  imports: [CommonModule, EditorModule, ReactiveFormsModule],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }]
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule]
 })
-export class RichTextEditorComponent implements OnChanges {
+export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() placeholder;
   @Input() disabled;
   @Input() readonly;
@@ -26,13 +45,27 @@ export class RichTextEditorComponent implements OnChanges {
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
   @Output() onChange: EventEmitter<any> = new EventEmitter();
 
-  richText = new FormControl();
-  editorConfig: any = {};
+  private editorEl?: ElementRef<HTMLDivElement>;
 
-  ngOnChanges() {
-    if (this.required) {
-      this.richText.addValidators(Validators.required);
+  richText = new FormControl('');
+  editor?: Editor;
+  currentBlock: BlockType = 'paragraph';
+
+  private viewInitialized = false;
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
+  @ViewChild('editorEl')
+  set editorElement(element: ElementRef<HTMLDivElement> | undefined) {
+    this.editorEl = element;
+    if (element && this.viewInitialized && !this.readonly && !this.editor) {
+      this.initializeEditor();
     }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.richText.setValidators(this.required ? Validators.required : null);
+    this.richText.updateValueAndValidity({ emitEvent: false });
 
     if (this.disabled) {
       this.richText.disable();
@@ -40,79 +73,198 @@ export class RichTextEditorComponent implements OnChanges {
       this.richText.enable();
     }
 
-    if (this.value) {
-      this.richText.setValue(this.value);
+    this.richText.setValue(this.value ?? '', { emitEvent: false });
+
+    if (!this.viewInitialized) return;
+
+    if (this.readonly) {
+      this.destroyEditor();
+      return;
     }
 
-    const themeElement = document.querySelector('.dark') || document.body;
-    let textColor = getComputedStyle(themeElement).getPropertyValue('--mat-sys-on-surface').trim();
-    if (!textColor) textColor = '#000000';
+    if (!this.editor && this.editorEl) {
+      this.initializeEditor();
+    }
 
-    this.editorConfig = {
-      base_url: '/tinymce',
-      suffix: '.min',
-      menubar: false,
-      placeholder: this.placeholder,
-      statusbar: false,
-      min_height: 130,
-      plugins: ['lists', 'advlist', 'autolink', 'image', 'link', 'autoresize'],
-      autoresize_bottom_margin: 0,
-      toolbar: this.disabled ? false : 'blocks | bold italic strikethrough | bullist numlist outdent indent | link image',
-      toolbar_location: 'bottom',
-      content_style: `
-        body {
-          font-family: Helvetica, Arial, sans-serif;
-          font-size: 14px;
-          color: ${textColor} !important;
-          background: transparent !important;
-        }
-      `,
-      branding: false,
-      paste_data_images: true,
-      file_picker_types: 'image',
-      file_picker_callback: this.filePickerCallback
-    };
+    if (this.editor && changes['value'] && this.value !== this.editor.getHTML()) {
+      this.editor.commands.setContent(this.value ?? '', { emitUpdate: false });
+    }
+    if (this.editor && changes['disabled']) {
+      this.editor.setEditable(!this.disabled);
+    }
   }
 
-  filePickerCallback = cb => {
+  ngAfterViewInit(): void {
+    this.viewInitialized = true;
+    if (!this.readonly) this.initializeEditor();
+  }
+
+  private initializeEditor(): void {
+    if (!this.editorEl || this.editor) return;
+
+    this.editor = new Editor({
+      element: this.editorEl.nativeElement,
+      extensions: [
+        StarterKit,
+        Placeholder.configure({ placeholder: this.placeholder || '' }),
+        Image.configure({ inline: false, allowBase64: true }),
+        Link.configure({ openOnClick: false, autolink: true })
+      ],
+      content: this.value || '',
+      editable: !this.disabled,
+      onUpdate: ({ editor }) => {
+        const html = editor.getHTML();
+        this.richText.setValue(html, { emitEvent: false });
+        this.richText.markAsDirty();
+        this.onChange.emit(html);
+        this.cdr.markForCheck();
+      },
+      onBlur: ({ editor }) => {
+        this.richText.markAsTouched();
+        this.onBlur.emit(editor.getHTML());
+        this.cdr.markForCheck();
+      },
+      onSelectionUpdate: ({ editor }) => {
+        this.updateCurrentBlock(editor);
+        this.cdr.markForCheck();
+      }
+    });
+    this.updateCurrentBlock(this.editor);
+  }
+
+  private updateCurrentBlock(editor: Editor): void {
+    if (editor.isActive('heading', { level: 1 })) this.currentBlock = 'h1';
+    else if (editor.isActive('heading', { level: 2 })) this.currentBlock = 'h2';
+    else if (editor.isActive('heading', { level: 3 })) this.currentBlock = 'h3';
+    else this.currentBlock = 'paragraph';
+  }
+
+  private destroyEditor(): void {
+    this.editor?.destroy();
+    this.editor = undefined;
+    this.currentBlock = 'paragraph';
+  }
+
+  ngOnDestroy(): void {
+    this.destroyEditor();
+  }
+
+  isActive(name: string, attrs?: Record<string, any>): boolean {
+    return this.editor ? this.editor.isActive(name, attrs) : false;
+  }
+
+  setBlock(value: string) {
+    if (!this.editor) return;
+    const chain = this.editor.chain().focus();
+    switch (value) {
+      case 'h1':
+        chain.toggleHeading({ level: 1 }).run();
+        break;
+      case 'h2':
+        chain.toggleHeading({ level: 2 }).run();
+        break;
+      case 'h3':
+        chain.toggleHeading({ level: 3 }).run();
+        break;
+      default:
+        chain.setParagraph().run();
+    }
+    this.currentBlock = value as BlockType;
+  }
+
+  toggleBold() {
+    this.editor?.chain().focus().toggleBold().run();
+  }
+
+  toggleItalic() {
+    this.editor?.chain().focus().toggleItalic().run();
+  }
+
+  toggleStrike() {
+    this.editor?.chain().focus().toggleStrike().run();
+  }
+
+  toggleBulletList() {
+    this.editor?.chain().focus().toggleBulletList().run();
+  }
+
+  toggleOrderedList() {
+    this.editor?.chain().focus().toggleOrderedList().run();
+  }
+
+  outdent() {
+    if (!this.editor) return;
+    if (this.editor.can().liftListItem('listItem')) {
+      this.editor.chain().focus().liftListItem('listItem').run();
+    } else {
+      this.editor.chain().focus().liftEmptyBlock().run();
+    }
+  }
+
+  indent() {
+    this.editor?.chain().focus().sinkListItem('listItem').run();
+  }
+
+  addLink() {
+    if (!this.editor) return;
+    const previous = this.editor.getAttributes('link')?.['href'] ?? '';
+    const { from, to, empty } = this.editor.state.selection;
+    const url = window.prompt('Enter URL', previous);
+    if (url === null) return;
+    if (url === '') {
+      this.editor.chain().focus().setTextSelection({ from, to }).extendMarkRange('link').unsetLink().run();
+      return;
+    }
+    const normalizedUrl = this.normalizeUrl(url);
+    if (!normalizedUrl) return;
+    if (empty) {
+      this.editor
+        .chain()
+        .focus()
+        .insertContentAt(from, {
+          type: 'text',
+          text: url,
+          marks: [{ type: 'link', attrs: { href: normalizedUrl } }]
+        })
+        .run();
+      return;
+    }
+    this.editor.chain().focus().setTextSelection({ from, to }).extendMarkRange('link').setLink({ href: normalizedUrl }).run();
+  }
+
+  private normalizeUrl(url: string): string | null {
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) return null;
+    if (/^\/\//.test(trimmedUrl)) return `https:${trimmedUrl}`;
+    if (/^(?:https?|mailto|tel|ftp):/i.test(trimmedUrl)) return trimmedUrl;
+    if (/^[a-z][a-z\d+.-]*:/i.test(trimmedUrl)) return null;
+    return `https://${trimmedUrl}`;
+  }
+
+  addImage() {
+    if (!this.editor) return;
+    const insertPosition = this.editor.state.selection.to;
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
     input.addEventListener('change', (e: any) => {
-      const file = e.target.files[0];
-
-      const reader: any = new FileReader();
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
       reader.addEventListener('load', () => {
-        /*
-            Note: Now we need to register the blob in TinyMCEs image blob
-            registry. In the next release this part hopefully won't be
-            necessary, as we are looking to handle it internally.
-        */
-        const blobId = `blobid${new Date().getTime()}`;
-        console.log('editorRef', tinymce.activeEditor);
-        const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-        const base64 = reader.result.split(',')[1];
-        const blobInfo = blobCache.create(blobId, file, base64);
-        blobCache.add(blobInfo);
-
-        /* call the callback and populate the Title field with the file name */
-        cb(blobInfo.blobUri(), { title: file.name });
+        const src = reader.result as string;
+        this.editor
+          ?.chain()
+          .focus()
+          .setTextSelection(insertPosition)
+          .insertContent({ type: 'image', attrs: { src, alt: file.name, title: file.name } })
+          .run();
       });
+      reader.addEventListener('error', () => this.cdr.markForCheck());
       reader.readAsDataURL(file);
     });
 
     input.click();
-  };
-
-  blur() {
-    if (tinymce.activeEditor) {
-      const editorValue = tinymce.activeEditor.getContent({ format: 'html' });
-      this.onBlur.emit(editorValue);
-    }
-  }
-
-  change(event) {
-    this.onChange.emit(event);
   }
 }

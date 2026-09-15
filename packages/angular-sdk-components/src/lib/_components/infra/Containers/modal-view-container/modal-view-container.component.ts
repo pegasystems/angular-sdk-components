@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, Output, EventEmitter, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import isEqual from 'fast-deep-equal';
@@ -59,7 +59,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
 
   constructor(
     private angularPConnect: AngularPConnectService,
-    private ngZone: NgZone,
+    private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
     private fb: FormBuilder
   ) {
@@ -214,46 +214,45 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
       this.psService.sendMessage(false);
 
-      this.ngZone.run(() => {
-        this.createdViewPConn$ = newComp;
-        const newConfigProps = newComp.getConfigProps();
-        this.templateName$ = 'template' in newConfigProps ? (newConfigProps.template as string) : '';
+      this.createdViewPConn$ = newComp;
+      const newConfigProps = newComp.getConfigProps();
+      this.templateName$ = 'template' in newConfigProps ? (newConfigProps.template as string) : '';
 
-        const { actionName } = latestItem;
-        const theNewCaseInfo = newComp.getCaseInfo();
-        // const caseName = theNewCaseInfo.getName();
-        const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
+      const { actionName } = latestItem;
+      const theNewCaseInfo = newComp.getCaseInfo();
+      // const caseName = theNewCaseInfo.getName();
+      const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
 
-        const caseTypeName = theNewCaseInfo.getCaseTypeName();
-        const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
-        const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
-        this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
-        this.context$ = latestItem.context;
-        this.title$ =
-          isDataObject || this.isMultiRecord
-            ? this.getModalHeading(dataObjectAction)
-            : this.determineModalHeaderByAction(actionName, caseTypeName, ID, this.createdViewPConn$?.getCaseLocaleReference());
+      const caseTypeName = theNewCaseInfo.getCaseTypeName();
+      const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
+      const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
+      this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
+      this.context$ = latestItem.context;
+      this.title$ =
+        isDataObject || this.isMultiRecord
+          ? this.getModalHeading(dataObjectAction)
+          : this.determineModalHeaderByAction(actionName, caseTypeName, ID, this.createdViewPConn$?.getCaseLocaleReference());
 
-        const bIsRefComponent = this.checkIfRefComponent(newComp);
+      const bIsRefComponent = this.checkIfRefComponent(newComp);
 
-        if (bIsRefComponent) {
-          this.arChildren$ = [newComp.getComponent()];
-        } else {
-          // update children with new view's children
-          this.arChildren$ = newComp.getChildren();
-        }
+      if (bIsRefComponent) {
+        this.arChildren$ = [newComp.getComponent()];
+      } else {
+        // update children with new view's children
+        this.arChildren$ = newComp.getChildren();
+      }
 
-        this.bShowModal$ = true;
+      this.bShowModal$ = true;
 
-        // for when non modal
-        this.modalVisibleChange.emit(this.bShowModal$);
+      // for when non modal
+      this.modalVisibleChange.emit(this.bShowModal$);
 
-        // save off itemKey to be used for finishAssignment, etc.
-        this.itemKey$ = key;
+      // save off itemKey to be used for finishAssignment, etc.
+      this.itemKey$ = key;
 
-        // cause a change for assignment
-        this.updateToken$ = new Date().getTime();
-      });
+      // cause a change for assignment
+      this.updateToken$ = new Date().getTime();
+      this.cdRef.markForCheck();
     }
   }
 
@@ -263,14 +262,13 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       // should put here
     }
 
-    this.ngZone.run(() => {
-      this.bShowModal$ = false;
+    this.bShowModal$ = false;
 
-      // for when non modal
-      this.modalVisibleChange.emit(this.bShowModal$);
+    // for when non modal
+    this.modalVisibleChange.emit(this.bShowModal$);
 
-      this.oCaseInfo = {};
-    });
+    this.oCaseInfo = {};
+    this.cdRef.markForCheck();
   }
 
   getConfigObject(item, pConnect, isReverseCoexistence = false) {
@@ -331,10 +329,9 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     */
     if (latestItem && isModalAction && !this.actionsDialog) {
       const configObject = this.getConfigObject(latestItem, this.pConn$);
-      this.ngZone.run(() => {
-        this.cancelPConn$ = configObject?.getPConnect();
-        this.bShowCancelAlert$ = true;
-      });
+      this.cancelPConn$ = configObject?.getPConnect();
+      this.bShowCancelAlert$ = true;
+      this.cdRef.markForCheck();
     }
   }
 
@@ -398,13 +395,12 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
 
   closeActionsDialog = () => {
     this.actionsDialog = true;
-    // this.ngZone.run(() => {
     this.bShowModal$ = false;
 
     // for when non modal
     this.modalVisibleChange.emit(this.bShowModal$);
 
     this.oCaseInfo = {};
-    // });
+    this.cdRef.markForCheck();
   };
 }

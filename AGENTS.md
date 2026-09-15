@@ -24,7 +24,7 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 | Language | TypeScript |
 | Bundler | ng-packagr (library), Angular CLI (app) |
 | Date handling | Day.js |
-| Rich Text | TinyMCE (via @tinymce/tinymce-angular) |
+| Rich Text | Tiptap (via @tiptap/core and @tiptap/starter-kit) |
 | Styling | SCSS |
 | Auth | @pega/auth (OAuth 2.0 PKCE) |
 | Engine | @pega/constellationjs (provides PCore/PConnect APIs, owns Redux store) |
