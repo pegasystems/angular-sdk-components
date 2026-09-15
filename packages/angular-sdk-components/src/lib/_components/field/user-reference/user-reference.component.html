@@ -8,7 +8,7 @@
         <component-mapper name="Operator" [props]="{ pConn$, name$: userName$ }"></component-mapper>
       </div>
       <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
-        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
           <mat-select [required]="bRequired$" [formControl]="fieldControl" [attr.data-test-id]="testId" (selectionChange)="fieldOnChange($event)">
             <mat-option *ngFor="let opt of options$" [value]="opt.key">
               {{ opt.value }}
@@ -18,10 +18,11 @@
           <mat-error *ngIf="fieldControl.invalid">
             {{ getErrorMessage() }}
           </mat-error>
+          <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
         </mat-form-field>
       </div>
       <div [formGroup]="formGroup$" *ngIf="type === 'searchbox'">
-        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
           <mat-label>{{ label$ }}</mat-label>
           <input
             matInput
@@ -40,6 +41,7 @@
           <mat-error *ngIf="fieldControl.invalid">
             {{ getErrorMessage() }}
           </mat-error>
+          <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
         </mat-form-field>
       </div>
     </div>

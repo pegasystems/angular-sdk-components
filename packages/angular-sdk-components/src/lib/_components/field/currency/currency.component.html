@@ -4,7 +4,7 @@
 <ng-template #noDisplayMode>
   <div *ngIf="bHasForm$; else noEdit">
     <div [formGroup]="formGroup$" *ngIf="bVisible$" class="psdk-currency-field">
-      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
         <mat-label>{{ label$ }}</mat-label>
         <div class="psdk-currency-input">
           <input
@@ -30,6 +30,7 @@
             [readonly]="bReadonly$"
           />
         </div>
+        <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
       </mat-form-field>
     </div>

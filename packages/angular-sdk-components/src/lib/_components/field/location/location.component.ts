@@ -11,6 +11,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { debounceTime, from, of, switchMap } from 'rxjs';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { GoogleMapsLoaderService } from '../../../_services/google-maps-loader.service';
 import { handleEvent } from '../../../_helpers/event-util';
 
@@ -34,7 +35,8 @@ interface LocationProps extends PConnFieldProps {
     MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FieldWarningDirective
   ],
   templateUrl: './location.component.html',
   styleUrl: './location.component.scss'

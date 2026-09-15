@@ -5,7 +5,7 @@
   <div *ngIf="bHasForm$; else noEdit">
     <div [formGroup]="formGroup$">
       <div *ngIf="bVisible$">
-        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText">
+        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
           <mat-label>{{ label$ }}</mat-label>
           <textarea
             matInput
@@ -21,6 +21,7 @@
             (change)="fieldOnChange($event)"
             (blur)="fieldOnBlur($event)"
           ></textarea>
+          <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
           <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
         </mat-form-field>
       </div>

@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 
 import { AngularPConnectData, AngularPConnectService } from '../../_bridge/angular-pconnect';
 import { Utils } from '../../_helpers/utils';
+import type { PConnFieldProps } from '../../_types/PConnProps.interface';
 
 @Directive()
 export class FieldBase implements OnInit, OnDestroy {
@@ -31,6 +32,10 @@ export class FieldBase implements OnInit, OnDestroy {
   bDisabled$ = false;
   bVisible$ = true;
   displayMode$ = '';
+  bFieldMessageVisible$ = false;
+  fieldMessage = '';
+
+  private defaultHelperText = '';
 
   /**
    * Initializes the component, registers with AngularPConnect, and sets up form control.
@@ -101,7 +106,7 @@ export class FieldBase implements OnInit, OnDestroy {
     this.label$ = label;
     this.hideLabel = hideLabel;
     this.displayMode$ = displayMode;
-    this.helperText = helperText;
+    this.defaultHelperText = helperText ?? '';
     this.placeholder = placeholder || '';
 
     // Convert boolean properties
@@ -113,8 +118,25 @@ export class FieldBase implements OnInit, OnDestroy {
     // Enable or disable field control
     this.fieldControl[this.bDisabled$ ? 'disable' : 'enable']();
 
+    this.updateFieldMessage(configProps);
+
     // Display error message if validation message exists
     this.displayValidationMessage();
+  }
+
+  /**
+   * Updates the contextual field message state for fields that support it.
+   *
+   * @param configProps The resolved field configuration.
+   */
+  protected updateFieldMessage(configProps: Pick<PConnFieldProps, 'messageConfig' | 'showFieldMessage'>): void {
+    const { messageConfig = {}, showFieldMessage } = configProps;
+    const isVisible = this.utils.getBooleanValue(messageConfig.visibility);
+    const shouldShowFieldMessage = this.utils.getBooleanValue(showFieldMessage) && isVisible && !this.bReadonly$;
+
+    this.bFieldMessageVisible$ = shouldShowFieldMessage;
+    this.fieldMessage = shouldShowFieldMessage ? (messageConfig.content ?? '') : '';
+    this.updateHelperText();
   }
 
   /**
@@ -127,6 +149,10 @@ export class FieldBase implements OnInit, OnDestroy {
         this.fieldControl.markAsTouched();
       }, 100);
     }
+  }
+
+  private updateHelperText(): void {
+    this.helperText = this.bFieldMessageVisible$ ? this.fieldMessage : this.defaultHelperText;
   }
 
   /**

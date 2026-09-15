@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { map, Observable, startWith } from 'rxjs';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -38,6 +39,7 @@ interface UserReferenceProps extends Omit<PConnFieldProps, 'value'> {
     MatOptionModule,
     MatInputModule,
     MatAutocompleteModule,
+    FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ]
 })
@@ -54,6 +56,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
   options$: any;
   bReadonly$: boolean;
   bRequired$: boolean;
+  bFieldMessageVisible$ = false;
   showAsFormattedText$?: boolean;
   displayAs$?: string;
   testId: string;
@@ -158,12 +161,17 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     this.testId = props.testId;
     this.onRecordChange = props?.onRecordChange;
 
-    const { label, displayAs, value, showAsFormattedText, helperText, placeholder, displayMode } = props;
+    const { label, displayAs, value, showAsFormattedText, helperText, placeholder, displayMode, messageConfig = {}, showFieldMessage } = props;
+    const { readOnly, required } = props;
+    [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
+
+    const isMessageVisible = this.utils.getBooleanValue(messageConfig.visibility);
+    this.bFieldMessageVisible$ = this.utils.getBooleanValue(showFieldMessage) && isMessageVisible && !this.bReadonly$;
 
     this.label$ = label;
     this.showAsFormattedText$ = showAsFormattedText;
     this.displayAs$ = displayAs;
-    this.helperText = helperText;
+    this.helperText = this.bFieldMessageVisible$ ? (messageConfig.content ?? '') : helperText;
     this.placeholder = placeholder || '';
     this.displayMode$ = displayMode;
 
@@ -172,9 +180,6 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     } else {
       this.value$ = value || '';
     }
-
-    const { readOnly, required } = props;
-    [this.bReadonly$, this.bRequired$] = [readOnly, required].map(prop => prop === true || (typeof prop === 'string' && prop === 'true'));
 
     this.actionsApi = this.pConn$.getActionsApi();
     this.propName = this.pConn$.getStateProps().value;

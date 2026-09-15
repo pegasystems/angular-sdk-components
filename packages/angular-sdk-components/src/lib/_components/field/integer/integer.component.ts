@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -17,7 +18,7 @@ interface IntegerProps extends PConnFieldProps {
   selector: 'app-integer',
   templateUrl: './integer.component.html',
   styleUrls: ['./integer.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class IntegerComponent extends FieldBase {
   configProps$: IntegerProps;
@@ -57,7 +58,8 @@ export class IntegerComponent extends FieldBase {
 
     if (isValueChanged) {
       const value = event?.target?.value;
-      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+      const normalizedValue = value === '' ? '' : Number(value);
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, normalizedValue);
     }
   }
 }
