@@ -3,7 +3,7 @@
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="bHasForm$ && bVisible$; else noEdit">
-    <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" [hintLabel]="helperText" floatLabel="always">
+    <mat-form-field class="psdk-full-width" subscriptSizing="dynamic" floatLabel="always">
       <mat-tel-input
         [attr.data-test-id]="testId"
         [formControl]="fieldControl"
@@ -18,6 +18,7 @@
       >
       </mat-tel-input>
       <mat-label>{{ label$ }}</mat-label>
+      <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
     </mat-form-field>
   </div>

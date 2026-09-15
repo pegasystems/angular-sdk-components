@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
@@ -23,7 +24,15 @@ interface CurrrencyProps extends PConnFieldProps {
   selector: 'app-currency',
   templateUrl: './currency.component.html',
   styleUrls: ['./currency.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgxCurrencyDirective,
+    FieldWarningDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class CurrencyComponent extends FieldBase {
   configProps$: CurrrencyProps;
@@ -47,6 +56,7 @@ export class CurrencyComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     // Extract and normalize the value property
     const { value } = this.configProps$;

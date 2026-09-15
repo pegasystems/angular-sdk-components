@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -17,7 +18,7 @@ interface EmailProps extends PConnFieldProps {
   selector: 'app-email',
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class EmailComponent extends FieldBase implements OnInit, OnDestroy {
   configProps$: EmailProps;
@@ -28,9 +29,9 @@ export class EmailComponent extends FieldBase implements OnInit, OnDestroy {
   override updateSelf(): void {
     // Resolve configuration properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as EmailProps;
-
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     // Set component specific properties
     const { value } = this.configProps$;

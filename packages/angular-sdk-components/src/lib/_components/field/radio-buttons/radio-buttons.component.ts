@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -28,7 +29,15 @@ interface RadioButtonsProps extends PConnFieldProps {
   templateUrl: './radio-buttons.component.html',
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatRadioModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    FieldWarningDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class RadioButtonsComponent extends FieldBase {
   configProps$: RadioButtonsProps;
@@ -54,6 +63,7 @@ export class RadioButtonsComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     // Extract and normalize the value property
     const { value } = this.configProps$;

@@ -42,7 +42,9 @@
           (blur)="fieldOnBlur($event)"
           ><span [ngClass]="{ 'label-required': bRequired$ }">{{ caption$ }}</span></mat-checkbox
         >
-        <p *ngIf="helperText">{{ helperText }}</p>
+        <p *ngIf="helperText && !(fieldControl.invalid && (fieldControl.touched || fieldControl.dirty))" [appFieldWarning]="bFieldMessageVisible$">
+          {{ helperText }}
+        </p>
       </ng-template>
       <mat-error *ngIf="fieldControl.invalid && (fieldControl.touched || fieldControl.dirty)">{{ getErrorMessage() }}</mat-error>
     </div>

@@ -9,7 +9,7 @@
 </div>
 <ng-template #noDisplayMode>
   <div [formGroup]="formGroup$" *ngIf="bVisible$">
-    <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic" [hintLabel]="helperText">
+    <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic">
       <mat-label>{{ label$ }}</mat-label>
       <input matInput [placeholder]="placeholder" style="display: none" [required]="bRequired$" />
       <mat-radio-group
@@ -30,6 +30,7 @@
           {{ getLocalizedOptionValue(opt) }}
         </mat-radio-button>
       </mat-radio-group>
+      <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
       <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
     </mat-form-field>
   </div>

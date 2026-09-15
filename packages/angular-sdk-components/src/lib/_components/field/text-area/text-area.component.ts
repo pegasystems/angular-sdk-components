@@ -5,6 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -18,7 +19,7 @@ interface TextAreaProps extends PConnFieldProps {
   selector: 'app-text-area',
   templateUrl: './text-area.component.html',
   styleUrls: ['./text-area.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class TextAreaComponent extends FieldBase {
   configProps$: TextAreaProps;
@@ -34,6 +35,7 @@ export class TextAreaComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     // Extract properties from config
     const { value } = this.configProps$;

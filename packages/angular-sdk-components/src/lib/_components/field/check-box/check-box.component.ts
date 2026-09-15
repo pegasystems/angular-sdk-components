@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
@@ -33,7 +34,15 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
   selector: 'app-check-box',
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatOptionModule,
+    FieldWarningDirective,
+    forwardRef(() => ComponentMapperComponent)
+  ]
 })
 export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
   configProps$: CheckboxProps;
@@ -73,6 +82,7 @@ export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     if (this.label$ != '') {
       this.showLabel$ = true;

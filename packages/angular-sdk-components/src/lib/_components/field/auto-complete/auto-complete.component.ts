@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
@@ -41,6 +42,7 @@ interface AutoCompleteProps extends PConnFieldProps {
     MatInputModule,
     MatAutocompleteModule,
     MatOptionModule,
+    FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ],
   providers: [DatapageService]
@@ -90,6 +92,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     // Set component specific properties
     const { value, listType, parameters } = this.configProps$;

@@ -9,6 +9,7 @@ import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { MomentDateModule } from '@angular/material-moment-adapter';
 
 import { FieldBase } from '../field.base';
+import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getDateFormatInfo } from '../../../_helpers/date-format-utils';
 import { format } from '../../../_helpers/formatters';
@@ -50,6 +51,7 @@ class MyFormat {
     MatDatepickerModule,
     MatNativeDateModule,
     MomentDateModule,
+    FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ],
   providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
@@ -69,6 +71,7 @@ export class DateComponent extends FieldBase implements OnInit, OnDestroy {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
+    this.updateFieldMessage(this.configProps$);
 
     // Extract and normalize the value property
     const { value } = this.configProps$;
