@@ -54,7 +54,6 @@ export class PercentageComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Set component specific properties
     const { value } = this.configProps$;

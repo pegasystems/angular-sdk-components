@@ -73,7 +73,6 @@ export class DateTimeComponent extends FieldBase implements OnInit, OnDestroy {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Extract the value property
     const { value } = this.configProps$;

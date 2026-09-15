@@ -35,7 +35,6 @@ export class TextAreaComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Extract properties from config
     const { value } = this.configProps$;

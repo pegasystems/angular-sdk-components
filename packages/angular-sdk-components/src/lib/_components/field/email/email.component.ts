@@ -31,7 +31,6 @@ export class EmailComponent extends FieldBase implements OnInit, OnDestroy {
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as EmailProps;
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Set component specific properties
     const { value } = this.configProps$;

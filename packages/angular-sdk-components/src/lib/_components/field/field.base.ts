@@ -107,7 +107,6 @@ export class FieldBase implements OnInit, OnDestroy {
     this.hideLabel = hideLabel;
     this.displayMode$ = displayMode;
     this.defaultHelperText = helperText ?? '';
-    this.updateHelperText();
     this.placeholder = placeholder || '';
 
     // Convert boolean properties
@@ -118,6 +117,8 @@ export class FieldBase implements OnInit, OnDestroy {
 
     // Enable or disable field control
     this.fieldControl[this.bDisabled$ ? 'disable' : 'enable']();
+
+    this.updateFieldMessage(configProps);
 
     // Display error message if validation message exists
     this.displayValidationMessage();

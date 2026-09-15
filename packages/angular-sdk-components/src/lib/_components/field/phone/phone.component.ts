@@ -35,7 +35,6 @@ export class PhoneComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Extract and normalize the value property
     const { value } = this.configProps$;

@@ -33,7 +33,6 @@ export class TextInputComponent extends FieldBase {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Get and set component specific properties
     const { value } = this.configProps$;

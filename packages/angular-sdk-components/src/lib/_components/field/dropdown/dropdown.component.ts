@@ -111,7 +111,6 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Set component specific properties
     this.updateDropdownProperties(this.configProps$);

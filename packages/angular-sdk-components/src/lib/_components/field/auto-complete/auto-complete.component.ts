@@ -92,7 +92,6 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Set component specific properties
     const { value, listType, parameters } = this.configProps$;

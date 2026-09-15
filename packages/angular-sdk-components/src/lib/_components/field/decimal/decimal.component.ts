@@ -58,7 +58,6 @@ export class DecimalComponent extends FieldBase {
 
     // Update common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     // Extract and normalize the value property
     const { value } = this.configProps$;

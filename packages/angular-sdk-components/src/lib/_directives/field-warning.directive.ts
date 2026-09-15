@@ -9,6 +9,6 @@ export class FieldWarningDirective {
 
   @HostBinding('style.color')
   get warningColor(): string | null {
-    return this.appFieldWarning ? 'var(--mat-sys-error)' : null;
+    return this.appFieldWarning ? 'var(--app-alert-warning-border-color)' : null;
   }
 }

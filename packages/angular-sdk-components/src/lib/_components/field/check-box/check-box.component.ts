@@ -82,7 +82,6 @@ export class CheckBoxComponent extends FieldBase implements OnInit, OnDestroy {
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
-    this.updateFieldMessage(this.configProps$);
 
     if (this.label$ != '') {
       this.showLabel$ = true;

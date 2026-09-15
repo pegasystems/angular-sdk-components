@@ -1,6 +1,6 @@
 <div *ngIf="mapReady && bVisible$">
   <!-- Google suggestions -->
-  <mat-form-field class="psdk-full-width" [hintLabel]="helperText">
+  <mat-form-field class="psdk-full-width">
     <mat-label>{{ label$ }}</mat-label>
     <input
       matInput
@@ -14,6 +14,7 @@
       (blur)="fieldOnBlur()"
     />
     <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
+    <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
     <button
       mat-icon-button
       matSuffix
