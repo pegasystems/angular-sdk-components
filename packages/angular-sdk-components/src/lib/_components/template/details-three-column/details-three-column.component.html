@@ -1,4 +1,17 @@
 <component-mapper
-  name="MaterialDetails"
-  [props]="{ arFields$, arFields2$, arFields3$, arHighlightedFields: highlightedDataArr, layout: 'three-column' }"
+  name="FieldGroup"
+  [props]="{ name: pConn$.getInheritedProps()['showLabel'] ? pConn$.getInheritedProps()['label'] : undefined, childrenTemplate: detailsContent }"
 ></component-mapper>
+
+<ng-template #detailsContent>
+  <component-mapper
+    name="MaterialDetails"
+    [props]="{
+      arFields$: arFields$,
+      arFields2$: arFields2$,
+      arFields3$: arFields3$,
+      arHighlightedFields: highlightedDataArr,
+      layout: 'three-column'
+    }"
+  ></component-mapper>
+</ng-template>

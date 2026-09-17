@@ -100,9 +100,12 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
           pConn: theViewCont?.getPConnect()
         });
       } else {
+        thePConn.setInheritedProp('displayMode', 'DISPLAY_ONLY');
+        thePConn.setInheritedProp('readOnly', true);
         processedFields.push({
           type: theCompType,
-          config: thePConn.getConfigProps()
+          config: thePConn.getConfigProps(),
+          pConn: thePConn
         });
       }
     });
