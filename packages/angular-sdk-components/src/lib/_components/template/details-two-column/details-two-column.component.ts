@@ -22,6 +22,13 @@ export class DetailsTwoColumnComponent extends DetailsTemplateBase {
 
   override updateSelf() {
     const rawMetaData: any = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata()?.config);
+    const { label, showLabel } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
+
+    if (this.propsToUse.showLabel === false) {
+      this.propsToUse.label = '';
+    }
+
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 
     if (this.showHighlightedData) {

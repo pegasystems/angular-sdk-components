@@ -6,7 +6,7 @@ import { Utils } from '../../../_helpers/utils';
 import { getAllFields } from '../../template/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
-const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs', 'ListView'];
+const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs', 'DetailsTwoColumn', 'ListView'];
 const DETAILS_TEMPLATES = [
   'Details',
   'DetailsFields',
@@ -157,7 +157,7 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     this.showLabel$ =
       this.inheritedProps$.showLabel !== undefined
         ? this.inheritedProps$.showLabel
-        : this.configProps$.showLabel || isDetailsTemplate(this.templateName$);
+        : (this.configProps$.showLabel ?? isDetailsTemplate(this.templateName$));
     this.arChildren$ = this.pConn$.getChildren();
     this.visibility$ = this.configProps$.visibility ?? this.visibility$;
 
