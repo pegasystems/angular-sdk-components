@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
@@ -51,7 +51,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   constructor(
     private uwservice: UpdateWorklistService,
     private scservice: ServerConfigService,
-    private ngZone: NgZone
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -76,11 +76,13 @@ export class NavigationComponent implements OnInit, OnDestroy {
       this.bLoggedIn$ = true;
       // start the portal
       this.startMashup();
+      this.cdRef.markForCheck();
     });
 
     // Add event listener for when logged out
     document.addEventListener('SdkLoggedOut', () => {
       this.bLoggedIn$ = false;
+      this.cdRef.markForCheck();
     });
 
     /* Login if needed (and indicate this is a portal scenario) */
@@ -94,9 +96,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
     // update the worklist
     this.uwservice.sendMessage(true);
 
-    this.ngZone.run(() => {
-      this.bPConnectLoaded$ = true;
-    });
+    this.bPConnectLoaded$ = true;
+    this.cdRef.markForCheck();
   }
 
   cancelAssignment() {
@@ -104,9 +105,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
       // update the worklist
       this.uwservice.sendMessage(true);
 
-      this.ngZone.run(() => {
-        this.bPConnectLoaded$ = false;
-      });
+      this.bPConnectLoaded$ = false;
+      this.cdRef.markForCheck();
     });
   }
 
@@ -115,9 +115,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
       // update the worklist
       this.uwservice.sendMessage(true);
 
-      this.ngZone.run(() => {
-        this.bPConnectLoaded$ = false;
-      });
+      this.bPConnectLoaded$ = false;
+      this.cdRef.markForCheck();
     });
   }
 
@@ -168,15 +167,11 @@ export class NavigationComponent implements OnInit, OnDestroy {
     // Change to reflect new use of arg in the callback:
     const { props } = renderObj;
 
-    // makes sure Angular tracks these changes
-    this.ngZone.run(() => {
-      this.pConn$ = props.getPConnect();
-
-      this.bHasPConnect$ = true;
-      this.bPConnectLoaded$ = true;
-
-      sessionStorage.setItem('pCoreUsage', 'AngularSDKMashup');
-    });
+    this.pConn$ = props.getPConnect();
+    this.bHasPConnect$ = true;
+    this.bPConnectLoaded$ = true;
+    sessionStorage.setItem('pCoreUsage', 'AngularSDKMashup');
+    this.cdRef.markForCheck();
 
     //
     // so don't have multiple subscriptions, unsubscribe first

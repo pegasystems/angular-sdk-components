@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -53,7 +53,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     private angularPConnect: AngularPConnectService,
     private chRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
-    private ngZone: NgZone,
     private utils: Utils
   ) {}
 
@@ -104,40 +103,39 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   initComponent() {
-    this.ngZone.run(() => {
-      this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-      this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
+    this.navIcon$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+    this.navExpandCollapse$ = this.utils.getImageSrc('plus', this.utils.getSDKStaticContentUrl());
 
-      // Then, continue on with other initialization
+    // Then, continue on with other initialization
 
-      // making a copy, so can add info
-      this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
-      // @ts-ignore
-      const localeReference = PCore.getLocaleUtils().getPortalLocaleReference() || this.pConn$.getValue('.pyLocaleReference');
-      this.navPages$.forEach(page => {
-        const destinationObject: any = {};
-        this.pConn$.resolveConfigProps(
-          { defaultHeading: page.pyDefaultHeading || page.pyLabel, localeReference: page.pyLocalizationReference },
-          destinationObject
-        );
-        page.name = this.localeUtils.getLocaleValue(destinationObject.defaultHeading, '', destinationObject.localeReference || localeReference);
-        page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
-      });
-      this.actionsAPI = this.pConn$.getActionsApi();
-      this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
-      this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
-      this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as NavBarProps;
-      this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
-
-      // const oData = this.pConn$.getDataObject();
-
-      this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
-      this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
-      this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
-      this.showAppName$ = this.configProps$.showAppName;
-
-      this.portalApp$ = PCore.getEnvironmentInfo().getApplicationLabel();
+    // making a copy, so can add info
+    this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
+    // @ts-ignore
+    const localeReference = PCore.getLocaleUtils().getPortalLocaleReference() || this.pConn$.getValue('.pyLocaleReference');
+    this.navPages$.forEach(page => {
+      const destinationObject: any = {};
+      this.pConn$.resolveConfigProps(
+        { defaultHeading: page.pyDefaultHeading || page.pyLabel, localeReference: page.pyLocalizationReference },
+        destinationObject
+      );
+      page.name = this.localeUtils.getLocaleValue(destinationObject.defaultHeading, '', destinationObject.localeReference || localeReference);
+      page.iconName = this.utils.getImageSrc(page.pxPageViewIcon, this.utils.getSDKStaticContentUrl());
     });
+    this.actionsAPI = this.pConn$.getActionsApi();
+    this.createWork = this.actionsAPI.createWork.bind(this.actionsAPI);
+    this.showPage = this.actionsAPI.showPage.bind(this.actionsAPI);
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as NavBarProps;
+    this.logout = this.actionsAPI.logout.bind(this.actionsAPI);
+
+    // const oData = this.pConn$.getDataObject();
+
+    this.portalLogoImage$ = this.utils.getSDKStaticContentUrl().concat('assets/pzpega-logo-mark.svg');
+    this.portalOperator$ = PCore.getEnvironmentInfo().getOperatorName();
+    this.portalOperatorInitials$ = this.utils.getInitials(this.portalOperator$ ?? '');
+    this.showAppName$ = this.configProps$.showAppName;
+
+    this.portalApp$ = PCore.getEnvironmentInfo().getApplicationLabel();
+    this.chRef.markForCheck();
   }
 
   navPanelButtonClick(oPageData: any) {

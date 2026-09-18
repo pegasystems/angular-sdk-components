@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
@@ -56,7 +56,7 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
-    private ngZone: NgZone
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -201,23 +201,22 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
           //  ViewContainer HTML template to guide what's rendered similar to what
           //  the Nebula/Constellation return of React.Fragment does
 
-          this.ngZone.run(() => {
-            if (newComp.getComponentName() === 'reference') {
-              // if a refernece, it will de reference to a "view"
-              // so hand this off to the "View" component to do that
-              this.isViewContainer$ = false;
-              this.viewPConn$ = newComp;
+          if (newComp.getComponentName() === 'reference') {
+            // if a refernece, it will de reference to a "view"
+            // so hand this off to the "View" component to do that
+            this.isViewContainer$ = false;
+            this.viewPConn$ = newComp;
 
-              /*
-               ***  this commmented out code should be removed, once we test out that
-               ***  handing off refernce to View component always works
-               */
+            /*
+             ***  this commmented out code should be removed, once we test out that
+             ***  handing off refernce to View component always works
+             */
 
-              // When newComp is a reference, we want to de-reference
-              //  it (to get the View) and then use that View to get the
-              //  template, title, children, etc.
+            // When newComp is a reference, we want to de-reference
+            //  it (to get the View) and then use that View to get the
+            //  template, title, children, etc.
 
-              /*
+            /*
 
               const theDereferencedView = newComp;
               const newConfigProps = theDereferencedView.getConfigProps();
@@ -230,20 +229,20 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
               this.arChildren$ = theDereferencedViewChildren;
               this.createdViewPConn$ = theDereferencedView;
               */
-            } else {
-              // old style when newComp is NOT a 'reference'
-              this.isViewContainer$ = true;
+          } else {
+            // old style when newComp is NOT a 'reference'
+            this.isViewContainer$ = true;
 
-              console.error(`ViewContainer has a newComp that is NOT a reference!`);
+            console.error(`ViewContainer has a newComp that is NOT a reference!`);
 
-              this.createdViewPConn$ = newComp;
-              const newConfigProps = newComp.getConfigProps();
-              this.templateName$ = newConfigProps.template || '';
-              this.title$ = newConfigProps.title || '';
-              // update children with new view's children
-              this.arChildren$ = newComp.getChildren();
-            }
-          });
+            this.createdViewPConn$ = newComp;
+            const newConfigProps = newComp.getConfigProps();
+            this.templateName$ = newConfigProps.template || '';
+            this.title$ = newConfigProps.title || '';
+            // update children with new view's children
+            this.arChildren$ = newComp.getChildren();
+          }
+          this.cdRef.markForCheck();
         }
       }
     }

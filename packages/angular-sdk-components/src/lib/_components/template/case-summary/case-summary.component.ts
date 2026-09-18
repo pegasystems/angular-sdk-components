@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { Utils } from '../../../_helpers/utils';
+import { getAllFields } from '../utils';
 
 interface CaseSummaryProps {
   // If any, enter additional props that only exist on this component
@@ -73,7 +74,20 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   updateSelf() {
+    this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as CaseSummaryProps;
     this.generatePrimaryAndSecondaryFields();
+    this.status$ = this.configProps$.status;
+    this.bShowStatus$ = this.configProps$.showStatus;
+  }
+
+  additionalProps() {
+    const allFields = getAllFields(this.pConn$);
+    const fields = {
+      primaryFields: allFields[0],
+      secondaryFields: allFields[1]
+    };
+
+    return this.pConn$.resolveConfigProps(fields);
   }
 
   ngOnChanges() {

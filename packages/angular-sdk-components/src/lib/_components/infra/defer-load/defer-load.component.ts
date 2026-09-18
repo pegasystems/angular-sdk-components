@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -35,7 +35,10 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   PAGE: any;
   DATA: any;
   lastUpdateCaseTime;
-  constructor(private angularPConnect: AngularPConnectService) {
+  constructor(
+    private angularPConnect: AngularPConnectService,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.constants = PCore.getConstants();
   }
 
@@ -132,7 +135,7 @@ export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
         PCore.getDeferLoadManager().stop(this.deferLoadId, this.pConn$.getContextName());
       }
     }
-    // this.cdRef.detectChanges();
+    this.cdRef.detectChanges();
   }
 
   loadActiveTab() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -74,7 +74,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   constructor(
     private angularPConnect: AngularPConnectService,
     private utils: Utils,
-    private ngZone: NgZone
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -273,9 +273,8 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       for (let fileIndex = 0; fileIndex < arFileList.length; fileIndex++) {
         if (arFileList[fileIndex].id == itemId) {
           // remove the file from the list and redraw
-          this.ngZone.run(() => {
-            arFileList.splice(fileIndex, 1);
-          });
+          arFileList.splice(fileIndex, 1);
+          this.cdRef.markForCheck();
           break;
         }
       }
@@ -293,9 +292,8 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
           // remove the file from the list and redraw
           localLinksList.splice(linkIndex, 1);
 
-          this.ngZone.run(() => {
-            this.arLinksList$ = localLinksList.slice();
-          });
+          this.arLinksList$ = localLinksList.slice();
+          this.cdRef.markForCheck();
 
           break;
         }
@@ -482,24 +480,23 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     oLink.primary.icon = 'open';
     oLink.secondary.text = url;
 
-    this.ngZone.run(() => {
-      // need to create a new array or summary list won't detect changes
-      this.arLinksList$ = localList.slice();
-      this.arLinksList$.push(oLink);
+    // need to create a new array or summary list won't detect changes
+    this.arLinksList$ = localList.slice();
+    this.arLinksList$.push(oLink);
 
-      // list for actually attachments
-      const link: any = {};
-      link.id = oLink.id;
-      link.linkTitle = this.link_title$;
-      link.type = oLink.type;
-      link.url = url;
+    // list for actually attachments
+    const link: any = {};
+    link.id = oLink.id;
+    link.linkTitle = this.link_title$;
+    link.type = oLink.type;
+    link.url = url;
 
-      this.arLinks$.push(link);
+    this.arLinks$.push(link);
 
-      // clear values
-      this.link_title$ = '';
-      this.link_url$ = '';
-    });
+    // clear values
+    this.link_title$ = '';
+    this.link_url$ = '';
+    this.cdRef.markForCheck();
   }
 
   _changeTitle(event: any) {
@@ -575,15 +572,13 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   createModal(modalType: string) {
     switch (modalType) {
       case 'addLocalFile':
-        this.ngZone.run(() => {
-          this.bShowFileModal$ = true;
-        });
+        this.bShowFileModal$ = true;
+        this.cdRef.markForCheck();
 
         break;
       case 'addLocalLink':
-        this.ngZone.run(() => {
-          this.bShowLinkModal$ = true;
-        });
+        this.bShowLinkModal$ = true;
+        this.cdRef.markForCheck();
         break;
       default:
         break;
@@ -716,6 +711,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
         })
         .finally(() => {
           this.lu_bLoading$ = false;
+          this.cdRef.markForCheck();
         });
     }
   }

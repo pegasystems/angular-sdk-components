@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -76,7 +76,8 @@ export class AttachmentComponent implements OnInit, OnDestroy {
 
   constructor(
     private angularPConnect: AngularPConnectService,
-    private utils: Utils
+    private utils: Utils,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -96,6 +97,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
         PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.ASSIGNMENT_SUBMISSION,
         () => {
           this.overrideLocalState = true;
+          this.cdRef.markForCheck();
         },
         this.caseID
       );
@@ -336,6 +338,7 @@ export class AttachmentComponent implements OnInit, OnDestroy {
       }
       return localFile;
     });
+    this.cdRef.markForCheck();
   }
 
   populateErrorAndUpdateRedux(file) {
