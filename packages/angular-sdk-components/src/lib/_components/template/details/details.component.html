@@ -1,3 +1,11 @@
-<div>
-  <component-mapper name="MaterialDetails" [props]="{ arFields$, arHighlightedFields: highlightedDataArr, layout: 'one-column' }"></component-mapper>
-</div>
+<component-mapper
+  name="FieldGroup"
+  [props]="{ name: propsToUse.showLabel ? propsToUse.label : '', childrenTemplate: detailsContent }"
+></component-mapper>
+
+<ng-template #detailsContent>
+  <component-mapper
+    name="MaterialDetails"
+    [props]="{ arFields$: arFields$, arHighlightedFields: highlightedDataArr, layout: 'one-column' }"
+  ></component-mapper>
+</ng-template>
