@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
@@ -23,7 +23,10 @@ export class CaseHistoryComponent implements OnInit {
   displayedColumns$ = Array<any>();
   waitingForData = false;
 
-  constructor(private utils: Utils) {}
+  constructor(
+    private utils: Utils,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.configProps$ = this.pConn$.getConfigProps();
@@ -54,6 +57,7 @@ export class CaseHistoryComponent implements OnInit {
       this.repeatList$ = new MatTableDataSource(tableDataResults);
 
       this.waitingForData = false;
+      this.cdRef.markForCheck();
     });
   }
   // This method isn't being used anywhere, keeping it as a reference for now

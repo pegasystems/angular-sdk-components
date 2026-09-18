@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +26,8 @@ export class SideBarComponent implements OnInit, OnDestroy {
     private psservice: ProgressSpinnerService,
     private uwservice: UpdateWorklistService,
     private dpservice: DatapageService,
-    private cservice: CaseService
+    private cservice: CaseService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +63,7 @@ export class SideBarComponent implements OnInit, OnDestroy {
             this.arButtons$.push(oPayload);
           }
         }
+        this.cdRef.markForCheck();
       },
       err => {
         alert(`Errors from get casetypes:${err.errors}`);
@@ -88,6 +90,7 @@ export class SideBarComponent implements OnInit, OnDestroy {
         }
 
         dsubscription.unsubscribe();
+        this.cdRef.markForCheck();
       },
       err => {
         alert(`Error form worklist:${err.errors}`);
