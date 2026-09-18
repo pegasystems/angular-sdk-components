@@ -18,3 +18,64 @@
 ::ng-deep .mat-mdc-form-field-infix {
   width: auto;
 }
+
+// Scoped to this component's own panel via mat-autocomplete's [class] input — does not affect
+// other mat-option/mat-autocomplete instances in the app (research.md §3).
+::ng-deep .psdk-autocomplete-panel {
+  overflow-x: hidden;
+
+  .mat-mdc-option {
+    .mdc-list-item__primary-text {
+      width: 100%;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+
+    // Only grow/top-align options that actually render secondary content — leaves options
+    // without secondary text at Material's default single-line height/vertical centering.
+    &:has(.psdk-autocomplete-option-secondary) {
+      height: auto;
+      min-height: 48px;
+      align-items: flex-start;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+  }
+}
+
+.psdk-autocomplete-option-secondary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.25rem;
+  width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  color: var(--mat-sys-on-surface-variant);
+
+  // Each secondary field renders through FieldValueList's own DISPLAY_ONLY template, which
+  // defaults to a two-column grid block (.psdk-container-labels-left) or an unset-display
+  // block (.psdk-container-nolabels). Override both to render inline here so multiple fields
+  // join on one line via the `·` separators, instead of stacking as separate block rows
+  // (FR-002/FR-004). FieldValueListComponent itself is not modified (research.md §6).
+  ::ng-deep .psdk-container-labels-left {
+    display: inline-flex;
+    column-gap: 0.25rem;
+    row-gap: 0;
+    padding-block: 0;
+  }
+
+  ::ng-deep .psdk-container-nolabels {
+    display: inline;
+    padding-block: 0;
+  }
+
+  ::ng-deep .psdk-grid-label::after {
+    content: ':';
+  }
+
+  ::ng-deep .psdk-val-labels-left {
+    white-space: normal;
+  }
+}
