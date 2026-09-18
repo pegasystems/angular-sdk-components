@@ -1,4 +1,7 @@
-<component-mapper name="FieldGroup" [props]="{ name: propsToUse.label, childrenTemplate: detailsContent }"></component-mapper>
+<component-mapper
+  name="FieldGroup"
+  [props]="{ name: propsToUse.showLabel ? propsToUse.label : '', childrenTemplate: detailsContent }"
+></component-mapper>
 
 <ng-template #detailsContent>
   <component-mapper

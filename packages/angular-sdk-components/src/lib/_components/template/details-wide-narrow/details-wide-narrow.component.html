@@ -1,6 +1,6 @@
 <component-mapper
   name="FieldGroup"
-  [props]="{ name: pConn$.getInheritedProps()['showLabel'] ? pConn$.getInheritedProps()['label'] : undefined, childrenTemplate: detailsContent }"
+  [props]="{ name: propsToUse.showLabel ? propsToUse.label : '', childrenTemplate: detailsContent }"
 ></component-mapper>
 
 <ng-template #detailsContent>

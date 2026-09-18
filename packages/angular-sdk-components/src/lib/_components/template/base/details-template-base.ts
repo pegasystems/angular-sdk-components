@@ -10,6 +10,7 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
   // For interaction with AngularPConnect
   protected angularPConnectData: AngularPConnectData = {};
   protected angularPConnect;
+  propsToUse: any = {};
 
   childrenMetadataOld;
 
@@ -65,6 +66,11 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
       const pConnect = child.getPConnect();
       return pConnect.resolveConfigProps(pConnect.getRawMetadata());
     });
+  }
+
+  updateDetailsProps() {
+    const { label, showLabel } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
   }
 
   processDetailFields(kid: any): any[] {
