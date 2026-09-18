@@ -1,5 +1,5 @@
 <div *ngIf="bVisible$ !== false">
-  <a *ngIf="!isLinkTextEmpty; else noLink" class="psdk-value psdk-semantic-link" href="#" (click)="openLinkClick($event)">{{ value$ || '---' }}</a>
+  <a *ngIf="!isLinkTextEmpty; else noLink" class="psdk-value" href="#" (click)="openLinkClick($event)">{{ value$ || '---' }}</a>
 </div>
 <ng-template #noLink>
   <div class="psdk-value">{{ value$ || '---' }}</div>
