@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
-import { getAllFields } from '../../template/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 const NO_HEADER_TEMPLATES = ['SubTabs', 'SimpleTable', 'Confirmation', 'DynamicTabs', 'DetailsSubTabs', 'ListView'];
@@ -181,39 +180,6 @@ export class ViewComponent implements OnInit, OnDestroy, OnChanges {
     //   kidList = kidList.concat(this.arChildren$[i].getPConnect().getComponentName()).concat(",");
     // }
     // console.log("-->view update: " + this.angularPConnect.getComponentID(this) + ", template: " + this.templateName$ + ", kids: " + kidList);
-  }
-
-  // JA - adapting additionalProps from Nebula/Constellation version which uses static methods
-  //    on the component classes stored in PComponents (that Angular doesn't have)...
-  additionalProps(state: any, getPConnect: any) {
-    let propObj = {};
-
-    // We already have the template name in this.templateName$
-    if (this.templateName$ !== '') {
-      let allFields = {};
-
-      // These uses are adapted from Nebula/Constellation CaseSummary.additionalProps
-      switch (this.templateName$) {
-        case 'CaseSummary':
-          allFields = getAllFields(getPConnect);
-          // eslint-disable-next-line no-case-declarations
-          const unresFields = {
-            primaryFields: allFields[0],
-            secondaryFields: allFields[1]
-          };
-          propObj = getPConnect.resolveConfigProps(unresFields);
-          break;
-
-        case 'Details':
-          allFields = getAllFields(getPConnect);
-          propObj = { fields: allFields[0] };
-          break;
-        default:
-          break;
-      }
-    }
-
-    return propObj;
   }
 
   ngOnDestroy(): void {
