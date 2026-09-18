@@ -15,10 +15,14 @@ import { DatapageService } from '../../../_services/datapage.service';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
-interface IOption {
+interface AutoCompleteOption {
   key: string;
   value: string;
+  // Present only when at least one secondary column resolves to a non-empty value (research.md §4a/§4b)
+  secondaryComponents?: any[];
+  secondarySearchText?: string;
 }
+
 interface AutoCompleteProps extends PConnFieldProps {
   // If any, enter additional props that only exist on AutoComplete here
   deferDatasource?: boolean;
@@ -54,11 +58,11 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
 
   configProps$: AutoCompleteProps;
 
-  options$: any[];
+  options$: AutoCompleteOption[];
   listType: string;
-  columns = [];
+  columns: any[] = [];
   parameters: {};
-  filteredOptions: Observable<any[]>;
+  filteredOptions: Observable<AutoCompleteOption[]>;
   filterValue = '';
 
   // Override ngOnInit method
@@ -71,16 +75,16 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     );
   }
 
-  setOptions(options: IOption[]) {
+  setOptions(options: AutoCompleteOption[]) {
     this.options$ = options;
     const index = this.options$?.findIndex(element => element.key === this.configProps$.value);
     this.value$ = index > -1 ? this.options$[index].value : this.configProps$.value;
     this.fieldControl.setValue(this.value$);
   }
 
-  private _filter(value: string): string[] {
+  private _filter(value: string): AutoCompleteOption[] {
     const filterVal = (value || this.filterValue).toLowerCase();
-    return this.options$?.filter(option => option.value?.toLowerCase().includes(filterVal));
+    return this.options$?.filter(option => option.value?.toLowerCase().includes(filterVal) || option.secondarySearchText?.includes(filterVal));
   }
 
   /**
@@ -152,20 +156,110 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
       ];
     }
 
+    // Secondary text is out of scope for associated/local list options (FR-012)
+    if (this.listType !== 'associated') {
+      const secondaryColumns = this.getSecondaryColumnsFromMetadata();
+      if (secondaryColumns.length > 0) {
+        columns = [...(columns || []), ...secondaryColumns];
+      }
+    }
+
     return { columns, datasource };
   }
 
+  // Reads unresolved columnsFormatter metadata to derive secondary (contextual) display columns.
+  // Read from raw metadata, not resolved config, because config.value must stay an unresolved
+  // property reference (e.g. "@P .propName") for use as a column value (research.md §1).
+  getSecondaryColumnsFromMetadata() {
+    const columnsFormatter = (this.pConn$.getRawMetadata()?.config as any)?.columnsFormatter;
+    if (!Array.isArray(columnsFormatter)) {
+      return [];
+    }
+
+    return columnsFormatter
+      .map(item => {
+        const property = item?.config?.value;
+        if (typeof property !== 'string' || !property) {
+          return undefined;
+        }
+        let value = property;
+        if (property.startsWith('@P ')) {
+          value = property.substring(3);
+        } else if (property.startsWith('@USER ')) {
+          value = property.substring(6);
+        }
+        return {
+          display: 'true',
+          secondary: 'true',
+          useForSearch: true,
+          value,
+          type: item?.type,
+          label: item?.config?.label
+        };
+      })
+      .filter(Boolean);
+  }
+
   fillOptions(results: any) {
-    const optionsData: any[] = [];
+    const optionsData: AutoCompleteOption[] = [];
     const displayColumn = this.getDisplayFieldsMetaData(this.columns);
+    const secondaryColumns = this.columns?.filter(col => col.display === 'true' && col.secondary === 'true') || [];
+
     results?.forEach(element => {
-      const obj = {
+      const obj: AutoCompleteOption = {
         key: element[displayColumn.key] || element.pyGUID,
         value: element[displayColumn.primary]?.toString()
       };
+
+      if (secondaryColumns.length > 0) {
+        const secondaryComponents = this.buildSecondaryComponents(element, secondaryColumns);
+        if (secondaryComponents.length > 0) {
+          obj.secondaryComponents = secondaryComponents;
+        }
+
+        const secondarySearchText = this.buildSecondarySearchText(element, secondaryColumns);
+        if (secondarySearchText) {
+          obj.secondarySearchText = secondarySearchText;
+        }
+      }
+
       optionsData.push(obj);
     });
     this.setOptions(optionsData);
+  }
+
+  // Rendering only — one read-only PConnect component per configured secondary field, in
+  // configured order, regardless of whether its value is empty (FieldValueList's own
+  // empty-value fallback renders the placeholder, e.g. "Label: ---"). Mirrors ScalarListComponent's
+  // createComponent/DISPLAY_ONLY pattern (research.md §4a).
+  buildSecondaryComponents(element: any, secondaryColumns): any[] {
+    return secondaryColumns.map(col =>
+      this.pConn$.createComponent(
+        {
+          type: col.type,
+          config: {
+            value: element[col.value as string],
+            displayMode: 'DISPLAY_ONLY',
+            readOnly: true,
+            label: col.label
+          }
+        },
+        '',
+        0,
+        {}
+      )
+    ); // 2nd, 3rd, and 4th args empty string/object/null until typedef marked correctly as optional
+  }
+
+  // Search only — independent of buildSecondaryComponents; never derived from rendered output (research.md §4b).
+  buildSecondarySearchText(element: any, secondaryColumns): string {
+    return secondaryColumns
+      .map(col => {
+        const rawValue = element[col.value as string];
+        return rawValue === null || rawValue === undefined ? '' : rawValue.toString().trim().toLowerCase();
+      })
+      .filter(Boolean)
+      .join(' ');
   }
 
   flattenParameters(params = {}) {
@@ -182,12 +276,12 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     const displayColumns = columnList.filter(col => col.display === 'true');
     const metaDataObj: any = { key: '', primary: '', secondary: [] };
     const keyCol = columnList.filter(col => col.key === 'true');
-    metaDataObj.key = keyCol.length > 0 ? keyCol[0].value : 'auto';
+    metaDataObj.key = keyCol.length > 0 ? (keyCol[0].value ?? 'auto') : 'auto';
     for (let index = 0; index < displayColumns.length; index += 1) {
       if (displayColumns[index].primary === 'true') {
-        metaDataObj.primary = displayColumns[index].value;
-      } else {
-        metaDataObj.secondary.push(displayColumns[index].value);
+        metaDataObj.primary = displayColumns[index].value ?? '';
+      } else if (displayColumns[index].secondary === 'true') {
+        metaDataObj.secondary.push(displayColumns[index].value ?? '');
       }
     }
     return metaDataObj;

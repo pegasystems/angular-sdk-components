@@ -15,9 +15,18 @@
           [matAutocomplete]="auto"
           (input)="fieldOnChange($event)"
         />
-        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="optionChanged($event)">
+        <mat-autocomplete #auto="matAutocomplete" [class]="'psdk-autocomplete-panel'" autoActiveFirstOption (optionSelected)="optionChanged($event)">
           <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
-            <span>{{ opt.value }}</span>
+            <span class="psdk-autocomplete-option-primary">{{ opt.value }}</span>
+            <div class="psdk-autocomplete-option-secondary" *ngIf="opt.secondaryComponents?.length">
+              <ng-container *ngFor="let secondary of opt.secondaryComponents; let last = last">
+                <component-mapper
+                  [name]="secondary.getPConnect().getComponentName()"
+                  [props]="{ pConn$: secondary.getPConnect(), formGroup$ }"
+                ></component-mapper>
+                <span *ngIf="!last" class="psdk-autocomplete-option-separator" aria-hidden="true"> · </span>
+              </ng-container>
+            </div>
           </mat-option>
         </mat-autocomplete>
         <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
