@@ -18,9 +18,6 @@
           <a *ngSwitchCase="'email'" class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ field.config.value }}</a>
           <span *ngSwitchCase="'date'" class="psdk-csf-text-style">{{ field.config.value }}</span>
           <label *ngSwitchCase="'caseoperator'">operator</label>
-          <div *ngSwitchCase="'objectreference'" class="psdk-csf-object-reference-value">
-            <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"></component-mapper>
-          </div>
           <span *ngSwitchDefault class="psdk-csf-text-style">{{ field.config.value }}</span>
         </dd>
       </ng-template>
@@ -49,15 +46,9 @@
           {{ field.config?.displayLabel || field.config?.label }}
         </dt>
         <dd class="psdk-csf-secondary-field-data">
-          <div [ngSwitch]="field.type.toLowerCase()">
-            <label *ngSwitchCase="'userreference'" class="psdk-secondary-value">{{ field.config.value.userName || '---' }}</label>
-            <label *ngSwitchCase="'checkbox'" class="psdk-secondary-value">{{ field.config.falseLabel || '---' }}</label>
-            <div *ngSwitchCase="'objectreference'" class="psdk-csf-object-reference-value">
-              <component-mapper
-                name="ObjectReference"
-                [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"
-              ></component-mapper>
-            </div>
+          <div [ngSwitch]="field.type">
+            <label *ngSwitchCase="'UserReference'" class="psdk-secondary-value">{{ field.config.value.userName || '---' }}</label>
+            <label *ngSwitchCase="'Checkbox'" class="psdk-secondary-value">{{ field.config.falseLabel || '---' }}</label>
             <label *ngSwitchDefault class="psdk-secondary-value">{{ field.config.value || '---' }}</label>
           </div>
         </dd>

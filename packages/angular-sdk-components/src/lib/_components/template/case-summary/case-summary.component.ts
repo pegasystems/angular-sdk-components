@@ -100,7 +100,7 @@ export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {
 
     for (const oField of this.arChildren$[0].getPConnect().getChildren()) {
       const kid = oField.getPConnect();
-      this.primaryFields$.push({ ...kid.resolveConfigProps(kid.getRawMetadata()), kid });
+      this.primaryFields$.push(kid.resolveConfigProps(kid.getRawMetadata()));
     }
 
     const secondarySummaryFields = this.prepareCaseSummaryData(this.arChildren$[1].getPConnect());
