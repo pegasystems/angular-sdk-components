@@ -18,9 +18,8 @@ export class DetailsThreeColumnComponent extends DetailsTemplateBase {
   arFields2$: any[] = [];
   arFields3$: any[] = [];
 
-  propsToUse: any = {};
-
   override updateSelf() {
+    this.updateDetailsProps();
     const rawMetaData: any = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata()?.config);
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 

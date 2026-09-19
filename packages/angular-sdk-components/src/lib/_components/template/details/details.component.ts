@@ -16,6 +16,7 @@ export class DetailsComponent extends DetailsTemplateBase {
   arFields$: any[] = [];
 
   override updateSelf() {
+    this.updateDetailsProps();
     const rawMetaData: any = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata()?.config);
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 
