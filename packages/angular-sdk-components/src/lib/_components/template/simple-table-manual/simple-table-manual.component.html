@@ -113,9 +113,7 @@
       </tr>
     </table>
   </div>
-  <button *ngIf="showAddRowButton" mat-button color="primary" style="font-size: 16px" (click)="addRecord()">
-    + {{ localizedVal('Add', localeCategory) }}
-  </button>
+  <button *ngIf="showAddRowButton" mat-button color="primary" style="font-size: 16px" (click)="addRecord()">+ {{ addButtonLabel$ }}</button>
 </ng-container>
 
 <!-- pop overs for filters-->
