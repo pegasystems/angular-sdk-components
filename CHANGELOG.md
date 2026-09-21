@@ -26,7 +26,9 @@
 *   **Fixed DateTime component theme colors.**
       * Github: [PR-561](https://github.com/pegasystems/angular-sdk-components/pull/561)
 *   **Fixed label display in Details templates.**
-      * Github: [PR-568](https://github.com/pegasystems/angular-sdk-components/pull/566)
+      * Github: [PR-568](https://github.com/pegasystems/angular-sdk-components/pull/568)
+*   **Displays the configured custom label for the Add button.**
+      * Github: [PR-574](https://github.com/pegasystems/angular-sdk-components/pull/574)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
