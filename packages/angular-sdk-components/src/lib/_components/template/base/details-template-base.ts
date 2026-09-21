@@ -10,6 +10,7 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
   // For interaction with AngularPConnect
   protected angularPConnectData: AngularPConnectData = {};
   protected angularPConnect;
+  propsToUse: any = {};
 
   childrenMetadataOld;
 
@@ -67,6 +68,11 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
     });
   }
 
+  updateDetailsProps() {
+    const { label, showLabel } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
+  }
+
   processDetailFields(kid: any): any[] {
     const pKid = kid.getPConnect();
     const fields = pKid.getChildren();
@@ -101,9 +107,12 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
           pConn: theViewCont?.getPConnect()
         });
       } else {
+        thePConn.setInheritedProp('displayMode', 'DISPLAY_ONLY');
+        thePConn.setInheritedProp('readOnly', true);
         processedFields.push({
           type: theCompType,
-          config: thePConn.getConfigProps()
+          config: thePConn.getConfigProps(),
+          pConn: thePConn
         });
       }
     });
