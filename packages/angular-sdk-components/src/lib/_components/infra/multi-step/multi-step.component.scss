@@ -143,6 +143,54 @@ mat-horizontal-stepper {
   bottom: -16px;
 }
 
+.psdk-vertical-stepper-container {
+  display: grid;
+  gap: 2rem;
+}
+
+.psdk-vertical-stepper-container.stepper-end {
+  grid-template-columns: 1fr minmax(12rem, auto);
+  grid-template-areas: 'content stepper';
+}
+
+.psdk-vertical-stepper-container.stepper-start {
+  grid-template-columns: minmax(12rem, auto) 1fr;
+  grid-template-areas: 'stepper content';
+}
+
+.psdk-stepper-rail {
+  grid-area: stepper;
+}
+
+.psdk-stepper-content {
+  grid-area: content;
+}
+
+.psdk-stepper-rail .psdk-vertical-step {
+  position: relative;
+}
+
+.psdk-stepper-rail .psdk-vertical-step-header {
+  height: auto;
+  overflow: visible;
+  padding: 0.75rem 0;
+}
+
+.psdk-stepper-rail .psdk-vertical-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  top: calc(0.75rem + 1.75rem);
+  bottom: -0.25rem;
+  width: 0.0625rem;
+  background-color: var(--mat-sys-outline-variant);
+}
+
+.psdk-stepper-rail .psdk-vertical-step-label,
+.psdk-stepper-rail .psdk-vertical-step-label-selected {
+  font-size: 0.875rem;
+}
+
 .psdk-horizontal-stepper {
   background-color: transparent;
   display: block;

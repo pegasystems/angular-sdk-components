@@ -47,7 +47,7 @@ interface SimpleTableManualProps {
   displayMode?: string;
   useSeparateViewForEdit: any;
   viewForEditModal: any;
-  targetClassLabel: string;
+  targetClassLabel?: string;
 }
 
 class Group {
@@ -172,7 +172,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   settingsSvgIcon$: string;
 
   isInitialized = false;
-  targetClassLabel: string;
+  targetClassLabel = '';
+  addButtonLabel$ = '';
   localizedVal = PCore.getLocaleUtils().getLocaleValue;
   localeCategory = 'SimpleTable';
   hideEditRow: any;
@@ -279,7 +280,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.referenceListStr = getContext(this.pConn$).referenceListStr;
     this.label = labelProp || propertyLabel;
     this.parameters = fieldMetadata?.datasource?.parameters;
-    this.targetClassLabel = targetClassLabel;
+    this.targetClassLabel = targetClassLabel ?? '';
+    this.addButtonLabel$ = this.getAddButtonLabel();
     let { contextClass } = this.configProps$;
     this.referenceList = referenceList;
     if (!contextClass) {
@@ -316,7 +318,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.readOnlyMode = renderMode === 'ReadOnly';
     this.editableMode = renderMode === 'Editable';
     const isDisplayModeEnabled = displayMode === 'DISPLAY_ONLY';
-    this.showAddRowButton = !this.readOnlyMode && !simpleTableManualProps.hideAddRow;
+    this.showAddRowButton = this.getShowAddRowButton(simpleTableManualProps.hideAddRow);
     this.hideEditRow = simpleTableManualProps.hideEditRow;
     this.hideDeleteRow = simpleTableManualProps.hideDeleteRow;
     this.allowEditingInModal =
@@ -1036,6 +1038,18 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.pConn$.clearErrorMessages({
       property: this.pConn$.getStateProps()?.referenceList?.substring(1)
     });
+  }
+
+  getAddButtonLabel(): string {
+    const addLabel = this.targetClassLabel
+      ? this.localizedVal('Add {0}', this.localeCategory).replace('{0}', this.targetClassLabel)
+      : this.localizedVal('Add', this.localeCategory);
+
+    return this.localizedVal(addLabel, this.localeCategory);
+  }
+
+  getShowAddRowButton(hideAddRow?: boolean): boolean {
+    return !this.readOnlyMode && !hideAddRow;
   }
 
   editRecord(data, index) {
