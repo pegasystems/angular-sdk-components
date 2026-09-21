@@ -4,6 +4,8 @@ import { FormGroup } from '@angular/forms';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
+type StepIndicator = 'horizontal' | 'vertical' | 'vertical-start';
+
 @Component({
   selector: 'app-multi-step',
   templateUrl: './multi-step.component.html',
@@ -18,6 +20,7 @@ export class MultiStepComponent implements OnInit {
   @Input() arSecondaryButtons$: any[];
   @Input() arChildren$: any[];
   @Input() bIsVertical$: boolean;
+  @Input() stepIndicator$?: StepIndicator;
   @Input() arCurrentStepIndicies$: number[];
   @Input() arNavigationSteps$: any[];
   @Output() actionButtonClick: EventEmitter<any> = new EventEmitter();
@@ -36,6 +39,14 @@ export class MultiStepComponent implements OnInit {
 
   onActionButtonClick(oData: any) {
     this.actionButtonClick.emit(oData);
+  }
+
+  isVerticalLayout(): boolean {
+    return this.stepIndicator$ === 'vertical' || this.stepIndicator$ === 'vertical-start';
+  }
+
+  isHorizontalLayout(): boolean {
+    return !this.isVerticalLayout();
   }
 
   _getVIconClass(status): string {

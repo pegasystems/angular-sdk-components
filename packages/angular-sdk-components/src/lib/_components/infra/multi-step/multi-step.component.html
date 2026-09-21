@@ -1,43 +1,35 @@
 <div *ngIf="bShow$">
-  <div *ngIf="bIsVertical$" class="psdk-vertical-stepper">
-    <div *ngFor="let mainStep of arNavigationSteps$; let i = index" class="psdk-vertical-step">
-      <div class="psdk-vertical-step-header">
-        <div class="{{ _getVIconClass(mainStep.visited_status) }}">
-          <div class="psdk-vertical-step-icon-content">
-            <span>{{ i + 1 }}</span>
-          </div>
-        </div>
-        <div class="{{ _getVLabelClass(mainStep.visited_status) }}">
-          {{ mainStep.name }}
-        </div>
-      </div>
-      <div class="{{ _getVBodyClass(i) }}">
-        <ng-container *ngIf="mainStep?.steps && mainStep.visited_status == 'current'">
-          <div *ngFor="let subStep of mainStep.steps">
-            <div *ngIf="subStep.visited_status == 'current'">
-              <component-mapper
-                name="AssignmentCard"
-                [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
-                [parent]="this"
-                [outputEvents]="{ actionButtonClick: onActionButtonClick }"
-              ></component-mapper>
+  <div
+    *ngIf="isVerticalLayout()"
+    class="psdk-vertical-stepper-container"
+    [class.stepper-start]="stepIndicator$ === 'vertical-start'"
+    [class.stepper-end]="stepIndicator$ === 'vertical'"
+  >
+    <div class="psdk-stepper-rail">
+      <div *ngFor="let mainStep of arNavigationSteps$; let i = index" class="psdk-vertical-step">
+        <div class="psdk-vertical-step-header">
+          <div class="{{ _getVIconClass(mainStep.visited_status) }}">
+            <div class="psdk-vertical-step-icon-content">
+              <span>{{ i + 1 }}</span>
             </div>
           </div>
-        </ng-container>
-
-        <ng-container *ngIf="!mainStep?.steps && mainStep.visited_status == 'current'">
-          <component-mapper
-            name="AssignmentCard"
-            [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
-            [parent]="this"
-            [outputEvents]="{ actionButtonClick: onActionButtonClick }"
-          ></component-mapper>
-        </ng-container>
+          <div class="{{ _getVLabelClass(mainStep.visited_status) }}">
+            {{ mainStep.name }}
+          </div>
+        </div>
       </div>
+    </div>
+    <div class="psdk-stepper-content">
+      <component-mapper
+        name="AssignmentCard"
+        [props]="{ pConn$, formGroup$, arChildren$, arMainButtons$, arSecondaryButtons$ }"
+        [parent]="this"
+        [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+      ></component-mapper>
     </div>
   </div>
 
-  <div *ngIf="!bIsVertical$" class="psdk-horizontal-stepper">
+  <div *ngIf="isHorizontalLayout()" class="psdk-horizontal-stepper">
     <div class="psdk-horizontal-stepper-header-container">
       <ng-container *ngFor="let mainStep of arNavigationSteps$; let i = index">
         <div class="psdk-horizontal-step-header">
