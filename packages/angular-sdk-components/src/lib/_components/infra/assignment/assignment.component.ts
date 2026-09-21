@@ -27,6 +27,8 @@ interface AssignmentProps {
   template: string;
 }
 
+type StepIndicator = 'horizontal' | 'vertical' | 'vertical-start';
+
 @Component({
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',
@@ -60,6 +62,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
   bHasNavigation$ = false;
   bIsVertical$ = false;
+  stepIndicator$: StepIndicator = 'horizontal';
   prevNavigationSteps: any[] = [];
   arCurrentStepIndicies$: number[] = [];
   arNavigationSteps$: any[] = [];
@@ -240,14 +243,22 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   createButtonsForMultiStepForm(oCaseInfo) {
-    this.bHasNavigation$ = true;
+    const navigationTemplate = oCaseInfo.navigation.template?.toLowerCase();
+    const stepCount = oCaseInfo.navigation.steps?.length ?? 0;
+    const shouldHideNavigation = navigationTemplate === 'standard' || stepCount <= 1;
 
-    if ((oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'standard') || oCaseInfo?.navigation?.steps?.length === 1) {
-      this.bHasNavigation$ = false;
-    } else if (oCaseInfo.navigation.template && oCaseInfo.navigation.template.toLowerCase() === 'vertical') {
-      this.bIsVertical$ = true;
-    } else {
-      this.bIsVertical$ = false;
+    this.bHasNavigation$ = !shouldHideNavigation;
+    this.bIsVertical$ = false;
+    this.stepIndicator$ = 'horizontal';
+
+    if (!shouldHideNavigation) {
+      if (navigationTemplate === 'vertical') {
+        this.bIsVertical$ = true;
+        this.stepIndicator$ = 'vertical';
+      } else if (navigationTemplate === 'vertical-left') {
+        this.bIsVertical$ = true;
+        this.stepIndicator$ = 'vertical-start';
+      }
     }
 
     // iterate through steps to find current one(s)

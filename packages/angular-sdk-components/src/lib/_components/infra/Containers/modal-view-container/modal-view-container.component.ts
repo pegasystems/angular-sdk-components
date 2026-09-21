@@ -244,10 +244,15 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       this.dataRecordKeys$ = latestItem.key ?? '';
       this.dataObjectClassID$ = newComp.getValue('.classID') ?? '';
       this.bIsDataObjectRecord$ = isDataObject && !this.isMultiRecord;
-      this.title$ =
-        isDataObject || this.isMultiRecord
-          ? this.getModalHeading(dataObjectAction)
-          : this.determineModalHeaderByAction(actionName, caseTypeName, ID, this.createdViewPConn$?.getCaseLocaleReference());
+      this.title$ = this.getHeadingValue(
+        latestItem,
+        isDataObject,
+        actionName,
+        dataObjectAction,
+        caseTypeName,
+        ID,
+        this.createdViewPConn$?.getCaseLocaleReference()
+      );
 
       const bIsRefComponent = this.checkIfRefComponent(newComp);
 
@@ -408,10 +413,28 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getModalHeading(dataObjectAction) {
-    return dataObjectAction === PCore.getConstants().RESOURCE_STATUS.CREATE
-      ? this.localizedVal('Add Record', this.localeCategory)
-      : this.localizedVal('Edit Record', this.localeCategory);
+  getModalHeading(dataObjectAction, actionName) {
+    switch (dataObjectAction) {
+      case PCore.getConstants().RESOURCE_STATUS.CREATE:
+        return this.localizedVal('Add Record', this.localeCategory);
+      case PCore.getConstants().RESOURCE_STATUS.OPEN_FLOW_ACTION:
+        return this.localizedVal(actionName, this.localeCategory);
+      default:
+        return this.localizedVal('Edit Record', this.localeCategory);
+    }
+  }
+
+  getHeadingValue(latestItem, isDataObject, actionName, dataObjectAction, caseTypeName, ID, caseLocaleRef) {
+    if (this.isMultiRecord) {
+      return latestItem.heading;
+    }
+    if (isDataObject) {
+      if (actionName) {
+        return this.localizedVal(actionName, this.localeCategory);
+      }
+      return this.getModalHeading(dataObjectAction, actionName);
+    }
+    return this.determineModalHeaderByAction(actionName, caseTypeName, ID, caseLocaleRef);
   }
 
   determineModalHeaderByAction(actionName, caseTypeName, ID, caseLocaleRef) {
