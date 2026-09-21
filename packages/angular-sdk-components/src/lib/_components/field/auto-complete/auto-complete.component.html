@@ -16,18 +16,36 @@
           (input)="fieldOnChange($event)"
         />
         <mat-autocomplete #auto="matAutocomplete" [class]="'psdk-autocomplete-panel'" autoActiveFirstOption (optionSelected)="optionChanged($event)">
-          <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
-            <span class="psdk-autocomplete-option-primary">{{ opt.value }}</span>
-            <div class="psdk-autocomplete-option-secondary" *ngIf="opt.secondaryComponents?.length">
-              <ng-container *ngFor="let secondary of opt.secondaryComponents; let last = last">
-                <component-mapper
-                  [name]="secondary.getPConnect().getComponentName()"
-                  [props]="{ pConn$: secondary.getPConnect(), formGroup$ }"
-                ></component-mapper>
-                <span *ngIf="!last" class="psdk-autocomplete-option-separator" aria-hidden="true"> · </span>
-              </ng-container>
-            </div>
-          </mat-option>
+          <ng-container *ngIf="hasGroupBy; else flatOptionsList">
+            <mat-optgroup *ngFor="let group of groupedFilteredOptions$ | async" [label]="group.label">
+              <mat-option *ngFor="let opt of group.options" [value]="opt.value">
+                <span class="psdk-autocomplete-option-primary">{{ opt.value }}</span>
+                <div class="psdk-autocomplete-option-secondary" *ngIf="opt.secondaryComponents?.length">
+                  <ng-container *ngFor="let secondary of opt.secondaryComponents; let last = last">
+                    <component-mapper
+                      [name]="secondary.getPConnect().getComponentName()"
+                      [props]="{ pConn$: secondary.getPConnect(), formGroup$ }"
+                    ></component-mapper>
+                    <span *ngIf="!last" class="psdk-autocomplete-option-separator" aria-hidden="true"> · </span>
+                  </ng-container>
+                </div>
+              </mat-option>
+            </mat-optgroup>
+          </ng-container>
+          <ng-template #flatOptionsList>
+            <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
+              <span class="psdk-autocomplete-option-primary">{{ opt.value }}</span>
+              <div class="psdk-autocomplete-option-secondary" *ngIf="opt.secondaryComponents?.length">
+                <ng-container *ngFor="let secondary of opt.secondaryComponents; let last = last">
+                  <component-mapper
+                    [name]="secondary.getPConnect().getComponentName()"
+                    [props]="{ pConn$: secondary.getPConnect(), formGroup$ }"
+                  ></component-mapper>
+                  <span *ngIf="!last" class="psdk-autocomplete-option-separator" aria-hidden="true"> · </span>
+                </ng-container>
+              </div>
+            </mat-option>
+          </ng-template>
         </mat-autocomplete>
         <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

@@ -21,6 +21,14 @@ interface AutoCompleteOption {
   // Present only when at least one secondary column resolves to a non-empty value (research.md §4a/§4b)
   secondaryComponents?: any[];
   secondarySearchText?: string;
+  // Present only when a group-by field is configured for this (datapage-sourced) field (data-model.md)
+  group?: string;
+}
+
+// Internal, render-time-only view-model — never part of the PConnect contract (data-model.md)
+interface AutoCompleteGroup {
+  label: string;
+  options: AutoCompleteOption[];
 }
 
 interface AutoCompleteProps extends PConnFieldProps {
@@ -63,6 +71,9 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
   columns: any[] = [];
   parameters: {};
   filteredOptions: Observable<AutoCompleteOption[]>;
+  // Grouped view of filteredOptions, only rendered when hasGroupBy is true (research.md §4)
+  groupedFilteredOptions$: Observable<AutoCompleteGroup[]>;
+  hasGroupBy = false;
   filterValue = '';
 
   // Override ngOnInit method
@@ -73,6 +84,8 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
       startWith(''),
       map(value => this._filter((value as string) || ''))
     );
+
+    this.groupedFilteredOptions$ = this.filteredOptions.pipe(map(options => this.buildGroups(options)));
   }
 
   setOptions(options: AutoCompleteOption[]) {
@@ -82,9 +95,25 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     this.fieldControl.setValue(this.value$);
   }
 
+  // Matches only primary text and secondary search text — group value is never used for search (FR-007)
   private _filter(value: string): AutoCompleteOption[] {
     const filterVal = (value || this.filterValue).toLowerCase();
     return this.options$?.filter(option => option.value?.toLowerCase().includes(filterVal) || option.secondarySearchText?.includes(filterVal));
+  }
+
+  // Buckets the already-sorted option list into contiguous groups by exact group value (research.md §7)
+  buildGroups(options: AutoCompleteOption[]): AutoCompleteGroup[] {
+    const groups: AutoCompleteGroup[] = [];
+    options?.forEach(option => {
+      const label = option.group ?? '';
+      const lastGroup = groups[groups.length - 1];
+      if (lastGroup && lastGroup.label === label) {
+        lastGroup.options.push(option);
+      } else {
+        groups.push({ label, options: [option] });
+      }
+    });
+    return groups;
   }
 
   /**
@@ -109,6 +138,8 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     if (columns) {
       this.columns = this.preProcessColumns(columns);
     }
+
+    this.hasGroupBy = this.columns?.some(col => col.groupBy === 'true') ?? false;
 
     if (this.listType === 'associated') {
       const optionsList = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject('')); // 1st arg empty string until typedef marked correctly
@@ -156,27 +187,45 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
       ];
     }
 
-    // Secondary text is out of scope for associated/local list options (FR-012)
+    // Secondary text and grouping are both out of scope for associated/local list options (FR-012/FR-013)
     if (this.listType !== 'associated') {
       const secondaryColumns = this.getSecondaryColumnsFromMetadata();
       if (secondaryColumns.length > 0) {
         columns = [...(columns || []), ...secondaryColumns];
+      }
+
+      const groupByColumns = this.getGroupByColumnsFromMetadata();
+      if (groupByColumns.length > 0) {
+        columns = [...(columns || []), ...groupByColumns];
       }
     }
 
     return { columns, datasource };
   }
 
-  // Reads unresolved columnsFormatter metadata to derive secondary (contextual) display columns.
-  // Read from raw metadata, not resolved config, because config.value must stay an unresolved
-  // property reference (e.g. "@P .propName") for use as a column value (research.md §1).
+  // Reads unresolved groupsFields metadata to derive group-by column descriptor(s); not a
+  // display/search column, so grouping stays independent of primary/secondary text (FR-001/FR-007)
+  getGroupByColumnsFromMetadata() {
+    const groupsFields = (this.pConn$.getRawMetadata()?.config as any)?.groupsFields;
+    if (!Array.isArray(groupsFields)) {
+      return [];
+    }
+    return this.mapMetadataColumns(groupsFields, { display: 'false', groupBy: 'true', useForSearch: false });
+  }
+
+  // Reads unresolved columnsFormatter metadata to derive secondary (contextual) display columns
   getSecondaryColumnsFromMetadata() {
     const columnsFormatter = (this.pConn$.getRawMetadata()?.config as any)?.columnsFormatter;
     if (!Array.isArray(columnsFormatter)) {
       return [];
     }
+    return this.mapMetadataColumns(columnsFormatter, { display: 'true', secondary: 'true', useForSearch: true });
+  }
 
-    return columnsFormatter
+  // Shared by getSecondaryColumnsFromMetadata/getGroupByColumnsFromMetadata: value must stay an
+  // unresolved property reference (e.g. "@P .propName") for use as a raw-row lookup key (research.md §1)
+  mapMetadataColumns(rawColumns: any[], columnFlags: object): any[] {
+    return rawColumns
       .map(item => {
         const property = item?.config?.value;
         if (typeof property !== 'string' || !property) {
@@ -188,14 +237,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
         } else if (property.startsWith('@USER ')) {
           value = property.substring(6);
         }
-        return {
-          display: 'true',
-          secondary: 'true',
-          useForSearch: true,
-          value,
-          type: item?.type,
-          label: item?.config?.label
-        };
+        return { value, type: item?.type, label: item?.config?.label, ...columnFlags };
       })
       .filter(Boolean);
   }
@@ -204,6 +246,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     const optionsData: AutoCompleteOption[] = [];
     const displayColumn = this.getDisplayFieldsMetaData(this.columns);
     const secondaryColumns = this.columns?.filter(col => col.display === 'true' && col.secondary === 'true') || [];
+    const groupByColumn = this.columns?.find(col => col.groupBy === 'true');
 
     results?.forEach(element => {
       const obj: AutoCompleteOption = {
@@ -223,9 +266,42 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
         }
       }
 
+      if (groupByColumn) {
+        obj.group = this.resolveGroupValue(element[groupByColumn.value as string]);
+      }
+
       optionsData.push(obj);
     });
+
+    if (groupByColumn) {
+      this.sortByGroup(optionsData);
+    }
+
     this.setOptions(optionsData);
+  }
+
+  // Null/undefined/whitespace-only source values normalize to '' — the shared blank group (FR-011)
+  resolveGroupValue(rawValue: any): string {
+    if (rawValue === null || rawValue === undefined) {
+      return '';
+    }
+    const stringValue = rawValue.toString();
+    return stringValue.trim() ? stringValue : '';
+  }
+
+  // Ascending, case-sensitive, stable sort so same-group options keep their original relative order (FR-005/FR-012)
+  sortByGroup(options: AutoCompleteOption[]): void {
+    options.sort((a, b) => {
+      const groupA = a.group ?? '';
+      const groupB = b.group ?? '';
+      if (groupA < groupB) {
+        return -1;
+      }
+      if (groupA > groupB) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   // Rendering only — one read-only PConnect component per configured secondary field, in
