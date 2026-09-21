@@ -15,6 +15,8 @@
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
 *   **DataReference as Autocomplete supports Secondary Text.**
     * Github: [PR-569](https://github.com/pegasystems/angular-sdk-components/pull/569)
+*   **DataReference as Autocomplete supports grouping.**
+    * Github: [PR-578](https://github.com/pegasystems/angular-sdk-components/pull/578)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
