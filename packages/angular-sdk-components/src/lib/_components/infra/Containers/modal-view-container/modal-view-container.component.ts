@@ -385,12 +385,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     return getBanners({ target: this.itemKey$, ...this.stateProps$ });
   }
 
-  // getModalHeading(dataObjectAction) {
-  //   return dataObjectAction === PCore.getConstants().RESOURCE_STATUS.CREATE
-  //     ? this.localizedVal('Add Record', this.localeCategory)
-  //     : this.localizedVal('Edit Record', this.localeCategory);
-  // }
-
   getModalHeading(dataObjectAction, actionName) {
     switch (dataObjectAction) {
       case PCore.getConstants().RESOURCE_STATUS.CREATE:
