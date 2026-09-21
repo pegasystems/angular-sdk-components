@@ -10,7 +10,7 @@ interface GroupProps extends PConnFieldProps {
   showHeading: boolean;
   heading: string;
   instructions: string;
-  collapsible: boolean;
+  collapseOnLoad?: 'none' | 'expanded' | 'collapsed';
 }
 
 @Component({
@@ -32,7 +32,6 @@ export class GroupComponent implements OnInit, OnDestroy {
   showHeading$?: boolean;
   heading$: string;
   instructions$: string;
-  collapsible$: boolean;
 
   constructor(private angularPConnect: AngularPConnectService) {}
 
@@ -74,7 +73,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.showHeading$ = this.configProps$.showHeading;
     this.heading$ = this.configProps$.heading;
     this.instructions$ = this.configProps$.instructions;
-    this.collapsible$ = this.configProps$.collapsible;
 
     if (this.configProps$.visibility === undefined) {
       this.visibility$ = this.pConn$.getComputedVisibility();

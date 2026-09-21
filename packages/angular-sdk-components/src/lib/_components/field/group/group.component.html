@@ -3,7 +3,7 @@
     name="FieldGroup"
     [props]="{
       name: showHeading$ ? heading$ : undefined,
-      collapsible: collapsible$,
+      collapseOnLoad: configProps$.collapseOnLoad,
       instructions: instructions$,
       childrenTemplate: childrenTemplate
     }"
