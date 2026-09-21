@@ -56,6 +56,12 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   localeCategory = 'Data Object';
   isMultiRecord = false;
   actionsDialog = false;
+  // Single-record data object modals own the new footer; multi-record modals keep their own.
+  bIsDataObjectRecord$ = false;
+  dataObjectAction$ = '';
+  dataObjectActionID$ = '';
+  dataRecordKeys$ = '';
+  dataObjectClassID$ = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -118,6 +124,10 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       // right now onlu get one updated when initial diaplay.  So, once modal is up
       // let fall through and do a check with "compareCaseInfoIsDifferent" until fixed
       // this.updateSelf();
+
+      // httpMessages are excluded from the bridge's props diff, so a rejected save does not
+      // flag an update; refresh banners here so the error still reaches the open modal.
+      this.refreshBanners();
     }
   }
 
@@ -228,6 +238,12 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
       this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
       this.context$ = latestItem.context;
+      this.dataObjectAction$ = dataObjectAction;
+      this.dataObjectActionID$ = routingInfo.items[latestItem.context].actionID ?? '';
+      // `key` arrives JSON-serialised; DataViewActionButtons parses it before calling the APIs.
+      this.dataRecordKeys$ = latestItem.key ?? '';
+      this.dataObjectClassID$ = newComp.getValue('.classID') ?? '';
+      this.bIsDataObjectRecord$ = isDataObject && !this.isMultiRecord;
       this.title$ =
         isDataObject || this.isMultiRecord
           ? this.getModalHeading(dataObjectAction)
@@ -267,6 +283,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     // for when non modal
     this.modalVisibleChange.emit(this.bShowModal$);
 
+    this.bIsDataObjectRecord$ = false;
     this.oCaseInfo = {};
     this.cdRef.markForCheck();
   }
@@ -377,7 +394,18 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   getBanners() {
-    return getBanners({ target: this.itemKey$, ...this.stateProps$ });
+    // The bridge captures httpMessages onto angularPConnectData instead of leaving them in
+    // state props, so they must be merged in explicitly for server errors to render.
+    return getBanners({ target: this.itemKey$, ...this.stateProps$, httpMessages: this.angularPConnectData.httpMessages });
+  }
+
+  refreshBanners() {
+    this.stateProps$ = this.pConn$.getStateProps();
+    const refreshedBanners = this.getBanners();
+    if (!isEqual(refreshedBanners, this.banners)) {
+      this.banners = refreshedBanners;
+      this.cdRef.markForCheck();
+    }
   }
 
   getModalHeading(dataObjectAction) {

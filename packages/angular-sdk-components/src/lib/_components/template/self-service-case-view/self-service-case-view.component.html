@@ -2,7 +2,9 @@
   <div class="psdk-self-service-case-view-header">
     <div class="heading">{{ this.heading$ }}</div>
     <div *ngIf="showCaseActions" class="psdk-case-view-buttons">
-      <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu">{{ localizedVal('Actions...', localeCategory) }}</button>
+      <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu" [disabled]="bActionsMenuDisabled$">
+        {{ localizedVal('Actions...', localeCategory) }}
+      </button>
       <mat-menu #actionMenu="matMenu" overlapTrigger="false">
         <ng-container *ngFor="let action of arAvailableActions$">
           <button mat-menu-item (click)="_menuActionClick(action)">
@@ -12,6 +14,16 @@
         <ng-container *ngFor="let process of arAvailabeProcesses$">
           <button mat-menu-item (click)="_menuProcessClick(process)">
             {{ process.name }}
+          </button>
+        </ng-container>
+        <ng-container *ngFor="let action of arDataObjectActions$">
+          <button mat-menu-item (click)="_menuDataObjectActionClick(action)">
+            {{ localizedVal(action.name, '', localeKey) }}
+          </button>
+        </ng-container>
+        <ng-container *ngFor="let action of arCreateCaseActions$">
+          <button mat-menu-item (click)="_menuCreateCaseActionClick(action)">
+            {{ localizedVal(action.name, '', localeKey) }}
           </button>
         </ng-container>
       </mat-menu>

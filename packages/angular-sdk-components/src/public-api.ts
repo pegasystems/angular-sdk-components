@@ -14,6 +14,7 @@ export * from './lib/_components/field/auto-complete/auto-complete.component';
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
 export * from './lib/_components/field/check-box/check-box.component';
 export * from './lib/_components/field/currency/currency.component';
+export * from './lib/_components/field/data-view-action-buttons/data-view-action-buttons.component';
 export * from './lib/_components/field/date-time/date-time.component';
 export * from './lib/_components/field/date/date.component';
 export * from './lib/_components/field/decimal/decimal.component';
@@ -168,4 +169,5 @@ export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/update-worklist.service';
 
+export * from './lib/_types/DataObjectAction.interface';
 export * from './lib/_types/PConnProps.interface';

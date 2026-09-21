@@ -13,6 +13,8 @@
     * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
 *   **Fixed DataReference field value rendering in the Details template.**
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
+*   **Added support for Data Object actions in the case view, and Submit/Cancel controls in the Data Object modal.**
+    * Github: [PR-577](https://github.com/pegasystems/angular-sdk-components/pull/577)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**

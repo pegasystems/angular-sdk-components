@@ -22,6 +22,7 @@ import { AutoCompleteComponent } from '../../_components/field/auto-complete/aut
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from '../../_components/field/check-box/check-box.component';
 import { CurrencyComponent } from '../../_components/field/currency/currency.component';
+import { DataViewActionButtonsComponent } from '../../_components/field/data-view-action-buttons/data-view-action-buttons.component';
 import { DateComponent } from '../../_components/field/date/date.component';
 import { DateTimeComponent } from '../../_components/field/date-time/date-time.component';
 import { DecimalComponent } from '../../_components/field/decimal/decimal.component';
@@ -161,6 +162,7 @@ const pegaSdkComponentMap = {
   Currency: CurrencyComponent,
   DashboardFilter: DashboardFilterComponent,
   DataReference: DataReferenceComponent,
+  DataViewActionButtons: DataViewActionButtonsComponent,
   Date: DateComponent,
   DateTime: DateTimeComponent,
   Decimal: DecimalComponent,

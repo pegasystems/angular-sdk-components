@@ -1,0 +1,12 @@
+<mat-grid-list cols="2" rowHeight="4.25rem">
+  <mat-grid-tile>
+    <button mat-raised-button variant="contained" color="secondary" [disabled]="bDisabled$" (click)="onCancel()">
+      {{ localizedVal('Cancel', localeCategory) }}
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-raised-button variant="contained" color="primary" [disabled]="bDisabled$" (click)="onSubmit()">
+      {{ localizedVal(primaryLabel$, localeCategory) }}
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>
