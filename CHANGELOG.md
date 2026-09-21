@@ -1,4 +1,4 @@
-# [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10) - Released: 24/06/2026
+# [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10)
 
 ### **Features**
 *   Support Embedded attachment in simple table manual.
@@ -13,8 +13,6 @@
     * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
 *   **Fixed DataReference field value rendering in the Details template.**
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
-*   **Displays the configured custom label for the Add button.**
-    * Github: [PR-573](https://github.com/pegasystems/angular-sdk-components/pull/573)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
@@ -27,8 +25,12 @@
       * Github: [PR-543](https://github.com/pegasystems/angular-sdk-components/pull/543)
 *   **Fixed DateTime component theme colors.**
       * Github: [PR-561](https://github.com/pegasystems/angular-sdk-components/pull/561)
+*   **Fixed label display in Details templates.**
+      * Github: [PR-568](https://github.com/pegasystems/angular-sdk-components/pull/568)
 *   **Fixed the issue where the DataReference value was displayed as a SemanticLink in the CaseSummary view.**
       * Github: [PR-572](https://github.com/pegasystems/angular-sdk-components/pull/572)
+*   **Displays the configured custom label for the Add button.**
+    * Github: [PR-574](https://github.com/pegasystems/angular-sdk-components/pull/574)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 

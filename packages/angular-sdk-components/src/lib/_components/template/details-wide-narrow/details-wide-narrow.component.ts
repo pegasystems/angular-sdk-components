@@ -15,9 +15,8 @@ export class DetailsWideNarrowComponent extends DetailsTemplateBase {
   showHighlightedData: boolean;
   arFields$: any[] = [];
   arFields2$: any[] = [];
-  propsToUse: any = {};
-
   override updateSelf() {
+    this.updateDetailsProps();
     const rawMetaData: any = this.pConn$.resolveConfigProps(this.pConn$.getRawMetadata()?.config);
     this.showHighlightedData = rawMetaData?.showHighlightedData;
 
