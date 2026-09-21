@@ -13,6 +13,8 @@
     * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
 *   **Fixed DataReference field value rendering in the Details template.**
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
+*   **DataReference as Autocomplete supports Secondary Text.**
+    * Github: [PR-569](https://github.com/pegasystems/angular-sdk-components/pull/569)
 
 ### **Bug fixes**
 *   **Fixed the issue where views are not rendering in Details Template.**
