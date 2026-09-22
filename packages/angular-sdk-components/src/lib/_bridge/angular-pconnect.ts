@@ -9,8 +9,6 @@ export interface AngularPConnectData {
   compID?: string;
   unsubscribeFn?: Function;
   validateMessage?: string;
-  // Captured here rather than left in props, so it is excluded from the props diff below.
-  httpMessages?: any;
   actions?: {
     onChange: Function;
     onBlur: Function;
@@ -375,10 +373,10 @@ export class AngularPConnectService {
       delete incomingProps.pageMessages;
     }
 
-    // Captured here, and cleared when absent, so a stale error cannot leak into the next
-    // container item. Excluded from the props diff either way.
-    inComp.angularPConnectData.httpMessages = incomingProps.httpMessages;
-    incomingProps.httpMessages = undefined;
+    if (incomingProps.httpMessages) {
+      inComp.angularPConnectData.httpMessages = incomingProps.httpMessages;
+      incomingProps.httpMessages = undefined;
+    }
 
     const incomingPropsAsStr: string = JSON.stringify(incomingProps);
 

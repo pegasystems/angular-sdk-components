@@ -124,10 +124,6 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       // right now onlu get one updated when initial diaplay.  So, once modal is up
       // let fall through and do a check with "compareCaseInfoIsDifferent" until fixed
       // this.updateSelf();
-
-      // httpMessages are excluded from the bridge's props diff, so a rejected save does not
-      // flag an update; refresh banners here so the error still reaches the open modal.
-      this.refreshBanners();
     }
   }
 
@@ -399,18 +395,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   getBanners() {
-    // The bridge captures httpMessages onto angularPConnectData instead of leaving them in
-    // state props, so they must be merged in explicitly for server errors to render.
-    return getBanners({ target: this.itemKey$, ...this.stateProps$, httpMessages: this.angularPConnectData.httpMessages });
-  }
-
-  refreshBanners() {
-    this.stateProps$ = this.pConn$.getStateProps();
-    const refreshedBanners = this.getBanners();
-    if (!isEqual(refreshedBanners, this.banners)) {
-      this.banners = refreshedBanners;
-      this.cdRef.markForCheck();
-    }
+    return getBanners({ target: this.itemKey$, ...this.stateProps$ });
   }
 
   getModalHeading(dataObjectAction, actionName) {

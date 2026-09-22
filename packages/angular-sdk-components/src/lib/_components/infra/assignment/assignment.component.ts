@@ -111,6 +111,8 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
+
+    this.bannerService.clearBanners(this.itemKey$);
   }
 
   // Callback passed when subscribing to store change
@@ -315,7 +317,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
   buttonClick(sAction, sButtonType) {
     this.snackBarRef?.dismiss();
-    this.bannerService.clearBanners();
+    this.bannerService.clearBanners(this.itemKey$);
     PCore.getPubSubUtils().publish('clearBannerMessages');
     // right now, done on an individual basis, setting bReInit to true
     // upon the next flow container state change, will cause the flow container
