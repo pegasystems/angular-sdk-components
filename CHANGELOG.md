@@ -15,6 +15,8 @@
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
 *   **DataReference as Autocomplete supports Secondary Text.**
     * Github: [PR-569](https://github.com/pegasystems/angular-sdk-components/pull/569)
+*   **DataReference as Autocomplete supports grouping.**
+    * Github: [PR-578](https://github.com/pegasystems/angular-sdk-components/pull/578)
 *   **Added left and right alignment support for vertical multi-step assignment navigation.**
     * Github: [PR-576](https://github.com/pegasystems/angular-sdk-components/pull/576)
 
