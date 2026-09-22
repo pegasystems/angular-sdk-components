@@ -425,7 +425,9 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
       dataRelationshipContext: this.dataRelationshipContext,
       hideLabel: this.hideLabel,
       onRecordChange: this.handleSelection.bind(this),
+      allowCreatingRecords: isCreateNewReferenceEnabled,
       createNewRecord: isCreateNewReferenceEnabled ? this.getCreateNewRecordFn() : undefined,
+      contextClass: this.contextClass,
       inline: this.inline
     };
 

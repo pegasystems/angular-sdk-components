@@ -43,6 +43,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() isCreateStage$: boolean;
   @Input() updateToken$: number;
   @Input() isInModal$ = false;
+  @Input() banners: any[] = [];
 
   // For interaction with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
@@ -95,6 +96,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    console.log('AssignmentComponent ngOnInit');
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 

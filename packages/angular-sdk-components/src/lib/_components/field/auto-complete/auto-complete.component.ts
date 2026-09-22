@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Observable } from 'rxjs';
@@ -41,6 +42,13 @@ interface AutoCompleteProps extends PConnFieldProps {
   parameters?: any;
   datasource: any;
   columns: any[];
+  showCreateNew?: boolean;
+  onCreateNew?: () => void;
+  allowCreatingRecords?: boolean;
+  createNewLabel?: string;
+  createNewRecord?: () => Promise<unknown>;
+  contextClass?: string;
+  referenceType?: string;
 }
 
 @Component({
@@ -53,6 +61,7 @@ interface AutoCompleteProps extends PConnFieldProps {
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
+    MatButtonModule,
     MatOptionModule,
     FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
@@ -70,11 +79,22 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
   listType: string;
   columns: any[] = [];
   parameters: {};
+  dataSource: any;
   filteredOptions: Observable<AutoCompleteOption[]>;
   // Grouped view of filteredOptions, only rendered when hasGroupBy is true (research.md §4)
   groupedFilteredOptions$: Observable<AutoCompleteGroup[]>;
   hasGroupBy = false;
   filterValue = '';
+  private createSubscriptionId = '';
+  private createCompletionEvent = '';
+
+  get canCreateNew(): boolean {
+    return this.configProps$?.allowCreatingRecords === true;
+  }
+
+  get createNewLabel(): string {
+    return this.configProps$?.createNewLabel || this.pConn$?.getLocalizedValue('Create New', '', '');
+  }
 
   // Override ngOnInit method
   override async ngOnInit(): Promise<void> {
@@ -122,6 +142,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
   override async updateSelf(): Promise<void> {
     // Resolve configuration properties
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps()) as AutoCompleteProps;
+    console.log('Resolved configProps$', this.configProps$, this.configProps$.createNewRecord);
 
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
@@ -134,6 +155,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
 
     const context = this.pConn$.getContextName();
     const { columns, datasource } = this.generateColumnsAndDataSource();
+    this.dataSource = datasource;
 
     if (columns) {
       this.columns = this.preProcessColumns(columns);
@@ -267,7 +289,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
       }
 
       if (groupByColumn) {
-        obj.group = this.resolveGroupValue(element[groupByColumn.value as string]);
+        obj.group = this.resolveGroupValue(element[(groupByColumn as any).value as string]);
       }
 
       optionsData.push(obj);
@@ -385,11 +407,142 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
       const index = this.options$?.findIndex(element => element.value === val);
       key = index > -1 ? (key = this.options$[index].key) : val;
     }
-    const value = key;
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    this.selectRecord(key);
+  }
+
+  override ngOnDestroy(): void {
+    this.clearCreateSubscription();
+    super.ngOnDestroy();
+  }
+
+  startCreateNew(): void {
+    if (!this.canCreateNew) {
+      return;
+    }
+
+    if (this.configProps$.onCreateNew) {
+      this.configProps$.onCreateNew();
+      return;
+    }
+
+    if (!this.configProps$.contextClass) {
+      return;
+    }
+
+    this.clearCreateSubscription();
+    const referenceType = this.configProps$.referenceType?.toLowerCase();
+    this.createCompletionEvent =
+      referenceType === 'data'
+        ? PCore.getConstants().PUB_SUB_EVENTS.DATA_EVENTS.DATA_OBJECT_CREATED
+        : PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS.CREATE_STAGE_DONE;
+    Promise.resolve()
+      .then(() => this.createNewRecord(referenceType === 'data'))
+      .then(() => {
+        this.createSubscriptionId = this.configProps$.contextClass!;
+        PCore.getPubSubUtils().subscribe(
+          this.createCompletionEvent,
+          completion => this.handleCreateCompletion(completion, referenceType === 'data'),
+          this.createSubscriptionId
+        );
+        return this.refreshOptions();
+      })
+      .catch(() => this.clearCreateSubscription());
+  }
+
+  async refreshOptions(): Promise<any[]> {
+    if (this.displayMode$ || this.listType === 'associated' || !this.dataSource) {
+      return [];
+    }
+
+    const results = (await this.dataPageService.getDataPageData(this.dataSource, this.parameters, this.pConn$.getContextName())) as any[];
+    this.fillOptions(results);
+    return results ?? [];
+  }
+
+  private async handleCreateCompletion(completion: any, isDataReference: boolean): Promise<void> {
+    if (!isDataReference && completion?.caseType !== this.configProps$.contextClass) {
+      return;
+    }
+
+    try {
+      PCore.getDataApi().clearContextedCache(this.pConn$.getContextName());
+
+      if (isDataReference) {
+        const record = completion?.data?.responseData;
+        if (!record) {
+          return;
+        }
+        this.selectRecord(this.getRecordKey(record), record);
+        await this.refreshOptions();
+        return;
+      }
+
+      const selectedKey = completion?.ID || completion?.caseId?.split(' ').pop();
+      if (!selectedKey) {
+        return;
+      }
+      const records = await this.refreshOptions();
+      const record = records.find(item => item.ID === completion?.ID || this.getRecordKey(item) === selectedKey);
+      this.selectRecord(selectedKey, record);
+    } finally {
+      this.clearCreateSubscription();
+    }
+  }
+
+  private createNewRecord(isDataReference: boolean): Promise<unknown> {
+    if (this.configProps$.createNewRecord) {
+      return this.configProps$.createNewRecord();
+    }
+
+    if (isDataReference) {
+      return this.pConn$.getActionsApi().showDataObjectCreateView(this.configProps$.contextClass!);
+    }
+
+    return this.pConn$.getActionsApi().createWork(this.configProps$.contextClass!, {
+      openCaseViewAfterCreate: false,
+      startingFields: {}
+    });
+  }
+
+  private getRecordKey(record: Record<string, unknown>): string {
+    const keyColumn = this.columns?.find(column => column.key === 'true');
+    const keyProperty = keyColumn?.value ?? 'ID';
+    return String(record[keyProperty] ?? record['pyGUID'] ?? '');
+  }
+
+  private selectRecord(key: string, record?: Record<string, unknown>): void {
+    if (record) {
+      this.setValuesToAdditionalFields(record);
+    } else {
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, key);
+    }
 
     if (this.onRecordChange) {
-      this.onRecordChange.emit(value);
+      this.onRecordChange.emit({ id: key });
     }
+  }
+
+  private setValuesToAdditionalFields(record: Record<string, unknown>): void {
+    this.columns
+      ?.filter(column => column.setProperty)
+      .forEach(column => {
+        const value = column.key === 'true' ? this.getRecordKey(record) : String(record[column.value] ?? '');
+        if (column.setProperty === 'Associated property') {
+          handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+          return;
+        }
+
+        const targetProperty = column.setProperty.startsWith('.') ? column.setProperty : `.${column.setProperty}`;
+        (this.actionsApi as any).updateFieldValue(targetProperty, value, { associatedProperty: this.propName });
+        (this.actionsApi as any).triggerFieldChange(targetProperty, value);
+      });
+  }
+
+  private clearCreateSubscription(): void {
+    if (this.createCompletionEvent && this.createSubscriptionId) {
+      PCore.getPubSubUtils().unsubscribe(this.createCompletionEvent, this.createSubscriptionId);
+    }
+    this.createCompletionEvent = '';
+    this.createSubscriptionId = '';
   }
 }

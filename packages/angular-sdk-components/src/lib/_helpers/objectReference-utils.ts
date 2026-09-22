@@ -159,6 +159,7 @@ export function getDataRelationshipContextFromKey(key) {
 }
 
 export function createNewRecord({ referenceType, disableStartingFieldsForReference, pConn, contextClass, startingFields, getPConnect }) {
+  console.log('Creating new record with referenceType:', referenceType);
   if (referenceType === 'Case') {
     if (!disableStartingFieldsForReference) {
       startingFields[(PCore as any).getNameSpaceUtils().getDefaultQualifiedName('pyAddCaseContextPage')] = {

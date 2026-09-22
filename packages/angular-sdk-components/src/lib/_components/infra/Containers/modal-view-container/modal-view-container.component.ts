@@ -68,6 +68,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('ModalViewContainerComponent ngOnInit');
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 

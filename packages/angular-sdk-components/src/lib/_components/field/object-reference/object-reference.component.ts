@@ -216,7 +216,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
       ? formFeaturesAvailable.isCreateNewReferenceEnabled && PCore.getAccessPrivilege().hasCreateAccess(contextClass)
       : PCore.getAccessPrivilege().hasCreateAccess(contextClass);
     return {
-      isCreateNewReferenceEnabled: createAuthoringEnabled && userHasCreateAccess,
+      isCreateNewReferenceEnabled: Boolean(createAuthoringEnabled && userHasCreateAccess),
       disableStartingFieldsForReference,
       contextClass
     };
@@ -279,7 +279,7 @@ export class ObjectReferenceComponent implements OnInit, OnDestroy {
     const fieldMetaData = this.buildFieldMetaData(rawConfig, parameters);
     const { isCreateNewReferenceEnabled, disableStartingFieldsForReference, contextClass } = this.resolveCreatePermissions(
       rawConfig,
-      allowCreatingRecords
+      allowCreatingRecords ?? rawConfig.allowCreatingRecords
     );
 
     if (this.type === 'SearchAndSelect') {

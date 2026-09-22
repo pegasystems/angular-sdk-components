@@ -21,8 +21,9 @@
 
 // Scoped to this component's own panel via mat-autocomplete's [class] input — does not affect
 // other mat-option/mat-autocomplete instances in the app (research.md §3).
-::ng-deep .psdk-autocomplete-panel {
-  overflow-x: hidden;
+::ng-deep .mat-mdc-autocomplete-panel.psdk-autocomplete-panel {
+  max-height: none !important;
+  overflow: hidden !important;
 
   .mat-mdc-option {
     .mdc-list-item__primary-text {
@@ -41,6 +42,22 @@
       padding-top: 8px;
       padding-bottom: 8px;
     }
+  }
+}
+
+.psdk-autocomplete-options {
+  max-height: 16rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.psdk-autocomplete-create-action {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  padding: 0.25rem 0.5rem;
+
+  button {
+    justify-content: flex-start;
+    width: 100%;
   }
 }
 
