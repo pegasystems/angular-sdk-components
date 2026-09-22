@@ -14,7 +14,6 @@ export * from './lib/_components/field/auto-complete/auto-complete.component';
 export * from './lib/_components/field/cancel-alert/cancel-alert.component';
 export * from './lib/_components/field/check-box/check-box.component';
 export * from './lib/_components/field/currency/currency.component';
-export * from './lib/_components/field/data-view-action-buttons/data-view-action-buttons.component';
 export * from './lib/_components/field/date-time/date-time.component';
 export * from './lib/_components/field/date/date.component';
 export * from './lib/_components/field/decimal/decimal.component';
@@ -42,6 +41,7 @@ export * from './lib/_components/infra/assignment-card/assignment-card.component
 export * from './lib/_components/infra/Containers/flow-container/flow-container.component';
 export * from './lib/_components/infra/Containers/flow-container/helpers';
 export * from './lib/_components/infra/Containers/hybrid-view-container/hybrid-view-container.component';
+export * from './lib/_components/infra/Containers/modal-view-container/data-view-action-buttons/data-view-action-buttons.component';
 export * from './lib/_components/infra/Containers/modal-view-container/modal-view-container.component';
 export * from './lib/_components/infra/Containers/preview-view-container/preview-view-container.component';
 export * from './lib/_components/infra/Containers/view-container/view-container.component';

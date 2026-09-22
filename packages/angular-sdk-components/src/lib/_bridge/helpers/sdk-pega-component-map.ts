@@ -7,6 +7,7 @@ import { DeferLoadComponent } from '../../_components/infra/defer-load/defer-loa
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 import { FlowContainerComponent } from '../../_components/infra/Containers/flow-container/flow-container.component';
 import { ModalViewContainerComponent } from '../../_components/infra/Containers/modal-view-container/modal-view-container.component';
+import { DataViewActionButtonsComponent } from '../../_components/infra/Containers/modal-view-container/data-view-action-buttons/data-view-action-buttons.component';
 import { MultiStepComponent } from '../../_components/infra/multi-step/multi-step.component';
 import { NavbarComponent } from '../../_components/infra/navbar/navbar.component';
 import { ReferenceComponent } from '../../_components/infra/reference/reference.component';
@@ -22,7 +23,6 @@ import { AutoCompleteComponent } from '../../_components/field/auto-complete/aut
 import { CancelAlertComponent } from '../../_components/field/cancel-alert/cancel-alert.component';
 import { CheckBoxComponent } from '../../_components/field/check-box/check-box.component';
 import { CurrencyComponent } from '../../_components/field/currency/currency.component';
-import { DataViewActionButtonsComponent } from '../../_components/field/data-view-action-buttons/data-view-action-buttons.component';
 import { DateComponent } from '../../_components/field/date/date.component';
 import { DateTimeComponent } from '../../_components/field/date-time/date-time.component';
 import { DecimalComponent } from '../../_components/field/decimal/decimal.component';
