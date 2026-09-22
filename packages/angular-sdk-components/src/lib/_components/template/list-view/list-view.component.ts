@@ -18,6 +18,7 @@ import { DragDropModule, CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag } fr
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getCurrencyOptions } from '../../../_helpers/currency-utils';
 import { getLocale, getSeconds } from '../../../_helpers/common';
 import { formatters } from '../../../_helpers/formatters/format-utils';
@@ -162,18 +163,28 @@ export class ListViewComponent implements OnInit, OnDestroy {
   paging: any;
   fieldDefs: any;
   checkBoxValue: string;
+  // Last value seen on the bound property, used to detect external changes.
+  lastSelectedPropValue: any;
   label?: string = '';
   uniqueId = crypto.randomUUID();
   displayAs: any;
   showRecords: any;
   identifier: string;
   promotedFiltersId: string;
+
+  // Used with AngularPConnect
+  angularPConnectData: AngularPConnectData = {};
+
   constructor(
+    private angularPConnect: AngularPConnectService,
     private psService: ProgressSpinnerService,
     public utils: Utils
   ) {}
 
   ngOnInit(): void {
+    // First thing in initialization is registering and subscribing to the AngularPConnect service
+    this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
+
     this.configProps$ = this.pConn$.getConfigProps() as ListViewProps;
     /** By default, pyGUID is used for Data classes and pyID is for Work classes as row-id/key */
     const defRowID = this.configProps$?.referenceType === 'Case' ? 'pyID' : 'pyGUID';
@@ -197,6 +208,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
     this.selectionMode = this.configProps$.selectionMode;
 
     this.checkBoxValue = this.configProps$.value;
+    this.lastSelectedPropValue = this.configProps$.value;
 
     this.arFilterMainButtons$.push({ actionID: 'submit', jsAction: 'submit', name: 'Submit' });
     this.arFilterSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: 'Cancel' });
@@ -264,6 +276,29 @@ export class ListViewComponent implements OnInit, OnDestroy {
       });
     }
     this.clearSelectionsAndUpdateTable(this.pConn$, this.uniqueId, this.configProps$?.viewName);
+  }
+
+  onStateChange() {
+    // Should always check the bridge to see if the component should
+    // update itself (re-render)
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    // ONLY call updateSelf when the component should update
+    if (bUpdateSelf) {
+      this.updateSelf();
+    }
+  }
+
+  updateSelf(): void {
+    // The selected row is driven by the bound property, which another field on the screen may change.
+    const latestConfigProps = this.pConn$.getConfigProps() as ListViewProps;
+    const latestValue = latestConfigProps?.value;
+
+    // Only re-sync on an actual property change, so a row the user just picked is not reverted.
+    if (this.selectionMode === SELECTION_MODE.SINGLE && latestValue !== this.lastSelectedPropValue) {
+      this.lastSelectedPropValue = latestValue;
+      this.checkBoxValue = latestValue;
+    }
   }
 
   clearSelectionsAndUpdateTable(getPConnect: any, uniqueId: string, viewName): void {
@@ -487,6 +522,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
   // }
 
   ngOnDestroy() {
+    if (this.angularPConnectData.unsubscribeFn) {
+      this.angularPConnectData.unsubscribeFn();
+    }
+
     PCore.getPubSubUtils().unsubscribe(
       PCore.getConstants().PUB_SUB_EVENTS.EVENT_DASHBOARD_FILTER_CHANGE,
       `dashboard-component-${'id'}`,

@@ -15,6 +15,8 @@
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
 *   **DataReference as Autocomplete supports Secondary Text.**
     * Github: [PR-569](https://github.com/pegasystems/angular-sdk-components/pull/569)
+*   **DataReference as Autocomplete supports grouping.**
+    * Github: [PR-578](https://github.com/pegasystems/angular-sdk-components/pull/578)
 *   **Added left and right alignment support for vertical multi-step assignment navigation.**
     * Github: [PR-576](https://github.com/pegasystems/angular-sdk-components/pull/576)
 *   **Added support for Data Object actions in the case view, and Submit/Cancel controls in the Data Object modal.**
@@ -37,6 +39,10 @@
       * Github: [PR-572](https://github.com/pegasystems/angular-sdk-components/pull/572)
 *   **Displays the configured custom label for the Add button.**
       * Github: [PR-574](https://github.com/pegasystems/angular-sdk-components/pull/574)
+*   **Fixed collapsible and expandable behavior in FieldGroup.**
+      * Github: [PR-579](https://github.com/pegasystems/angular-sdk-components/pull/579)
+*   **Fixed the issue where changing a property value on the screen was not reflected in the list below.**
+      * Github: [PR-581](https://github.com/pegasystems/angular-sdk-components/pull/581)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
