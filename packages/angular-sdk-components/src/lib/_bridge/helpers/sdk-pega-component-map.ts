@@ -116,8 +116,6 @@ import { BannerComponent } from '../../_components/designSystemExtension/banner/
 import { CaseCreateStageComponent } from '../../_components/designSystemExtension/case-create-stage/case-create-stage.component';
 import { FieldGroupComponent } from '../../_components/designSystemExtension/field-group/field-group.component';
 import { MaterialCaseSummaryComponent } from '../../_components/designSystemExtension/material-case-summary/material-case-summary.component';
-import { MaterialDetailsComponent } from '../../_components/designSystemExtension/material-details/material-details.component';
-import { MaterialDetailsFieldsComponent } from '../../_components/designSystemExtension/material-details-fields/material-details-fields.component';
 import { MaterialSummaryItemComponent } from '../../_components/designSystemExtension/material-summary-item/material-summary-item.component';
 import { MaterialSummaryListComponent } from '../../_components/designSystemExtension/material-summary-list/material-summary-list.component';
 import { MaterialUtilityComponent } from '../../_components/designSystemExtension/material-utility/material-utility.component';
@@ -170,7 +168,6 @@ const pegaSdkComponentMap = {
   DefaultPage: DefaultPageComponent,
   DeferLoad: DeferLoadComponent,
   Details: DetailsComponent,
-  DetailsFields: MaterialDetailsFieldsComponent,
   DetailsOneColumn: DetailsOneColumnComponent,
   DetailsSubTabs: DetailsSubTabsComponent,
   DetailsThreeColumn: DetailsThreeColumnComponent,
@@ -198,7 +195,6 @@ const pegaSdkComponentMap = {
   ListView: ListViewComponent,
   ListViewActionButtons: ListViewActionButtonsComponent,
   Location: LocationComponent,
-  MaterialDetails: MaterialDetailsComponent,
   MaterialUtility: MaterialUtilityComponent,
   ModalViewContainer: ModalViewContainerComponent,
   MultiReferenceReadOnly: MultiReferenceReadonlyComponent,

@@ -4,8 +4,20 @@
 ></component-mapper>
 
 <ng-template #detailsContent>
-  <component-mapper
-    name="MaterialDetails"
-    [props]="{ arFields$: arFields$, arFields2$: arFields2$, arHighlightedFields: highlightedDataArr, layout: 'wide-narrow' }"
-  ></component-mapper>
+  <ng-container *ngIf="showHighlightedData && highlightedDataArr.length > 0">
+    <div class="psdk-grid-highlighted">
+      <component-mapper
+        *ngFor="let field of highlightedDataArr"
+        [name]="field.getComponentName()"
+        [props]="{ pConn$: field, formGroup$ }"
+      ></component-mapper>
+    </div>
+  </ng-container>
+  <div class="psdk-grid-filter-wide-narrow">
+    <component-mapper
+      *ngFor="let child of children"
+      [name]="child.getPConnect().getComponentName()"
+      [props]="{ pConn$: child.getPConnect(), formGroup$ }"
+    ></component-mapper>
+  </div>
 </ng-template>
