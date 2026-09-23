@@ -80,9 +80,6 @@
   }
 }
 
-// Footer row rendered inside the mat-autocomplete overlay panel (outside this component's view,
-// hence ::ng-deep) — mirrors the MUI CustomPaper divider + "Create new" button pattern.
-// Sticky (not scrolled) since it's a direct child of the panel's own scroll container.
 ::ng-deep .psdk-autocomplete-create-new-wrapper {
   position: sticky;
   bottom: 0;

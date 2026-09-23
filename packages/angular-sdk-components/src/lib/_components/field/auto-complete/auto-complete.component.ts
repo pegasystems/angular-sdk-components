@@ -76,8 +76,6 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
 
   @Output() onRecordChange: EventEmitter<any> = new EventEmitter();
 
-  // The input's MatAutocompleteTrigger — used to close the options panel before navigating away
-  // (e.g. opening the create-new modal), so it doesn't remain open on top of it.
   @ViewChild(MatAutocompleteTrigger) private autocompleteTrigger?: MatAutocompleteTrigger;
 
   configProps$: AutoCompleteProps;
@@ -427,7 +425,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     }
   }
 
-  // Re-fetches the options list (equivalent to initializeList in constellation-frontend)
+  // Re-fetches the options list
   refreshOptionsList(): void {
     if (!this.displayMode$ && this.listType !== 'associated') {
       const context = this.pConn$.getContextName();
@@ -438,7 +436,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     }
   }
 
-  // Sets values for all columns that have setProperty defined (mirrors setValuesToOtherAdditionalFields in constellation-frontend)
+  // Sets values for all columns that have setProperty defined
   setValuesToAdditionalFields(record: Record<string, unknown>): void {
     const setPropertyList = this.columns.filter(col => col.setProperty).map(col => ({ source: col.value, target: col.setProperty, key: col.key }));
 
@@ -544,7 +542,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     Promise.resolve(triggerCreate)
       .then(() => {
         PCore.getPubSubUtils().subscribe(eventType, createNewCallback, contextClass);
-        // Re-initialize the list (equivalent to initializeList() in constellation-frontend)
+        // Re-initialize the list
         this.refreshOptionsList();
       })
       .catch(e => console.error(e));
