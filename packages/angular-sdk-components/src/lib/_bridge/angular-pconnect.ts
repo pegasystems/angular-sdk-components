@@ -134,7 +134,6 @@ export class AngularPConnectService {
 
     // const componentName = inComp.constructor.name;
 
-    // The following comment is from the Nebula/Constellation version of this code. Meant as a reminder to check this occasionally
     // populate additional props which are component specific and not present in configurations
     // This block can be removed once all these props will be added as part of configs
     inComp.pConn$.populateAdditionalProps(compProps);

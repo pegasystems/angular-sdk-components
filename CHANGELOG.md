@@ -21,6 +21,8 @@
     * Github: [PR-576](https://github.com/pegasystems/angular-sdk-components/pull/576)
 *   **Added support for Data Object actions in the case view, and Submit/Cancel controls in the Data Object modal.**
     * Github: [PR-577](https://github.com/pegasystems/angular-sdk-components/pull/577)
+*   **Added support for creating new records for the Autocomplete DataReference and CaseReference components.**
+    * Github: [PR-585](https://github.com/pegasystems/angular-sdk-components/pull/585)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**

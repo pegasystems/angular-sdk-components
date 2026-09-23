@@ -14,6 +14,9 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;
   @Input() bShowAlert$: boolean;
+  @Input() hideDelete: boolean;
+  @Input() isDataObject: boolean;
+  @Input() skipReleaseLockRequest: any;
   @Output() onAlertState$: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   itemKey: string;
@@ -61,7 +64,6 @@ export class CancelAlertComponent implements OnChanges {
   }
 
   buttonClick({ action }) {
-    const actionsAPI = this.pConn$.getActionsApi();
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
 
     switch (action) {
@@ -70,23 +72,44 @@ export class CancelAlertComponent implements OnChanges {
         break;
       case 'discard':
         this.psService.sendMessage(true);
-
-        // eslint-disable-next-line no-case-declarations
-        const deletePromise = actionsAPI.deleteCaseInCreateStage(this.itemKey);
-
-        deletePromise
-          .then(() => {
-            this.psService.sendMessage(false);
-            this.dismissAlert();
-            PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
-          })
-          .catch(() => {
-            this.psService.sendMessage(false);
-            this.sendMessage(this.localizedVal('Delete failed.', this.localeCategory));
-          });
+        this.handleDiscard();
         break;
       default:
         break;
+    }
+  }
+
+  // Data objects and local/bulk actions don't have a create-stage case to delete, so each needs its own engine API
+  handleDiscard() {
+    const actionsAPI = this.pConn$.getActionsApi();
+    // @ts-ignore - Property 'options' is private and only accessible within class 'C11nEnv'.
+    const isBulkAction = (this.pConn$ as any)?.options?.isBulkAction;
+    const isLocalAction = this.pConn$.getValue(PCore.getConstants().CASE_INFO.IS_LOCAL_ACTION);
+
+    if (!this.isDataObject && !isLocalAction && !isBulkAction) {
+      actionsAPI
+        .deleteCaseInCreateStage(this.itemKey, this.hideDelete)
+        .then(() => {
+          this.psService.sendMessage(false);
+          this.dismissAlert();
+          PCore.getPubSubUtils().publish(PCore.getConstants().PUB_SUB_EVENTS.EVENT_CANCEL);
+        })
+        .catch(() => {
+          this.psService.sendMessage(false);
+          this.sendMessage(this.localizedVal('Delete failed.', this.localeCategory));
+        });
+    } else if (isLocalAction) {
+      this.psService.sendMessage(false);
+      this.dismissAlert();
+      actionsAPI.cancelAssignment(this.itemKey, false);
+    } else if (isBulkAction) {
+      this.psService.sendMessage(false);
+      this.dismissAlert();
+      actionsAPI.cancelBulkAction(this.itemKey);
+    } else {
+      this.psService.sendMessage(false);
+      this.dismissAlert();
+      this.pConn$.getContainerManager().removeContainerItem({ containerItemID: this.itemKey, skipReleaseLockRequest: this.skipReleaseLockRequest });
     }
   }
 }

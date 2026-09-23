@@ -21,8 +21,9 @@ export class BannerService {
   updateBanners(itemKey) {
     const localizedValue = PCore.getLocaleUtils().getLocaleValue;
     const validationErrors = PCore.getMessageManager().getValidationErrorMessages(itemKey) || [];
+    const httpMessages = this.getHttpMessages(itemKey);
 
-    const formattedErrors = validationErrors.map(error => {
+    const formattedErrors = [...validationErrors, ...httpMessages].map(error => {
       let message = '';
 
       if (typeof error === 'string') {
@@ -40,5 +41,14 @@ export class BannerService {
     } else {
       this.clearBanners(itemKey);
     }
+  }
+
+  private getHttpMessages(key) {
+    const httpMessages = PCore.getMessageManager().getMessages({
+      context: key,
+      category: 'HTTP'
+    });
+
+    return (httpMessages || []).map((msg: any) => msg.message);
   }
 }

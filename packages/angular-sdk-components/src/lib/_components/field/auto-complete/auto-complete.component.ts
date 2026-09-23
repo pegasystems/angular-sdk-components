@@ -1,10 +1,13 @@
-import { Component, EventEmitter, OnInit, Output, forwardRef, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, forwardRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
@@ -41,6 +44,12 @@ interface AutoCompleteProps extends PConnFieldProps {
   parameters?: any;
   datasource: any;
   columns: any[];
+  allowCreatingRecords?: boolean;
+  onCreateNew?: () => void;
+  createNewLabel?: string;
+  createNewRecord?: () => Promise<unknown>;
+  contextClass?: string;
+  referenceType?: string;
 }
 
 @Component({
@@ -54,6 +63,9 @@ interface AutoCompleteProps extends PConnFieldProps {
     MatInputModule,
     MatAutocompleteModule,
     MatOptionModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
     FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ],
@@ -64,17 +76,28 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
 
   @Output() onRecordChange: EventEmitter<any> = new EventEmitter();
 
+  @ViewChild(MatAutocompleteTrigger) private autocompleteTrigger?: MatAutocompleteTrigger;
+
   configProps$: AutoCompleteProps;
 
   options$: AutoCompleteOption[];
   listType: string;
   columns: any[] = [];
   parameters: {};
+  datasource: any;
   filteredOptions: Observable<AutoCompleteOption[]>;
   // Grouped view of filteredOptions, only rendered when hasGroupBy is true
   groupedFilteredOptions$: Observable<AutoCompleteGroup[]>;
   hasGroupBy = false;
   filterValue = '';
+
+  // "Create new" footer button state
+  showCreateButton = false;
+  createNewLabel = 'Create new';
+  contextClass?: string;
+  referenceType?: string;
+  private onCreateNewFn?: () => void;
+  private createNewRecordFn?: () => Promise<unknown>;
 
   // Override ngOnInit method
   override async ngOnInit(): Promise<void> {
@@ -127,13 +150,22 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     this.updateComponentCommonProperties(this.configProps$);
 
     // Set component specific properties
-    const { value, listType, parameters } = this.configProps$;
+    const { value, listType, parameters, allowCreatingRecords, onCreateNew, createNewLabel, createNewRecord, contextClass, referenceType } =
+      this.configProps$;
 
     this.listType = listType;
     this.parameters = parameters;
 
+    this.showCreateButton = allowCreatingRecords === true;
+    this.createNewLabel = createNewLabel || 'Create new';
+    this.contextClass = contextClass;
+    this.referenceType = referenceType;
+    this.onCreateNewFn = onCreateNew;
+    this.createNewRecordFn = createNewRecord;
+
     const context = this.pConn$.getContextName();
     const { columns, datasource } = this.generateColumnsAndDataSource();
+    this.datasource = datasource;
 
     if (columns) {
       this.columns = this.preProcessColumns(columns);
@@ -391,5 +423,128 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     if (this.onRecordChange) {
       this.onRecordChange.emit(value);
     }
+  }
+
+  // Re-fetches the options list
+  refreshOptionsList(): void {
+    if (!this.displayMode$ && this.listType !== 'associated') {
+      const context = this.pConn$.getContextName();
+      this.dataPageService
+        .getDataPageData(this.datasource, this.parameters, context)
+        .then((results: any) => this.fillOptions(results))
+        .catch(e => console.error(e));
+    }
+  }
+
+  // Sets values for all columns that have setProperty defined
+  setValuesToAdditionalFields(record: Record<string, unknown>): void {
+    const setPropertyList = this.columns.filter(col => col.setProperty).map(col => ({ source: col.value, target: col.setProperty, key: col.key }));
+
+    setPropertyList.forEach(prop => {
+      let valueToSet: string;
+      if (prop.key === 'true') {
+        valueToSet = record[prop.source]?.toString() || (record as any).pyGUID || '';
+      } else {
+        valueToSet = record[prop.source]?.toString() || '';
+      }
+
+      if (prop.target === 'Associated property') {
+        handleEvent(this.actionsApi, 'changeNblur', this.propName, valueToSet);
+      } else {
+        const target = typeof prop.target === 'string' ? prop.target : '';
+        const targetProp = target.startsWith('.') ? target : `.${target}`;
+        (this.actionsApi as any).updateFieldValue(targetProp, valueToSet, { associatedProperty: this.propName });
+        (this.actionsApi as any).triggerFieldChange(targetProp, valueToSet);
+      }
+    });
+  }
+
+  createNewButtonHandler(): void {
+    // Close the options panel so it doesn't remain open on top of the create-new modal
+    this.autocompleteTrigger?.closePanel();
+
+    if (this.onCreateNewFn) {
+      this.onCreateNewFn();
+      return;
+    }
+
+    if (!this.contextClass) {
+      return;
+    }
+
+    const context = this.pConn$.getContextName();
+    const normalizedReferenceType = typeof this.referenceType === 'string' ? this.referenceType.toLowerCase() : '';
+    const isDataReference = normalizedReferenceType === 'data';
+    const { CREATE_STAGE_DONE } = PCore.getConstants().PUB_SUB_EVENTS.CASE_EVENTS;
+    const DATA_OBJECT_CREATED = (PCore.getConstants().PUB_SUB_EVENTS as any).DATA_EVENTS?.DATA_OBJECT_CREATED;
+    const eventType = isDataReference && DATA_OBJECT_CREATED ? DATA_OBJECT_CREATED : CREATE_STAGE_DONE;
+    const contextClass = this.contextClass;
+
+    const createNewCallback = isDataReference
+      ? (data: { data?: { responseData?: Record<string, unknown> } }) => {
+          // Clear contexted cache before re-fetching
+          PCore.getDataApi().clearContextedCache(context);
+
+          const responseData = data?.data?.responseData;
+          if (responseData) {
+            this.setValuesToAdditionalFields(responseData);
+            const displayColumn = this.getDisplayFieldsMetaData(this.columns);
+            const newKey = responseData[displayColumn.key]?.toString() || (responseData as any).pyGUID;
+            if (this.onRecordChange && newKey) {
+              this.onRecordChange.emit({ id: newKey });
+            }
+          }
+
+          this.refreshOptionsList();
+          PCore.getPubSubUtils().unsubscribe(eventType, contextClass);
+        }
+      : (data: { caseId?: string; caseType?: string; ID?: string }) => {
+          // Clear contexted cache before re-fetching
+          PCore.getDataApi().clearContextedCache(context);
+
+          const newCaseId = data.caseId?.split(' ').pop();
+          if (data.caseType === contextClass) {
+            const selectKey = data.ID || newCaseId;
+
+            if (selectKey && this.listType !== 'associated' && this.datasource) {
+              this.dataPageService
+                .getDataPageData(this.datasource, this.parameters, context)
+                .then((results: any) => {
+                  this.fillOptions(results);
+
+                  const displayColumn = this.getDisplayFieldsMetaData(this.columns);
+                  const newRecord = results?.find((el: any) => el.ID === data.ID || (el[displayColumn.key] || el.pyGUID) === selectKey);
+                  if (newRecord) {
+                    this.setValuesToAdditionalFields(newRecord);
+                  } else {
+                    handleEvent(this.actionsApi, 'changeNblur', this.propName, selectKey);
+                  }
+                  if (this.onRecordChange) {
+                    this.onRecordChange.emit({ id: selectKey });
+                  }
+                })
+                .catch(e => console.error(e));
+            }
+            PCore.getPubSubUtils().unsubscribe(eventType, contextClass);
+          }
+        };
+
+    // Build the create action if createNewRecord fn is not provided
+    const triggerCreate = this.createNewRecordFn
+      ? this.createNewRecordFn()
+      : isDataReference
+        ? this.pConn$.getActionsApi().showDataObjectCreateView(contextClass)
+        : this.pConn$.getActionsApi().createWork(contextClass, {
+            openCaseViewAfterCreate: false,
+            startingFields: {}
+          });
+
+    Promise.resolve(triggerCreate)
+      .then(() => {
+        PCore.getPubSubUtils().subscribe(eventType, createNewCallback, contextClass);
+        // Re-initialize the list
+        this.refreshOptionsList();
+      })
+      .catch(e => console.error(e));
   }
 }
