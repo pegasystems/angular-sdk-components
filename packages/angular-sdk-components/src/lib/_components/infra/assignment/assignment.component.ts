@@ -509,10 +509,14 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
       refreshProps.forEach(prop => {
         PCore.getRefreshManager().registerForRefresh(
           'PROP_CHANGE',
-          this.pConn$.getActionsApi().refreshCaseView.bind(this.pConn$.getActionsApi(), caseKey, '', pageReference, {
-            ...refreshOptions,
-            refreshFor: prop[0]
-          }),
+          // The registered prop is an authored pattern with an empty list index (ex: ".Addons().Type"),
+          // which the server rejects. The refresh manager hands back the concrete path that changed.
+          (matchedPath?: string) => {
+            this.pConn$.getActionsApi().refreshCaseView(caseKey, '', pageReference, {
+              ...refreshOptions,
+              refreshFor: matchedPath || prop[0]
+            });
+          },
           `${pageReference}.${prop[1]}`,
           `${context}/${pageReference}`,
           context

@@ -17,7 +17,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { DatapageService } from '../../../_services/datapage.service';
 import { getReferenceList } from '../../../_helpers/field-group-utils';
-import { buildFieldsForTable, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
+import { buildFieldsForTable, filterDataByCommonFields, filterDataByDate, getConfigFields, getContext, isPrimaryFieldsValue } from './helpers';
 import { evaluateAllowRowAction } from '../utils';
 import { Utils } from '../../../_helpers/utils';
 import { getSeconds } from '../../../_helpers/common';
@@ -48,6 +48,7 @@ interface SimpleTableManualProps {
   useSeparateViewForEdit: any;
   viewForEditModal: any;
   targetClassLabel?: string;
+  uniqueField?: string;
 }
 
 class Group {
@@ -115,6 +116,9 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   elementsData: MatTableDataSource<any>;
   originalElementsData: MatTableDataSource<any>;
   rawFields: any;
+  configFields: any[] = [];
+  uniqueField?: string;
+  normalizedUniqueField?: string;
   label?: string = '';
   searchIcon$: string;
 
@@ -262,8 +266,14 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       displayMode,
       useSeparateViewForEdit,
       viewForEditModal,
-      targetClassLabel
+      targetClassLabel,
+      uniqueField
     } = this.configProps$;
+
+    // uniqueField is authored as a property reference (ex: ".EmbedListUUID__"); page instructions expect it
+    // with the leading dot while the inserted row payload expects the bare property name.
+    this.uniqueField = uniqueField;
+    this.normalizedUniqueField = uniqueField?.startsWith('.') ? uniqueField.substring(1) : uniqueField;
 
     const simpleTableManualProps: any = {};
     if (this.checkIfAllowActionsOrRowEditingExist(allowActions) && editMode) {
@@ -335,8 +345,13 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     this.defaultActionId = this.editType === 'action' ? editModeConfig?.defaultAction : undefined;
     this.editActionId =
       this.editType === 'action' && editModeConfig?.useSeparateActionForEdit ? editModeConfig?.editAction : editModeConfig?.defaultAction;
-    const primaryFieldsViewIndex = resolvedFields.findIndex(field => field.config.value === 'pyPrimaryFields');
+    const primaryFieldsViewIndex = resolvedFields?.findIndex(field => isPrimaryFieldsValue(field.config.value)) ?? -1;
     // const showDeleteButton = !this.readOnlyMode && !hideDeleteRow;
+
+    // "pyPrimaryFields" is a single authored column that expands into several real columns, so the
+    // resolved/raw children can no longer be used directly - configFields is the expanded column list.
+    const configFields = getConfigFields(rawFields, contextClass, primaryFieldsViewIndex);
+    this.configFields = configFields.filter(field => !(field?.config?.hide === true));
 
     // Nebula has other handling for isReadOnlyMode but has Cosmos-specific code
     //  so ignoring that for now...
@@ -346,7 +361,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  Nebula does). It will also have the "label", and "meta" contains the original,
     //  unchanged config info. For now, much of the info here is carried over from
     //  Nebula and we may not end up using it all.
-    this.fieldDefs = buildFieldsForTable(rawFields, this.pConn$, this.showActionColumn, {
+    this.fieldDefs = buildFieldsForTable(configFields, this.pConn$, this.showActionColumn, {
       primaryFieldsViewIndex,
       fields: resolvedFields
     });
@@ -362,7 +377,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       return field.name ? field.name : field.cellRenderer;
     });
 
-    // And now we can process the resolvedFields to add in the "name"
+    // And now we can process the configFields to add in the "name"
     //  from from the fieldDefs. This "name" is the value that
     //  we'll share to connect things together in the table.
 
@@ -370,12 +385,9 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       return { ...acc, [curr.name]: curr.label };
     }, {});
 
-    this.processedFields = [];
-
-    this.processedFields = resolvedFields.map((field, i) => {
-      field.config.name = this.displayedColumns[i]; // .config["value"].replace(/ ./g,"_");   // replace space dot with underscore
-      field.config.label = labelsMap[field.config.name] || field.config.label;
-      return field;
+    this.processedFields = this.configFields.map((field, i) => {
+      const name = this.displayedColumns[i];
+      return { ...field, config: { ...field.config, name, label: labelsMap[name] || field.config.label } };
     });
 
     // for adding rows to table when editable and not modal view
@@ -421,11 +433,12 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       this.pConn$.getListActions().initDefaultPageInstructions(
         this.pConn$.getReferenceList(),
         // Temporary filter for attachments to align with constellation payload behavior.
-        this.fieldDefs.filter(item => item.name && item.meta?.type !== 'Attachment').map(item => item.name)
+        this.fieldDefs.filter(item => item.name && item.meta?.type !== 'Attachment').map(item => item.name),
+        this.uniqueField
       );
     } else {
-      // @ts-ignore - An argument for 'propertyNames' was not provided.
-      this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
+      // @ts-ignore - 'propertyNames' is optional at runtime; uniqueField is passed as the 3rd argument.
+      this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList(), undefined, this.uniqueField);
     }
   }
 
@@ -1032,7 +1045,11 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
           this.defaultActionId
         );
     } else {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
+      const payload: any = { classID: this.contextClass };
+      if (this.normalizedUniqueField) {
+        payload[this.normalizedUniqueField] = crypto.randomUUID();
+      }
+      this.pConn$.getListActions().insert(payload, this.referenceList.length);
     }
 
     this.pConn$.clearErrorMessages({
@@ -1084,7 +1101,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
       const isRowEditable = evaluateAllowRowAction(allowRowEdit, element);
       const data: any = [];
       data.__originalIndex = index;
-      this.rawFields?.forEach(item => {
+      this.configFields?.forEach(item => {
         if (!item?.config?.hide) {
           item = {
             ...item,

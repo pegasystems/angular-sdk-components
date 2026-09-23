@@ -165,6 +165,10 @@ tr.mat-mdc-header-row {
   text-align: center;
   border: 1px solid var(--mat-sys-outline-variant);
   border-top: none;
+
+  td.mat-cell {
+    text-align: center;
+  }
 }
 
 .psdk-utility-card-action-svg-icon {
