@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, Input, Output, EventEmitter, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import isEqual from 'fast-deep-equal';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
@@ -11,6 +10,22 @@ import { getBanners } from '../../../../_helpers/case-utils';
  * WARNING: This file is part of the infrastructure component responsible for working with Redux and managing the creation and update of Redux containers and PConnect.
  * You may override Material components within this component if needed, but do not modify any container-related logic. Changing this logic can lead to unexpected behavior.
  */
+
+// One entry per open modal — supports stacking (e.g. "Create new" opened from within another modal)
+interface ModalEntry {
+  key: string;
+  title: string;
+  createdViewPConn$: any;
+  arChildren$: any[];
+  isMultiRecordData: boolean;
+  isDataObjectModal: boolean;
+  dataRecordKeys: string;
+  dataObjectActionID: string;
+  dataObjectAction: string;
+  dataObjectClassId: string;
+  context: string;
+  updateToken: number;
+}
 
 @Component({
   selector: 'app-modal-view-container',
@@ -27,41 +42,26 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   // Used with AngularPConnect
   angularPConnectData: AngularPConnectData = {};
 
-  arChildren$: any[];
   stateProps$: object;
-  banners: any;
-  templateName$: string;
-  buildName$: string;
-  context$: string;
-  title$ = '';
-  bShowModal$ = false;
-  itemKey$: string;
   formGroup$: FormGroup;
-  oCaseInfo: object = {};
-
-  // for causing a change on assignment
-  updateToken$ = 0;
 
   routingInfoRef: any = {};
 
-  // created object is now a View with a Template
-  //  Use its PConnect to render the CaseView; DON'T replace this.pConn$
-  createdViewPConn$: any;
+  // Stack of open modals — supports one modal opening another (e.g. "Create new" from within a modal).
+  // Keyed the same as PCore's routingInfo.items so open/update/close can be derived from accessedOrder.
+  modalStack: ModalEntry[] = [];
+  private modalCollection: Record<string, object> = {};
 
   bSubscribed = false;
   cancelPConn$?: typeof PConnect;
+  cancelHideDelete$: boolean;
+  cancelIsDataObject$: boolean;
+  cancelSkipReleaseLockRequest$: any;
   bShowCancelAlert$ = false;
   bAlertState: boolean;
   localizedVal: Function;
   localeCategory = 'Data Object';
-  isMultiRecord = false;
   actionsDialog = false;
-  // Single-record data object modals own the new footer; multi-record modals keep their own.
-  bIsDataObjectRecord$ = false;
-  dataObjectAction$ = '';
-  dataObjectActionID$ = '';
-  dataRecordKeys$ = '';
-  dataObjectClassID$ = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -77,21 +77,11 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     // First thing in initialization is registering and subscribing to the AngularPConnect service
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange);
 
-    const baseContext = this.pConn$.getContextName();
-    const acName = this.pConn$.getContainerName();
-
-    // for now, in general this should be overridden by updateSelf(), and not be blank
-    if (this.itemKey$ === '') {
-      this.itemKey$ = baseContext.concat('/').concat(acName);
-    }
-
     const containerMgr = this.pConn$.getContainerManager();
 
     containerMgr.initializeContainers({
       type: 'multiple'
     });
-
-    // const { CONTAINER_TYPE, PUB_SUB_EVENTS } = PCore.getConstants();
 
     this.angularPConnect.shouldComponentUpdate(this);
     this.localizedVal = PCore.getLocaleUtils().getLocaleValue;
@@ -115,15 +105,8 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   onStateChange() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
-    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
-
-    // ONLY call updateSelf when the component should update
-    if (bUpdateSelf) {
+    if (this.angularPConnect.shouldComponentUpdate(this)) {
       this.updateSelf();
-    } else if (this.bShowModal$) {
-      // right now onlu get one updated when initial diaplay.  So, once modal is up
-      // let fall through and do a check with "compareCaseInfoIsDifferent" until fixed
-      // this.updateSelf();
     }
   }
 
@@ -140,153 +123,102 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     } catch (ex) {
       console.log(ex);
     }
-    // const configProps = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.stateProps$ = this.pConn$.getStateProps();
-    this.banners = this.getBanners();
 
-    if (!loadingInfo) {
-      // turn off spinner
-      // this.psService.sendMessage(false);
+    if (!routingInfo || loadingInfo) {
+      return;
     }
 
-    if (routingInfo && !loadingInfo /* && this.bUpdate */) {
-      const currentOrder = routingInfo.accessedOrder;
+    const { accessedOrder, type } = routingInfo;
 
-      if (undefined == currentOrder) {
-        return;
-      }
+    if (undefined == accessedOrder) {
+      return;
+    }
 
-      const currentItems = routingInfo.items;
+    const { MULTIPLE } = PCore.getConstants().CONTAINER_TYPE;
+    const { key, latestItem } = this.getKeyAndLatestItem(routingInfo);
 
-      const { key, latestItem } = this.getKeyAndLatestItem(routingInfo);
-
-      if (currentOrder.length > 0) {
-        if (currentItems[key] && currentItems[key].view && Object.keys(currentItems[key].view).length > 0) {
-          const currentItem = currentItems[key];
-          const rootView = currentItem.view;
-          const { context } = rootView.config;
-          const config: any = { meta: rootView };
-          config.options = {
-            context: currentItem.context,
-            hasForm: true,
-            pageReference: context || this.pConn$.getPageReference()
-          };
-
-          if (!this.bSubscribed) {
-            this.bSubscribed = true;
-            const { PUB_SUB_EVENTS } = PCore.getConstants();
-            PCore.getPubSubUtils().subscribe(
-              PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT,
-              payload => {
-                this.showAlert(payload);
-              },
-              PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT
-            );
-          }
-
-          // let configObject = PCore.createPConnect(config);
-
-          // THIS is where the ViewContainer creates a View
-          // The config has meta.config.type = "view"
-          this.createView(routingInfo, currentItem, latestItem, key);
+    if (latestItem && type === MULTIPLE && (this.isOpenModalAction(accessedOrder) || this.isUpdateModalAction(accessedOrder))) {
+      const currentItem = routingInfo.items[key];
+      if (currentItem?.view && Object.keys(currentItem.view).length > 0) {
+        if (!this.bSubscribed) {
+          this.bSubscribed = true;
+          const { PUB_SUB_EVENTS } = PCore.getConstants();
+          PCore.getPubSubUtils().subscribe(
+            PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT,
+            payload => {
+              this.showAlert(payload);
+            },
+            PUB_SUB_EVENTS.EVENT_SHOW_CANCEL_ALERT
+          );
         }
-      } else {
-        this.hideModal();
+
+        this.upsertModal(routingInfo, latestItem, key, accessedOrder);
       }
+    } else if (this.isCloseModalAction(accessedOrder)) {
+      this.handleModalClose(accessedOrder);
     }
   }
 
-  createView(routingInfo, currentItem, latestItem, key) {
-    const configObject = this.getConfigObject(currentItem, null, false);
-    const newComp = configObject?.getPConnect();
-    // const newCompName = newComp.getComponentName();
-    const caseInfo = newComp && newComp.getDataObject() && newComp.getDataObject().caseInfo ? newComp.getDataObject().caseInfo : null;
-    // The metadata for pyDetails changed such that the "template": "CaseView"
-    //  is no longer a child of the created View but is in the created View's
-    //  config. So, we DON'T want to replace this.pConn$ since the created
-    //  component is a View (and not a ViewContainer). We now look for the
-    //  "template" type directly in the created component (newComp) and NOT
-    //  as a child of the newly created component.
-    // console.log(`---> ModalViewContainer created new ${newCompName}`);
+  // Builds/refreshes one modal-stack entry and pushes or updates it in-place
+  upsertModal(routingInfo, latestItem, key, accessedOrder) {
+    const entry = this.buildModalEntry(routingInfo, latestItem, key);
 
-    // Use the newly created component (View) info but DO NOT replace
-    //  this ModalViewContainer's pConn$, etc.
-    //  Note that we're now using the newly created View's PConnect in the
-    //  ViewContainer HTML template to guide what's rendered similar to what
-    //  the Nebula/Constellation return of React.Fragment does
-
-    // right now need to check caseInfo for changes, to trigger redraw, not getting
-    // changes from angularPconnect except for first draw
-    if (newComp && caseInfo && this.compareCaseInfoIsDifferent(caseInfo)) {
-      this.psService.sendMessage(false);
-
-      this.createdViewPConn$ = newComp;
-      const newConfigProps = newComp.getConfigProps();
-      this.templateName$ = 'template' in newConfigProps ? (newConfigProps.template as string) : '';
-
-      const { actionName } = latestItem;
-      const theNewCaseInfo = newComp.getCaseInfo();
-      // const caseName = theNewCaseInfo.getName();
-      const ID = theNewCaseInfo.getBusinessID() || theNewCaseInfo.getID();
-
-      const caseTypeName = theNewCaseInfo.getCaseTypeName();
-      const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
-      const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
-      this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
-      this.context$ = latestItem.context;
-      this.dataObjectAction$ = dataObjectAction;
-      this.dataObjectActionID$ = routingInfo.items[latestItem.context].actionID ?? '';
-      // `key` arrives JSON-serialised; DataViewActionButtons parses it before calling the APIs.
-      this.dataRecordKeys$ = latestItem.key ?? '';
-      this.dataObjectClassID$ = newComp.getValue('.classID') ?? '';
-      this.bIsDataObjectRecord$ = isDataObject && !this.isMultiRecord;
-      this.title$ = this.getHeadingValue(
-        latestItem,
-        isDataObject,
-        actionName,
-        dataObjectAction,
-        caseTypeName,
-        ID,
-        this.createdViewPConn$?.getCaseLocaleReference()
-      );
-
-      const bIsRefComponent = this.checkIfRefComponent(newComp);
-
-      if (bIsRefComponent) {
-        this.arChildren$ = [newComp.getComponent()];
-      } else {
-        // update children with new view's children
-        this.arChildren$ = newComp.getChildren();
-      }
-
-      this.bShowModal$ = true;
-
-      // for when non modal
-      this.modalVisibleChange.emit(this.bShowModal$);
-
-      // save off itemKey to be used for finishAssignment, etc.
-      this.itemKey$ = key;
-
-      // cause a change for assignment
-      this.updateToken$ = new Date().getTime();
-      this.cdRef.markForCheck();
-    }
-  }
-
-  hideModal() {
-    if (this.bShowModal$) {
-      // other code in Nebula/Constellation not needed currently, but if so later,
-      // should put here
+    if (this.isUpdateModalAction(accessedOrder)) {
+      this.modalStack = this.modalStack.map(modal => (modal.key === key ? entry : modal));
+    } else if (this.isOpenModalAction(accessedOrder)) {
+      this.handleModalOpen(key);
+      this.modalStack = [...this.modalStack, entry];
     }
 
-    this.bShowModal$ = false;
-
-    // for when non modal
-    this.modalVisibleChange.emit(this.bShowModal$);
-
-    this.bIsDataObjectRecord$ = false;
-    this.oCaseInfo = {};
+    this.psService.sendMessage(false);
+    this.modalVisibleChange.emit(this.modalStack.length > 0);
     this.cdRef.markForCheck();
+  }
+
+  buildModalEntry(routingInfo, latestItem, key): ModalEntry {
+    const configObject = this.getConfigObject(latestItem, null, false);
+    // latestItem is only reached once its view metadata is populated (see updateSelf), so the
+    // created component is always present here — same assumption the old single-modal code made.
+    const newComp = configObject!.getPConnect();
+
+    const { actionName } = latestItem;
+    const theCaseInfo = newComp.getCaseInfo();
+    const ID = theCaseInfo.getBusinessID() || theCaseInfo.getID();
+    const caseTypeName = theCaseInfo.getCaseTypeName();
+
+    const isDataObject = routingInfo.items[latestItem.context].resourceType === PCore.getConstants().RESOURCE_TYPES.DATA;
+    const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
+    const isMultiRecordData = routingInfo.items[latestItem.context].isMultiRecordData;
+
+    const title = this.getHeadingValue(
+      latestItem,
+      isMultiRecordData,
+      isDataObject,
+      actionName,
+      dataObjectAction,
+      caseTypeName,
+      ID,
+      newComp?.getCaseLocaleReference()
+    );
+
+    const bIsRefComponent = this.checkIfRefComponent(newComp);
+    const arChildren$ = bIsRefComponent ? [newComp.getComponent()] : newComp.getChildren();
+
+    return {
+      key,
+      title,
+      createdViewPConn$: newComp,
+      arChildren$,
+      isMultiRecordData,
+      isDataObjectModal: isDataObject && !isMultiRecordData,
+      dataRecordKeys: latestItem.key || '',
+      dataObjectActionID: routingInfo.items[latestItem.context].actionID || '',
+      dataObjectAction: dataObjectAction || '',
+      dataObjectClassId: newComp.getValue('.classID') || '',
+      context: latestItem.context,
+      updateToken: new Date().getTime()
+    };
   }
 
   getConfigObject(item, pConnect, isReverseCoexistence = false) {
@@ -333,13 +265,17 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     this.bAlertState = bData;
     this.bShowCancelAlert$ = false;
     if (this.bAlertState) {
-      this.hideModal();
+      // Discard confirmed — matches react-sdk: drop the whole stack rather than just the top entry
+      this.modalCollection = {};
+      this.modalStack = [];
+      this.modalVisibleChange.emit(false);
+      this.cdRef.markForCheck();
     }
   }
 
   showAlert(payload) {
     const { latestItem } = this.getKeyAndLatestItem(this.routingInfoRef.current);
-    const { isModalAction } = payload;
+    const { isModalAction, hideDelete, isDataObject, skipReleaseLockRequest } = payload;
 
     /*
       If we are in create stage full page mode, created a new case and trying to click on cancel button
@@ -348,6 +284,9 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     if (latestItem && isModalAction && !this.actionsDialog) {
       const configObject = this.getConfigObject(latestItem, this.pConn$);
       this.cancelPConn$ = configObject?.getPConnect();
+      this.cancelHideDelete$ = hideDelete;
+      this.cancelIsDataObject$ = isDataObject;
+      this.cancelSkipReleaseLockRequest$ = skipReleaseLockRequest;
       this.bShowCancelAlert$ = true;
       this.cdRef.markForCheck();
     }
@@ -371,31 +310,42 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     return {};
   }
 
-  compareCaseInfoIsDifferent(oCurrentCaseInfo: object): boolean {
-    let bRet = false;
-
-    // fast-deep-equal version
-    if (isEqual !== undefined) {
-      bRet = !isEqual(this.oCaseInfo, oCurrentCaseInfo);
-    } else {
-      const sCurrnentCaseInfo = JSON.stringify(oCurrentCaseInfo);
-      const sOldCaseInfo = JSON.stringify(this.oCaseInfo);
-      // stringify compare version
-      if (sCurrnentCaseInfo != sOldCaseInfo) {
-        bRet = true;
-      }
-    }
-
-    // if different, save off new case info
-    if (bRet) {
-      this.oCaseInfo = JSON.parse(JSON.stringify(oCurrentCaseInfo));
-    }
-
-    return bRet;
+  // Open/update/close are derived purely from how the count of known modals compares to
+  // routingInfo.accessedOrder — mirrors react-sdk's modal-stack fix so that closing one modal
+  // (removing one entry from accessedOrder) can never be mistaken for closing all of them.
+  isOpenModalAction(accessedOrder: string[]): boolean {
+    return Object.keys(this.modalCollection).length < accessedOrder.length;
   }
 
-  getBanners() {
-    return getBanners({ target: this.itemKey$, ...this.stateProps$ });
+  isUpdateModalAction(accessedOrder: string[]): boolean {
+    return Object.keys(this.modalCollection).length === accessedOrder.length;
+  }
+
+  isCloseModalAction(accessedOrder: string[]): boolean {
+    return Object.keys(this.modalCollection).length > accessedOrder.length;
+  }
+
+  handleModalOpen(key: string) {
+    this.modalCollection = { ...this.modalCollection, [key]: {} };
+  }
+
+  handleModalClose(accessedOrder: string[]) {
+    const closedModalKey = Object.keys(this.modalCollection).find(modalKey => !accessedOrder.includes(modalKey));
+
+    if (closedModalKey) {
+      const updatedModalCollection = { ...this.modalCollection };
+      delete updatedModalCollection[closedModalKey];
+      this.modalCollection = updatedModalCollection;
+
+      this.modalStack = this.modalStack.filter(modal => modal.key !== closedModalKey);
+      this.modalVisibleChange.emit(this.modalStack.length > 0);
+      this.cdRef.markForCheck();
+    }
+  }
+
+  // AssignmentComponent renders its own validation banner via BannerService; this covers server-side errors (e.g. httpMessages) that arrive at the container instead
+  getBanners(itemKey: string) {
+    return getBanners({ target: itemKey, ...this.stateProps$, httpMessages: this.angularPConnectData.httpMessages });
   }
 
   getModalHeading(dataObjectAction, actionName) {
@@ -409,8 +359,8 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getHeadingValue(latestItem, isDataObject, actionName, dataObjectAction, caseTypeName, ID, caseLocaleRef) {
-    if (this.isMultiRecord) {
+  getHeadingValue(latestItem, isMultiRecordData, isDataObject, actionName, dataObjectAction, caseTypeName, ID, caseLocaleRef) {
+    if (isMultiRecordData) {
       return latestItem.heading;
     }
     if (isDataObject) {
@@ -429,14 +379,22 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     return `${this.localizedVal('Create', this.localeCategory)} ${this.localizedVal(caseTypeName, undefined, caseLocaleRef)} (${ID})`;
   }
 
-  closeActionsDialog = () => {
+  // Closes one modal by key (bound per-instance in the template), or the topmost when omitted
+  closeActionsDialog = (modalKey?: string) => {
     this.actionsDialog = true;
-    this.bShowModal$ = false;
 
-    // for when non modal
-    this.modalVisibleChange.emit(this.bShowModal$);
+    this.modalStack = modalKey ? this.modalStack.filter(modal => modal.key !== modalKey) : this.modalStack.slice(0, -1);
 
-    this.oCaseInfo = {};
+    this.modalVisibleChange.emit(this.modalStack.length > 0);
     this.cdRef.markForCheck();
   };
+
+  // Binds closeActionsDialog to a specific modal's key so closing one stacked modal never affects the others
+  closeModalFor(modalKey: string) {
+    return () => this.closeActionsDialog(modalKey);
+  }
+
+  trackByModalKey(index: number, modal: ModalEntry) {
+    return modal.key;
+  }
 }

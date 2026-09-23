@@ -9,6 +9,7 @@ export interface AngularPConnectData {
   compID?: string;
   unsubscribeFn?: Function;
   validateMessage?: string;
+  httpMessages?: any[];
   actions?: {
     onChange: Function;
     onBlur: Function;

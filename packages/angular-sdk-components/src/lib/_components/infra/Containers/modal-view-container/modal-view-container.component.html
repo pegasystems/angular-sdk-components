@@ -1,27 +1,38 @@
-<div id="dialog" *ngIf="bShowModal$" class="psdk-dialog-background">
-  <div class="psdk-modal-view-container-top" id="{{ buildName$ }}">
-    <h3 *ngIf="title$ != ''">{{ title$ }}</h3>
+<div *ngFor="let modal of modalStack; trackBy: trackByModalKey" id="dialog" class="psdk-dialog-background">
+  <div class="psdk-modal-view-container-top" id="{{ modal.key }}">
+    <h3 *ngIf="modal.title != ''">{{ modal.title }}</h3>
+    <div *ngIf="getBanners(modal.key).length">
+      <component-mapper name="AlertBanner" [props]="{ banners: getBanners(modal.key) }"></component-mapper>
+    </div>
     <component-mapper
       name="Assignment"
-      [props]="{ pConn$: createdViewPConn$, formGroup$, arChildren$, itemKey$, isCreateStage$: true, updateToken$, isInModal$: true, banners }"
+      [props]="{
+        pConn$: modal.createdViewPConn$,
+        formGroup$,
+        arChildren$: modal.arChildren$,
+        itemKey$: modal.key,
+        isCreateStage$: true,
+        updateToken$: modal.updateToken,
+        isInModal$: true
+      }"
     ></component-mapper>
-    <div *ngIf="isMultiRecord">
+    <div *ngIf="modal.isMultiRecordData">
       <component-mapper
         name="ListViewActionButtons"
-        [props]="{ pConn$: createdViewPConn$, context$ }"
-        [outputEvents]="{ closeActionsDialog: closeActionsDialog }"
+        [props]="{ pConn$: modal.createdViewPConn$, context$: modal.context }"
+        [outputEvents]="{ closeActionsDialog: closeModalFor(modal.key) }"
       ></component-mapper>
     </div>
-    <div *ngIf="bIsDataObjectRecord$">
+    <div *ngIf="modal.isDataObjectModal">
       <component-mapper
         name="DataViewActionButtons"
         [props]="{
-          pConn$: createdViewPConn$,
-          context$,
-          dataObjectAction$,
-          actionID$: dataObjectActionID$,
-          dataRecordKeys$,
-          classID$: dataObjectClassID$
+          pConn$: modal.createdViewPConn$,
+          context$: modal.context,
+          classID$: modal.dataObjectClassId,
+          dataObjectAction$: modal.dataObjectAction,
+          dataRecordKeys$: modal.dataRecordKeys,
+          actionID$: modal.dataObjectActionID
         }"
       ></component-mapper>
     </div>
@@ -31,7 +42,13 @@
 <div *ngIf="bShowCancelAlert$">
   <component-mapper
     name="CancelAlert"
-    [props]="{ bShowAlert$: bShowCancelAlert$, pConn$: cancelPConn$ }"
+    [props]="{
+      bShowAlert$: bShowCancelAlert$,
+      pConn$: cancelPConn$,
+      hideDelete: cancelHideDelete$,
+      isDataObject: cancelIsDataObject$,
+      skipReleaseLockRequest: cancelSkipReleaseLockRequest$
+    }"
     [parent]="this"
     [outputEvents]="{ onAlertState$: onAlertState }"
   ></component-mapper>
