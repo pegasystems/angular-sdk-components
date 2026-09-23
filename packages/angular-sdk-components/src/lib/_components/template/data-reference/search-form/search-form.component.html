@@ -1,5 +1,5 @@
 <div class="search-form" style="display: flex; flex-direction: column">
-  <h5>{{ propsToUse.label }}</h5>
+  <h3>{{ label$ }}</h3>
   <div *ngIf="searchCategoriesComp === 'dropdown'">
     <mat-form-field class="psdk-full-width">
       <mat-select [value]="currentTabId" (selectionChange)="handleTabClick($event.value)">

@@ -48,6 +48,7 @@ export class SearchFormComponent implements OnInit, OnChanges {
   tabItems: any[] = [];
   searchCategoriesComp: any;
   propsToUse: any;
+  label$: string;
   tabData: any = [];
   tabCountSources: any;
   deferLoadedTabs: any;
@@ -59,6 +60,7 @@ export class SearchFormComponent implements OnInit, OnChanges {
     this.isInitialized = true;
     this.configProps$ = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.propsToUse = { ...this.pConn$.getInheritedProps() };
+    this.label$ = this.configProps$?.label || this.propsToUse.label;
     // When called from ObjectReference, pConn$ itself acts as deferLoadedTabs (no children[2])
     if (this.type === 'ObjectReference') {
       this.deferLoadedTabs = { getPConnect: () => this.pConn$ };
