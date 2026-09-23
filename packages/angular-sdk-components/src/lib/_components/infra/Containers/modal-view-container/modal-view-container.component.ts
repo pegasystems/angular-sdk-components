@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
+import { BannerService } from 'packages/angular-sdk-components/src/lib/_services/banner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
-import { getBanners } from '../../../../_helpers/case-utils';
 
 /**
  * WARNING: This file is part of the infrastructure component responsible for working with Redux and managing the creation and update of Redux containers and PConnect.
@@ -67,7 +67,8 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     private angularPConnect: AngularPConnectService,
     private cdRef: ChangeDetectorRef,
     private psService: ProgressSpinnerService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public bannerService: BannerService
   ) {
     // create the formGroup
     this.formGroup$ = fb.group({ hideRequired: false });
@@ -105,7 +106,10 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   onStateChange() {
     // Should always check the bridge to see if the component should
     // update itself (re-render)
-    if (this.angularPConnect.shouldComponentUpdate(this)) {
+    const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
+
+    // ONLY call updateSelf when the component should update
+    if (bUpdateSelf) {
       this.updateSelf();
     }
   }
@@ -339,13 +343,9 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
 
       this.modalStack = this.modalStack.filter(modal => modal.key !== closedModalKey);
       this.modalVisibleChange.emit(this.modalStack.length > 0);
+      this.bannerService.clearBanners(closedModalKey);
       this.cdRef.markForCheck();
     }
-  }
-
-  // AssignmentComponent renders its own validation banner via BannerService; this covers server-side errors (e.g. httpMessages) that arrive at the container instead
-  getBanners(itemKey: string) {
-    return getBanners({ target: itemKey, ...this.stateProps$, httpMessages: this.angularPConnectData.httpMessages });
   }
 
   getModalHeading(dataObjectAction, actionName) {
@@ -386,6 +386,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     this.modalStack = modalKey ? this.modalStack.filter(modal => modal.key !== modalKey) : this.modalStack.slice(0, -1);
 
     this.modalVisibleChange.emit(this.modalStack.length > 0);
+    this.bannerService.clearBanners(modalKey ?? '');
     this.cdRef.markForCheck();
   };
 

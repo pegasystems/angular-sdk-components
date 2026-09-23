@@ -1,9 +1,6 @@
 <div *ngFor="let modal of modalStack; trackBy: trackByModalKey" id="dialog" class="psdk-dialog-background">
   <div class="psdk-modal-view-container-top" id="{{ modal.key }}">
     <h3 *ngIf="modal.title != ''">{{ modal.title }}</h3>
-    <div *ngIf="getBanners(modal.key).length">
-      <component-mapper name="AlertBanner" [props]="{ banners: getBanners(modal.key) }"></component-mapper>
-    </div>
     <component-mapper
       name="Assignment"
       [props]="{
