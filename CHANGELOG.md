@@ -23,6 +23,8 @@
     * Github: [PR-577](https://github.com/pegasystems/angular-sdk-components/pull/577)
 
 ### **Bug fixes**
+*   **Fixed DataReference not making an api call on state change.**
+      * Github: [PR-486](https://github.com/pegasystems/angular-sdk-components/pull/486)
 *   **Fixed the issue where views are not rendering in Details Template.**
       * Github: [PR-533](https://github.com/pegasystems/angular-sdk-components/pull/533)
 *   **Fixed an issue where FieldGroup visibility was not worked correctly.**
@@ -44,7 +46,8 @@
 *   **Fixed the issue where changing a property value on the screen was not reflected in the list below.**
       * Github: [PR-581](https://github.com/pegasystems/angular-sdk-components/pull/581)
 *   **Fixed search form label issue, fallback to inherited label when config label is missing.**
-      * Github: [PR-581](https://github.com/pegasystems/angular-sdk-components/pull/582)
+      * Github: [PR-582](https://github.com/pegasystems/angular-sdk-components/pull/582)
+
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
