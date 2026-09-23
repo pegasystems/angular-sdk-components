@@ -8,6 +8,7 @@ import { interval } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { CreateCaseAction, DataObjectAction, DataObjectActions } from '../../../_types/DataObjectAction.interface';
 
 interface CaseViewProps {
   // If any, enter additional props that only exist on this component
@@ -45,6 +46,9 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
   arAvailableActions$: any[] = [];
   arAvailabeProcesses$: any[] = [];
+  arDataObjectActions$: DataObjectAction[] = [];
+  arCreateCaseActions$: CreateCaseAction[] = [];
+  bActionsMenuDisabled$ = true;
 
   caseSummaryPConn$: any;
   currentCaseID = '';
@@ -98,8 +102,29 @@ export class CaseViewComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('okToInitFlowContainer', 'true');
       } else {
         this.updateHeaderAndSummary();
+        this.updateCaseActions();
       }
     }
+  }
+
+  // React re-reads every action source on each render. Here fullUpdate is gated on a case ID
+  // change and so runs once, while actions (and a data object's `dataInfo.actions`) arrive
+  // later, so they are all refreshed on every store update instead.
+  updateCaseActions() {
+    const caseInfo = this.pConn$.getDataObject()?.caseInfo ?? {};
+    this.arAvailableActions$ = caseInfo.availableActions ?? [];
+    this.arAvailabeProcesses$ = caseInfo.availableProcesses ?? [];
+    this.editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
+
+    const dataInfoActions: DataObjectActions = this.pConn$.getValue('.actions', 'dataInfo') ?? {};
+    this.arDataObjectActions$ = dataInfoActions.availableActions ?? [];
+    this.arCreateCaseActions$ = dataInfoActions.availableCreateCaseActions ?? [];
+
+    this.bActionsMenuDisabled$ =
+      this.arAvailableActions$.length === 0 &&
+      this.arAvailabeProcesses$.length === 0 &&
+      this.arDataObjectActions$.length === 0 &&
+      this.arCreateCaseActions$.length === 0;
   }
 
   hasCaseIDChanged(): boolean {
@@ -144,9 +169,8 @@ export class CaseViewComponent implements OnInit, OnDestroy {
 
     const caseInfo = this.pConn$.getDataObject().caseInfo;
     this.currentCaseID = caseInfo.ID;
-    this.arAvailableActions$ = caseInfo?.availableActions ? caseInfo.availableActions : [];
-    this.editAction = this.arAvailableActions$.find(action => action.ID === 'pyUpdateCaseDetails');
-    this.arAvailabeProcesses$ = caseInfo?.availableProcesses ? caseInfo.availableProcesses : [];
+
+    this.updateCaseActions();
 
     this.svgCase$ = this.utils.getImageSrc(this.configProps$.icon, this.utils.getSDKStaticContentUrl());
 
@@ -217,5 +241,30 @@ export class CaseViewComponent implements OnInit, OnDestroy {
     const openProcessAction = actionsAPI.openProcessAction.bind(actionsAPI);
 
     openProcessAction(data.ID, { ...data });
+  }
+
+  _menuDataObjectActionClick(action: DataObjectAction) {
+    const actionsAPI = this.pConn$.getActionsApi();
+    const openDataObjectAction = actionsAPI.openDataObjectAction.bind(actionsAPI);
+    const classID = this.pConn$.getValue('.classID', 'dataInfo.content');
+    const dataRecord = this.pConn$.getValue('.content', 'dataInfo');
+
+    openDataObjectAction(classID, dataRecord, action.ID, this.localizedVal(action.name, '', this.localeKey));
+  }
+
+  _menuCreateCaseActionClick(action: CreateCaseAction) {
+    const actionsAPI = this.pConn$.getActionsApi();
+    const createWork = actionsAPI.createWork.bind(actionsAPI);
+    const { field, inputs } = action.targetDataReferenceField ?? {};
+    const startingFields: Record<string, any> = {};
+
+    // The engine expects the linked values nested under the target reference field.
+    if (field) {
+      inputs?.forEach(input => {
+        startingFields[field] = { ...startingFields[field], [input.linkedField]: this.pConn$.getValue(`.${input.linkedField}`, '') };
+      });
+    }
+
+    createWork(action.ID, { startingFields });
   }
 }

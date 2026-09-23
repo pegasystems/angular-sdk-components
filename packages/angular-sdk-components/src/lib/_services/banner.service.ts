@@ -4,10 +4,18 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class BannerService {
-  banners: any[] = [];
+  // Keyed by container item: a modal and the flow container behind it are rendered at the
+  // same time, and each assignment must only show the errors raised against its own item.
+  private bannersByItemKey: Record<string, any[]> = {};
 
-  clearBanners() {
-    this.banners = [];
+  private static readonly noBanners: any[] = [];
+
+  getBanners(itemKey: string): any[] {
+    return this.bannersByItemKey[itemKey] ?? BannerService.noBanners;
+  }
+
+  clearBanners(itemKey: string) {
+    delete this.bannersByItemKey[itemKey];
   }
 
   updateBanners(itemKey) {
@@ -27,6 +35,10 @@ export class BannerService {
       return localizedValue(message, 'Messages');
     });
 
-    this.banners = formattedErrors.length ? [{ messages: formattedErrors, variant: 'urgent' }] : [];
+    if (formattedErrors.length) {
+      this.bannersByItemKey[itemKey] = [{ messages: formattedErrors, variant: 'urgent' }];
+    } else {
+      this.clearBanners(itemKey);
+    }
   }
 }

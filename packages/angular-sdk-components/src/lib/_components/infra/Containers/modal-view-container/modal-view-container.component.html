@@ -12,6 +12,19 @@
         [outputEvents]="{ closeActionsDialog: closeActionsDialog }"
       ></component-mapper>
     </div>
+    <div *ngIf="bIsDataObjectRecord$">
+      <component-mapper
+        name="DataViewActionButtons"
+        [props]="{
+          pConn$: createdViewPConn$,
+          context$,
+          dataObjectAction$,
+          actionID$: dataObjectActionID$,
+          dataRecordKeys$,
+          classID$: dataObjectClassID$
+        }"
+      ></component-mapper>
+    </div>
   </div>
 </div>
 

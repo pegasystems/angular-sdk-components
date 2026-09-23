@@ -41,6 +41,7 @@ export * from './lib/_components/infra/assignment-card/assignment-card.component
 export * from './lib/_components/infra/Containers/flow-container/flow-container.component';
 export * from './lib/_components/infra/Containers/flow-container/helpers';
 export * from './lib/_components/infra/Containers/hybrid-view-container/hybrid-view-container.component';
+export * from './lib/_components/infra/Containers/modal-view-container/data-view-action-buttons/data-view-action-buttons.component';
 export * from './lib/_components/infra/Containers/modal-view-container/modal-view-container.component';
 export * from './lib/_components/infra/Containers/preview-view-container/preview-view-container.component';
 export * from './lib/_components/infra/Containers/view-container/view-container.component';
@@ -168,4 +169,5 @@ export * from './lib/_messages/error-messages.service';
 export * from './lib/_messages/progress-spinner.service';
 export * from './lib/_messages/update-worklist.service';
 
+export * from './lib/_types/DataObjectAction.interface';
 export * from './lib/_types/PConnProps.interface';

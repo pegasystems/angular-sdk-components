@@ -7,6 +7,7 @@ import { DeferLoadComponent } from '../../_components/infra/defer-load/defer-loa
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 import { FlowContainerComponent } from '../../_components/infra/Containers/flow-container/flow-container.component';
 import { ModalViewContainerComponent } from '../../_components/infra/Containers/modal-view-container/modal-view-container.component';
+import { DataViewActionButtonsComponent } from '../../_components/infra/Containers/modal-view-container/data-view-action-buttons/data-view-action-buttons.component';
 import { MultiStepComponent } from '../../_components/infra/multi-step/multi-step.component';
 import { NavbarComponent } from '../../_components/infra/navbar/navbar.component';
 import { ReferenceComponent } from '../../_components/infra/reference/reference.component';
@@ -161,6 +162,7 @@ const pegaSdkComponentMap = {
   Currency: CurrencyComponent,
   DashboardFilter: DashboardFilterComponent,
   DataReference: DataReferenceComponent,
+  DataViewActionButtons: DataViewActionButtonsComponent,
   Date: DateComponent,
   DateTime: DateTimeComponent,
   Decimal: DecimalComponent,

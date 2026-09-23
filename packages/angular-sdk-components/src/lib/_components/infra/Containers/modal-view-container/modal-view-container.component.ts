@@ -56,6 +56,12 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
   localeCategory = 'Data Object';
   isMultiRecord = false;
   actionsDialog = false;
+  // Single-record data object modals own the new footer; multi-record modals keep their own.
+  bIsDataObjectRecord$ = false;
+  dataObjectAction$ = '';
+  dataObjectActionID$ = '';
+  dataRecordKeys$ = '';
+  dataObjectClassID$ = '';
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -228,6 +234,12 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
       const dataObjectAction = routingInfo.items[latestItem.context].resourceStatus;
       this.isMultiRecord = routingInfo.items[latestItem.context].isMultiRecordData;
       this.context$ = latestItem.context;
+      this.dataObjectAction$ = dataObjectAction;
+      this.dataObjectActionID$ = routingInfo.items[latestItem.context].actionID ?? '';
+      // `key` arrives JSON-serialised; DataViewActionButtons parses it before calling the APIs.
+      this.dataRecordKeys$ = latestItem.key ?? '';
+      this.dataObjectClassID$ = newComp.getValue('.classID') ?? '';
+      this.bIsDataObjectRecord$ = isDataObject && !this.isMultiRecord;
       this.title$ = this.getHeadingValue(
         latestItem,
         isDataObject,
@@ -272,6 +284,7 @@ export class ModalViewContainerComponent implements OnInit, OnDestroy {
     // for when non modal
     this.modalVisibleChange.emit(this.bShowModal$);
 
+    this.bIsDataObjectRecord$ = false;
     this.oCaseInfo = {};
     this.cdRef.markForCheck();
   }

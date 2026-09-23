@@ -3,7 +3,9 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
-    "types": ["jasmine"]
+    // "types" replaces (not merges with) the root config, so pcore-pconnect-typedefs
+    // must be repeated here or the global PCore declaration is lost in test builds.
+    "types": ["jasmine", "pcore-pconnect-typedefs"]
   },
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }
