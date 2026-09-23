@@ -21,6 +21,8 @@
     * Github: [PR-576](https://github.com/pegasystems/angular-sdk-components/pull/576)
 *   **Added support for Data Object actions in the case view, and Submit/Cancel controls in the Data Object modal.**
     * Github: [PR-577](https://github.com/pegasystems/angular-sdk-components/pull/577)
+*   **Added support for primary fields in EmbeddedData and query params for refreshFor action.**
+    * Github: [PR-584](https://github.com/pegasystems/angular-sdk-components/pull/584)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**
