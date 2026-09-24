@@ -100,6 +100,9 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
     this.initComponent();
 
+    // ngOnChanges runs before ngOnInit, so updateChanges() never registers on first render.
+    this.registerForRefresh();
+
     this.angularPConnect.shouldComponentUpdate(this);
 
     this.bInitialized = true;
@@ -130,6 +133,9 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
     //    AND removing the "gate" that was put there since shouldComponentUpdate
     //      should be the real "gate"
     if (bUpdateSelf) {
+      // The engine drops registrations when it cleans the context cache, so re-register on each update (as React does per render).
+      this.registerForRefresh();
+
       let loadingInfo;
       try {
         // loadingInfo = this.pConn$.getLoadingStatus();
@@ -491,7 +497,11 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   registerForRefresh() {
-    const refreshConditions = this.pConn$.getCaseInfo()?.getActionRefreshConditions();
+    const caseInfo = this.pConn$.getCaseInfo();
+    if (!caseInfo) {
+      return;
+    }
+    const refreshConditions = caseInfo.getActionRefreshConditions();
     const pageReference = this.pConn$.getPageReference();
     const context = this.pConn$.getContextName();
 
@@ -500,7 +510,7 @@ export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
 
     // refresh api registration
     const refreshProps = getRefreshProps(refreshConditions);
-    const caseKey = this.pConn$.getCaseInfo().getKey();
+    const caseKey = caseInfo.getKey();
     const refreshOptions = {
       autoDetectRefresh: true,
       preserveClientChanges: false
