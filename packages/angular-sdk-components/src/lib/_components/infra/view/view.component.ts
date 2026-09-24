@@ -21,11 +21,10 @@ const NO_HEADER_TEMPLATES = [
 
 const DETAILS_TEMPLATES = [
   'Details',
-  'DetailsFields',
   'DetailsOneColumn',
-  'DetailsSubTabs',
-  'DetailsThreeColumn',
   'DetailsTwoColumn',
+  'DetailsThreeColumn',
+  'DetailsSubTabs',
   'NarrowWideDetails',
   'WideNarrowDetails'
 ];
