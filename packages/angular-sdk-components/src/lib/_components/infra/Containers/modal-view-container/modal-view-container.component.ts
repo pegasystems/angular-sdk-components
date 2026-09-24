@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
-import { BannerService } from 'packages/angular-sdk-components/src/lib/_services/banner.service';
+import { BannerService } from '../../../../_services/banner.service';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 
 /**
