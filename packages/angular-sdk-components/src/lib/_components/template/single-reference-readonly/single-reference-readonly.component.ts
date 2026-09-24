@@ -60,7 +60,7 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const label = this.configProps.label;
     const showLabel = this.configProps.showLabel;
     const inheritedProps = this.pConn$.getInheritedProps();
-    const propsToUse = { showLabel, ...inheritedProps, label: label ?? inheritedProps['label'] };
+    const propsToUse = { label: inheritedProps.label || label, showLabel: inheritedProps.showLabel || showLabel };
     const type = (rawViewMetadata?.config as any)?.componentType ?? rawViewMetadata?.type;
     this.displayMode = this.configProps.displayMode;
     const targetObjectType = this.configProps.targetObjectType;
