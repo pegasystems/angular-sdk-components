@@ -10,9 +10,11 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
   // For interaction with AngularPConnect
   protected angularPConnectData: AngularPConnectData = {};
   protected angularPConnect;
-  propsToUse: any = {};
 
-  childrenMetadataOld;
+  children: any[] = [];
+  propsToUse: any = {};
+  showHighlightedData: boolean;
+  highlightedDataArr: any = [];
 
   constructor(injector: Injector) {
     this.angularPConnect = injector.get(AngularPConnectService);
@@ -40,23 +42,13 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
     // Only call updateSelf when the component should update
-    if (bUpdateSelf || this.hasRawMetadataChanged()) {
+    if (bUpdateSelf) {
       this.updateSelf();
     }
   }
 
-  // this method will get overriden by the child component
-  updateSelf() {}
-
-  hasRawMetadataChanged(): boolean {
-    const newChildrenMetadata = this.fetchChildrenMetadata();
-
-    if (!PCore.isDeepEqual(newChildrenMetadata, this.childrenMetadataOld)) {
-      this.childrenMetadataOld = newChildrenMetadata;
-      return true;
-    }
-
-    return false;
+  updateSelf() {
+    this.updateDetailsProps();
   }
 
   fetchChildrenMetadata() {
@@ -69,54 +61,34 @@ export class DetailsTemplateBase implements OnInit, OnDestroy {
   }
 
   updateDetailsProps() {
-    const { label, showLabel } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
+    const { label, showLabel, showHighlightedData } = this.pConn$.resolveConfigProps(this.pConn$.getConfigProps());
     this.propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
+    this.showHighlightedData = showHighlightedData;
+
+    this.pConn$.setInheritedProp('displayMode', 'DISPLAY_ONLY');
+    this.pConn$.setInheritedProp('readOnly', true);
+
+    this.children = this.pConn$.getChildren() as any[];
+
+    // Process highlighted fields for display in the highlighted section
+    this.highlightedDataArr = this.processHighlightedFields();
   }
 
-  processDetailFields(kid: any): any[] {
-    const pKid = kid.getPConnect();
-    const fields = pKid.getChildren();
-    const processedFields: any[] = [];
+  processHighlightedFields(): any[] {
+    if (!this.showHighlightedData) return [];
 
-    fields?.forEach(field => {
-      const thePConn = field.getPConnect();
-      const theCompType = thePConn.getComponentName().toLowerCase();
-      if (theCompType === 'reference' || theCompType === 'group' || theCompType === 'objectreference') {
-        const configProps = thePConn.getConfigProps();
-        configProps.readOnly = true;
-        configProps.displayMode = 'DISPLAY_ONLY';
-        const propToUse = { ...thePConn.getInheritedProps() };
-        configProps.label = propToUse?.label;
-        const options = {
-          context: thePConn.getContextName(),
-          pageReference: thePConn.getPageReference(),
-          referenceList: thePConn.getReferenceList()
-        };
-        const viewContConfig = {
-          meta: {
-            ...thePConn.getMetadata(),
-            type: theCompType,
-            config: configProps
-          },
-          options
-        };
-        const theViewCont = PCore.createPConnect(viewContConfig);
-        processedFields.push({
-          type: theCompType,
-          config: thePConn.getConfigProps(),
-          pConn: theViewCont?.getPConnect()
-        });
-      } else {
-        thePConn.setInheritedProp('displayMode', 'DISPLAY_ONLY');
-        thePConn.setInheritedProp('readOnly', true);
-        processedFields.push({
-          type: theCompType,
-          config: thePConn.getConfigProps(),
-          pConn: thePConn
-        });
+    const { highlightedData = [] } = (this.pConn$.getRawMetadata() as any).config;
+
+    return (highlightedData ?? []).map(field => {
+      field.config.displayMode = 'STACKED_LARGE_VAL';
+      field.config.readOnly = true;
+
+      if (field.config.value === '@P .pyStatusWork') {
+        field.type = 'TextInput';
+        field.config.displayAsStatus = true;
       }
-    });
 
-    return processedFields;
+      return this.pConn$.createComponent(field, '', 0, {}).getPConnect();
+    });
   }
 }
