@@ -120,8 +120,6 @@ export * from './lib/_components/designSystemExtension/alert/alert.component';
 export * from './lib/_components/designSystemExtension/alert-banner/alert-banner.component';
 export * from './lib/_components/designSystemExtension/case-create-stage/case-create-stage.component';
 export * from './lib/_components/designSystemExtension/material-case-summary/material-case-summary.component';
-export * from './lib/_components/designSystemExtension/material-details/material-details.component';
-export * from './lib/_components/designSystemExtension/material-details-fields/material-details-fields.component';
 export * from './lib/_components/designSystemExtension/material-summary-item/material-summary-item.component';
 export * from './lib/_components/designSystemExtension/material-summary-list/material-summary-list.component';
 export * from './lib/_components/designSystemExtension/material-utility/material-utility.component';
