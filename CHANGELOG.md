@@ -21,6 +21,8 @@
     * Github: [PR-577](https://github.com/pegasystems/angular-sdk-components/pull/577)
 *   **DataReference as Autocomplete supports grouping.**
     * Github: [PR-578](https://github.com/pegasystems/angular-sdk-components/pull/578)
+*   **Added support for primary fields in EmbeddedData and query params for refreshFor action.**
+    * Github: [PR-584](https://github.com/pegasystems/angular-sdk-components/pull/584)
 *   **Added support for creating new records for the Autocomplete DataReference and CaseReference components.**
     * Github: [PR-585](https://github.com/pegasystems/angular-sdk-components/pull/585)
 

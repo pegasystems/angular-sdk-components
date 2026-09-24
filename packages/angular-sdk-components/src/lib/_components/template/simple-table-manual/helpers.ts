@@ -148,12 +148,33 @@ const SUPPORTED_FIELD_TYPES = [
   'RichText'
 ];
 
+// PCore.getNameSpaceUtils() exists at runtime but is missing from the pcore typedefs.
+export const getQualifiedPrimaryFieldsName = (): string =>
+  (PCore as any).getNameSpaceUtils?.()?.getDefaultQualifiedName(PRIMARY_FIELDS) ?? PRIMARY_FIELDS;
+
+export const isPrimaryFieldsValue = (value): boolean => value === PRIMARY_FIELDS || value === getQualifiedPrimaryFieldsName();
+
+/**
+ * Strips annotation prefixes (ex: "@P .FirstName") and the leading dot from a raw config value.
+ */
+export const getPropertyNameFromConfigValue = (configValue): string => {
+  let name = configValue ?? '';
+  if (name.startsWith('@')) {
+    name = name.substring(name.indexOf(' ') + 1);
+  }
+  if (name.startsWith('.')) {
+    name = name.substring(1);
+  }
+  return name;
+};
+
 export const getConfigFields = (rawFields, contextClass, primaryFieldsViewIndex) => {
   let primaryFields: any = [];
   let configFields: any = [];
+  const safeRawFields = rawFields || [];
 
   if (primaryFieldsViewIndex > -1) {
-    let primaryFieldVMD: any = PCore.getMetadataUtils().resolveView(PRIMARY_FIELDS);
+    let primaryFieldVMD: any = PCore.getMetadataUtils().resolveView(getQualifiedPrimaryFieldsName());
     if (Array.isArray(primaryFieldVMD)) {
       primaryFieldVMD = primaryFieldVMD.find(primaryFieldView => primaryFieldView.classID === contextClass);
       primaryFields = primaryFieldVMD?.children?.[0]?.children || [];
@@ -166,7 +187,7 @@ export const getConfigFields = (rawFields, contextClass, primaryFieldsViewIndex)
     }
   }
 
-  configFields = [...rawFields.slice(0, primaryFieldsViewIndex), ...primaryFields, ...rawFields.slice(primaryFieldsViewIndex + 1)];
+  configFields = [...safeRawFields.slice(0, primaryFieldsViewIndex), ...primaryFields, ...safeRawFields.slice(primaryFieldsViewIndex + 1)];
   // filter duplicate fields after combining raw fields and primary fields
   return configFields.filter((field, index) => configFields.findIndex(_field => field.config?.value === _field.config?.value) === index);
 };
@@ -200,7 +221,7 @@ export const updateFieldLabels = (fields, configFields, primaryFieldsViewIndex, 
   const { columnsRawConfig = [] } = options;
   fields.forEach((field, idx) => {
     const rawColumnConfig = columnsRawConfig[idx]?.config;
-    if (field.config.value === PRIMARY_FIELDS) {
+    if (isPrimaryFieldsValue(field.config.value)) {
       labelsOfFields.push('');
     } else if (isFLProperty(rawColumnConfig?.label ?? rawColumnConfig?.caption)) {
       labelsOfFields.push(getFieldLabel(rawColumnConfig) || field.config.label || field.config.caption);
@@ -247,7 +268,7 @@ export const buildFieldsForTable = (configFields, pConnect, showActionColumn, op
       label: fieldsLabels[index],
       fillAvailableSpace: !!field.config.fillAvailableSpace,
       id: `${index}`,
-      name: field.config.value.substr(4),
+      name: getPropertyNameFromConfigValue(field.config.value),
       cellRenderer: TABLE_CELL,
       sort: false,
       noContextMenu: true,
@@ -256,7 +277,7 @@ export const buildFieldsForTable = (configFields, pConnect, showActionColumn, op
         ...field
       },
       // BUG-615253: Workaround for autosize in table with lazy loading components
-      width: getFieldWidth(field, fields[index].config.label)
+      width: getFieldWidth(field, fieldsLabels[index])
     };
   });
 
