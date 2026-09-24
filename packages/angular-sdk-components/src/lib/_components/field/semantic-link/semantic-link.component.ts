@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -46,7 +46,8 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
 
   constructor(
     private angularPConnect: AngularPConnectService,
-    private utils: Utils
+    private utils: Utils,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -81,6 +82,7 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
     const isData = this.buildDataPayload();
     this.linkURL = this.buildLinkURL(isData);
     this.isLinkTextEmpty = isLinkTextEmpty(this.value$);
+    this.cdr.detectChanges();
   }
 
   showDataAction() {

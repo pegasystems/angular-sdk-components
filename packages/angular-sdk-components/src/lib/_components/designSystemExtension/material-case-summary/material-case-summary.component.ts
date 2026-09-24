@@ -53,10 +53,41 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
         case 'checkbox':
           field.config.displayLabel = field.config.caption;
           break;
+        case 'reference': {
+          // Reference fields carry their friendly label in inheritedProps, not config.label — needed by both the primary <dt> (label) and secondary <dt> (displayLabel || label)
+          const referenceLabel = field.kid.getInheritedProps()?.label;
+          if (referenceLabel) {
+            field.config.label = referenceLabel;
+          }
+          // Reference component ignores a displayMode @Input, so bake DISPLAY_ONLY into a fresh PConnect (matches DetailsTemplateBase pattern)
+          field.kid = this.getDisplayOnlyReferencePConn(field.kid);
+          break;
+        }
         default:
           break;
       }
     }
+  }
+
+  getDisplayOnlyReferencePConn(thePConn: any) {
+    const configProps = thePConn.getConfigProps();
+    configProps.readOnly = true;
+    configProps.displayMode = 'DISPLAY_ONLY';
+    const options = {
+      context: thePConn.getContextName(),
+      pageReference: thePConn.getPageReference(),
+      referenceList: thePConn.getReferenceList()
+    };
+    const viewContConfig = {
+      meta: {
+        ...thePConn.getMetadata(),
+        type: 'reference',
+        config: configProps
+      },
+      options
+    };
+
+    return PCore.createPConnect(viewContConfig)?.getPConnect() ?? thePConn;
   }
 
   updatePrimaryWithStatus() {

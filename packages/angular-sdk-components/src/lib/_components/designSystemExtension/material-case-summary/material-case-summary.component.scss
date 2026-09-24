@@ -110,3 +110,13 @@ span.psdk-csf-status-style {
 .psdk-primary-color {
   color: var(--mat-sys-primary);
 }
+
+.psdk-csf-object-reference-value {
+  ::ng-deep .psdk-grid-nondisplay {
+    display: flex;
+    gap: 2rem;
+    .psdk-grid-label {
+      font-size: 0.8125rem;
+    }
+  }
+}
