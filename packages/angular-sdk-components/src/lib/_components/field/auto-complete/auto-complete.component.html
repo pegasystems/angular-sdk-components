@@ -46,6 +46,19 @@
               </div>
             </mat-option>
           </ng-template>
+          <div *ngIf="showCreateButton" class="psdk-autocomplete-create-new-wrapper">
+            <mat-divider></mat-divider>
+            <button
+              mat-button
+              type="button"
+              class="psdk-autocomplete-create-new"
+              (mousedown)="$event.preventDefault()"
+              (click)="createNewButtonHandler()"
+            >
+              <mat-icon>add</mat-icon>
+              {{ createNewLabel }}
+            </button>
+          </div>
         </mat-autocomplete>
         <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
         <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>

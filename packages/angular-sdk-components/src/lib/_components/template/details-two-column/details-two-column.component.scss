@@ -1,7 +1,14 @@
-.psdk-grid-filter {
+.psdk-grid-filter-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: calc(2 * 0.5rem);
   row-gap: calc(2 * 0.5rem);
   align-items: start;
+}
+
+.psdk-grid-highlighted {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: calc(0.5rem) calc(5rem);
 }

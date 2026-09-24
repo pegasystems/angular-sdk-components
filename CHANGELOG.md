@@ -1,28 +1,30 @@
 # [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10)
 
 ### **Features**
+*   **Replaced the TinyMCE dependency with Tiptap for rich text editing capabilities.**
+    * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
 *   Support Embedded attachment in simple table manual.
     * Github: [PR-547](https://github.com/pegasystems/angular-sdk-components/pull/547)
 *   **Added support for instructions in the DefaultForm template.**
     * Github: [PR-548](https://github.com/pegasystems/angular-sdk-components/pull/548)
-*   **Added support for contextual warning messages in field components.**
-    * Github: [PR-559](https://github.com/pegasystems/angular-sdk-components/pull/559)
 *   **Added support for conditional Add, Edit, and Delete actions, including record-level conditions, in editable EmbeddedData table.**
     * Github: [PR-553](https://github.com/pegasystems/angular-sdk-components/pull/553)
-*   **Replaced the TinyMCE dependency with Tiptap for rich text editing capabilities.**
-    * Github: [PR-545](https://github.com/pegasystems/angular-sdk-components/pull/545)
+*   **Added support for contextual warning messages in field components.**
+    * Github: [PR-559](https://github.com/pegasystems/angular-sdk-components/pull/559)
 *   **Added Support for DataReference field value rendering in the Details template.**
     * Github: [PR-562](https://github.com/pegasystems/angular-sdk-components/pull/562)
 *   **DataReference as Autocomplete supports Secondary Text.**
     * Github: [PR-569](https://github.com/pegasystems/angular-sdk-components/pull/569)
-*   **DataReference as Autocomplete supports grouping.**
-    * Github: [PR-578](https://github.com/pegasystems/angular-sdk-components/pull/578)
 *   **Added left and right alignment support for vertical multi-step assignment navigation.**
     * Github: [PR-576](https://github.com/pegasystems/angular-sdk-components/pull/576)
 *   **Added support for Data Object actions in the case view, and Submit/Cancel controls in the Data Object modal.**
     * Github: [PR-577](https://github.com/pegasystems/angular-sdk-components/pull/577)
+*   **DataReference as Autocomplete supports grouping.**
+    * Github: [PR-578](https://github.com/pegasystems/angular-sdk-components/pull/578)
 *   **Added support for primary fields in EmbeddedData and query params for refreshFor action.**
     * Github: [PR-584](https://github.com/pegasystems/angular-sdk-components/pull/584)
+*   **Added support for creating new records for the Autocomplete DataReference and CaseReference components.**
+    * Github: [PR-585](https://github.com/pegasystems/angular-sdk-components/pull/585)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**
@@ -49,6 +51,8 @@
       * Github: [PR-581](https://github.com/pegasystems/angular-sdk-components/pull/581)
 *   **Fixed search form label issue, fallback to inherited label when config label is missing.**
       * Github: [PR-582](https://github.com/pegasystems/angular-sdk-components/pull/582)
+*   **Refactored Details templates to correctly render regions and child components.**
+      * Github: [PR-586](https://github.com/pegasystems/angular-sdk-components/pull/586)
 
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
