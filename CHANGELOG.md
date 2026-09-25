@@ -56,7 +56,8 @@
       * Github: [PR-582](https://github.com/pegasystems/angular-sdk-components/pull/582)
 *   **Refactored Details templates to correctly render regions and child components.**
       * Github: [PR-586](https://github.com/pegasystems/angular-sdk-components/pull/586)
-
+*   **Fixed the missing required-field asterisk indicator for the Multiselect combobox.**
+      * Github: [PR-595](https://github.com/pegasystems/angular-sdk-components/pull/595)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 

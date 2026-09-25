@@ -1,7 +1,7 @@
 <div [formGroup]="formGroup$">
   <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
     <mat-label>{{ label$ }}</mat-label>
-    <mat-chip-grid #chipGrid>
+    <mat-chip-grid #chipGrid [required]="bRequired$">
       <ng-container *ngFor="let select of selectedItems">
         <mat-chip-row (removed)="removeChip(select)">
           {{ select.primary }}
