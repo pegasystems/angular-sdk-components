@@ -1,67 +1,73 @@
 <div class="psdk-case-summary-fields">
   <dl class="psdk-case-summary-fields-primary">
     <div *ngFor="let field of primaryFieldsWithStatus$" class="psdk-csf-primary-field">
-      <dt class="psdk-csf-primary-field-header">
+      <dt
+        *ngIf="
+          field.type.toLowerCase() !== 'objectreference' && field.type.toLowerCase() !== 'reference' && field.type.toLowerCase() !== 'caseoperator'
+        "
+        class="psdk-csf-primary-field-header"
+      >
         {{ field.config?.label }}
       </dt>
-      <dd *ngIf="field.config.value === ''; else hasValue" class="psdk-csf-primary-field-data">
-        <ng-container [ngSwitch]="field.type.toLowerCase()">
-          <label *ngSwitchCase="'caseoperator'">operator</label>
-          <span *ngSwitchDefault class="psdk-csf-text-style">---</span>
-        </ng-container>
+      <dd class="psdk-csf-primary-field-data" [ngSwitch]="field.type.toLowerCase()">
+        <span *ngSwitchCase="'textinput'" class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
+        <span *ngSwitchCase="'status'" class="psdk-csf-status-style">{{ field.config.value || '---' }}</span>
+        <a *ngSwitchCase="'phone'" class="psdk-primary-color" as="a" href="tel: {{ field.config.value }}">{{ field.config.value || '---' }}</a>
+        <a *ngSwitchCase="'email'" class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ field.config.value || '---' }}</a>
+        <span *ngSwitchCase="'date'" class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
+        <div class="psdk-case-summary-operator" *ngSwitchCase="'caseoperator'">
+          <component-mapper
+            name="Operator"
+            [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
+          ></component-mapper>
+        </div>
+        <div *ngSwitchCase="'objectreference'">
+          <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid }"></component-mapper>
+        </div>
+        <div *ngSwitchCase="'reference'" class="psdk-csf-object-reference-value">
+          <component-mapper name="reference" [props]="{ pConn$: field.kid }"></component-mapper>
+        </div>
+        <span *ngSwitchDefault class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
       </dd>
-      <ng-template #hasValue>
-        <dd class="psdk-csf-primary-field-data" [ngSwitch]="field.type.toLowerCase()">
-          <span *ngSwitchCase="'textinput'" class="psdk-csf-text-style">{{ field.config.value }}</span>
-          <span *ngSwitchCase="'status'" class="psdk-csf-status-style">{{ field.config.value }}</span>
-          <a *ngSwitchCase="'phone'" class="psdk-primary-color" as="a" href="tel: {{ field.config.value }}">{{ field.config.value }}</a>
-          <a *ngSwitchCase="'email'" class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ field.config.value }}</a>
-          <span *ngSwitchCase="'date'" class="psdk-csf-text-style">{{ field.config.value }}</span>
-          <label *ngSwitchCase="'caseoperator'">operator</label>
-          <div *ngSwitchCase="'objectreference'" class="psdk-csf-object-reference-value">
-            <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"></component-mapper>
-          </div>
-          <span *ngSwitchDefault class="psdk-csf-text-style">{{ field.config.value }}</span>
-        </dd>
-      </ng-template>
     </div>
   </dl>
 </div>
 <div class="psdk-case-summary-fields">
   <dl *ngFor="let field of secondaryFields$" class="psdk-case-summary-fields-secondary">
-    <div
-      *ngIf="
-        field?.config?.label?.toLowerCase() == 'create operator' ||
-          field?.displayLabel?.toLowerCase() == 'create operator' ||
-          field?.config?.label?.toLowerCase() == 'update operator' ||
-          field?.displayLabel?.toLowerCase() == 'update operator';
-        else hasSecondaryValue
-      "
-    >
-      <component-mapper
-        name="Operator"
-        [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
-      ></component-mapper>
-    </div>
-    <ng-template #hasSecondaryValue>
+    @if (
+      field?.config?.label?.toLowerCase() == 'create operator' ||
+      field?.displayLabel?.toLowerCase() == 'create operator' ||
+      field?.config?.label?.toLowerCase() == 'update operator' ||
+      field?.displayLabel?.toLowerCase() == 'update operator'
+    ) {
+      <div>
+        <component-mapper
+          name="Operator"
+          [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
+        ></component-mapper>
+      </div>
+    } @else if (field.type.toLowerCase() === 'objectreference') {
+      <div class="psdk-csf-object-reference-value">
+        <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"></component-mapper>
+      </div>
+    } @else if (field.type.toLowerCase() === 'reference') {
+      <div class="psdk-csf-object-reference-value">
+        <component-mapper name="reference" [props]="{ pConn$: field.kid }"></component-mapper>
+      </div>
+    } @else {
       <div class="psdk-csf-secondary-field">
         <dt class="psdk-csf-secondary-field-header">
           {{ field.config?.displayLabel || field.config?.label }}
         </dt>
+
         <dd class="psdk-csf-secondary-field-data">
           <div [ngSwitch]="field.type.toLowerCase()">
             <label *ngSwitchCase="'userreference'" class="psdk-secondary-value">{{ field.config.value.userName || '---' }}</label>
             <label *ngSwitchCase="'checkbox'" class="psdk-secondary-value">{{ field.config.falseLabel || '---' }}</label>
-            <div *ngSwitchCase="'objectreference'" class="psdk-csf-object-reference-value">
-              <component-mapper
-                name="ObjectReference"
-                [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"
-              ></component-mapper>
-            </div>
             <label *ngSwitchDefault class="psdk-secondary-value">{{ field.config.value || '---' }}</label>
           </div>
         </dd>
       </div>
-    </ng-template>
+    }
   </dl>
 </div>

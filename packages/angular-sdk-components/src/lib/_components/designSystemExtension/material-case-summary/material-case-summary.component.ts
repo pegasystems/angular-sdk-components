@@ -53,6 +53,17 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
         case 'checkbox':
           field.config.displayLabel = field.config.caption;
           break;
+        case 'reference': {
+          const referenceLabel = field.kid.getInheritedProps()?.label;
+          if (referenceLabel) {
+            field.config.label = referenceLabel;
+          }
+          field.kid.setInheritedProp('displayMode', 'DISPLAY_ONLY');
+          break;
+        }
+        case 'objectreference':
+          field.kid.setInheritedProp('displayMode', 'DISPLAY_ONLY');
+          break;
         default:
           break;
       }

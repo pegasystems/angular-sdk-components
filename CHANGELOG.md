@@ -45,6 +45,7 @@
       * Github: [PR-568](https://github.com/pegasystems/angular-sdk-components/pull/568)
 *   **Fixed the issue where the DataReference value was displayed as a SemanticLink in the CaseSummary view.**
       * Github: [PR-572](https://github.com/pegasystems/angular-sdk-components/pull/572)
+      * Github: [PR-591](https://github.com/pegasystems/angular-sdk-components/pull/591)
 *   **Displays the configured custom label for the Add button.**
       * Github: [PR-574](https://github.com/pegasystems/angular-sdk-components/pull/574)
 *   **Fixed collapsible and expandable behavior in FieldGroup.**

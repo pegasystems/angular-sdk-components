@@ -1,7 +1,7 @@
 <ng-container *ngIf="bVisible$" [ngSwitch]="renderMode">
   <!-- SingleReferenceReadOnly mode -->
   <div *ngSwitchCase="'singleReferenceReadonly'">
-    <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$, isDetails$, dataRelationshipContext }"></component-mapper>
+    <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$, dataRelationshipContext }"></component-mapper>
   </div>
 
   <!-- MultiReferenceReadonly mode -->

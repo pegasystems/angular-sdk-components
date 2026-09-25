@@ -15,7 +15,6 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() dataRelationshipContext: any = null;
-  @Input() isDetails$ = false;
 
   angularPConnectData: AngularPConnectData = {};
   configProps: any;
@@ -59,13 +58,13 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const rawViewMetadata = this.pConn$.getRawMetadata();
     const label = this.configProps.label;
     const showLabel = this.configProps.showLabel;
-    const propsToUse = { label, showLabel, ...this.pConn$.getInheritedProps() };
-    const type = (rawViewMetadata?.config as any)?.componentType;
+    const inheritedProps = this.pConn$.getInheritedProps();
+    const propsToUse = { label: label || inheritedProps.label, showLabel: inheritedProps.showLabel || showLabel };
+    const type = (rawViewMetadata?.config as any)?.componentType ?? rawViewMetadata?.type;
     this.displayMode = this.configProps.displayMode;
     const targetObjectType = this.configProps.targetObjectType;
     const referenceType = targetObjectType === 'case' ? 'Case' : 'Data';
     const hideLabel = this.configProps.hideLabel;
-    // const additionalFields = this.configProps.additionalFields;
     const displayAs = this.configProps.displayAs ?? 'readonly';
     const dataRelationshipContext =
       this.dataRelationshipContext ?? getDataRelationshipContextFromKey((rawViewMetadata?.config as any)?.displayField ?? '');
@@ -77,7 +76,7 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const editableComponents = ['AutoComplete', 'SimpleTableSelect', 'Dropdown', 'RadioButtons'];
     const config: any = {
       ...rawViewMetadata?.config,
-      primaryField: (rawViewMetadata?.config as any)?.displayField,
+      primaryField: (rawViewMetadata?.config as any)?.displayField ?? (rawViewMetadata?.config as any)?.primaryField,
       label: this.label
     };
 

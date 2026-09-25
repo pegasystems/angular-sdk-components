@@ -2,10 +2,12 @@
   <div class="psdk-label">
     {{ label$ }}
   </div>
-  <div class="psdk-double">
-    <button mat-button color="primary" style="text-decoration: underline" (click)="showOperator()">{{ name$ }}</button>
+  <div class="psdk-operator-details">
+    <div class="psdk-double">
+      <button mat-button color="primary" style="text-decoration: underline" (click)="showOperator()">{{ name$ }}</button>
+    </div>
+    <div>{{ date$ }}</div>
   </div>
-  <div>{{ date$ }}</div>
 </div>
 
 <div>

@@ -16,7 +16,8 @@ const NO_HEADER_TEMPLATES = [
   'Confirmation',
   'DynamicTabs',
   'DetailsSubTabs',
-  'ListView'
+  'ListView',
+  'DataReference'
 ];
 
 const DETAILS_TEMPLATES = [
