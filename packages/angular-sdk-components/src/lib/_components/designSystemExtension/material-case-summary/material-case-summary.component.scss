@@ -111,12 +111,8 @@ span.psdk-csf-status-style {
   color: var(--mat-sys-primary);
 }
 
-.psdk-csf-object-reference-value {
-  ::ng-deep .psdk-grid-nondisplay {
-    display: flex;
-    gap: 2rem;
-    .psdk-grid-label {
-      font-size: 0.8125rem;
-    }
+.psdk-case-summary-operator {
+  ::ng-deep .psdk-operator {
+    flex-direction: column !important;
   }
 }

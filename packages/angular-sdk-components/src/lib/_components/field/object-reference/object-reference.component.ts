@@ -46,7 +46,6 @@ type RenderMode = 'singleReferenceReadonly' | 'multiReferenceReadonly' | 'semant
 export class ObjectReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
-  @Input() isDetails$ = false;
 
   angularPConnectData: AngularPConnectData = {};
   configProps: ObjectReferenceProps;

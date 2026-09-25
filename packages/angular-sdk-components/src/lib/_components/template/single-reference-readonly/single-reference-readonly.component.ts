@@ -15,7 +15,6 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
   @Input() dataRelationshipContext: any = null;
-  @Input() isDetails$ = false;
 
   angularPConnectData: AngularPConnectData = {};
   configProps: any;
@@ -60,7 +59,9 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const label = this.configProps.label;
     const showLabel = this.configProps.showLabel;
     const inheritedProps = this.pConn$.getInheritedProps();
-    const propsToUse = { label: inheritedProps.label || label, showLabel: inheritedProps.showLabel || showLabel };
+    const propsToUse = { label: label || inheritedProps.label, showLabel: inheritedProps.showLabel || showLabel };
+    // const propsToUse = { showLabel, ...inheritedProps, label: label ?? inheritedProps['label'] };
+    // console.log('propsToUse:', propsToUse, this.configProps, inheritedProps);
     const type = (rawViewMetadata?.config as any)?.componentType ?? rawViewMetadata?.type;
     this.displayMode = this.configProps.displayMode;
     const targetObjectType = this.configProps.targetObjectType;

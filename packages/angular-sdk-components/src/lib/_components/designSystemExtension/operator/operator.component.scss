@@ -80,3 +80,10 @@ dd {
   grid-column-start: 1;
   max-width: max-content;
 }
+
+.psdk-operator-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(0.3125rem);
+}

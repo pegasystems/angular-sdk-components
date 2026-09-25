@@ -62,6 +62,9 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
           field.kid.setInheritedProp('displayMode', 'DISPLAY_ONLY');
           break;
         }
+        case 'objectreference':
+          field.kid.setInheritedProp('displayMode', 'DISPLAY_ONLY');
+          break;
         default:
           break;
       }
