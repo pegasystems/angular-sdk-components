@@ -93,9 +93,9 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
   set options(options: IOption[]) {
     this.options$ = options;
     if (this.displayMode$) {
-      this.value$ = this.options$?.find(option => option.key === this.value$)?.value || this.value$;
+      this.value$ = this.value$ === 'Select' ? '' : this.options$?.find(option => option.key === this.value$)?.value || this.value$;
       this.localizedValue = this.pConn$.getLocalizedValue(
-        this.value$ === 'Select...' ? '' : this.value$,
+        this.value$,
         this.localePath,
         this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
       );
@@ -136,7 +136,7 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
 
     if (this.theDatasource) {
       const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-      optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+      optionsList?.unshift(this.getPlaceholderOption());
       this.options = optionsList;
     }
 
@@ -224,10 +224,15 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
             };
             optionsData.push(obj);
           });
-          optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
+          optionsData?.unshift(this.getPlaceholderOption());
           this.options = optionsData;
         });
       });
+  }
+
+  // Uses the authored placeholder, falling back to 'Select...' when none is authored
+  private getPlaceholderOption(): IOption {
+    return { key: 'Select', value: this.pConn$.getLocalizedValue(this.placeholder || 'Select...', '', '') };
   }
 
   isSelected(buttonValue: string): boolean {

@@ -25,6 +25,8 @@
     * Github: [PR-584](https://github.com/pegasystems/angular-sdk-components/pull/584)
 *   **Added support for creating new records for the Autocomplete DataReference and CaseReference components.**
     * Github: [PR-585](https://github.com/pegasystems/angular-sdk-components/pull/585)
+*   **Added support for the authored placeholder in the Dropdown component, falling back to 'Select...' when not configured.**
+    * Github: [PR-594](https://github.com/pegasystems/angular-sdk-components/pull/594)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**
