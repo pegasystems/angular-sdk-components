@@ -54,7 +54,6 @@ export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
           field.config.displayLabel = field.config.caption;
           break;
         case 'reference': {
-          // Reference fields carry their friendly label in inheritedProps, not config.label — needed by both the primary <dt> (label) and secondary <dt> (displayLabel || label)
           const referenceLabel = field.kid.getInheritedProps()?.label;
           if (referenceLabel) {
             field.config.label = referenceLabel;

@@ -60,14 +60,11 @@ export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {
     const showLabel = this.configProps.showLabel;
     const inheritedProps = this.pConn$.getInheritedProps();
     const propsToUse = { label: label || inheritedProps.label, showLabel: inheritedProps.showLabel || showLabel };
-    // const propsToUse = { showLabel, ...inheritedProps, label: label ?? inheritedProps['label'] };
-    // console.log('propsToUse:', propsToUse, this.configProps, inheritedProps);
     const type = (rawViewMetadata?.config as any)?.componentType ?? rawViewMetadata?.type;
     this.displayMode = this.configProps.displayMode;
     const targetObjectType = this.configProps.targetObjectType;
     const referenceType = targetObjectType === 'case' ? 'Case' : 'Data';
     const hideLabel = this.configProps.hideLabel;
-    // const additionalFields = this.configProps.additionalFields;
     const displayAs = this.configProps.displayAs ?? 'readonly';
     const dataRelationshipContext =
       this.dataRelationshipContext ?? getDataRelationshipContextFromKey((rawViewMetadata?.config as any)?.displayField ?? '');
