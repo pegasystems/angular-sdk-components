@@ -64,9 +64,6 @@
           <div [ngSwitch]="field.type.toLowerCase()">
             <label *ngSwitchCase="'userreference'" class="psdk-secondary-value">{{ field.config.value.userName || '---' }}</label>
             <label *ngSwitchCase="'checkbox'" class="psdk-secondary-value">{{ field.config.falseLabel || '---' }}</label>
-            <div *ngSwitchCase="'reference'" class="psdk-csf-object-reference-value">
-              <component-mapper name="reference" [props]="{ pConn$: field.kid }"></component-mapper>
-            </div>
             <label *ngSwitchDefault class="psdk-secondary-value">{{ field.config.value || '---' }}</label>
           </div>
         </dd>

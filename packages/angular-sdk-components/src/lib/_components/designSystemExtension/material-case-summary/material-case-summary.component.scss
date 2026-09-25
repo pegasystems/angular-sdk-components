@@ -116,3 +116,9 @@ span.psdk-csf-status-style {
     flex-direction: column !important;
   }
 }
+
+.psdk-csf-object-reference-value {
+  ::ng-deep .psdk-grid-label {
+    font-size: 0.8125rem !important;
+  }
+}
