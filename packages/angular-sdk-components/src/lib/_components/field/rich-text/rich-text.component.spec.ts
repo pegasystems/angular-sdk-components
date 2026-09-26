@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RichTextComponent } from './rich-text.component';
 
-describe('RichTextComponent', () => {
+describe('RichTextFieldComponent', () => {
   let component: RichTextComponent;
   let fixture: ComponentFixture<RichTextComponent>;
 
