@@ -4,6 +4,9 @@
   "description": "Angular SDK packaging: bridge and components, overrides",
   "main": "index.ts",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "keywords": [
     "Pega",
     "Constellation",
@@ -101,7 +104,6 @@
     "@angular/language-service": "^21.2.4",
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
-    "@pega/configs": "^0.17.0",
     "@pega/constellationjs": "~26.1.0",
     "@pega/pcore-pconnect-typedefs": "4.1.0",
     "@playwright/test": "^1.63.0",
@@ -128,6 +130,7 @@
     "npm-force-resolutions": "0.0.10",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.5.28",
+    "prettier": "^3.9.9",
     "shx": "^0.4.0",
     "ts-node": "~10.9.2",
     "typescript": "^5.9.3",
