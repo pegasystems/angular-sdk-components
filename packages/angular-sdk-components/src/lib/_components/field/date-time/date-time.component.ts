@@ -97,6 +97,12 @@ export class DateTimeComponent extends FieldBase implements OnInit, OnDestroy {
   }
 
   fieldOnDateChange(event: any) {
+    // owl picker emits null when the typed text can't be parsed; clear the input instead of defaulting to now
+    if (!event.value) {
+      this.fieldControl.setValue('');
+      handleEvent(this.actionsApi, 'changeNblur', this.propName, '');
+      return;
+    }
     // this comes from the date pop up
     if (typeof event.value === 'object') {
       // convert date to pega "date" format
@@ -105,5 +111,26 @@ export class DateTimeComponent extends FieldBase implements OnInit, OnDestroy {
       event.value = timeZoneDateTime && timeZoneDateTime.isValid() ? timeZoneDateTime.toISOString() : '';
     }
     handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
+  }
+
+  override getErrorMessage() {
+    // look for validation messages for json, pre-defined or just an error pushed from workitem (400)
+    if (this.fieldControl.hasError('message')) {
+      return this.angularPConnectData.validateMessage ?? '';
+    }
+
+    if (this.fieldControl.hasError('required')) {
+      return 'You must enter a value';
+    }
+
+    if (this.fieldControl.hasError('owlDateTimeParse')) {
+      return `${this.fieldControl.errors?.['owlDateTimeParse'].text} is not a valid date time value`;
+    }
+
+    if (this.fieldControl.errors) {
+      return 'Invalid date time value';
+    }
+
+    return '';
   }
 }
