@@ -89,7 +89,7 @@ test.describe('E2E test', () => {
     await editablePhoneInput.fill('6175551212');
 
     /** Validation tests */
-    const validationMsg = 'Enter a valid phone number';
+    const validationMsg = 'Invalid Phone';
     await editablePhoneInput.clear();
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();
@@ -102,13 +102,11 @@ test.describe('E2E test', () => {
 
     /** Entering a valid Phone number */
     await editablePhoneInput.clear();
-    /** Todo: Modified this script because mat-tel-input doesn't provide blur event and fix need to be implemented in blur callback
-     * Keeping this comment for reference until this control provides blur callback
-     */
-    await editablePhoneInput.fill('6175551212');
-    await editablePhoneInput.blur();
     await countrySelector.click();
     await page.locator('text=United States >> nth=0').click();
+    await editablePhoneInput.click();
+    await editablePhoneInput.fill('6175551212');
+    await editablePhoneInput.blur();
 
     /** Expecting the invalid Phone number error be no longer present */
     await expect(page.locator(`mat-error:has-text("${validationMsg}")`)).toBeHidden();

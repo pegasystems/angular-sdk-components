@@ -49,7 +49,7 @@ test.describe('E2E test', () => {
     await expect(page.locator('div >> text="John"')).toBeVisible();
     await expect(page.locator('div >> text="Doe"')).toBeVisible();
     await expect(page.locator('div >> text="Cambridge"')).toBeVisible();
-    await expect(page.locator('a >> text="+12015550123"')).toBeVisible();
+    await expect(page.locator('div >> text="+12015550123"')).toBeVisible();
 
     await expect(page.locator('div >> text="Case View"')).toBeVisible();
 
@@ -61,7 +61,7 @@ test.describe('E2E test', () => {
     await expect(page.locator('div >> text="John"')).toBeHidden();
     await expect(page.locator('div >> text="Doe"')).toBeHidden();
     await expect(page.locator('div >> text="Cambridge"')).toBeHidden();
-    await expect(page.locator('a >> text="+12015550123"')).toBeHidden();
+    await expect(page.locator('div >> text="+12015550123"')).toBeHidden();
 
     await expect(page.locator('div >> text="Case View"')).toBeHidden();
 

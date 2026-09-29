@@ -17,6 +17,8 @@ test.describe('E2E test', () => {
     await common.selectCategory('TextInput', page);
 
     const actions = page.locator('button:has-text("Actions...")');
+    /** Clicking Actions triggers a confirm dialog warning about losing changes */
+    page.once('dialog', dialog => dialog.accept());
     await actions.click();
 
     await page.locator('button[role="menuitem"]:has-text("Multi Step Test")').click();

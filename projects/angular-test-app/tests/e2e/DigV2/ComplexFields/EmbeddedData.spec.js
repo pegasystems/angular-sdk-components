@@ -108,7 +108,7 @@ test.describe('E2E test', () => {
     const modal = page.locator('div[id="dialog"]');
 
     /** Testing Add Record Title */
-    const addRecordTitle = modal.locator('h3:has-text("Add Record")');
+    const addRecordTitle = modal.locator('h3:has-text("Address")');
     await expect(addRecordTitle).toBeVisible();
 
     /** Adding record to the Table in Modal */
@@ -159,7 +159,7 @@ test.describe('E2E test', () => {
     await editMenu.locator('button:has-text("Edit")').click();
 
     /** Testing Edit Record title */
-    const editRecordTitle = modal.locator('h3:has-text("Edit Record")');
+    const editRecordTitle = modal.locator('h3:has-text("Address")');
     await expect(editRecordTitle).toBeVisible();
 
     /** Editing the added row */
@@ -204,7 +204,10 @@ test.describe('E2E test', () => {
     await page.locator('mat-option > span:has-text("Editable")').click();
 
     /** Entering values in the first Row */
-    await page.locator('input[data-test-id="202003240938510823869"]').fill('Main St');
+    const fieldGroupStreetRow1 = page.locator('input[data-test-id="202003240938510823869"]');
+    await fieldGroupStreetRow1.waitFor({ state: 'visible' });
+    await fieldGroupStreetRow1.fill('');
+    await fieldGroupStreetRow1.fill('Main St');
 
     await page.locator('input[data-test-id="202003240938510831291"]').fill('');
     await page.locator('input[data-test-id="202003240938510831291"]').fill('Cambridge');
@@ -220,7 +223,10 @@ test.describe('E2E test', () => {
     await page.locator('button:has-text("+ Add")').click();
 
     /** Entering values in the second Row */
-    await page.locator('input[data-test-id="202003240938510823869"] >> nth=1').fill('Global St');
+    const fieldGroupStreetRow2 = page.locator('input[data-test-id="202003240938510823869"] >> nth=1');
+    await fieldGroupStreetRow2.waitFor({ state: 'visible' });
+    await fieldGroupStreetRow2.fill('');
+    await fieldGroupStreetRow2.fill('Global St');
     await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('');
     await page.locator('input[data-test-id="202003240938510831291"] >> nth=1').fill('California');
     await page.locator('input[data-test-id="202003240938510831411"] >> nth=1').fill('AK');
