@@ -4,7 +4,7 @@ const { config } = require('./config');
 const createCase = async (caseTypeName, page) => {
   const createCaseBtn = page.locator('mat-list-item[id="create-case-button"]');
   await createCaseBtn.click();
-  const caseType = page.locator(`mat-list-item[id="case-list-item"] > span:has-text("${caseTypeName}")`);
+  const caseType = page.locator('mat-list-item[id="case-list-item"] > span').getByText(caseTypeName, { exact: true });
   await caseType.click();
 };
 

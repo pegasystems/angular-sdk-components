@@ -13,8 +13,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe('E2E test', () => {
-  let attributes;
-
   test('should login, create case and run the RichText tests', async ({ page }) => {
     await common.login(config.config.apps.digv2.user.username, config.config.apps.digv2.user.password, page);
 
@@ -34,15 +32,15 @@ test.describe('E2E test', () => {
     const requiredRichTextLabel = requiredRichTextContainer.locator('label');
     expect(await requiredRichTextLabel.innerText()).toEqual('RichText Required');
     await page.locator('button:has-text("submit")').click();
-    let canNotBeBlankMsg = await requiredRichTextContainer.locator('p:has-text("Cannot be blank")');
-    expect(canNotBeBlankMsg).toBeVisible();
+    let canNotBeBlankMsg = requiredRichTextContainer.locator('p:has-text("Cannot be blank")');
+    await expect(canNotBeBlankMsg).toBeVisible();
 
     const notRequiredRichTextContainer = page.locator('div[data-test-id="913fcb2ea3513d1f0dd357aa1766757f"]');
     const notRequiredRichTextLabel = notRequiredRichTextContainer.locator('label');
     expect(await notRequiredRichTextLabel.innerText()).toEqual('RichText Not Required');
     await page.locator('button:has-text("submit")').click();
-    canNotBeBlankMsg = await notRequiredRichTextContainer.locator('p:has-text("Cannot be blank")');
-    expect(canNotBeBlankMsg).not.toBeVisible();
+    canNotBeBlankMsg = notRequiredRichTextContainer.locator('p:has-text("Cannot be blank")');
+    await expect(canNotBeBlankMsg).not.toBeVisible();
 
     /** Selecting Disable from the Sub Category dropdown */
     await common.selectSubCategory('Disable', page);
@@ -52,29 +50,26 @@ test.describe('E2E test', () => {
     const alwaysDisabledRichTextContainer = page.locator('div[data-test-id="f8a6fa176e492f0b2c3a2ecce916a1cc"]');
     const alwaysDisabledRichTextLabel = alwaysDisabledRichTextContainer.locator('label');
     expect(await alwaysDisabledRichTextLabel.innerText()).toEqual('RichText Disabled Always');
-    const alwaysDisabledRichTextBox = alwaysDisabledRichTextContainer.locator('div[role="application"]');
-    attributes = await common.getAttributes(alwaysDisabledRichTextBox);
-    await expect(attributes.includes('aria-disabled')).toBeTruthy();
+    const alwaysDisabledRichTextBox = alwaysDisabledRichTextContainer.locator('div[role="textbox"]');
+    await expect(alwaysDisabledRichTextBox).toHaveAttribute('contenteditable', 'false');
 
     // Conditionally Disabled RichText
     const conditionallyDisabledRichTextContainer = page.locator('div[data-test-id="a1f1fed886e4277998358560643d5b80"]');
     const conditionallyDisabledRichTextLabel = conditionallyDisabledRichTextContainer.locator('label');
     expect(await conditionallyDisabledRichTextLabel.innerText()).toEqual('RichText Disabled Condition');
-    const conditionallyDisabledRichTextBox = conditionallyDisabledRichTextContainer.locator('div[role="application"]');
-    attributes = await common.getAttributes(conditionallyDisabledRichTextBox);
+    const conditionallyDisabledRichTextBox = conditionallyDisabledRichTextContainer.locator('div[role="textbox"]');
     if (isDisabled) {
-      await expect(attributes.includes('aria-disabled')).toBeTruthy();
+      await expect(conditionallyDisabledRichTextBox).toHaveAttribute('contenteditable', 'false');
     } else {
-      await expect(attributes.includes('aria-disabled')).toBeFalsy();
+      await expect(conditionallyDisabledRichTextBox).toHaveAttribute('contenteditable', 'true');
     }
 
     // Never Disabled RichText
     const neverDisabledRichTextContainer = page.locator('div[data-test-id="0706d1c3117909bba5dc3b11282c84c1"]');
     const neverDisabledRichTextLabel = neverDisabledRichTextContainer.locator('label');
     expect(await neverDisabledRichTextLabel.innerText()).toEqual('RichText Disabled Never');
-    const neverDisabledRichTextBox = neverDisabledRichTextContainer.locator('div[role="application"]');
-    const disabledValue = await neverDisabledRichTextBox.getAttribute('aria-disabled');
-    await expect(disabledValue).toBe('false');
+    const neverDisabledRichTextBox = neverDisabledRichTextContainer.locator('div[role="textbox"]');
+    await expect(neverDisabledRichTextBox).toHaveAttribute('contenteditable', 'true');
 
     /** Selecting Update from the Sub Category dropdown */
     await common.selectSubCategory('Update', page);
@@ -84,13 +79,13 @@ test.describe('E2E test', () => {
     const readOnlyRichTextLabel = readOnlyRichTextContainer.locator('label');
     expect(await readOnlyRichTextLabel.innerText()).toEqual('RichText ReadOnly');
     const readOnlyRTEDiv = readOnlyRichTextContainer.locator('div[class="readonly-richtext-editor"]');
-    expect(readOnlyRTEDiv).toBeVisible();
+    await expect(readOnlyRTEDiv).toBeVisible();
 
     const editableRichTextContainer = page.locator('div[data-test-id="c5f3892e688f607040637162ef2d61e2"]');
     const editableRichTextLabel = editableRichTextContainer.locator('label');
     expect(await editableRichTextLabel.innerText()).toEqual('RichText Editable');
-    const editableRichTextDiv = editableRichTextContainer.locator('div[role="application"]');
-    expect(editableRichTextDiv).toBeVisible();
+    const editableRichTextDiv = editableRichTextContainer.locator('div[role="textbox"]');
+    await expect(editableRichTextDiv).toBeVisible();
 
     /** Selecting Visibility from the Sub Category dropdown */
     await common.selectSubCategory('Visibility', page);

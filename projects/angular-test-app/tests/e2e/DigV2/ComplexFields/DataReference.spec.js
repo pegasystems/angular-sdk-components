@@ -232,8 +232,8 @@ test.describe('E2E test', () => {
     await page.getByRole('option', { name: 'Checkbox group' }).click();
 
     const checkbox = page.locator('app-check-box');
-    await checkbox.getByRole('option', { name: 'Washing Machine' }).click();
-    await checkbox.getByRole('option', { name: 'Mobile' }).click();
+    await checkbox.locator('mat-checkbox', { hasText: 'Washing Machine' }).click();
+    await checkbox.locator('mat-checkbox', { hasText: 'Mobile' }).click();
 
     await page.locator('button:has-text("Next")').click();
 
