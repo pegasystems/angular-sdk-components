@@ -58,6 +58,8 @@
       * Github: [PR-586](https://github.com/pegasystems/angular-sdk-components/pull/586)
 *   **Fixed the missing required-field asterisk indicator for the Multiselect combobox.**
       * Github: [PR-595](https://github.com/pegasystems/angular-sdk-components/pull/595)
+*   **Fixed the issue where required validation was not triggered in the Rich Text Editor.**
+      * Github: [PR-601](https://github.com/pegasystems/angular-sdk-components/pull/601)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
