@@ -25,12 +25,12 @@ test.describe('E2E test', () => {
     await selectedOption.click();
     await page.locator('mat-option >> span:has-text("SingleRecord")').click();
 
-    const detailsFieldsList = page.locator('div[id="details-fields-list"]');
+    const detailsFieldsList = page.locator('app-field-value-list');
 
     /** Testing the values present on Confirm screen */
-    await expect(detailsFieldsList.locator('span >> text="Sacramento"')).toBeVisible();
-    await expect(detailsFieldsList.locator('span >> text="CA"')).toBeVisible();
-    await expect(detailsFieldsList.locator('span >> text="2653"')).toBeVisible();
+    await expect(detailsFieldsList.getByText('Sacramento', { exact: true })).toBeVisible();
+    await expect(detailsFieldsList.getByText('CA', { exact: true })).toBeVisible();
+    await expect(detailsFieldsList.getByText('2653', { exact: true })).toBeVisible();
 
     /** Query as Table */
     /** selecting ListOfReords option from dropdown  */

@@ -18,7 +18,7 @@
         </span>
       </div>
       <div *ngIf="selectionMode === 'multi'; else single">
-        <mat-option *ngFor="let item of listOfCheckboxes">
+        <div class="mat-mdc-option" *ngFor="let item of listOfCheckboxes">
           <mat-checkbox
             [labelPosition]="'after'"
             [checked]="item.selected"
@@ -28,7 +28,7 @@
             (blur)="fieldOnBlur($event)"
             >{{ item.text ?? item.value }}
           </mat-checkbox>
-        </mat-option>
+        </div>
       </div>
       <ng-template #single>
         <mat-checkbox

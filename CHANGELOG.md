@@ -27,6 +27,8 @@
     * Github: [PR-585](https://github.com/pegasystems/angular-sdk-components/pull/585)
 *   **Added support for the authored placeholder in the Dropdown component, falling back to 'Select...' when not configured.**
     * Github: [PR-594](https://github.com/pegasystems/angular-sdk-components/pull/594)
+*   **Fixed an issue where column header labels in the SimpleTableManual and ListView table were not localized.**
+    * Github: [PR-603](https://github.com/pegasystems/angular-sdk-components/pull/603)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**
@@ -58,6 +60,8 @@
       * Github: [PR-586](https://github.com/pegasystems/angular-sdk-components/pull/586)
 *   **Fixed the missing required-field asterisk indicator for the Multiselect combobox.**
       * Github: [PR-595](https://github.com/pegasystems/angular-sdk-components/pull/595)
+*   **Fixed the DateTime component showing '[object Object]' for invalid input and defaulting to the current date and time on blur.**
+      * Github: [PR-600](https://github.com/pegasystems/angular-sdk-components/pull/600)
 *   **Fixed the issue where required validation was not triggered in the Rich Text Editor.**
       * Github: [PR-601](https://github.com/pegasystems/angular-sdk-components/pull/601)
 

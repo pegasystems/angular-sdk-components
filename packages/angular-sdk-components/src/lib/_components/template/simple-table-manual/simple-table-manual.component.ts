@@ -363,7 +363,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     //  Nebula and we may not end up using it all.
     this.fieldDefs = buildFieldsForTable(configFields, this.pConn$, this.showActionColumn, {
       primaryFieldsViewIndex,
-      fields: resolvedFields
+      fields: resolvedFields,
+      classID: contextClass
     });
     this.fieldDefs = this.fieldDefs?.filter(field => !(field.meta?.config?.hide === true));
     this.initializeDefaultPageInstructions();
