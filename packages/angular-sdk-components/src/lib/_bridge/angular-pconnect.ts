@@ -109,7 +109,7 @@ export class AngularPConnectService {
    * @param inComp The component whose properties are being obtained
    */
   private getComponentProps(inComp: any = null): object {
-    let compProps: any = {};
+    let compProps: any;
     let addProps = {};
 
     if (inComp === null) {

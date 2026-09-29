@@ -265,7 +265,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     if (this.pConn$.getContextName().includes('modal') || this.pConn$.getContextName().includes('workarea')) {
       if (hasAssociatedViewConfigured || this.allowImplicitRefresh) {
         const pageReference = this.pConn$.getPageReference();
-        let pgRef: any = null;
+        let pgRef: string;
         if (pageReference.startsWith('objectInfo')) {
           pgRef = pageReference.replace('objectInfo.content', '');
         } else {

@@ -49,7 +49,7 @@ export const fileDownloadVar = (content: { data: string; headers: Record<string,
     if (!/^(http|https):\/\//.test(data)) {
       data = `//${data}`;
     }
-    window.open(content.data, '_blank');
+    window.open(data, '_blank');
   } else if (type === 'EMAIL') {
     // Temp Fix: for EMAIL type attachment
     fileDownload(content.data, name, 'html', content.headers);

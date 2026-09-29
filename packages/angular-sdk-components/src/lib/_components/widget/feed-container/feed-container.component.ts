@@ -347,7 +347,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
   }
 
   likeClick(messageID: string, rMessageID: string, bLikedByMe: boolean, level: string) {
-    let pulseMessage = {};
+    let pulseMessage: object;
 
     if (level === 'top') {
       pulseMessage = {

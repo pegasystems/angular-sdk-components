@@ -24,7 +24,7 @@ export class BannerService {
     const httpMessages = this.getHttpMessages(itemKey);
 
     const formattedErrors = [...validationErrors, ...httpMessages].map(error => {
-      let message = '';
+      let message: string;
 
       if (typeof error === 'string') {
         message = error;

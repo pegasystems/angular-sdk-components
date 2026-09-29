@@ -415,7 +415,7 @@ export class AutoCompleteComponent extends FieldBase implements OnInit {
     let key = '';
     if (val) {
       const index = this.options$?.findIndex(element => element.value === val);
-      key = index > -1 ? (key = this.options$[index].key) : val;
+      key = index > -1 ? this.options$[index].key : val;
     }
     const value = key;
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);

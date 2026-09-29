@@ -37,7 +37,7 @@ export function flattenObj(obj: any): any {
 export const initializeSearchFields = (searchFields, getPConnect, referenceListClassID, searchFieldRestoreValues = {}) => {
   const filtersProperties = {};
   searchFields?.forEach(field => {
-    let val = '';
+    let val;
     const { value, defaultValue = '' } = field.config;
     const propPath = PCore.getAnnotationUtils().getPropertyName(value);
 

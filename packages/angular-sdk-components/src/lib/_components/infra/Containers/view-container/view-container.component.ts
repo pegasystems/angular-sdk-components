@@ -166,10 +166,6 @@ export class ViewContainerComponent implements OnInit, OnDestroy {
       const { accessedOrder, items } = routingInfo;
       if (accessedOrder && items) {
         const key = accessedOrder[accessedOrder.length - 1];
-        let componentVisible = accessedOrder.length > 0;
-        const { visible } = this.state;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        componentVisible = visible || componentVisible;
         if (items[key] && items[key].view && Object.keys(items[key].view).length > 0) {
           const latestItem = items[key];
           const rootView = latestItem.view;

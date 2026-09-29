@@ -523,7 +523,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
           if (!/^(http|https):\/\//.test(data)) {
             data = `//${data}`;
           }
-          window.open(content.data, '_blank');
+          window.open(data, '_blank');
         }
       })
       .catch(console.error);
