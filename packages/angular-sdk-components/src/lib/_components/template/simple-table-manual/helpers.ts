@@ -216,6 +216,56 @@ export function getFieldLabel(fieldConfig) {
   return fieldLabel;
 }
 
+function trimAnnotation(anno) {
+  if (typeof anno !== 'string' || !anno.startsWith('@')) return anno;
+  const spaceIndex = anno.indexOf(' ');
+  if (spaceIndex === -1) return anno;
+  return anno.substring(spaceIndex + 1);
+}
+
+/**
+ * Resolves an "@FL" label from the data model and localizes it using the property's locale reference.
+ */
+function getLocalizedFieldLabel(fieldConfig, pConnect) {
+  const { classID, label, caption } = fieldConfig;
+  let fieldLabel = getPropertyNameFromConfigValue(label || caption);
+  const fieldMetaData: any = PCore.getMetadataUtils().getEmbeddedPropertyMetadata(fieldLabel, classID) ?? {};
+  fieldLabel = fieldMetaData.label ?? fieldMetaData.caption ?? fieldLabel;
+  const localeValue = pConnect.getLocalizationService(fieldMetaData.localeReference).getLocalizedText(fieldLabel);
+  return localeValue || fieldLabel;
+}
+
+export function resolveFieldLabel(fieldViewMetadata, pConnect, classID?) {
+  const fieldClassID = classID || fieldViewMetadata.config.classID;
+  if (fieldClassID && pConnect) {
+    const fieldConfig: any = {
+      meta: fieldViewMetadata,
+      options: {
+        ...pConnect.options,
+        hasForm: false,
+        localeReference: pConnect.getLocaleRuleName()
+      },
+      useCustomContext: { classID: fieldClassID }
+    };
+    const fieldPConnect = PCore.createPConnect(fieldConfig).getPConnect();
+    const resolvedProps: any = fieldPConnect.resolveConfigProps({
+      label: fieldViewMetadata.config.label || fieldViewMetadata.config.caption
+    });
+    if (resolvedProps.label) return resolvedProps.label;
+  }
+
+  let label = fieldViewMetadata.config.label || fieldViewMetadata.config.caption;
+  if (isFLProperty(label)) {
+    label = getLocalizedFieldLabel(fieldViewMetadata.config, pConnect);
+  } else {
+    label = trimAnnotation(label);
+  }
+  if (pConnect) {
+    label = pConnect.getLocalizedValue(label);
+  }
+  return label;
+}
+
 export const updateFieldLabels = (fields, configFields, primaryFieldsViewIndex, pConnect, options) => {
   const labelsOfFields: any = [];
   const { columnsRawConfig = [] } = options;
@@ -255,12 +305,9 @@ export const updateFieldLabels = (fields, configFields, primaryFieldsViewIndex, 
 };
 
 export const buildFieldsForTable = (configFields, pConnect, showActionColumn, options) => {
-  const { primaryFieldsViewIndex, fields } = options;
+  const { classID } = options;
 
-  // get resolved field labels for primary fields raw config included in configFields
-  const fieldsLabels = updateFieldLabels(fields, configFields, primaryFieldsViewIndex, pConnect, {
-    columnsRawConfig: pConnect.getRawConfigProps()?.children?.find(item => item?.name === 'Columns')?.children
-  });
+  const fieldsLabels = configFields?.map(field => resolveFieldLabel(field, pConnect, classID)) ?? [];
 
   const fieldDefs = configFields?.map((field, index) => {
     return {

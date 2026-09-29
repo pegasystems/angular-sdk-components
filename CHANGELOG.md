@@ -27,6 +27,8 @@
     * Github: [PR-585](https://github.com/pegasystems/angular-sdk-components/pull/585)
 *   **Added support for the authored placeholder in the Dropdown component, falling back to 'Select...' when not configured.**
     * Github: [PR-594](https://github.com/pegasystems/angular-sdk-components/pull/594)
+*   **Fixed an issue where column header labels in the SimpleTableManual and ListView table were not localized.**
+    * Github: [PR-603](https://github.com/pegasystems/angular-sdk-components/pull/603)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**
