@@ -62,6 +62,8 @@
       * Github: [PR-595](https://github.com/pegasystems/angular-sdk-components/pull/595)
 *   **Fixed the DateTime component showing '[object Object]' for invalid input and defaulting to the current date and time on blur.**
       * Github: [PR-600](https://github.com/pegasystems/angular-sdk-components/pull/600)
+*   **Fixed the issue where required validation was not triggered in the Rich Text Editor.**
+      * Github: [PR-601](https://github.com/pegasystems/angular-sdk-components/pull/601)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 

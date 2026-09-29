@@ -86,7 +86,7 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       this.initializeEditor();
     }
 
-    if (this.editor && changes['value'] && this.value !== this.editor.getHTML()) {
+    if (this.editor && changes['value'] && (this.value ?? '') !== this.getEditorValue(this.editor)) {
       this.editor.commands.setContent(this.value ?? '', { emitUpdate: false });
     }
     if (this.editor && changes['disabled']) {
@@ -113,7 +113,7 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       content: this.value || '',
       editable: !this.disabled,
       onUpdate: ({ editor }) => {
-        const html = editor.getHTML();
+        const html = this.getEditorValue(editor);
         this.richText.setValue(html, { emitEvent: false });
         this.richText.markAsDirty();
         this.onChange.emit(html);
@@ -121,7 +121,7 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       },
       onBlur: ({ editor }) => {
         this.richText.markAsTouched();
-        this.onBlur.emit(editor.getHTML());
+        this.onBlur.emit(this.getEditorValue(editor));
         this.cdr.markForCheck();
       },
       onSelectionUpdate: ({ editor }) => {
@@ -130,6 +130,22 @@ export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDest
       }
     });
     this.updateCurrentBlock(this.editor);
+  }
+
+  // Tiptap reports an empty document as "<p></p>", which would satisfy Validators.required and the engine's required check.
+  private getEditorValue(editor: Editor): string {
+    return editor.isEmpty ? '' : editor.getHTML();
+  }
+
+  get showError(): boolean {
+    return !!this.error || (this.richText.invalid && (this.richText.touched || this.richText.dirty));
+  }
+
+  get errorMessage(): string {
+    if (!this.error && this.richText.hasError('required')) {
+      return 'You must enter a value';
+    }
+    return this.info;
   }
 
   private updateCurrentBlock(editor: Editor): void {
