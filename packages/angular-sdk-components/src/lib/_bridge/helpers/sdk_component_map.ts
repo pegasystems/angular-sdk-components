@@ -145,7 +145,7 @@ export async function getSdkComponentMap(inLocalComponentMap = {}) {
 }
 
 export function getComponentFromMap(inComponentName: string): any {
-  let theComponentImplementation = null;
+  let theComponentImplementation;
   const theLocalComponent = SdkComponentMap.getLocalComponentMap()[inComponentName];
   if (theLocalComponent !== undefined) {
     console.log(`Requested component found ${inComponentName}: Local`);

@@ -234,7 +234,7 @@ export class UserReferenceComponent implements OnInit, OnDestroy {
     let key = '';
     if (event?.target?.value) {
       const index = this.options$?.findIndex(element => element.value === event.target.value);
-      key = index > -1 ? (key = this.options$[index].key) : event.target.value;
+      key = index > -1 ? this.options$[index].key : event.target.value;
     }
     const value = key;
     handleEvent(this.actionsApi, 'changeNblur', this.propName, value);

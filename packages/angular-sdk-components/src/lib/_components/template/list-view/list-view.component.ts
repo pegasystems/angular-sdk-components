@@ -625,11 +625,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   _getIconStyle(level): string {
-    let sReturn = '';
     let nLevel = parseInt(level, 10);
     nLevel--;
     nLevel *= 15;
-    sReturn = `padding-left: ${nLevel}px; vertical-align: middle`;
+    const sReturn = `padding-left: ${nLevel}px; vertical-align: middle`;
 
     return sReturn;
   }
@@ -1002,16 +1001,14 @@ export class ListViewComponent implements OnInit, OnDestroy {
     let bKeep = true;
     for (const filterObj of this.filterByColumns) {
       if (filterObj.containsFilterValue != '' || filterObj.containsFilter == 'null' || filterObj.containsFilter == 'notnull') {
-        let filterValue: any;
-
         switch (filterObj.type) {
           case 'Date':
           case 'DateTime':
           case 'Time':
-            bKeep = this.filterDataWithDate(item, filterObj, filterValue);
+            bKeep = this.filterDataWithDate(item, filterObj);
             break;
           default:
-            bKeep = this.filterDataWithCommonTypes(item, filterObj, filterValue);
+            bKeep = this.filterDataWithCommonTypes(item, filterObj);
             break;
         }
       }
@@ -1025,10 +1022,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
     return bKeep;
   }
 
-  filterDataWithDate(item, filterObj, filterValue) {
+  filterDataWithDate(item, filterObj) {
     let bKeep;
     let value = item[filterObj.ref] != null || item[filterObj.ref] != '' ? getSeconds(item[filterObj.ref]) : null;
-    filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
+    let filterValue = filterObj.containsFilterValue != null && filterObj.containsFilterValue != '' ? getSeconds(filterObj.containsFilterValue) : null;
 
     switch (filterObj.containsFilter) {
       case 'notequal':
@@ -1071,10 +1068,10 @@ export class ListViewComponent implements OnInit, OnDestroy {
     return bKeep;
   }
 
-  filterDataWithCommonTypes(item, filterObj, filterValue) {
+  filterDataWithCommonTypes(item, filterObj) {
     let bKeep;
     const value = item[filterObj.ref].toLowerCase();
-    filterValue = filterObj.containsFilterValue.toLowerCase();
+    const filterValue = filterObj.containsFilterValue.toLowerCase();
 
     switch (filterObj.containsFilter) {
       case 'contains':

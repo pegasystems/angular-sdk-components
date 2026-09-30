@@ -4,7 +4,7 @@ import { currencyMap } from './formatters/currency-map';
 export const getCurrencyOptions = (inISOCode: string) => {
   const operatorLocale = PCore.getEnvironmentInfo().getUseLocale() || PCore.getEnvironmentInfo().getLocale() || 'en-US';
 
-  let currMapToUse = currencyMap.US;
+  let currMapToUse;
   let localeToUse = operatorLocale;
 
   // Determine CurrencyMap lookup based on ISO code (if specified).

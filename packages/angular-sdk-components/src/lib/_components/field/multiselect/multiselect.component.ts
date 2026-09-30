@@ -90,7 +90,7 @@ export class MultiselectComponent extends FieldBase {
           key: 'true'
         }
       ];
-      let secondaryColumns: any = [];
+      let secondaryColumns: any;
       // Read columnsFormatter from raw (unresolved) metadata to get field property paths
       // (e.g. "@P .pyLabel") instead of resolved data values (e.g. "New Complex Fields").
       // This matches Constellation's approach: pConn.getRawMetadata()?.config?.columnsFormatter

@@ -194,8 +194,8 @@ export class AttachmentComponent implements OnInit, OnDestroy {
             error: errorFile.props.error || null
           };
         });
-        let key = '';
-        let updatedAttachments: any = [];
+        let key: string;
+        let updatedAttachments: any;
         if (this.allowMultiple$ || this.isOldAttachment) {
           key = this.isOldAttachment ? `${this.valueRef}.pxResults` : this.valueRef;
           const existingAttachments = PCore.getStoreValue(`.${key}`, this.pConn$.getPageReference(), this.pConn$.getContextName()) || [];

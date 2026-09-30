@@ -972,11 +972,10 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
   }
 
   _getIconStyle(level): string {
-    let sReturn = '';
     let nLevel = parseInt(level, 10);
     nLevel--;
     nLevel *= 15;
-    sReturn = `padding-left: ${nLevel}px; vertical-align: middle`;
+    const sReturn = `padding-left: ${nLevel}px; vertical-align: middle`;
 
     return sReturn;
   }

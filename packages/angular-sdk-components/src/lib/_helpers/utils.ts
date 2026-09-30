@@ -37,8 +37,8 @@ export class Utils {
     for (let i = 0; i < level; i++) {
       sDash = sDash.concat('-');
     }
-    let cName = 'blank';
-    let ctxName = '';
+    let cName: string;
+    let ctxName: string;
     try {
       cName = pConn.getComponentName();
       ctxName = pConn.getContextName();
@@ -130,7 +130,7 @@ export class Utils {
   }
 
   getInitials(userName: string): string {
-    let userInitials = userName;
+    let userInitials: string;
 
     if (userName && userName != '') {
       userInitials = userName.charAt(0);
