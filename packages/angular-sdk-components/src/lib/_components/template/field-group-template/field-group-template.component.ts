@@ -132,8 +132,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
     }
 
     if (this.referenceListLength() != referenceList?.length) {
-      // @ts-ignore - Expected 3 arguments, but got 1
-      this.pConn$.getListActions().initDefaultPageInstructions(resolvedList);
+      this.pConn$.getListActions().initDefaultPageInstructions(resolvedList, []);
 
       this.children = referenceList?.map((item, index) => {
         return {

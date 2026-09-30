@@ -2,6 +2,8 @@
  * Public API Surface of angular-sdk-components
  */
 
+import type {} from './lib/_types/pcore-globals';
+
 export * from './sdk-local-component-map';
 
 export * from './lib/_bridge/component-mapper/component-mapper.component';

@@ -210,8 +210,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
       isValidInput(formValues)
     ) {
       if (this.isValidatorField) {
-        // @ts-ignore
-        PCore.getMessageManager().clearContextMessages({ context: transientItemID });
+        PCore.getMessageManager().clearContextMessages({ context: this.transientItemID });
       }
 
       this.previousFormValues = formValues;
