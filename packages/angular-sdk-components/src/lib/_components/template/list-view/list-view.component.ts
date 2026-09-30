@@ -386,7 +386,7 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   getValue(col) {
-    return this.fields$.find(f => f.config.name === col)?.config.label;
+    return this.fields$.find(f => f.config.name === col)?.config.label || this.fieldDefs.find(f => f.name === col)?.label;
   }
 
   getListData() {
