@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
 
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -60,11 +60,6 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   showImageDescription: any;
   private isUpdatingFromDataCallback = false;
 
-  // inject() instead of a constructor parameter keeps the constructor signature stable for override subclasses
-  private cdRef = inject(ChangeDetectorRef);
-  private updatePending = false;
-  private destroyed = false;
-
   constructor(
     private angularPConnect: AngularPConnectService,
     private advancedSearchService: DataReferenceAdvancedSearchService
@@ -78,7 +73,6 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroyed = true;
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
@@ -91,18 +85,8 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     const bUpdateSelf = this.angularPConnect.shouldComponentUpdate(this);
 
     // ONLY call updateSelf when the component should update
-    if (bUpdateSelf && !this.updatePending) {
-      // A store callback can fire while Angular is checking the view tree (for example from a child's ngOnInit).
-      // updateSelf() rebuilds childrenToRender with new PConnect objects; doing that synchronously made the @for
-      // below create views after their parent had been checked (NG0100 ExpressionChangedAfterItHasBeenChecked).
-      // Apply the update in a microtask instead (coalescing bursts) and flag the view for the next check.
-      this.updatePending = true;
-      queueMicrotask(() => {
-        this.updatePending = false;
-        if (this.destroyed) return;
-        this.updateSelf();
-        this.cdRef.markForCheck();
-      });
+    if (bUpdateSelf) {
+      this.updateSelf();
     }
   }
 
