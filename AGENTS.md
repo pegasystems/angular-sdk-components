@@ -169,6 +169,7 @@ angular-sdk-components/
 | Do not modify `@pega/constellationjs` bundles | Pre-built engine, not source code |
 | Do not hardcode auth tokens or Infinity URLs | Use `@pega/auth` and `sdk-config.json` |
 | Do not commit `node_modules/` or `dist/` | Build artifacts — recreate via npm scripts |
+| Do not use APIs marked `@deprecated` | `@typescript-eslint/no-deprecated` is enforced in lint; use the replacement named in the typings (for example `localizeText` instead of `pConn$.getLocalizedValue`). The only exceptions carry an `eslint-disable` with the reason |
 | Do not forget `public-api.ts` exports | New components invisible to consumers without explicit export |
 | Infra/container components (`_components/infra/Containers/`) | Can be modified but require extra vigilance: changes must be backward compatible, well-tested, and include clear comments explaining the reasoning. These are rarely changed and affect the entire rendering pipeline |
 

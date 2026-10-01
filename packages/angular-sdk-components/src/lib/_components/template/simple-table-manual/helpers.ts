@@ -1,4 +1,5 @@
 import { getSeconds } from '../../../_helpers/common';
+import { localizeText } from '../../../_helpers/localization';
 
 export const TABLE_CELL = 'SdkRenderer';
 export const DELETE_ICON = 'DeleteIcon';
@@ -261,7 +262,7 @@ export function resolveFieldLabel(fieldViewMetadata, pConnect, classID?) {
     label = trimAnnotation(label);
   }
   if (pConnect) {
-    label = pConnect.getLocalizedValue(label);
+    label = localizeText(pConnect, label);
   }
   return label;
 }
@@ -292,7 +293,7 @@ export const updateFieldLabels = (fields, configFields, primaryFieldsViewIndex, 
           label = label.substring(3);
         }
         if (pConnect) {
-          label = pConnect.getLocalizedValue(label);
+          label = localizeText(pConnect, label);
         }
         primaryFieldLabels.push(label);
       }

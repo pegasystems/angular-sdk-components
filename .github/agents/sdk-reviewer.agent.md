@@ -30,7 +30,7 @@ This repo is consumed by `pegasystems/angular-sdk` and by customers who copy/sub
 - New subscriptions/listeners are cleaned up (`takeUntilDestroyed`, `unsubscribeFn`, `ngOnDestroy`).
 
 ### 5. Correctness details that are easy to miss
-- Localization: user-facing literals go through `getLocalizedValue`.
+- Localization: user-facing literals go through `localizeText` (`_helpers/localization.ts`); new uses of APIs marked `@deprecated` (lint rule `no-deprecated`) are not allowed without a justified `eslint-disable` comment.
 - Accessibility: names for controls, `aria-label` on icon buttons, no colour-only state.
 - Mutation of `configProps`/inherited props shared with siblings; mutated inputs on OnPush children.
 - `resolveConfigProps` result types vs template usage under `strictTemplates`; new implicit `any` (`npm run check:any`).

@@ -72,6 +72,8 @@
 ### **Refactoring**
 *   **Moved synchronous field components and presentational components to OnPush change detection, added FieldBase.markForCheck() and generic FieldBase<TValue> support.**
     * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+*   **Replaced the deprecated PConnect getLocalizedValue calls with a localizeText helper built on the localization service (exported from the library), and moved the library build to the @angular/build ng-packagr builder.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 *   **Added behaviour tests for the ListView and RootContainer components; no unit tests are skipped any more.**
     * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 *   **Moved the library unit tests from Karma and Jasmine to Vitest using the Angular unit-test builder.**

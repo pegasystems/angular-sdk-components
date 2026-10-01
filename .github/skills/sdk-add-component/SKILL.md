@@ -90,7 +90,7 @@ Plain `@Input()`/`@Output()` component; no `FieldBase`, no store. Consumed throu
 ## 4. Mandatory details
 
 - Import `ComponentMapperComponent` with `forwardRef(() => ComponentMapperComponent)` whenever the template uses `<component-mapper>`.
-- Localize literals (`pConn$.getLocalizedValue(text, localePath, localeRuleKey)`).
+- Localize literals (`localizeText(this.pConn$, text, localePath, localeRuleKey)`).
 - Accessible names for every control; no colour-only state; Material tokens for colours.
 - Teardown for any subscription you add (`takeUntilDestroyed`).
 - `$` suffix for template-bound props, `b` prefix for booleans.

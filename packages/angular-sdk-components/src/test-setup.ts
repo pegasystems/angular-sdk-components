@@ -72,7 +72,7 @@ const shallowResult = (v: any) => (v !== null && typeof v === 'object' ? shallow
 
 export const createPCoreStub = () => lenientRoot(explicitPCore());
 
-const pConnDefaults: Record<string, () => unknown> = {
+const pConnDefaults: Record<string, (...args: any[]) => unknown> = {
   getConfigProps: () => ({}),
   getRawConfigProps: () => ({}),
   resolveConfigProps: () => ({}),
@@ -101,7 +101,9 @@ const pConnDefaults: Record<string, () => unknown> = {
     getStatus: () => 'Open'
   }),
   getComponentName: () => '',
-  getLocalizedValue: () => ''
+  getLocaleRuleName: () => '',
+  getLocalizationService: () => ({ getLocalizedText: (t: string) => t, getLocalizedMessage: (t: string) => t }),
+  getLocalizedValue: (t: string) => t
 };
 
 /** Actions API double: every action is a bindable no-op function. */

@@ -18,7 +18,7 @@ You fix defects with the smallest safe change. Read `AGENTS.md` and the matching
    - display-only branch rendering raw markup instead of `FieldValueList`;
    - props compared by reference instead of by value (bridge uses deep equality on purpose);
    - form field lifecycle: `addFormField`/`removeFormField` imbalance leading to stale 400 errors;
-   - localization missing (`getLocalizedValue`);
+   - localization missing (`localizeText`);
    - subscription not torn down.
 5. **Fix minimally.** No drive-by refactors, no formatting churn, no new dependencies. Keep public properties, inputs and selectors intact; if the fix requires changing them, stop and use `sdk-public-api-change`.
 6. **Guard**: the reproducing spec stays as the regression test. Add neighbouring edge cases only when cheap.

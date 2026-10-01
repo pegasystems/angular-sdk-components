@@ -146,6 +146,7 @@ export * from './lib/_helpers/createstage-utils';
 export * from './lib/_helpers/currency-utils';
 export * from './lib/_helpers/date-format-utils';
 export * from './lib/_helpers/event-util';
+export * from './lib/_helpers/localization';
 export * from './lib/_helpers/field-group-utils';
 export * from './lib/_helpers/filter-utils';
 export * from './lib/_helpers/formatters/boolean';

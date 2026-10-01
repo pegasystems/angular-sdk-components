@@ -1,6 +1,6 @@
 ---
 name: sdk-localization
-description: Make SDK component text localizable - use PConnect getLocalizedValue and PCore locale utils correctly, choose locale categories, handle labels from config versus literals, dates/numbers, and test localized output. Use whenever a component renders user-facing text.
+description: Make SDK component text localizable - use localizeText (PConnect localization service) and PCore locale utils correctly, choose locale categories, handle labels from config versus literals, dates/numbers, and test localized output. Use whenever a component renders user-facing text.
 ---
 
 # Localization
@@ -11,7 +11,7 @@ User-facing text must come from one of two places: **Pega-authored values** (lab
 
 | API                                                                                   | Use                                                                                                                                                         |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `this.pConn$.getLocalizedValue(text, localePath, localeRuleKey)`                      | localize a literal through the component's PConnect context (see `dropdown.component.ts`, `case-history.component.ts`: `getLocalizedValue('Date', '', '')`) |
+| `localizeText(this.pConn$, text, localePath, localeRuleKey)` from `_helpers/localization.ts` | localize a literal through the component's PConnect context (see `dropdown.component.ts`, `case-history.component.ts`: `getLocalizedValue('Date', '', '')`) |
 | `PCore.getLocaleUtils().getLocaleValue(text, category, ruleKey)`                      | localize with an explicit locale category/rule key (see `operator.component.ts`, `material-case-summary.component.ts`, `navbar.component.ts`)               |
 | `PCore.getLocaleUtils().getPortalLocaleReference()`                                   | locale reference of the portal (navbar page names)                                                                                                          |
 | `PCore.getEnvironmentInfo().getLocale()/getTimeZone()`                                | formatting locale and time zone (`Utils.timezone`, `_helpers/common.ts`)                                                                                    |
@@ -20,6 +20,7 @@ User-facing text must come from one of two places: **Pega-authored values** (lab
 Check exact signatures in `node_modules/@pega/pcore-pconnect-typedefs` (see skill `sdk-pconnect-api`).
 
 ## Rules
+0. `pConn$.getLocalizedValue` is deprecated in PConnect; `localizeText` reproduces its lookup (rule or component scope, optional path, fallback to the default scope) with the localization service.
 
 1. Never hard-code English in templates or classes when Pega can translate it: wrap it (`localizedVal('Add', category)`) and bind the result.
 2. Values from `resolveConfigProps` (labels, placeholders, helper text, validation messages) are already localized; do not localize them again.
@@ -39,7 +40,7 @@ Check exact signatures in `node_modules/@pega/pcore-pconnect-typedefs` (see skil
 ```ts
 (globalThis as any).PCore.getLocaleUtils = () => ({ getLocaleValue: (v: string, c: string) => `${c}:${v}` });
 // render, then expect the DOM to contain 'Operator:Position'
-pConn.getLocalizedValue = (v: string) => `[${v}]`;
+pConn.getLocalizationService = () => ({ getLocalizedText: (v: string) => `[${v}]` });
 ```
 
 Assert that the literal is passed through the localizer and not rendered raw.

@@ -45,6 +45,9 @@ export class LocationComponent extends FieldBase {
   private loader = inject(GoogleMapsLoaderService);
   private destroyRef = inject(DestroyRef);
 
+  // Google deprecated AutocompleteService in favour of AutocompleteSuggestion (Places API New); migrating needs the new API enabled
+  // for the customer's key and a manual check against Google Maps, so it stays until that can be verified.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   private autocompleteService!: google.maps.places.AutocompleteService;
   private geocoder!: google.maps.Geocoder;
 
@@ -205,6 +208,7 @@ export class LocationComponent extends FieldBase {
   }
 
   private initializeGoogleServices() {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- see the note on autocompleteService
     this.autocompleteService = new google.maps.places.AutocompleteService();
     this.geocoder = new google.maps.Geocoder();
   }

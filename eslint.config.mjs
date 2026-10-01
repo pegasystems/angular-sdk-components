@@ -78,7 +78,9 @@ export default defineConfig([
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'off',
       '@typescript-eslint/prefer-for-of': 'off',
-      '@typescript-eslint/method-signature-style': ['error', 'property']
+      '@typescript-eslint/method-signature-style': ['error', 'property'],
+      // Fail on use of APIs marked @deprecated in their typings (PConnect, Angular, RxJS, Google Maps ...)
+      '@typescript-eslint/no-deprecated': 'error'
     }
   },
   {

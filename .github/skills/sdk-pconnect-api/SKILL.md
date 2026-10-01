@@ -38,7 +38,7 @@ Each method carries JSDoc with an `@example`; read it for argument shapes. Then 
 | `pConn$.getStateProps()`                                                                               | state binding, for example `getStateProps().value` -> `propName`                                         |
 | `pConn$.getInheritedProps()` / `setInheritedProp(k, v)`                                                | props inherited from parent views (display mode, read-only)                                              |
 | `pConn$.clearErrorMessages({ property })`                                                              | clear validation messages when the user edits                                                            |
-| `pConn$.getLocalizedValue(text, localePath?, ruleKey?)`                                                | localization of literals                                                                                 |
+| `localizeText(pConn$, text, localePath?, ruleKey?)` (`_helpers/localization.ts`) | localization of literals; wraps `getLocalizationService().getLocalizedText` because `pConn$.getLocalizedValue` is deprecated |
 | `pConn$.getComponentName()`, `getContextName()`, `getPageReference()`, `getValue(ref)`, `isEditable()` | identity, context and value access                                                                       |
 | `PCore.getConstants()`                                                                                 | enumerations (`CASE_INFO`, `PUB_SUB_EVENTS`...)                                                          |
 | `PCore.getDataApiUtils().getData(view, params, context)`                                               | data pages/views for widgets                                                                             |
@@ -46,6 +46,7 @@ Each method carries JSDoc with an `@example`; read it for argument shapes. Then 
 | `PCore.getEnvironmentInfo()`                                                                           | locale, time zone, operator info                                                                         |
 
 ## Rules
+- Do not use members the typedefs mark `@deprecated` (the lint rule `@typescript-eslint/no-deprecated` fails the build); read the replacement from the JSDoc.
 
 - Components never call Infinity REST; use these APIs.
 - Do not read field data from `PCore.getStore().getState()`; use config props (the bridge handles store subscription and re-render).

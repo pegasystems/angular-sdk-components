@@ -4334,6 +4334,9 @@ export class ListViewComponent implements OnInit, OnDestroy {
     static ɵfac: i0.ɵɵFactoryDeclaration<ListViewComponent, never>;
 }
 
+// @public
+export function localizeText(pConn: typeof PConnect, text: string, localePath?: string, localeRuleKey?: string): string;
+
 // @public (undocumented)
 export const loginBoxType: {
     Main: number;

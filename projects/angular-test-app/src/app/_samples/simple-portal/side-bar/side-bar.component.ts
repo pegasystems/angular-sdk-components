@@ -46,8 +46,8 @@ export class SideBarComponent implements OnInit, OnDestroy {
   }
 
   updateCaseTypes() {
-    this.cservice.getCaseTypes().subscribe(
-      (response: any) => {
+    this.cservice.getCaseTypes().subscribe({
+      next: (response: any) => {
         const caseManagement = response.body;
         const caseTypes = caseManagement.caseTypes;
         // const displayableCaseTypes = [];
@@ -65,17 +65,17 @@ export class SideBarComponent implements OnInit, OnDestroy {
         }
         this.cdRef.markForCheck();
       },
-      err => {
+      error: err => {
         alert(`Errors from get casetypes:${err.errors}`);
       }
-    );
+    });
   }
 
   updateWorkList() {
     const worklistParams = new HttpParams().set('Work', 'true');
 
-    const dsubscription = this.dpservice.getDataPage('D_Worklist', worklistParams).subscribe(
-      (response: any) => {
+    const dsubscription = this.dpservice.getDataPage('D_Worklist', worklistParams).subscribe({
+      next: (response: any) => {
         const datapageResults = response.body.pxResults;
 
         this.arWorkItems$ = [];
@@ -92,10 +92,10 @@ export class SideBarComponent implements OnInit, OnDestroy {
         dsubscription.unsubscribe();
         this.cdRef.markForCheck();
       },
-      err => {
+      error: err => {
         alert(`Error form worklist:${err.errors}`);
       }
-    );
+    });
   }
 
   buttonClick(oButtonData) {
