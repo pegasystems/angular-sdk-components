@@ -26,3 +26,9 @@ packages/angular-sdk-overrides/SECURITY.md
 /tests/playwright-report
 
 **/tsconfig.*.tsbuildinfo
+temp/
+
+# local environment files
+.env
+.env.local
+/coverage

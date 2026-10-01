@@ -41,7 +41,7 @@ function processOverrideFile(filePath) {
     }
 
     // The Regex pattern to match import statements
-    const importPattern = /import\s+(?:(?:{[^}]+})|(?:[\w\d*]+))\s+from\s+['"]([^'"]+)['"]/g;
+    const importPattern = /import\s+(?:type\s+)?(?:(?:{[^}]+})|(?:[\w\d*]+))\s+from\s+['"]([^'"]+)['"]/g;
 
     const newData = data.replace(importPattern, (match, importPath) => {
       if (importPath.includes('../')) {
