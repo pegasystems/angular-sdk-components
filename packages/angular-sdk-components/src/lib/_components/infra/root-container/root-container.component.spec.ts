@@ -70,4 +70,16 @@ describe('RootContainerComponent', () => {
     await vi.waitFor(() => expect(component.componentName$).toBe('ViewContainer'));
     expect(component.viewContainerPConn$).toBe(createdPConn);
   });
+
+  it('does not show the "Missing" message while the root component name is still unknown', () => {
+    render({});
+    expect(component.componentName$).toBeUndefined();
+    expect(fixture.nativeElement.textContent).not.toContain('Missing');
+  });
+
+  it('shows the "Missing" message once an unsupported root component name is known', () => {
+    component.componentName$ = 'Unsupported';
+    render({});
+    expect(fixture.nativeElement.textContent).toContain('RootContainer Missing: Unsupported.');
+  });
 });

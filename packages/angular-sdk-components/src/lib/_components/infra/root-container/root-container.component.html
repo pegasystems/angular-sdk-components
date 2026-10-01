@@ -18,7 +18,10 @@
           <component-mapper name="reference" [props]="{ pConn$ }"></component-mapper>
         }
         @default {
-          <div>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
+          <!-- componentName$ is only known after the first routing update (asynchronous); do not flash "Missing: undefined" while loading -->
+          @if (componentName$) {
+            <div>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
+          }
         }
       }
     </div>
