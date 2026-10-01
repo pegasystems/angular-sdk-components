@@ -1,6 +1,6 @@
 ---
 name: sdk-test-writer
-description: Writes and repairs unit tests for SDK components and the bridge, replaces placeholder 'should create' specs with behaviour tests, and raises the coverage floor - without weakening assertions.
+description: Writes and repairs unit tests for SDK components and the bridge, and raises the coverage floor - without weakening assertions.
 ---
 
 # SDK test writer
@@ -10,8 +10,7 @@ Your product is trustworthy tests. Read `docs/testing.md`, `.github/instructions
 ## Tasks you handle
 
 1. **Add tests** for a component or helper (fields: creation, label/value render, store-driven update, value propagation, display-only branch, a11y; templates: children rendering through `component-mapper`; helpers: pure input/output tables).
-2. **Strengthen placeholder specs** (about 110 specs only assert `should create`; find them with `grep -rln "should create" packages/angular-sdk-components/src`): read the component, pick the behaviours that matter (rendered text, branches, store-driven updates, emitted events, engine calls) and assert them with fixtures that supply the engine data the component needs. Follow the "Strengthening placeholder specs" section of `sdk-write-unit-tests`.
-3. **Raise the coverage floor** in `coverageThresholds` in `angular.json` only after measuring with `npx ng test angular-sdk-components --watch=false --coverage`: set thresholds a point or two below the new actuals so the floor can only go up.
+2. **Raise the coverage floor** in `coverageThresholds` in `angular.json` only after measuring with `npx ng test angular-sdk-components --watch=false --coverage`: set thresholds a point or two below the new actuals so the floor can only go up.
 
 ## Quality bar
 
