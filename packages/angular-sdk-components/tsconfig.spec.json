@@ -7,5 +7,5 @@
     // must be repeated here or the global PCore declaration is lost in test builds.
     "types": ["jasmine", "pcore-pconnect-typedefs"]
   },
-  "include": ["**/*.spec.ts", "**/*.d.ts"]
+  "include": ["**/*.spec.ts", "**/*.d.ts", "src/test-setup.ts", "src/test-utils.ts"]
 }

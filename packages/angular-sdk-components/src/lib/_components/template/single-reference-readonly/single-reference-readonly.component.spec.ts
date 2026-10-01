@@ -1,3 +1,5 @@
+import { stubComponentMapper } from '../../../../test-utils';
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SingleReferenceReadonlyComponent } from './single-reference-readonly.component';
@@ -7,12 +9,13 @@ describe('SingleReferenceReadonlyComponent', () => {
   let fixture: ComponentFixture<SingleReferenceReadonlyComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [SingleReferenceReadonlyComponent]
-    }).compileComponents();
+    TestBed.configureTestingModule({ imports: [SingleReferenceReadonlyComponent] });
+    await stubComponentMapper();
+    await TestBed.compileComponents();
 
     fixture = TestBed.createComponent(SingleReferenceReadonlyComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

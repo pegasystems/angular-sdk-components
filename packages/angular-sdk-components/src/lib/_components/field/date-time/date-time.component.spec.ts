@@ -1,3 +1,5 @@
+import { FormGroup } from '@angular/forms';
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DateTimeComponent } from './date-time.component';
@@ -8,13 +10,15 @@ describe('DateTimeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DateTimeComponent]
+      imports: [DateTimeComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DateTimeComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
+    (component as any).formGroup$ = new FormGroup({});
     fixture.detectChanges();
   });
 

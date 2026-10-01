@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AlertBannerComponent } from './alert-banner.component';
@@ -8,11 +9,12 @@ describe('AlertBannerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AlertBannerComponent]
+      imports: [AlertBannerComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(AlertBannerComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

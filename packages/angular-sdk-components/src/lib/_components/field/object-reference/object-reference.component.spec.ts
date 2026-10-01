@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ObjectReferenceComponent } from './object-reference.component';
@@ -13,6 +14,7 @@ describe('ObjectReferenceComponent', () => {
 
     fixture = TestBed.createComponent(ObjectReferenceComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

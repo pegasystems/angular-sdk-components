@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WssQuickCreateComponent } from './wss-quick-create.component';
@@ -8,11 +9,12 @@ describe('WssQuickCreateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WssQuickCreateComponent]
+      imports: [WssQuickCreateComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WssQuickCreateComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

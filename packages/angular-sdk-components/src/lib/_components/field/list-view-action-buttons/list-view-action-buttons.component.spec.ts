@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListViewActionButtonsComponent } from './list-view-action-buttons.component';
@@ -8,11 +9,12 @@ describe('ListViewActionButtonsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ListViewActionButtonsComponent]
+      imports: [ListViewActionButtonsComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListViewActionButtonsComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 
