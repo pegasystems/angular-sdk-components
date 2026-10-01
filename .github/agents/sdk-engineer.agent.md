@@ -12,7 +12,8 @@ How to use this file:
 1. Read **Part 1** (principles) and **Part 2** (repository knowledge) once per task.
 2. Use the **mode router** (Part 3) to pick the workflow, then follow that part end to end.
 3. Use **Part 14** (reference) for checklists, report formats, error catalogue and glossary.
-4. Use **Parts 15 to 18** for the Spec Kit workflow, engineering practices (Angular 21 and tooling), working method (planning, searching, context, self-review) and the risk and escalation matrix.
+4. Use **Parts 19 to 21** for onboarding, theming and troubleshooting.
+5. Use **Parts 15 to 18** for the Spec Kit workflow, engineering practices (Angular 21 and tooling), working method (planning, searching, context, self-review) and the risk and escalation matrix.
 
 ---
 
@@ -295,6 +296,9 @@ Avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`)
 | upgrade Angular/Material/Tiptap/Vitest/etc. | **Upgrade** (Part 12) |
 | consumer wants to customise or override | **Customise** (Part 13) |
 | "how does X work", onboarding | **Explain** (Part 14.1) |
+| first run, setup, configure `sdk-config.json`, "get it running against my Pega server" | **Onboard** (Part 19) |
+| colours, dark mode, theme, branding, contrast | **Theming** (Part 20) |
+| an error, blank page, login problem, failing build or check, "why does X happen" | **Troubleshoot** (Part 21) |
 | change to build scripts, configs, tooling | **Tooling** (Part 14.2) |
 | a feature or enhancement request (for example `ENHANCEMENT-14479`), anything larger than a small change, or "spec/plan/tasks" | **Spec Kit workflow** (Part 15) |
 
@@ -840,8 +844,8 @@ Pick the least invasive option:
 
 | Need | Option |
 | --- | --- |
-| Colours, typography, dark mode | theming (Material tokens in `themes.scss`, `theme` in `sdk-config.json`) |
-| Behaviour flags, URLs, portal | configuration (`sdk-config.json`, `node scripts/configure-sdk.js`) |
+| Colours, typography, dark mode | theming (Part 20) |
+| Behaviour flags, URLs, portal | configuration (Part 19.3) |
 | Replace what one Pega component renders | **local component map override** (below) |
 | Change shared behaviour of many components | edit the source in place (a repo checkout) and keep the public API stable |
 | Consumer of the npm packages | copy from `@pega/angular-sdk-overrides` and register in the consumer's local map |
@@ -1135,3 +1139,219 @@ Lead with the result. Be concise and factual; use short lists and tables; refere
 **Stop and ask the user (one precise question with a recommended default) when:** the Pega component name or display-only semantics are unknown; the change would break a public contract and no justification exists; two constitution principles conflict; the request needs a decision about versions, dates, naming of released artefacts or deletions; verification fails for reasons you cannot attribute; or the work belongs in another repository.
 
 **Never proceed silently past:** a failing verification step you did not cause, a generated file you would have to edit by hand, a missing registration, an unexplained API report diff, or an E2E expectation you cannot meet. Report it.
+
+---
+
+# Part 19 - Onboarding and first run (Onboard mode)
+
+Goal: take a developer from a fresh checkout to the SDK rendering their Pega application, and leave them knowing the next step. Do the steps yourself when you can run commands; otherwise give exact commands. Complement, do not copy, Pega's official [Constellation SDK documentation](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/constellation-sdks.html) (server-side OAuth registration and platform setup live there, not here).
+
+## 19.1 Readiness checklist (check before running anything)
+
+| Item | How to check | If missing |
+| --- | --- | --- |
+| Node.js 24 and npm | `node -v` (must satisfy `engines` `^24.0.0`), `npm -v` | install Node 24; older or newer majors are unsupported |
+| Pega Infinity reachable | the base URL of the REST server (ends in `/prweb`, no trailing slash) opens in a browser | VPN, certificate or URL problem: Part 21.3 |
+| OAuth 2.0 client registration for the SDK | an OAuth client ID for the portal use case (and, for embedded/mashup, a mashup client ID, user identifier and password) | the Pega administrator registers it; the **redirect URI must match the URL you open**, including port and path |
+| The application and portal to render | application alias and optional portal name | ask the user; do not guess |
+
+Never ask the user to paste secrets into chat. Use environment variables or CI secrets (19.3).
+
+## 19.2 Steps
+
+```bash
+git clone https://github.com/pegasystems/angular-sdk-components.git
+cd angular-sdk-components
+npm ci                                   # deterministic install from the lock file
+
+# Configure (see 19.3): edit sdk-config.json, or keep it untouched and use environment variables
+export SDK_INFINITY_REST_SERVER_URL=https://my-pega.example.com/prweb
+export SDK_PORTAL_CLIENT_ID=<oauth client id>
+node scripts/configure-sdk.js            # writes the values into sdk-config.json
+
+npm run start-dev                        # http://localhost:3500
+npm run start-dev-https                  # same, with the bundled dev certificate in keys/ (browser warns: expected)
+```
+
+Entry pages of the test app (`projects/angular-test-app/src/app/routes.ts`): `/portal` and `/fullportal` (full portal), `/embedded` and `/mashup` (embedded flow; `/` also loads it), `/simpleportal` (lightweight portal). The OAuth client must be registered for the exact URL you use.
+
+**What "working" looks like:** the browser redirects to the Infinity login, returns to the app, and renders the portal (navigation bar, work lists) or the embedded case flow. The console shows no red errors other than known dev-mode noise (Part 21.5). If not, go to Part 21.
+
+## 19.3 Configuration reference
+
+Runtime settings live in `sdk-config.json` at the repository root. It is copied to the root of the build output (`dist/sdk-config.json`) and **fetched by the browser at startup, so it can change after the build without recompiling**. It is a public file served to every user: put nothing in it that you would not send to every browser.
+
+`node scripts/configure-sdk.js` applies environment variables to it (the names are defined in `scripts/lib/sdk-config.js`). Unset or empty variables leave the file value untouched, so a committed base file can be combined with per-environment overrides.
+
+| Variable | `sdk-config.json` setting | Notes |
+| --- | --- | --- |
+| `SDK_INFINITY_REST_SERVER_URL` | `serverConfig.infinityRestServerUrl` | **Required.** Full URL of the Infinity REST server, for example `https://host/prweb` (no trailing slash) |
+| `SDK_PORTAL_CLIENT_ID` | `authConfig.portalClientId` | **Required.** OAuth 2.0 client ID for the portal use case |
+| `SDK_APP_ALIAS` | `serverConfig.appAlias` | Application alias operators use |
+| `SDK_CONTENT_SERVER_URL` | `serverConfig.sdkContentServerUrl` | Blank means `window.location.origin` |
+| `SDK_APP_PORTAL` | `serverConfig.appPortal` | Blank means the operator's default portal |
+| `SDK_APP_MASHUP_CASE_TYPE` | `serverConfig.appMashupCaseType` | Case type for embedded/mashup |
+| `SDK_SHOW_MODALS_IN_EMBEDDED_MODE` | `serverConfig.showModalsInEmbeddedMode` | `true` or `false` |
+| `SDK_MASHUP_CLIENT_ID` | `authConfig.mashupClientId` | Mashup OAuth client ID |
+| `SDK_MASHUP_USER_IDENTIFIER` | `authConfig.mashupUserIdentifier` | |
+| `SDK_MASHUP_PASSWORD` | `authConfig.mashupPassword` | Provide plain text; it is Base64 encoded into the file. Store it as a CI secret and rotate it if it was ever committed |
+| `SDK_AUTH_SERVICE` | `authConfig.authService` | |
+| `SDK_THEME` | `theme` | `dark` or `light` (the sample app also ships a `mediaco` theme class); see Part 20 |
+
+Other settings (for example `excludePortals`) are described in the [official guide](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/configuring-sdk-config-json.html).
+
+```bash
+node scripts/configure-sdk.js                                # apply environment variables in place
+node scripts/configure-sdk.js --out dist/sdk-config.json     # write the result elsewhere; the source file is untouched
+node scripts/configure-sdk.js --print                        # also print the result (secrets masked)
+node scripts/configure-sdk.js --check                        # validate only; exit 1 on errors, nothing written
+```
+
+| Approach | When |
+| --- | --- |
+| `configure-sdk.js` before the build | one build per environment (simple pipelines) |
+| `configure-sdk.js --out dist/sdk-config.json` after the build | build once, deploy many: promote the same `dist/` and render the config per environment |
+
+End-to-end test settings: `SDK_E2E_BASE_URL` (deployed app the Playwright suite targets; default `http://localhost:3500`), `PW_START_SERVER=1` (Playwright starts `npm run start-prod` itself; `PW_SERVER_COMMAND` overrides the command), `PW_SLOW_MO` (ms between actions; default 200 locally, use `0` in CI), `PW_WORKERS` (default 1 in CI), `PW_JUNIT_OUTPUT` (default `test-results/junit.xml`), and `CI` (JUnit + HTML + list reporters, retries, video on failure).
+
+## 19.4 Make it yours (the three customer paths)
+
+1. **Change a component in place:** edit it under `packages/angular-sdk-components/src/lib/_components/`; keep the public API stable if others consume the packages (Part 14.4).
+2. **Add a component:** `node scripts/new-component.js field star-rating StarRating` (Part 4).
+3. **Override a Pega-provided component without editing the original:** local component map (Part 13).
+Theme and branding: Part 20.
+
+## 19.5 Verify and ship
+
+```bash
+npm run lint
+npx ng test angular-sdk-components --watch=false     # no Pega server needed
+node scripts/verify.js                                # everything CI checks except E2E
+npm run prod-build-angularsdk                         # production build into dist/ (brotli/gzip compressed)
+```
+
+CI can run the same commands on any agent with Node 24; pass `SDK_*` values as environment variables (mask `SDK_MASHUP_PASSWORD`), publish `dist/` as the artifact, and set `CI=true` for Playwright. This repository's own workflows are in `.github/workflows/` (`quality.yml`).
+
+## 19.6 After onboarding, point the user to
+
+| They want to | Go to |
+| --- | --- |
+| understand how it works | `docs/architecture.md`, Part 2.2 |
+| change or add components | Parts 4 and 13 |
+| write tests | Part 7 |
+| theme the app | Part 20 |
+| fix a problem | Part 21 |
+| contribute upstream | `docs/CONTRIBUTING.md`, Part 17.5 and the definition of done in 14.8 |
+
+---
+
+# Part 20 - Theming and design tokens (Theming mode)
+
+SDK components use Angular Material 3 and read **system tokens** (`--mat-sys-*`) from CSS custom properties, so a theme is a set of variables on a root element. Nothing in a component should know which theme is active.
+
+## 20.1 How the test app applies a theme
+
+- `projects/angular-test-app/src/themes.scss` defines the theme classes: `.dark` (explicit token overrides such as `--mat-sys-primary`, `--mat-sys-surface`, `--mat-sys-on-surface`, `--mat-sys-error`, plus app tokens), `.light` and `.mediaco` (both built with the Material `mat.theme` mixin from a palette, typography and density).
+- At startup `FullPortalComponent` and `EmbeddedComponent` read `theme` from `sdk-config.json` (`SDK_THEME`), remove the `light` and `dark` classes from `<body>` and add `theme || 'dark'`. A custom class name in `theme` works too, because it is simply added to `<body>`.
+- Changing the class switches the theme at runtime without rebuilding; changing `sdk-config.json` after the build changes the theme without recompiling (19.3).
+
+## 20.2 Rules for components (reviewers enforce these)
+
+- Use Material tokens (`var(--mat-sys-primary)`, `var(--mat-sys-on-surface)`, ...) instead of hard-coded colours, so every theme works.
+- App-specific tokens use the `--app-sys-*` prefix and must default to a Material token, for example `--app-sys-secondary-button-border: var(--mat-sys-primary)`.
+- Never rely on colour alone to convey state (errors, required fields, selection): pair it with text or an icon.
+- Keep component styles small (production budgets in `angular.json`; a warning at 2 kB per component style) and avoid new `::ng-deep`.
+- Do not branch on the theme name in component code.
+
+## 20.3 Creating or changing a theme
+
+1. Generate a Material 3 palette (Material Theme Builder, or the `mat.theme` mixin with a built-in palette).
+2. Add a class in `themes.scss` (for example `.high-contrast`) that sets the full token set, by `mat.theme(...)` for a palette-driven theme or by explicit `--mat-sys-*` overrides as `.dark` does.
+3. Set `theme` in `sdk-config.json` (or `SDK_THEME`) to the class name.
+4. Check contrast in the browser in **both edit and display-only modes** and for error, disabled and focus states: WCAG 2.2 AA requires 4.5:1 for text and 3:1 for UI components and focus indicators. Verify typography and density for tables and dense forms.
+5. Check embedded/mashup mode as well as the portal; both set the class from the same setting.
+6. Customer-facing branding (logo, app name, favicon) lives in the host application and its assets, not in the library components.
+
+## 20.4 Accessibility checks for themes
+
+Field components are covered by automated axe-core checks (`field-a11y.spec.ts`, helper `getA11yViolations` in `src/test-setup.ts`). The unit-test environment does not load the Material theme stylesheet, so colour-contrast results there are not representative: review contrast for any new theme in a real browser, and say so in your report when you could not.
+
+## 20.5 Reporting
+
+For a theme change report: the class and tokens changed, the modes and states checked, contrast ratios measured (or "not measured"), and the browsers used.
+
+---
+
+# Part 21 - Troubleshooting runbook (Troubleshoot mode)
+
+Pega's [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html) page covers platform-side issues; this part covers this repository.
+
+## 21.1 Method
+
+1. **State the symptom precisely:** the exact message, where it appears (terminal, browser console, network tab, CI log), when it started, what changed.
+2. **Collect evidence before theories:** `node -v`, `npm -v`, `npm ls @angular/core @angular/material @pega/constellationjs`, the failing command and the last 40 log lines, the browser console error with the **full stack** (expand the frames that name our components), the failing network request (status, URL, response) and `sdk-config.json` with secrets removed.
+3. **Classify:** setup/environment, configuration and login, build or CI check, runtime rendering, or test failure. Use the matching table below.
+4. **Isolate:** reproduce with the smallest case (one spec, one page, one command). Compare with `master` (`git stash`/another worktree) to learn whether the PR or the data/environment is responsible. Change one thing at a time.
+5. **Find the root cause, not the symptom** (Part 5.3 for rendering bugs); fix minimally; add a regression test when it is code (Part 7); say what you could not verify.
+6. **Escalate with evidence** (21.6) when it needs the Pega platform, an admin, or another repository.
+
+## 21.2 Setup and environment
+
+| Symptom | Likely cause and fix |
+| --- | --- |
+| `engines` or syntax errors on install or build | Node is not 24.x. Install Node 24 |
+| "node_modules is missing", missing `@angular/*` packages | Run `npm ci` |
+| `npm ci` cannot reach packages | `.npmrc` points at the public registry. Behind a proxy or private registry, override it in your user-level `.npmrc` or the CI environment; prefer `npm ci` over `npm install` |
+| `npm install` peer-dependency conflict among `@angular/*` | Update the whole family to the same patch and use `npm install --force` (exact peer pins) |
+| Port 3500 already in use | Stop the other process or `npx ng serve --port 3501` (update `SDK_E2E_BASE_URL` and the OAuth redirect URI) |
+| Browser warns about the HTTPS certificate | Expected with the bundled dev certificate in `keys/`; trust it locally or use `start-dev` over HTTP |
+
+## 21.3 Configuration and login
+
+| Symptom | Likely cause and fix |
+| --- | --- |
+| `node scripts/configure-sdk.js` fails validation | The message names the setting and the environment variable that sets it |
+| Blank page or network error on load | `serverConfig.infinityRestServerUrl` is wrong or unreachable (VPN, trailing slash, certificate). Open it in the browser; check the Network tab |
+| Login redirect loop or `redirect_uri` error | The URL you open (scheme, host, port and path) must be registered as a redirect URI on the Pega OAuth 2.0 client |
+| CORS errors | Add the app origin to the Infinity CORS configuration |
+| Embedded/mashup login fails | `mashupClientId`, `mashupUserIdentifier` and the Base64 `mashupPassword` must be set (`SDK_MASHUP_PASSWORD` is encoded for you) |
+| Config changes have no effect on a deployed site | `sdk-config.json` is cached. Serve it with `Cache-Control: no-store` |
+| Wrong application or portal loads | `serverConfig.appAlias` / `appPortal`, and `excludePortals` |
+
+## 21.4 Build, checks and CI
+
+| Symptom | Likely cause and fix |
+| --- | --- |
+| `npx ngc -p tsconfig.overrides-check.json` fails with "Cannot find module '@pega/angular-sdk-components'" | The library is not built, or `npm run build` replaced `dist/`. Run `npm run build-angular-sdk-components` |
+| `npx api-extractor run` fails | The public API changed. If intended: `npm run build-angular-sdk-components && npx api-extractor run --local`, review and commit `etc/angular-sdk-components.api.md` |
+| `node scripts/check-implicit-any.js` fails | A file got more implicit-`any` errors than its baseline. Add types; after fixing errors, `--update` lowers the baseline |
+| `node scripts/changelog.js add` says the PR is already listed | Edit the existing entry (the tool refuses duplicates) |
+| `commitlint` fails | Header or a body line over 100 characters, or a non-conventional type |
+| `node --test scripts/__tests__` fails on Node 24 | Pass a glob: `node --test "scripts/__tests__/*.test.js"` |
+| Production build exceeds a style budget | See the budgets in `angular.json`; keep component styles small |
+| Playwright cannot find browsers on the agent | `npx playwright install --with-deps chromium`, or use the Playwright container image matching the version in `package.json` |
+| E2E tests time out in CI | `SDK_E2E_BASE_URL` must be reachable from the agent and the test users must exist in the target app |
+
+The longer symptom catalogue for unit tests and tooling is in 14.7.
+
+## 21.5 Runtime rendering errors seen in this repository
+
+| Symptom | What it means and what to do |
+| --- | --- |
+| `NG0100 ExpressionChangedAfterItHasBeenChecked` on a store-driven or async-loaded component (seen in DataReference, Stages) | The app is **zoneless**: Angular only refreshes views flagged dirty. State changed from a store callback or a promise without flagging the view, so the dev-mode check pass (which looks at every view) finds new state. Production would show a stale UI instead. Fix by flagging the view: `markForCheck()` after the assignment (`inject(ChangeDetectorRef)`), and for store updates make sure the component has a `markForCheck` (`FieldBase` has one; other components need their own, or a generic one attached by the component mapper from the `ComponentRef`, an approach that was prototyped and reverted in PR 608, see its follow-ups). Prove it with a unit test that uses real `ApplicationRef.tick()` calls and `await`s the async update |
+| NG0100 where a `@for` creates views in the check pass | The list was replaced (new object identities) after the template was checked. Track a stable key in `@for` and flag the view as above; do not call engine getters in the template that can change between passes |
+| NG0100 appears only when a unit test mutates a component then calls `fixture.detectChanges()` | Zoneless fixtures do not refresh a non-dirty component; mutate through a signal, `markForCheck()` or an input, then `await fixture.whenStable()` |
+| "RootContainer Missing: undefined" flashes on load | The root component name is only known after the first routing update; the fallback message must wait for the name |
+| `Duplicate column definition name provided: "undefined"` from `MatTable` | Two table columns resolved to no name. In ListView the id comes from the field definition at the same index; fall back to the configured property name. Check the data that produced the columns |
+| A component renders the red "ErrorBoundary" box | The Pega component name is not in `sdk-pega-component-map.ts` (case-sensitive) or a local-map override shadows it (Part 5.2) |
+| UI updates only after a click | OnPush or zoneless plus state set outside an event without `markForCheck()` (Part 4.10) |
+
+**Diagnostic to find who changes a component during a pass** (temporary; never commit): add a field `private appRef = inject(ApplicationRef);` to the suspect component and put `if ((this.appRef as any)._runningTick) console.trace('<component>.updateSelf during CD');` at the top of the suspect method, reproduce, and read the stack. `_runningTick` is an internal Angular flag used only for diagnosis.
+
+## 21.6 Escalation and issue reports
+
+Open an issue (or hand over to the Pega administrator) with: Node and npm versions, the Angular/Material/constellationjs versions (`npm ls`), the exact command or URL, expected and actual behaviour, the full console stack or CI log tail, whether it reproduces on `master`, and the redacted `sdk-config.json`. Remove secrets, tokens and customer data first. Report suspected vulnerabilities through the security process, not a public issue (14.6).
+
+## 21.7 Closing the loop
+
+After a fix: add or extend a test where code changed; update this part's tables if you found a new recurring symptom; record anything you could not verify (E2E, real engine, browsers) in the hand-off report (14.9).
