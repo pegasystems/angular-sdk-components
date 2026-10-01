@@ -66,7 +66,7 @@
       * Github: [PR-600](https://github.com/pegasystems/angular-sdk-components/pull/600)
 *   **Fixed the issue where required validation was not triggered in the Rich Text Editor.**
       * Github: [PR-601](https://github.com/pegasystems/angular-sdk-components/pull/601)
-*   **Fixed the @pega/angular-sdk-overrides package so that relative import type statements (for example in FieldBase) are rewritten to @pega/angular-sdk-components. Also fixed hidden SemanticLink not hiding, stored Location value not showing on first render, RadioButtons locale lookup and validation error display, Multiselect ignoring the associated list type, an unhandled rejection when submitting list view actions, and the NG0100 ExpressionChangedAfterItHasBeenChecked error in the NavBar and WssNavBar navigation lists, and the "RootContainer Missing: undefined" text flashing on page load.**
+*   **Fixed the @pega/angular-sdk-overrides package so that relative import type statements (for example in FieldBase) are rewritten to @pega/angular-sdk-components. Also fixed hidden SemanticLink not hiding, stored Location value not showing on first render, RadioButtons locale lookup and validation error display, Multiselect ignoring the associated list type, an unhandled rejection when submitting list view actions, and the NG0100 ExpressionChangedAfterItHasBeenChecked error in the NavBar and WssNavBar navigation lists, and the "RootContainer Missing: undefined" text flashing on page load, and ListView columns without an id causing a duplicate "undefined" column error.**
       * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 
 ### **Refactoring**

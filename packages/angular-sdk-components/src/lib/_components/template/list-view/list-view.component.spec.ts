@@ -48,4 +48,22 @@ describe('ListViewComponent', () => {
     expect(getDataAsync).toHaveBeenCalledWith('D_Items', expect.anything(), undefined, undefined, null);
     expect(component.response).toEqual([{ pyGUID: '1', Name: 'Ada' }]);
   });
+
+  it('gives every header cell a defined id so the table never gets duplicate "undefined" column names', () => {
+    const colFields = [
+      { type: 'TextInput', config: { value: '@P .Name' } },
+      { type: 'TextInput', config: { value: '@P .City' } },
+      { type: 'TextInput', config: { value: '@P .Zip' } }
+    ];
+    // The first field definition has no id and the list of definitions is shorter than the columns
+    const fieldDefs = [
+      { name: 'Name', label: 'Name' },
+      { id: 'City', name: 'City', label: 'City' }
+    ];
+
+    const headers = component.getHeaderCells(colFields, fieldDefs);
+
+    expect(headers.map((h: any) => h.id)).toEqual(['Name', 'City', 'Zip']);
+    expect(new Set(headers.map((h: any) => h.id)).size).toBe(3);
+  });
 });

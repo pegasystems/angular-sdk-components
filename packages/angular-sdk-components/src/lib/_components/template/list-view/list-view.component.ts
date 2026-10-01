@@ -1388,12 +1388,15 @@ export class ListViewComponent implements OnInit, OnDestroy {
       const colIndex = fields.findIndex(ele => ele.name === theField);
       const displayAsLink = field.config.displayAsLink;
       const headerRow: any = {};
-      headerRow.id = fields[index].id;
+      // The column id becomes the mat-table column name (and the key of the row data), so it must never be undefined:
+      // two columns without an id make MatTable throw 'Duplicate column definition name provided: "undefined"'.
+      // Prefer the field definition at the same position, then the one matching the configured property, then the property name.
+      headerRow.id = fields[index]?.id ?? fields[colIndex]?.id ?? theField;
       headerRow.type = field.type;
       headerRow.displayAsLink = displayAsLink;
       headerRow.numeric = field.type === 'Decimal' || field.type === 'Integer' || field.type === 'Percentage' || field.type === 'Currency' || false;
       headerRow.disablePadding = false;
-      headerRow.label = fields[index].label;
+      headerRow.label = fields[index]?.label ?? fields[colIndex]?.label;
       if (colIndex > -1) {
         headerRow.classID = fields[colIndex].classID;
       }
