@@ -70,3 +70,15 @@ export function createMockPConn(): any {
 }
 
 (globalThis as any).PCore = createPCoreStub();
+
+/** Runs axe-core (WCAG 2.x A/AA rules) against a rendered element and returns a readable list of violations. */
+export async function getA11yViolations(element: HTMLElement): Promise<string[]> {
+  const axe = (await import('axe-core')).default;
+  document.body.appendChild(element);
+  try {
+    const results = await axe.run(element, { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] } });
+    return results.violations.map(v => `${v.id}: ${v.help} (${v.nodes.map(n => n.target.join(' ')).join(', ')})`);
+  } finally {
+    element.remove();
+  }
+}
