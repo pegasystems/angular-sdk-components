@@ -1,0 +1,12 @@
+{
+  "name": "Angular SDK Components",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:24",
+  "postCreateCommand": "npm ci --ignore-scripts && npx playwright install --with-deps chromium",
+  "forwardPorts": [3500],
+  "portsAttributes": { "3500": { "label": "SDK dev server" } },
+  "customizations": {
+    "vscode": {
+      "extensions": ["angular.ng-template", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "ms-playwright.playwright"]
+    }
+  }
+}

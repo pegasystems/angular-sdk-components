@@ -1,0 +1,66 @@
+# Copy to azure-pipelines.yml
+# Define these variables on the pipeline (mark SDK_MASHUP_PASSWORD as secret):
+#   SDK_INFINITY_REST_SERVER_URL, SDK_APP_ALIAS, SDK_PORTAL_CLIENT_ID, SDK_MASHUP_PASSWORD, SDK_E2E_BASE_URL (optional)
+trigger:
+  branches:
+    include: [main, master]
+pr:
+  branches:
+    include: ['*']
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: build
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSource: fromFile
+              versionFilePath: .nvmrc
+          - script: npm ci --ignore-scripts
+            displayName: Install
+          - script: npm run doctor -- --offline
+            displayName: Pre-flight
+          - script: npm run lint
+            displayName: Lint
+          - script: npm run configure
+            displayName: Render sdk-config.json
+            env:
+              SDK_INFINITY_REST_SERVER_URL: $(SDK_INFINITY_REST_SERVER_URL)
+              SDK_APP_ALIAS: $(SDK_APP_ALIAS)
+              SDK_PORTAL_CLIENT_ID: $(SDK_PORTAL_CLIENT_ID)
+              SDK_MASHUP_PASSWORD: $(SDK_MASHUP_PASSWORD)
+          - script: npm run prod-build-angularsdk
+            displayName: Production build
+          - publish: dist
+            artifact: sdk-dist
+
+  - stage: E2E
+    dependsOn: Build
+    condition: and(succeeded(), ne(variables['SDK_E2E_BASE_URL'], ''))
+    jobs:
+      - job: playwright
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSource: fromFile
+              versionFilePath: .nvmrc
+          - script: npm ci --ignore-scripts && npx playwright install --with-deps chromium
+            displayName: Install
+          - script: npm test
+            displayName: Playwright
+            env:
+              CI: 'true'
+              PW_SLOW_MO: '0'
+              SDK_E2E_BASE_URL: $(SDK_E2E_BASE_URL)
+          - task: PublishTestResults@2
+            condition: always()
+            inputs:
+              testResultsFormat: JUnit
+              testResultsFiles: test-results/junit.xml
+          - publish: tests/playwright-report
+            artifact: playwright-report
+            condition: always()

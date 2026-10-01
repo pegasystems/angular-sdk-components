@@ -1,0 +1,39 @@
+// Required credentials/env: SDK_INFINITY_REST_SERVER_URL, SDK_APP_ALIAS, SDK_PORTAL_CLIENT_ID (job env or folder properties),
+// 'sdk-mashup-password' (secret text) and optionally SDK_E2E_BASE_URL.
+pipeline {
+  agent { docker { image 'node:24' } }
+  options { timestamps() }
+  stages {
+    stage('Install') { steps { sh 'npm ci --ignore-scripts' } }
+    stage('Pre-flight') { steps { sh 'npm run doctor -- --offline' } }
+    stage('Lint') { steps { sh 'npm run lint' } }
+    stage('Configure') {
+      steps {
+        withCredentials([string(credentialsId: 'sdk-mashup-password', variable: 'SDK_MASHUP_PASSWORD')]) {
+          sh 'npm run configure'
+        }
+      }
+    }
+    stage('Build') {
+      steps {
+        sh 'npm run prod-build-angularsdk'
+        archiveArtifacts artifacts: 'dist/**', fingerprint: true
+      }
+    }
+    stage('E2E') {
+      when { expression { return env.SDK_E2E_BASE_URL?.trim() } }
+      agent { docker { image 'mcr.microsoft.com/playwright:v1.63.0-jammy' } }
+      environment { CI = 'true'; PW_SLOW_MO = '0' }
+      steps {
+        sh 'npm ci --ignore-scripts'
+        sh 'npm test'
+      }
+      post {
+        always {
+          junit 'test-results/junit.xml'
+          archiveArtifacts artifacts: 'tests/playwright-report/**', allowEmptyArchive: true
+        }
+      }
+    }
+  }
+}

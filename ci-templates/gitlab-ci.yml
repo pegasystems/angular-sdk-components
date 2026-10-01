@@ -1,0 +1,39 @@
+# Copy to .gitlab-ci.yml
+# CI/CD variables: SDK_INFINITY_REST_SERVER_URL, SDK_APP_ALIAS, SDK_PORTAL_CLIENT_ID, SDK_MASHUP_PASSWORD (masked), SDK_E2E_BASE_URL (optional)
+image: node:24
+
+stages: [build, e2e]
+
+cache:
+  key:
+    files: [package-lock.json]
+  paths: [.npm/]
+
+build:
+  stage: build
+  script:
+    - npm ci --ignore-scripts --cache .npm --prefer-offline
+    - npm run doctor -- --offline
+    - npm run lint
+    - npm run configure
+    - npm run prod-build-angularsdk
+  artifacts:
+    paths: [dist]
+    expire_in: 1 week
+
+e2e:
+  stage: e2e
+  image: mcr.microsoft.com/playwright:v1.63.0-jammy
+  rules:
+    - if: $SDK_E2E_BASE_URL
+  variables:
+    CI: 'true'
+    PW_SLOW_MO: '0'
+  script:
+    - npm ci --ignore-scripts --cache .npm --prefer-offline
+    - npm test
+  artifacts:
+    when: always
+    paths: [tests/playwright-report, test-results]
+    reports:
+      junit: test-results/junit.xml

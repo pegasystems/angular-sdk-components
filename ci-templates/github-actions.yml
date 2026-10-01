@@ -1,0 +1,76 @@
+# Copy to .github/workflows/sdk-ci.yml
+#
+# Required repository settings
+#   Variables (Settings > Secrets and variables > Actions > Variables):
+#     SDK_INFINITY_REST_SERVER_URL, SDK_APP_ALIAS, SDK_PORTAL_CLIENT_ID, SDK_E2E_BASE_URL (optional, deployed env for E2E)
+#   Secrets: SDK_MASHUP_PASSWORD (only if you use the embedded/mashup flow)
+name: sdk-ci
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sdk-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SDK_INFINITY_REST_SERVER_URL: ${{ vars.SDK_INFINITY_REST_SERVER_URL }}
+  SDK_APP_ALIAS: ${{ vars.SDK_APP_ALIAS }}
+  SDK_PORTAL_CLIENT_ID: ${{ vars.SDK_PORTAL_CLIENT_ID }}
+  SDK_MASHUP_PASSWORD: ${{ secrets.SDK_MASHUP_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Pre-flight (no network)
+        run: npm run doctor -- --offline
+      - name: Lint
+        run: npm run lint
+      - name: Render sdk-config.json from environment
+        run: npm run configure
+      - name: Production build
+        run: npm run prod-build-angularsdk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdk-dist
+          path: dist
+          retention-days: 7
+
+  e2e:
+    # Runs against an already deployed environment; remove this job if you have no E2E environment.
+    if: ${{ vars.SDK_E2E_BASE_URL != '' }}
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      CI: 'true'
+      SDK_E2E_BASE_URL: ${{ vars.SDK_E2E_BASE_URL }}
+      PW_SLOW_MO: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: npm test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            tests/playwright-report
+            test-results

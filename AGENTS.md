@@ -85,6 +85,8 @@ angular-sdk-components/
 | `npm run check:any` / `check:any:update` | `noImplicitAny` per-file ratchet (do not add new implicit-any errors) |
 | `npm run api:check` / `api:update` | Public API report guard (`etc/angular-sdk-components.api.md`) |
 | `npm run check:overrides` | Type-check the generated overrides package against the built library |
+| `npm run doctor` / `npm run configure` | Pre-flight environment check / render `sdk-config.json` from `SDK_*` env vars (see docs/configuration.md) |
+| `npm run test:scripts` | Unit tests for the tooling scripts (`scripts/__tests__`) |
 | `npm run docs:components` | Regenerate `docs/components.md` from the component map |
 
 ### Prerequisites

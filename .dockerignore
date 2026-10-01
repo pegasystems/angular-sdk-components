@@ -1,0 +1,9 @@
+node_modules
+dist
+.angular
+.git
+**/*.tgz
+test-results
+tests/playwright-report
+packages/angular-sdk-overrides/lib
+keys

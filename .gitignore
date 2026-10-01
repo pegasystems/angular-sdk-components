@@ -27,3 +27,7 @@ packages/angular-sdk-overrides/SECURITY.md
 
 **/tsconfig.*.tsbuildinfo
 temp/
+
+# local environment files
+.env
+.env.local

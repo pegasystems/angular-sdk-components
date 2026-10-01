@@ -4,7 +4,7 @@ const common = require('../../../common');
 
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto('http://localhost:3500/portal?portal=DigV2SelfService');
+  await page.goto(`${config.config.baseUrl}?portal=DigV2SelfService`);
 });
 
 test.describe('E2E test', () => {

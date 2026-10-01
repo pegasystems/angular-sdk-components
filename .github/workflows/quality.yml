@@ -28,6 +28,8 @@ jobs:
         run: npm run build-angular-sdk-components
       - name: Public API report is up to date
         run: npm run api:check
+      - name: Tooling script tests
+        run: npm run test:scripts
       - name: Component catalogue is up to date
         run: npm run docs:components:check
       - name: noImplicitAny ratchet
@@ -49,3 +51,22 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run test:unit
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t sdk-ci .
+      - name: Smoke test (config is rendered from SDK_* variables at start)
+        run: |
+          docker run -d --name sdk -p 8080:8080 \
+            -e SDK_INFINITY_REST_SERVER_URL=https://pega.example.com/prweb \
+            -e SDK_APP_ALIAS=SmokeApp sdk-ci
+          for i in $(seq 1 30); do curl -fsS http://localhost:8080/healthz && break; sleep 1; done
+          curl -fsS http://localhost:8080/sdk-config.json | grep -q '"appAlias": "SmokeApp"'
+          curl -fsS -o /dev/null http://localhost:8080/portal
+          curl -fsS -o /dev/null http://localhost:8080/embedded
+      - name: Container logs
+        if: failure()
+        run: docker logs sdk

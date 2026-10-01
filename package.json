@@ -68,7 +68,11 @@
     "new:component": "node scripts/new-component.js",
     "check:overrides": "ngc -p tsconfig.overrides-check.json",
     "docs:components": "node scripts/generate-component-catalog.js && prettier -w docs/components.md",
-    "docs:components:check": "node scripts/generate-component-catalog.js --check"
+    "docs:components:check": "node scripts/generate-component-catalog.js --check",
+    "configure": "node scripts/configure-sdk.js",
+    "configure:check": "node scripts/configure-sdk.js --check",
+    "doctor": "node scripts/doctor.js",
+    "test:scripts": "node --test scripts/__tests__"
   },
   "dependencies": {
     "@angular/animations": "^21.2.4",
