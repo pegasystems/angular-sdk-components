@@ -15,6 +15,57 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 
 ---
 
+## Start Here (for AI agents and new contributors)
+
+**The loop:** make a change → `npm run verify -- --quick` (≈10 s, static checks) → before finishing `npm run verify` (≈30 s: lint, library build, public-API report, overrides build + type-check, tarballs, unit tests). Use `npm run verify -- --json` for machine-readable results and `--only unit,api` to rerun specific steps. A failing step prints its log tail and the exact fix command.
+
+**Definition of done** — a change is complete when all of these hold:
+
+1. `npm run verify` passes.
+2. New/changed behaviour has a unit test (harness: `docs/testing.md`; use `createMockPConn()`, never hand-roll a PCore).
+3. New components were created with `npm run new:component` (or are registered in BOTH `public-api.ts` and `sdk-pega-component-map.ts`), and `npm run docs:components` was rerun.
+4. Public API changes are intentional: `npm run api:update` and the report diff is committed.
+5. You did not add implicit-`any` errors (`check:any`); lowering the baseline with `npm run check:any:update` after fixing errors is welcome.
+6. Conventional commit message (`feat:`, `fix:`, `chore:`, `docs:` ...) — enforced by commitlint.
+6a. User-visible changes (features, fixes, behaviour, dependencies consumers see) have a `CHANGELOG.md` entry in the established format: `npm run changelog -- add --type <feature|fix|refactor> --pr <n> --text "..."` (open the PR first to get the number; skill `sdk-changelog`). `npm run changelog:check` is part of `verify`.
+7. You state what was NOT verified. E2E (Playwright) needs a Pega Infinity server; if you changed rendering behaviour, say E2E was not run.
+
+**Task recipes**
+
+| Task | Do this |
+|------|---------|
+| Add a field/template/widget component | `npm run new:component -- field star-rating StarRating`, implement, add a spec, `npm run verify` |
+| Fix a component bug | Reproduce in a unit spec first (mock `pConn$`), fix, `npm run verify` |
+| Change the bridge (`_bridge/`) | Read `.github/instructions/bridge.instructions.md`; extend `angular-pconnect.service.spec.ts` BEFORE changing behaviour |
+| Change `sdk-config.json` handling | `scripts/lib/sdk-config.js` + `scripts/__tests__`; docs in `docs/configuration.md` |
+| Update docs for a component list | `npm run docs:components` (generated; do not hand-edit `docs/components.md`) |
+| Public API changed | `npm run build-angular-sdk-components && npm run api:update` |
+
+**Pitfalls that cost time**
+
+- `npm run build` (test app) writes to `dist/` and **replaces the library build**. Run `npm run build-angular-sdk-components` again before `check:overrides`/`api:check` (`verify` does this for you).
+- `packages/angular-sdk-overrides/lib` is generated and git-ignored; edit the source components and run `npm run build-overrides`.
+- Unit tests: `component -> mapper -> component map -> component` is an import cycle that only initialises when entered through the map. `src/_hooks.spec.ts` (loads first, hence the underscore) does that; never import the component map from a spec, and always include `_hooks.spec.ts` when running a single spec file with `--include`. Use `stubComponentMapper()` to test a component without rendering its children. The bridge caches `PCore.getStore()` per service instance, so call `TestBed.resetTestingModule()` before swapping it.
+- Field components are `OnPush` when they only change state synchronously. State changed from promises/timers/subscriptions needs `markForCheck()` (or stay on Default). Store-driven updates are flagged by the bridge via `FieldBase.markForCheck()`.
+- `ng test` runs in random order; a spec that passes alone but fails in the suite is leaking global state (`PCore`, `TestBed`).
+- Do not rely on `console` output in unit tests; spy on it.
+- Use the `view`/search tools on `packages/angular-sdk-components/src`; avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) and `package-lock.json`.
+
+**Map of the docs** (all in `docs/`): `architecture.md` (runtime flow), `testing.md`, `configuration.md`, `ci-cd.md`, `customizing.md`, `theming.md`, `troubleshooting.md`, `components.md` (generated catalogue), `adr/` (decisions and the reasons for deferred work). Scoped rules for each area live in `.github/instructions/`. Reusable prompts: `.github/prompts/`; specialised agents: `.github/agents/`; skills: `.github/skills/`.
+
+**Agents** (`.github/agents/`): `sdk-component-author` (build/change components end to end), `sdk-bug-fixer` (reproduce-first fixes), `sdk-bridge-engineer` (bridge changes with invariants), `sdk-test-writer` (tests, un-skipping specs, coverage), `sdk-a11y-auditor` (WCAG audit and fixes), `sdk-docs-maintainer` (docs/ADR/agent-asset drift), `sdk-release-manager` (release preparation with confirmation gates), `sdk-reviewer` (read-only review).
+
+**Skills** (`.github/skills/`, load the one that matches the task): `sdk-add-component`, `sdk-pconnect-api`, `sdk-write-unit-tests`, `sdk-unskip-specs`, `sdk-change-detection`, `sdk-public-api-change`, `sdk-debug-rendering`, `sdk-override-component`, `sdk-upgrade-dependencies`, `sdk-localization`, `sdk-accessibility`, `sdk-docs`, `sdk-changelog`, `sdk-release`, `sdk-verify`. `npm run check:agents` (part of `verify`) keeps these files consistent with the real npm scripts.
+
+---
+
+## Version Constraints (do not change without an explicit decision)
+
+- **Angular 21.x** (latest 21.x patch; Angular 22 is out of scope), Angular Material/CDK 21.x.
+- **Node 24.x** (`engines: ^24.0.0`; CI uses 24.x).
+- **TypeScript 5.9.x** (`^5.9.3`, locked at 5.9.3; never 6 or 7: Angular 21 supports `>=5.9 <6.0`).
+- Update within these lines only (`sdk-upgrade-dependencies`); a major bump of any of them is a breaking change for consumers.
+
 ## Tech Stack & Tooling
 
 | Layer | Technology |
@@ -80,6 +131,19 @@ angular-sdk-components/
 | `npm run fix` | ESLint + Prettier auto-fix |
 | `npm run build-overrides` | Generate override templates package |
 | `npm run create_and_install_sdk_packages` | Build, pack, and install into angular-sdk repo |
+| `npm run verify` / `verify -- --quick` | **Run all CI checks with a compact report** (see Start Here) |
+| `npm run test:coverage` | Unit tests with coverage and a threshold floor (`packages/angular-sdk-components/karma.conf.js`) |
+| `npm run test:unit` | Headless Karma/Jasmine unit tests (no Pega server) — see docs/testing.md |
+| `npm run new:component -- <kind> <kebab-name> <PegaName>` | Scaffold a component and register it in `public-api.ts` + component map |
+| `npm run check:any` / `check:any:update` | `noImplicitAny` per-file ratchet (do not add new implicit-any errors) |
+| `npm run api:check` / `api:update` | Public API report guard (`etc/angular-sdk-components.api.md`) |
+| `npm run check:overrides` | Type-check the generated overrides package against the built library |
+| `npm run doctor` / `npm run configure` | Pre-flight environment check / render `sdk-config.json` from `SDK_*` env vars (see docs/configuration.md) |
+| `npm run changelog -- add ...` / `changelog:check` | Add/validate `CHANGELOG.md` entries in the project's format (skill `sdk-changelog`) |
+| `npm run release:version -- <x.y.z>` | Set the release version in root, both packages and the lock file (skill `sdk-release`) |
+| `npm run check:agents` | Validate agent/skill front matter and that every npm script they mention exists |
+| `npm run test:scripts` | Unit tests for the tooling scripts (`scripts/__tests__`) |
+| `npm run docs:components` | Regenerate `docs/components.md` from the component map |
 
 ### Prerequisites
 
@@ -117,7 +181,7 @@ These are non-obvious rules specific to this codebase that a new contributor wou
 
 2. **Display mode rendering delegates to the design system extension.** Field components must never render raw markup for read-only display. They delegate to a `FieldValueList` component resolved via `<component-mapper>`.
 
-3. **Every new component must be registered in TWO places.** Export from `public-api.ts` AND register in `sdk-pega-component-map.ts`. Missing either makes the component invisible.
+3. **Every new component must be registered in TWO places.** Export from `public-api.ts` AND register in `sdk-pega-component-map.ts`. Missing either makes the component invisible. `npm run new:component` does both.
 
 4. **Template children must go through `<component-mapper>`.** Templates render children by iterating `pConn$.getChildren()` and passing each child's `getPConnect()` to `<component-mapper>`. Never render PConnect children by directly referencing Angular component selectors.
 

@@ -1,0 +1,30 @@
+# Angular SDK Components
+
+> Source for @pega/angular-sdk-components (PConnect bridge + Angular Material components) and @pega/angular-sdk-overrides, used by the Pega Constellation Angular SDK (github.com/pegasystems/angular-sdk). Angular 21, zoneless, standalone components, TypeScript.
+
+Start with AGENTS.md: it has the project map, the verification loop (`npm run verify`), the definition of done, task recipes and the rules that must not be broken.
+
+## Docs
+- [AGENTS.md](AGENTS.md): instructions for AI coding agents and contributors
+- [docs/architecture.md](docs/architecture.md): runtime flow, PCore/PConnect, bridge, component mapper
+- [docs/components.md](docs/components.md): generated catalogue of every Pega component name and its Angular class
+- [docs/testing.md](docs/testing.md): unit-test harness, mocks, static ratchets, E2E
+- [docs/configuration.md](docs/configuration.md): sdk-config.json and SDK_* environment variables
+- [docs/ci-cd.md](docs/ci-cd.md): pipelines, E2E in CI
+- [docs/customizing.md](docs/customizing.md): override, add or edit components
+- [docs/theming.md](docs/theming.md): Material 3 tokens
+- [docs/troubleshooting.md](docs/troubleshooting.md)
+- [docs/adr/](docs/adr/): architecture decisions and deferred work
+
+## Key source locations
+- packages/angular-sdk-components/src/public-api.ts: public exports
+- packages/angular-sdk-components/src/lib/_bridge/: AngularPConnectService, ComponentMapperComponent, component maps
+- packages/angular-sdk-components/src/lib/_components/{field,template,widget,infra,designSystemExtension}/
+- etc/angular-sdk-components.api.md: committed public API report (generated)
+- scripts/: build, verification and tooling scripts
+
+## Optional
+- [.github/instructions/](.github/instructions/): area-specific rules (bridge, components, testing, build scripts)
+- [.github/agents/](.github/agents/): sdk-component-author, sdk-bug-fixer, sdk-bridge-engineer, sdk-test-writer, sdk-a11y-auditor, sdk-docs-maintainer, sdk-release-manager, sdk-reviewer
+- [.github/skills/](.github/skills/): sdk-add-component, sdk-pconnect-api, sdk-write-unit-tests, sdk-unskip-specs, sdk-change-detection, sdk-public-api-change, sdk-debug-rendering, sdk-override-component, sdk-upgrade-dependencies, sdk-localization, sdk-accessibility, sdk-docs, sdk-changelog, sdk-release, sdk-verify
+- [.github/prompts/](.github/prompts/): reusable prompts
