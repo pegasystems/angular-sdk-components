@@ -97,6 +97,15 @@ Render in a host with a label and `await getA11yViolations(fx.nativeElement)`; e
 
 Table-driven tests (`[input, expected][]` + `forEach`), no TestBed.
 
+## Strengthening placeholder specs
+Many specs still assert only `should create`. To make one meaningful:
+1. Read the component; list its branches and the engine calls it makes (`grep -n "PCore\.\|pConn\$\." <component>.ts`).
+2. Supply the data it needs instead of mocking the component's collaborators: `PCore.getDataApiUtils/getDataPageUtils/getAnalyticsUtils` returning resolved promises, `pConn.getConfigProps/getRawMetadata/getChildren`, `PCore.createPConnect`. `vi.mock` of relative modules is **not supported** by the Angular unit-test builder, and `vi.spyOn` cannot replace ES module exports, so drive the real helpers with realistic inputs (see `list-view.component.spec.ts`).
+3. Async engine work: `await vi.waitFor(() => expect(...))` rather than fixed timeouts.
+4. Engine-driven updates: capture the store listener (`PCore.getStore` stub) and call it (see `root-container.component.spec.ts`).
+5. Stub services with `vi.spyOn(TestBed.inject(Service), 'method').mockResolvedValue(...)`.
+6. Assert behaviour (state, rendered text, calls with arguments) and mutation-check it.
+
 ## Prove the test can fail (mutation check)
 
 After the test passes, break the behaviour (comment out the line under test or invert the condition), rerun that spec, and confirm it fails; then restore. Passing both ways = vacuous test, rewrite it. (The OnPush test in `text-input.component.spec.ts` is an integration check, not proof that `markForCheck()` is required.)

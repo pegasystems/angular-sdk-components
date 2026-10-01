@@ -72,6 +72,8 @@
 ### **Refactoring**
 *   **Moved synchronous field components and presentational components to OnPush change detection, added FieldBase.markForCheck() and generic FieldBase<TValue> support.**
     * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+*   **Added behaviour tests for the ListView and RootContainer components; no unit tests are skipped any more.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 *   **Moved the library unit tests from Karma and Jasmine to Vitest using the Angular unit-test builder.**
     * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 *   **Removed the unused @angular/animations and @angular/material-experimental dependencies and updated Tiptap to 3.31.4.**

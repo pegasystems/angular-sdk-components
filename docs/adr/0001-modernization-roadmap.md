@@ -17,7 +17,7 @@ Done: `@if/@for` migration, blocking CI (lint, library build, API report check, 
 Public API: `etc/angular-sdk-components.api.md` is the committed API report. After an intentional change run `npm run build-angular-sdk-components && npm run api:update` and commit the result.
 
 ## Known gaps
-- 2 legacy specs remain `xdescribe`d with a specific TODO each (`ListViewComponent`, `RootContainerComponent`: they need dedicated list-context and portal-bootstrap fixtures). All other formerly skipped specs now run with shared fixtures (`createMockChild`, `stubComponentMapper`, `getMappedComponents`).
+- All formerly skipped specs now run (shared fixtures; ListView and RootContainer have behaviour tests that supply engine data).
 - Unit tests now run on Vitest through Angular's `unit-test` builder (see ADR 0002); the test app's scaffold specs were never runnable and are not part of the suite.
 - Store subscriptions in the bridge still use manual `unsubscribeFn` (covered by Phase B bridge refactor).
 - Releases stay manual and match the established process: version bump commit (`npm run release:version`), hand-maintained `CHANGELOG.md` entries in the existing format (`npm run changelog`, skill `sdk-changelog`), and a manual `publish` workflow with npm provenance. release-please was evaluated and removed because it would impose its own changelog format and version scheme.

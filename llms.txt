@@ -26,5 +26,5 @@ Start with AGENTS.md: it has the project map, the verification loop (`npm run ve
 ## Optional
 - [.github/instructions/](.github/instructions/): area-specific rules (bridge, components, testing, build scripts)
 - [.github/agents/](.github/agents/): sdk-component-author, sdk-bug-fixer, sdk-bridge-engineer, sdk-test-writer, sdk-a11y-auditor, sdk-docs-maintainer, sdk-release-manager, sdk-reviewer
-- [.github/skills/](.github/skills/): sdk-add-component, sdk-pconnect-api, sdk-write-unit-tests, sdk-unskip-specs, sdk-change-detection, sdk-public-api-change, sdk-debug-rendering, sdk-override-component, sdk-upgrade-dependencies, sdk-localization, sdk-accessibility, sdk-docs, sdk-changelog, sdk-release, sdk-verify
+- [.github/skills/](.github/skills/): sdk-add-component, sdk-pconnect-api, sdk-write-unit-tests, sdk-change-detection, sdk-public-api-change, sdk-debug-rendering, sdk-override-component, sdk-upgrade-dependencies, sdk-localization, sdk-accessibility, sdk-docs, sdk-changelog, sdk-release, sdk-verify
 - [.github/prompts/](.github/prompts/): reusable prompts

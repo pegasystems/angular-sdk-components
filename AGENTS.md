@@ -55,7 +55,7 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 
 **Agents** (`.github/agents/`): `sdk-component-author` (build/change components end to end), `sdk-bug-fixer` (reproduce-first fixes), `sdk-bridge-engineer` (bridge changes with invariants), `sdk-test-writer` (tests, un-skipping specs, coverage), `sdk-a11y-auditor` (WCAG audit and fixes), `sdk-docs-maintainer` (docs/ADR/agent-asset drift), `sdk-release-manager` (release preparation with confirmation gates), `sdk-reviewer` (read-only review).
 
-**Skills** (`.github/skills/`, load the one that matches the task): `sdk-add-component`, `sdk-pconnect-api`, `sdk-write-unit-tests`, `sdk-unskip-specs`, `sdk-change-detection`, `sdk-public-api-change`, `sdk-debug-rendering`, `sdk-override-component`, `sdk-upgrade-dependencies`, `sdk-localization`, `sdk-accessibility`, `sdk-docs`, `sdk-changelog`, `sdk-release`, `sdk-verify`. `npm run check:agents` (part of `verify`) keeps these files consistent with the real npm scripts.
+**Skills** (`.github/skills/`, load the one that matches the task): `sdk-add-component`, `sdk-pconnect-api`, `sdk-write-unit-tests`, `sdk-change-detection`, `sdk-public-api-change`, `sdk-debug-rendering`, `sdk-override-component`, `sdk-upgrade-dependencies`, `sdk-localization`, `sdk-accessibility`, `sdk-docs`, `sdk-changelog`, `sdk-release`, `sdk-verify`. `npm run check:agents` (part of `verify`) keeps these files consistent with the real npm scripts.
 
 ---
 

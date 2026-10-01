@@ -25,7 +25,7 @@ Guidelines:
 - Run one spec file: `npx ng test angular-sdk-components --watch=false --include='**/<folder>/<name>.spec.ts'`.
 - Specs use Vitest APIs (`vi.fn()`, `vi.spyOn(...).mockReturnValue(...)`, `expect.objectContaining`); globals (`describe`, `it`, `expect`, `vi`) are typed through `src/vitest-globals.d.ts`. Unlike Jasmine, `vi.spyOn` calls through unless you stub it, and mocks are restored by the global hook.
 - Specs that dynamically build a `@Component` template cannot be compiled (the builder uses AOT); use a static template or set inputs on the fixture directly.
-- 2 legacy specs are still `xdescribe`d (ListView, RootContainer); see their TODO comments.
+- No specs are skipped. `vi.mock` of relative modules is not supported by the Angular unit-test builder, so engine-heavy components (ListView, RootContainer) are tested by providing `PCore` data (`getDataViewMetadata`, `getDataAsync`, `createPConnect`...) and by capturing the store listener to simulate engine updates.
 - Bridge behavior is pinned by characterization tests in `_bridge/angular-pconnect.service.spec.ts`; extend them before changing the bridge.
 
 ## Static ratchets

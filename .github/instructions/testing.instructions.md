@@ -52,7 +52,7 @@ npm run test:coverage    # same + coverage report in coverage/ and a threshold f
 - Set `component.pConn$ = createMockPConn()`; override only what the test needs (`pConn.getConfigProps = () => ({...})`, `pConn.resolveConfigProps = p => p`). Field components also need `formGroup$ = new FormGroup({})`
 - Do not import the component map in a spec at module level (circular import); load it lazily like `sdk_component_map.spec.ts`
 - Use `getA11yViolations(el)` for accessibility assertions (see `field-a11y.spec.ts`)
-- Two legacy specs remain `xdescribe`d (ListView, RootContainer); un-skip them when you can build the fixtures
+- No specs are skipped; keep it that way. `vi.mock` of relative modules is unsupported by the Angular builder: provide `PCore` data instead
 
 ### Example
 ```typescript
