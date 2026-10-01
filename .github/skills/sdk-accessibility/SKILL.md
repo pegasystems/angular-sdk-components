@@ -31,7 +31,7 @@ Limits: the Material theme is not loaded in unit tests, so colour contrast there
 - `FieldBase.getErrorMessage()` literal for required fields is not localized.
 - Only a handful of templates carry ARIA attributes (`grep -rn "aria-" packages/angular-sdk-components/src/lib/_components --include=*.html`), so non-field components (templates, widgets) are largely unaudited.
 
-## Audit procedure (for `sdk-a11y-auditor` or manual use)
+## Audit procedure (for the `sdk-engineer` agent or manual use)
 
 1. List the component's interactive elements from its template.
 2. Run the axe helper in a spec; record violations verbatim.

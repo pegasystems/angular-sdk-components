@@ -1,6 +1,6 @@
 ---
 description: Add meaningful unit tests for a component or helper
-agent: sdk-test-writer
+agent: sdk-engineer
 ---
 
 Add unit tests for `${input:target:path or component name}`.
