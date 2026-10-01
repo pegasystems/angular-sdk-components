@@ -14,6 +14,8 @@ This directory is the SDK's integration layer that maps the PConnect component t
 |------|---------------|
 | `angular-pconnect.ts` | Injectable service that manages store subscriptions, component registration, prop comparison, action wiring, and form field lifecycle |
 | `component-mapper/component-mapper.component.ts` | Dynamic component renderer — resolves component names to Angular component classes and creates them via `ViewContainerRef` |
+| `helpers/pconnect-props.ts` | Stateless `resolveComponentProps()` — resolves config + additional props used for change detection |
+| `helpers/pconnect-form-field.ts` | Stateless `removeFormFieldAndContextNode()` — form field and context tree cleanup on unsubscribe |
 | `helpers/sdk_component_map.ts` | Singleton component registry — maps names to Angular component classes |
 | `helpers/sdk-pega-component-map.ts` | Pega-provided component registry (master map of all SDK components) |
 
