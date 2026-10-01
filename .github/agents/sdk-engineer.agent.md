@@ -35,7 +35,7 @@ Two audiences read your output: maintainers (who care about correctness, contrac
 
 For every task, in this order:
 
-1. **Understand.** Restate the goal in one sentence. Identify the mode (Part 3). Read `AGENTS.md`, the matching file in `.github/instructions/` and the skill(s) named by the mode. Look at the nearest existing code that does something similar and mirror it.
+1. **Understand.** Restate the goal in one sentence. Identify the mode (Part 3). Read `AGENTS.md`, the matching file in `.github/instructions/` and, for PConnect/PCore API questions, the `sdk-pconnect-api` skill. Look at the nearest existing code that does something similar and mirror it.
 2. **Plan small.** Decide the smallest change that fully solves the problem. List the files you expect to touch. If the change would break a public contract, stop and apply Part 14.4 before writing code.
 3. **Prove first.** For behaviour changes write or extend a test that fails for the stated reason before you change the code (bug fixes: reproduce; features: describe the behaviour; bridge: pin current behaviour).
 4. **Implement.** Follow the conventions in this file. No drive-by refactors, formatting churn, renames, or new dependencies.
@@ -150,7 +150,7 @@ angular-sdk-components/
 ├── sdk-config.json                       # runtime configuration (Infinity URL, OAuth client ids, app settings)
 ├── angular.json, tsconfig*.json, eslint.config.mjs, api-extractor.json, vitest config in packages/angular-sdk-components/
 ├── .specify/ and specs/                  # Spec Kit: constitution (.specify/memory/constitution.md), templates, per-feature specs (specs/<ENHANCEMENT-n-slug>/{spec,plan,tasks}.md)
-└── .github/                              # agent, skills, instructions, workflows, copilot-instructions.md
+└── .github/                              # agent, the sdk-pconnect-api and speckit skills, instructions, workflows, copilot-instructions.md
 ```
 
 ## 2.2 Runtime architecture in one page
@@ -273,7 +273,7 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 | PConnect/PCore signatures | `node_modules/@pega/pcore-pconnect-typedefs/` (`interpreter/c11n-env.d.ts`, `actions/api.d.ts`, `constants.d.ts`, `pcore.d.ts`); skill `sdk-pconnect-api` |
 | Rules for an area | `.github/instructions/{components,bridge,testing,build-scripts}.instructions.md` |
 | Runtime flow, startup, auth | `docs/architecture.md` |
-| Testing harness | `docs/testing.md`, skill `sdk-write-unit-tests` |
+| Testing harness | `docs/testing.md`, Part 7 |
 | Theming | `docs/theming.md`; customising: `docs/customizing.md` |
 | Config | `docs/configuration.md` (SDK_* variables), `scripts/lib/sdk-config.js` |
 | CI/CD | `docs/ci-cd.md` |
@@ -286,21 +286,21 @@ Avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`)
 
 # Part 3 - Mode router
 
-| Request looks like | Mode | Skills to load |
-| --- | --- | --- |
-| add/create/change a component, a new Pega component name | **Build** (Part 4) | `sdk-add-component`, `sdk-pconnect-api`, `sdk-change-detection`, `sdk-localization`, `sdk-accessibility`, `sdk-write-unit-tests`, `sdk-public-api-change` |
-| bug, wrong value, stale UI, nothing renders, wrong component shown | **Fix** (Part 5) | `sdk-debug-rendering`, `sdk-write-unit-tests`, `sdk-change-detection` |
-| anything under `_bridge/` | **Bridge** (Part 6) | `sdk-write-unit-tests`, `sdk-public-api-change`, `sdk-change-detection` |
-| write/repair tests, coverage, flaky tests | **Test** (Part 7) | `sdk-write-unit-tests` |
-| accessibility or localization | **A11y and l10n** (Part 8) | `sdk-accessibility`, `sdk-localization` |
-| docs, ADR, AGENTS.md, skills drift | **Docs** (Part 9) | `sdk-docs`, `sdk-changelog` |
-| release, version, changelog | **Release** (Part 10) | `sdk-release`, `sdk-changelog`, `sdk-public-api-change`, `sdk-verify` |
-| review a diff or PR | **Review** (Part 11, read-only) | `sdk-public-api-change`, `sdk-change-detection` |
-| upgrade Angular/Material/Tiptap/Vitest/etc. | **Upgrade** (Part 12) | `sdk-upgrade-dependencies`, `sdk-public-api-change` |
-| consumer wants to customise or override | **Customise** (Part 13) | `sdk-override-component` |
-| "how does X work", onboarding | **Explain** (Part 14.1) | `sdk-pconnect-api` |
-| change to build scripts, configs, tooling | **Tooling** (Part 14.2) | `sdk-verify`, `sdk-docs` |
-| a feature or enhancement request (for example `ENHANCEMENT-14479`), anything larger than a small change, or "spec/plan/tasks" | **Spec Kit workflow** (Part 15) | `speckit-specify`, `speckit-clarify`, `speckit-plan`, `speckit-tasks`, `speckit-analyze`, `speckit-implement`, `speckit-converge`, `speckit-checklist`, `speckit-constitution`, `speckit-taskstoissues` |
+| Request looks like | Mode |
+| --- | --- |
+| add/create/change a component, a new Pega component name | **Build** (Part 4) |
+| bug, wrong value, stale UI, nothing renders, wrong component shown | **Fix** (Part 5) |
+| anything under `_bridge/` | **Bridge** (Part 6) |
+| write/repair tests, coverage, flaky tests | **Test** (Part 7) |
+| accessibility or localization | **A11y and l10n** (Part 8) |
+| docs, ADR, AGENTS.md, agent drift | **Docs** (Part 9) |
+| release, version, changelog | **Release** (Part 10) |
+| review a diff or PR | **Review** (Part 11, read-only) |
+| upgrade Angular/Material/Tiptap/Vitest/etc. | **Upgrade** (Part 12) |
+| consumer wants to customise or override | **Customise** (Part 13) |
+| "how does X work", onboarding | **Explain** (Part 14.1) |
+| change to build scripts, configs, tooling | **Tooling** (Part 14.2) |
+| a feature or enhancement request (for example `ENHANCEMENT-14479`), anything larger than a small change, or "spec/plan/tasks" | **Spec Kit workflow** (Part 15) |
 
 Many tasks combine modes (a bug fix that touches the bridge; a component plus tests, docs, changelog). Run the checks of every mode that applies.
 
@@ -475,7 +475,7 @@ Rules:
 | Template/infra components | Default |
 | Mutates an object received through an input | Default (OnPush will not see in-place mutation) |
 
-Checklist before adding OnPush: grep the class for `.then(`, `subscribe(`, `setTimeout`, `addEventListener`, `async `, `valueChanges`, `PubSub`; confirm every assignment path calls `markForCheck()`; no in-place input mutation; template getters are pure; a spec renders through a Default-strategy host and simulates a store update (recipe in `sdk-write-unit-tests`; `text-input.component.spec.ts` is the pattern). State in the hand-off that unit tests cannot prove real-engine re-rendering and that E2E should run before merging.
+Checklist before adding OnPush: grep the class for `.then(`, `subscribe(`, `setTimeout`, `addEventListener`, `async `, `valueChanges`, `PubSub`; confirm every assignment path calls `markForCheck()`; no in-place input mutation; template getters are pure; a spec renders through a Default-strategy host and simulates a store update (recipe in Part 7.3). State in the hand-off that unit tests cannot prove real-engine re-rendering and that E2E should run before merging.
 
 ## 4.11 Localization
 
@@ -733,7 +733,7 @@ pConn.getLocalizationService = () => ({ getLocalizedText: (v: string) => `[${v}]
 
 # Part 9 - Docs mode
 
-Docs are part of the product. Keep them accurate, task-oriented and verified. Load skill `sdk-docs` (ownership table, generated files, style) and `sdk-changelog`.
+Docs are part of the product. Keep them accurate, task-oriented and verified. Use the ownership table below, the generated-file rules in 2.7 and the changelog rules in 10.2.
 
 ## 9.1 Who owns what
 
@@ -754,11 +754,11 @@ Docs are part of the product. Keep them accurate, task-oriented and verified. Lo
 2. **Verify claims**: every command, script, path, setting and number must be checked against the repo (open the file or run the command). Remove claims you cannot verify or mark them unverified/"not run". Never describe features that do not exist.
 3. **Update** the owning doc; keep working copy-paste commands. Regenerate (never hand-edit) `docs/components.md` and `etc/angular-sdk-components.api.md`.
 4. **Decisions**: record decisions made or deferred in a new ADR (context, decision, consequences, deferred and why). Keep `0003-follow-ups.md` current: remove shipped items, add new ones.
-5. **Agent assets**: when conventions change, update `AGENTS.md` (pitfalls, definition of done), the relevant skill and this agent. `node scripts/check-agent-assets.js` must pass.
+5. **Agent assets**: when conventions change, update `AGENTS.md` (pitfalls, definition of done), and this agent. `node scripts/check-agent-assets.js` must pass.
 6. `node scripts/verify.js --quick`. Do not rewrite older `CHANGELOG.md` releases.
 7. Report: files changed and why; drift found but not fixed (with reason); claims you could not verify.
 
-Prettier ignores `.github`; do not run `prettier -w .github` (it reformats skills unexpectedly).
+Prettier ignores `.github`; do not run `prettier -w .github` (it reformats the Spec Kit skills unexpectedly).
 
 ---
 
@@ -830,7 +830,7 @@ Use read-only commands only (`git diff`, `node scripts/verify.js --quick`, unit 
 
 # Part 12 - Upgrade mode
 
-Follow skill `sdk-upgrade-dependencies`. Stay within the version lines in 1.7. This repository publishes a **library** with peer dependencies: ranges in `packages/angular-sdk-components/package.json` are a contract with consumers; the root `package.json` pins what this repo builds with.
+Follow this procedure. Stay within the version lines in 1.7. This repository publishes a **library** with peer dependencies: ranges in `packages/angular-sdk-components/package.json` are a contract with consumers; the root `package.json` pins what this repo builds with.
 
 1. Branch from `master`; one ecosystem per PR (Angular family together, Tiptap together, others individually).
 2. Angular family: update all `@angular/*` (core, common, compiler, forms, platform-browser, platform-browser-dynamic, router, compiler-cli, build, cdk, material) to the same patch; exact peer pins between Angular packages can require `npm install --force`; confirm `npm ls` reports no invalid entries. Do not run `ng update` to a new major; do not widen peers to Angular 22; do not move TypeScript to 6 or 7.
@@ -931,7 +931,7 @@ Workflow: `npm run build-angular-sdk-components && npx api-extractor run` (fails
 | `changelog add` says PR already listed | edit the existing entry (the tool refuses duplicates) |
 | `check:any` fails | a file got more implicit-`any` errors; add types, or lower the baseline with `node scripts/check-implicit-any.js --update` after fixing errors |
 | Location spec tries to load Google Maps | never load the real script in tests; stub `GoogleMapsLoaderService.load` |
-| Prettier reformatted skills under `.github` | Prettier ignores `.github`; revert with git and do not run `prettier -w .github` |
+| Prettier reformatted Spec Kit skills under `.github` | Prettier ignores `.github`; revert with git and do not run `prettier -w .github` |
 | Auth loops/CORS/blank page in the test app | check `sdk-config.json` (`infinityRestServerUrl`, client id, redirect), the Infinity OAuth registration and `docs/troubleshooting.md` |
 
 ## 14.8 Checklists
@@ -1013,9 +1013,9 @@ Other modes use the formats in their parts (fix: 5.1; accessibility: 8.1; releas
 - **Mutation check**: deliberately breaking the code to prove a test fails.
 - **ADR**: architecture decision record in `docs/adr/`.
 
-## 14.12 Skills index
+## 14.12 Skills
 
-`sdk-add-component` (kinds, scaffolding, registration), `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs), `sdk-write-unit-tests` (harness, recipes, mutation check), `sdk-change-detection` (Default vs OnPush, `markForCheck`), `sdk-public-api-change` (contract and breaking changes), `sdk-debug-rendering` (why nothing renders), `sdk-override-component` (customisation paths), `sdk-upgrade-dependencies` (dependency upgrades), `sdk-localization`, `sdk-accessibility`, `sdk-docs`, `sdk-changelog`, `sdk-release`, `sdk-verify`. Load the ones the mode router names; they hold the detailed recipes this agent summarises.
+The only repository skill besides the Spec Kit ones is `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs from the version-locked typedefs). Everything else is in this file; keep it, `AGENTS.md` and `docs/` the single sources of guidance.
 
 ---
 
@@ -1079,8 +1079,8 @@ How current best practice applies **in this repository**. Public components are 
 | Supply chain | `npm ci`, committed lock file, `--ignore-scripts` in CI, publish with provenance (`--provenance`), quarterly grouped Dependabot, CodeQL default setup, GitGuardian | no `postinstall` additions; justify new dependencies (size, maintenance, licence in `THIRD-PARTY-NOTICES`); never hand-edit the lock file |
 | GitHub Actions | major tags (`@v7` for checkout, setup-node, upload-artifact), `permissions: contents: read`, `concurrency` cancel-in-progress, arm64 runners (`ubuntu-24.04-arm`); `copilot-setup-steps` on `ubuntu-latest` | pinning actions to commit SHAs is a possible hardening step |
 | Conventional Commits | enforced by commitlint (100-character lines) | meaningful detailed commits; do not squash unless asked |
-| Docs as code | ADRs, generated catalogue, `llms.txt`, `AGENTS.md`, skills | Part 9; never describe unverified behaviour |
-| Agent hygiene | one agent (this file), skills for recipes, instructions for areas | keep them consistent (`node scripts/check-agent-assets.js`); when conventions change, update them in the same PR |
+| Docs as code | ADRs, generated catalogue, `llms.txt`, `AGENTS.md` | Part 9; never describe unverified behaviour |
+| Agent hygiene | one agent (this file), instructions for areas, one API skill | keep them consistent (`node scripts/check-agent-assets.js`); when conventions change, update them in the same PR |
 
 If the Angular CLI MCP server or official Angular guidance tools are available in the environment, use them to confirm current Angular APIs; otherwise rely on the installed `node_modules/@angular/*` typings and the Angular 21 documentation, and say which source you used.
 
@@ -1096,7 +1096,7 @@ If the Angular CLI MCP server or official Angular guidance tools are available i
 
 ## 17.2 Search and read efficiently
 
-- Prefer the repository's own maps: `docs/components.md` (Pega name -> class -> file), `public-api.ts`, `sdk-pega-component-map.ts`, `docs/adr/`, the skills.
+- Prefer the repository's own maps: `docs/components.md` (Pega name -> class -> file), `public-api.ts`, `sdk-pega-component-map.ts`, `docs/adr/`, the `sdk-pconnect-api` skill.
 - Use code-aware search over text search: symbol/definition lookup first, then glob by file name, then grep with a file glob (for example `**/*.component.ts`). Search only `packages/angular-sdk-components/src`, `projects/angular-test-app`, `scripts`, `docs` and `.github` unless you have a concrete reason.
 - Read files with line ranges for large files; read a component's `.ts`, `.html`, `.scss` and `.spec.ts` together. Do not read `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) or `package-lock.json`.
 - Batch independent reads and searches in parallel; chain related shell commands; suppress noisy output (`| tail`, `--quiet`); never page through huge outputs.
@@ -1120,7 +1120,7 @@ If the Angular CLI MCP server or official Angular guidance tools are available i
 1. Re-read your full diff (`git diff`, including new files) as a reviewer would (Part 11 checklist, constitution 1.8).
 2. Confirm the tests would fail without your change (mutation check done?).
 3. Confirm generated artefacts are regenerated and consistent (catalogue, API report, overrides).
-4. Confirm docs, skills, this agent and `AGENTS.md` are updated where behaviour or commands changed, and that `node scripts/check-agent-assets.js` passes.
+4. Confirm docs, this agent and `AGENTS.md` are updated where behaviour or commands changed, and that `node scripts/check-agent-assets.js` passes.
 5. Confirm there is no dead code, unused import, stray `console.log`, commented-out code, TODO or debug leftover.
 6. Run `node scripts/verify.js`; compare against the baseline when something fails that you did not touch.
 7. Write the report with exact commands and results; list everything not verified (E2E, real-engine behaviour, other browsers, screen readers, locales).

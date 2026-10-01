@@ -45,7 +45,7 @@ const STEPS = [
     quick: true,
     title: 'CHANGELOG.md format',
     cmd: 'node scripts/changelog.js check',
-    fix: 'See skill sdk-changelog; use `node scripts/changelog.js add ...` to add entries in the right format'
+    fix: 'See the sdk-engineer agent (Part 10.2); use `node scripts/changelog.js add ...` to add entries in the right format'
   },
   { id: 'config', quick: true, title: 'sdk-config.json valid', cmd: 'node scripts/configure-sdk.js --check' },
   { id: 'build', title: 'Library build (ng-packagr)', cmd: 'npm run build-angular-sdk-components' },

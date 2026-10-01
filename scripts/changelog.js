@@ -10,7 +10,7 @@
  *   node scripts/changelog.js new-release 26.1.11
  *   node scripts/changelog.js release-date 30/10/2026
  *
- * Types: feature | fix | refactor. The skill `sdk-changelog` explains how to word entries.
+ * Types: feature | fix | refactor. Wording rules: see the sdk-engineer agent (Part 10.2).
  */
 const fs = require('node:fs');
 const path = require('node:path');
