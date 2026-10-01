@@ -39,10 +39,10 @@
             "coverageExclude": ["**/*.spec.ts"],
             "coverageReporters": ["html", "text-summary", "lcovonly"],
             "coverageThresholds": {
-              "statements": 34,
-              "branches": 31,
-              "functions": 34,
-              "lines": 32
+              "statements": 48,
+              "branches": 45,
+              "functions": 45,
+              "lines": 46
             }
           }
         }
