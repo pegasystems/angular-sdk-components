@@ -21,10 +21,10 @@
     "comment_serverConfig": "serverConfig is the block for SDK Content Server config entries",
 
     "infinityRestServerUrl_comment": "Full path to Infinity REST server",
-    "infinityRestServerUrl": "https://localhost:1080/prweb",
+    "infinityRestServerUrl": "https://ue-aui271d.employee.pegalabs.io/prweb",
 
     "appAlias_comment": "appAlias of the application which operators will be accessing (e.g., MediaCo)",
-    "appAlias": "",
+    "appAlias": "MediaCo",
 
     "sdkContentServerUrl_comment": "If specified, the given URL will be used. If left blank, window.location.origin will be used.",
     "sdkContentServerUrl": "",

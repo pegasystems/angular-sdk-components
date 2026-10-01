@@ -27,7 +27,8 @@
       </mat-list>
     }
   </mat-list>
-  @for (page of navPages$; track page) {
+  <!-- navPages$ is rebuilt (new objects) on every refresh: track a stable key so the views are reused instead of recreated mid change detection (NG0100) -->
+  @for (page of navPages$; track page.pyClassName + page.pyRuleName) {
     <mat-list>
       <mat-list-item (click)="navPanelButtonClick(page)">
         <div class="flex-box">
