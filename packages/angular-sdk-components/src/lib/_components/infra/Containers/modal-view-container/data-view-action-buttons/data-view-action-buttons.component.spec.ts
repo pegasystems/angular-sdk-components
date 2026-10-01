@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -10,15 +11,15 @@ describe('DataViewActionButtonsComponent', () => {
   let component: DataViewActionButtonsComponent;
   let fixture: ComponentFixture<DataViewActionButtonsComponent>;
   let actionsApi: {
-    createDataObject: jasmine.Spy;
-    updateDataObject: jasmine.Spy;
-    submitDataObjectAction: jasmine.Spy;
-    cancelDataObject: jasmine.Spy;
+    createDataObject: Mock;
+    updateDataObject: Mock;
+    submitDataObjectAction: Mock;
+    cancelDataObject: Mock;
   };
-  let publishSpy: jasmine.Spy;
+  let publishSpy: Mock;
 
   beforeEach(async () => {
-    publishSpy = jasmine.createSpy('publish');
+    publishSpy = vi.fn();
     // PCore is read in a field initializer, so it must exist before the component is created.
     (globalThis as any).PCore = {
       getLocaleUtils: () => ({ getLocaleValue: (value: string) => value }),
@@ -35,10 +36,10 @@ describe('DataViewActionButtonsComponent', () => {
     component = fixture.componentInstance;
 
     actionsApi = {
-      createDataObject: jasmine.createSpy('createDataObject').and.returnValue(Promise.resolve()),
-      updateDataObject: jasmine.createSpy('updateDataObject').and.returnValue(Promise.resolve()),
-      submitDataObjectAction: jasmine.createSpy('submitDataObjectAction').and.returnValue(Promise.resolve()),
-      cancelDataObject: jasmine.createSpy('cancelDataObject').and.returnValue({})
+      createDataObject: vi.fn().mockReturnValue(Promise.resolve()),
+      updateDataObject: vi.fn().mockReturnValue(Promise.resolve()),
+      submitDataObjectAction: vi.fn().mockReturnValue(Promise.resolve()),
+      cancelDataObject: vi.fn().mockReturnValue({})
     };
 
     component.pConn$ = { getActionsApi: () => actionsApi } as any;
@@ -98,7 +99,7 @@ describe('DataViewActionButtonsComponent', () => {
 
   it('disables both buttons while a save is in flight', () => {
     let resolveSave: () => void = () => {};
-    actionsApi.createDataObject.and.returnValue(
+    actionsApi.createDataObject.mockReturnValue(
       new Promise<void>(resolve => {
         resolveSave = resolve;
       })
@@ -107,19 +108,19 @@ describe('DataViewActionButtonsComponent', () => {
 
     component.onSubmit();
 
-    expect(component.bDisabled$).toBeTrue();
+    expect(component.bDisabled$).toBe(true);
     resolveSave();
   });
 
   it('re-enables the buttons and publishes nothing when the save is rejected', async () => {
-    actionsApi.createDataObject.and.returnValue(Promise.reject(new Error('rejected')));
+    actionsApi.createDataObject.mockReturnValue(Promise.reject(new Error('rejected')));
     component.dataObjectAction$ = RESOURCE_STATUS.CREATE;
 
     component.onSubmit();
     await fixture.whenStable();
 
     expect(publishSpy).not.toHaveBeenCalled();
-    expect(component.bDisabled$).toBeFalse();
+    expect(component.bDisabled$).toBe(false);
   });
 
   it('discards the edit through the engine on cancel', () => {

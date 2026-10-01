@@ -5,7 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ListViewComponent } from './list-view.component';
 
 // TODO: ListView starts an async data pipeline (analytics metadata, field definitions, list context) whose rejections surface after the spec ends; it needs a complete list-context fixture.
-xdescribe('ListViewComponent', () => {
+describe.skip('ListViewComponent', () => {
   let component: ListViewComponent;
   let fixture: ComponentFixture<ListViewComponent>;
 

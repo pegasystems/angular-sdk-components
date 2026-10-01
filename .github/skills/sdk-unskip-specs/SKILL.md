@@ -15,7 +15,7 @@ grep -rn "TODO: needs engine-level" packages/angular-sdk-components/src | wc -l
 ## Procedure per spec
 
 1. Change `xdescribe(` to `describe(` and remove the TODO comment line above it.
-2. Run only that spec while iterating: `npx ng test angular-sdk-components --watch=false --browsers=ChromeHeadless --include='**/<folder>/*.spec.ts'` (if module-order errors appear, run the whole suite instead).
+2. Run only that spec while iterating: `npx ng test angular-sdk-components --watch=false --include='**/<folder>/*.spec.ts'`.
 3. Read the first error and classify it:
 
 | Error pattern                                                   | Cause                                               | Fix                                                                                                   |
@@ -32,7 +32,7 @@ grep -rn "TODO: needs engine-level" packages/angular-sdk-components/src | wc -l
 
 4. Make the assertion meaningful: beyond `should create`, assert one rendered fact for the default config.
 5. Mutation-check it (see `sdk-write-unit-tests`).
-6. Run the whole suite 3 times (random order) and `npm run verify`.
+6. Run the whole suite twice and `npm run verify`.
 
 ## Rules
 
@@ -46,4 +46,4 @@ grep -rn "TODO: needs engine-level" packages/angular-sdk-components/src | wc -l
 npm run test:coverage       # note new totals
 ```
 
-Raise thresholds in `packages/angular-sdk-components/karma.conf.js` to just below the new actuals. Update the known-gaps text in `docs/adr/0001-modernization-roadmap.md` and `docs/testing.md` (they mention 43 skipped specs).
+Raise thresholds in `coverageThresholds` in `angular.json` to just below the new actuals. Update the known-gaps text in `docs/adr/0001-modernization-roadmap.md` and `docs/testing.md` (they mention 43 skipped specs).

@@ -1,8 +1,9 @@
+import type { Mock } from 'vitest';
 import { SelfServiceCaseViewComponent } from './self-service-case-view.component';
 
 describe('SelfServiceCaseViewComponent', () => {
   let component: SelfServiceCaseViewComponent;
-  let actionsApi: { openDataObjectAction: jasmine.Spy; createWork: jasmine.Spy };
+  let actionsApi: { openDataObjectAction: Mock; createWork: Mock };
   let dataInfoActions: any;
   let configProps: any;
   let dataRecord: any;
@@ -18,8 +19,8 @@ describe('SelfServiceCaseViewComponent', () => {
     };
 
     actionsApi = {
-      openDataObjectAction: jasmine.createSpy('openDataObjectAction'),
-      createWork: jasmine.createSpy('createWork')
+      openDataObjectAction: vi.fn(),
+      createWork: vi.fn()
     };
     dataInfoActions = undefined;
     dataRecord = { PlanID: 'P-1' };
@@ -66,7 +67,7 @@ describe('SelfServiceCaseViewComponent', () => {
 
     expect(component.arDataObjectActions$.length).toBe(1);
     expect(component.arCreateCaseActions$.length).toBe(1);
-    expect(component.bActionsMenuDisabled$).toBeFalse();
+    expect(component.bActionsMenuDisabled$).toBe(false);
   });
 
   it('falls back to empty arrays and disables the menu when nothing is available', () => {
@@ -74,7 +75,7 @@ describe('SelfServiceCaseViewComponent', () => {
 
     expect(component.arDataObjectActions$).toEqual([]);
     expect(component.arCreateCaseActions$).toEqual([]);
-    expect(component.bActionsMenuDisabled$).toBeTrue();
+    expect(component.bActionsMenuDisabled$).toBe(true);
   });
 
   it('keeps honouring the showCaseActions configuration flag', () => {
@@ -82,7 +83,7 @@ describe('SelfServiceCaseViewComponent', () => {
 
     component.fullUpdate();
 
-    expect(component.showCaseActions).toBeFalse();
+    expect(component.showCaseActions).toBe(false);
   });
 
   it('preserves the case locale reference used for action labels', () => {

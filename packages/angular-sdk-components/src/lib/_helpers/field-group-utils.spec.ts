@@ -3,7 +3,7 @@ import { getReferenceList } from './field-group-utils';
 describe('getReferenceList', () => {
   const pConn = (referenceList: string, resolved?: any) => ({
     getComponentConfig: () => ({ referenceList }),
-    resolveDatasourceReference: jasmine.createSpy('resolveDatasourceReference').and.returnValue(resolved)
+    resolveDatasourceReference: vi.fn().mockReturnValue(resolved)
   });
 
   it('strips the "@P " annotation from property references', () => {

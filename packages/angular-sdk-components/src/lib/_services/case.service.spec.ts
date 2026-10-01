@@ -13,7 +13,7 @@ describe('CaseService', () => {
   beforeEach(() => {
     sessionStorage.setItem('asdk_AH', 'Bearer token-1');
     TestBed.configureTestingModule({ providers: [CaseService, provideHttpClient(), provideHttpClientTesting()] });
-    spyOn(TestBed.inject(ServerConfigService), 'getBaseUrl').and.returnValue('https://pega.example.com/prweb');
+    vi.spyOn(TestBed.inject(ServerConfigService), 'getBaseUrl').mockReturnValue('https://pega.example.com/prweb');
     service = TestBed.inject(CaseService);
     http = TestBed.inject(HttpTestingController);
   });

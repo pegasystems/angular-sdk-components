@@ -33,7 +33,7 @@ When to run which: after each logical edit -> `--quick`; docs-only changes -> `-
 | `api`       | public API changed                                                                  | intended -> `npm run build-angular-sdk-components && npm run api:update`, review and commit `etc/angular-sdk-components.api.md`; unintended -> revert the export/signature change |
 | `overrides` | overrides package does not compile                                                  | stale `dist/` (the test-app build replaces it) -> rerun `build`; otherwise an import not rewritten by `scripts/build-overrides.js`                                                |
 | `pack`      | tarball missing files                                                               | run `build` and `overrides` first; check `ng-package.json`                                                                                                                        |
-| `unit`      | failing spec                                                                        | run `npm run test:unit` alone; random order: a spec that passes alone but fails in the suite leaks global state (`PCore`, `TestBed`)                                              |
+| `unit`      | failing spec                                                                        | run `npm run test:unit` alone; a spec that passes alone but fails in the file or suite is leaking state (`PCore`, `TestBed`, mocks) |
 
 ## Not covered by verify (say so in your report)
 
@@ -43,5 +43,5 @@ When to run which: after each logical edit -> `--quick`; docs-only changes -> `-
 ## Gotchas
 
 - `npm run build` (test app) overwrites `dist/` and removes the library build; `verify` rebuilds it for you.
-- Coverage floor: `npm run test:coverage` fails if coverage drops below `packages/angular-sdk-components/karma.conf.js` thresholds.
+- Coverage floor: `npm run test:coverage` fails if coverage drops below the `coverageThresholds` in `angular.json`.
 - Never make a check pass by skipping or deleting it.

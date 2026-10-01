@@ -1,3 +1,4 @@
+import type { Mock } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 
 import { AngularPConnectService } from './angular-pconnect';
@@ -10,10 +11,10 @@ function createComp(configProps: Record<string, any> = { label: 'A' }) {
   const pConn: any = {
     meta: { config: {} },
     isEditable: () => true,
-    setAction: jasmine.createSpy('setAction'),
+    setAction: vi.fn(),
     getActions: () => ({}),
-    addFormField: jasmine.createSpy('addFormField'),
-    removeFormField: jasmine.createSpy('removeFormField'),
+    addFormField: vi.fn(),
+    removeFormField: vi.fn(),
     getContextName: () => 'app/primary_1',
     getPageReference: () => 'caseInfo.content',
     getConfigProps: () => state.props,
@@ -30,11 +31,11 @@ function createComp(configProps: Record<string, any> = { label: 'A' }) {
 describe('AngularPConnectService', () => {
   let service: AngularPConnectService;
   let listeners: StoreListener[];
-  let storeUnsubscribe: jasmine.Spy;
+  let storeUnsubscribe: Mock;
 
   beforeEach(() => {
     listeners = [];
-    storeUnsubscribe = jasmine.createSpy('storeUnsubscribe');
+    storeUnsubscribe = vi.fn();
     (globalThis as any).PCore = {
       setBehaviorOverride: () => undefined,
       getEnvironmentInfo: () => ({ getTimeZone: () => 'UTC' }),
@@ -79,13 +80,13 @@ describe('AngularPConnectService', () => {
       const { comp, pConn } = createComp();
       service.registerAndSubscribeComponent(comp, () => undefined);
       expect(pConn.addFormField).toHaveBeenCalled();
-      expect(pConn.setAction).toHaveBeenCalledWith('onChange', jasmine.any(Function));
-      expect(pConn.setAction).toHaveBeenCalledWith('onBlur', jasmine.any(Function));
+      expect(pConn.setAction).toHaveBeenCalledWith('onChange', expect.any(Function));
+      expect(pConn.setAction).toHaveBeenCalledWith('onBlur', expect.any(Function));
     });
 
     it('invokes the callback bound to the component on store changes until unsubscribed', () => {
       const { comp, pConn } = createComp();
-      const callback = jasmine.createSpy('callback');
+      const callback = vi.fn();
       comp.angularPConnectData = service.registerAndSubscribeComponent(comp, callback);
 
       listeners[0]();
@@ -102,16 +103,16 @@ describe('AngularPConnectService', () => {
 
   describe('shouldComponentUpdate', () => {
     it('returns false for an empty component', () => {
-      spyOn(console, 'error');
-      expect(service.shouldComponentUpdate({})).toBeFalse();
+      vi.spyOn(console, 'error').mockImplementation(() => undefined);
+      expect(service.shouldComponentUpdate({})).toBe(false);
     });
 
     it('reports a change on first evaluation and no change when props are identical', () => {
       const { comp } = createComp({ label: 'A' });
       comp.angularPConnectData = service.registerAndSubscribeComponent(comp, () => undefined);
 
-      expect(service.shouldComponentUpdate(comp)).toBeTrue();
-      expect(service.shouldComponentUpdate(comp)).toBeFalse();
+      expect(service.shouldComponentUpdate(comp)).toBe(true);
+      expect(service.shouldComponentUpdate(comp)).toBe(false);
     });
 
     it('reports a change when a config prop changes', () => {
@@ -120,7 +121,7 @@ describe('AngularPConnectService', () => {
       service.shouldComponentUpdate(comp);
 
       state.props = { label: 'B' };
-      expect(service.shouldComponentUpdate(comp)).toBeTrue();
+      expect(service.shouldComponentUpdate(comp)).toBe(true);
       expect(service.getComponentProp(comp, 'label')).toBe('B');
     });
 
@@ -130,7 +131,7 @@ describe('AngularPConnectService', () => {
       service.shouldComponentUpdate(comp);
 
       state.props = { label: 'A', pageMessages: [] };
-      expect(service.shouldComponentUpdate(comp)).toBeFalse();
+      expect(service.shouldComponentUpdate(comp)).toBe(false);
     });
 
     it('stores the decoded validation message on the component bridge data', () => {
@@ -139,7 +140,7 @@ describe('AngularPConnectService', () => {
       service.shouldComponentUpdate(comp);
 
       state.props = { label: 'A', validatemessage: 'Required' };
-      expect(service.shouldComponentUpdate(comp)).toBeTrue();
+      expect(service.shouldComponentUpdate(comp)).toBe(true);
       expect(comp.angularPConnectData.validateMessage).toBe('Required');
     });
 
@@ -150,7 +151,7 @@ describe('AngularPConnectService', () => {
 
       pConn.meta.config.context = '.Pages';
       pConn.getPageReference = () => 'caseInfo.content.Pages';
-      expect(service.shouldComponentUpdate(comp)).toBeTrue();
+      expect(service.shouldComponentUpdate(comp)).toBe(true);
     });
   });
 });

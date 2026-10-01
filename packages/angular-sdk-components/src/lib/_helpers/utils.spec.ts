@@ -12,15 +12,15 @@ describe('Utils', () => {
 
   describe('getBooleanValue', () => {
     it('parses boolean strings case-insensitively', () => {
-      expect(utils.getBooleanValue('true')).toBeTrue();
-      expect(utils.getBooleanValue('TRUE')).toBeTrue();
-      expect(utils.getBooleanValue('false')).toBeFalse();
-      expect(utils.getBooleanValue('yes')).toBeFalse();
+      expect(utils.getBooleanValue('true')).toBe(true);
+      expect(utils.getBooleanValue('TRUE')).toBe(true);
+      expect(utils.getBooleanValue('false')).toBe(false);
+      expect(utils.getBooleanValue('yes')).toBe(false);
     });
 
     it('returns non-string values unchanged', () => {
-      expect(utils.getBooleanValue(true)).toBeTrue();
-      expect(utils.getBooleanValue(false)).toBeFalse();
+      expect(utils.getBooleanValue(true)).toBe(true);
+      expect(utils.getBooleanValue(false)).toBe(false);
       expect(utils.getBooleanValue(undefined)).toBeUndefined();
     });
   });
@@ -87,8 +87,8 @@ describe('Utils', () => {
 
   describe('static helpers', () => {
     it('isEmptyObject distinguishes empty from populated objects', () => {
-      expect(Utils.isEmptyObject({})).toBeTrue();
-      expect(Utils.isEmptyObject({ a: 1 })).toBeFalse();
+      expect(Utils.isEmptyObject({})).toBe(true);
+      expect(Utils.isEmptyObject({ a: 1 })).toBe(false);
     });
 
     it('reads the auth header from session storage', () => {

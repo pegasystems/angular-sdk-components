@@ -45,9 +45,9 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 
 - `npm run build` (test app) writes to `dist/` and **replaces the library build**. Run `npm run build-angular-sdk-components` again before `check:overrides`/`api:check` (`verify` does this for you).
 - `packages/angular-sdk-overrides/lib` is generated and git-ignored; edit the source components and run `npm run build-overrides`.
-- Unit tests: `component -> mapper -> component map -> component` is an import cycle that only initialises when entered through the map. `src/_hooks.spec.ts` (loads first, hence the underscore) does that; never import the component map from a spec, and always include `_hooks.spec.ts` when running a single spec file with `--include`. Use `stubComponentMapper()` to test a component without rendering its children. The bridge caches `PCore.getStore()` per service instance, so call `TestBed.resetTestingModule()` before swapping it.
+- Unit tests: `component -> mapper -> component map -> component` is an import cycle that only initialises when entered through the map. `src/test-hooks.ts` (a Vitest `setupFile`) does that for every spec file; do not import the component map ahead of it. Use `stubComponentMapper()` to test a component without rendering its children. The bridge caches `PCore.getStore()` per service instance, so call `TestBed.resetTestingModule()` before swapping it.
 - Field components are `OnPush` when they only change state synchronously. State changed from promises/timers/subscriptions needs `markForCheck()` (or stay on Default). Store-driven updates are flagged by the bridge via `FieldBase.markForCheck()`.
-- `ng test` runs in random order; a spec that passes alone but fails in the suite is leaking global state (`PCore`, `TestBed`).
+- Each spec file runs isolated (fresh globals); within a file a spec that passes alone but fails in sequence is leaking state (`PCore`, `TestBed`, mocks).
 - Do not rely on `console` output in unit tests; spy on it.
 - Use the `view`/search tools on `packages/angular-sdk-components/src`; avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) and `package-lock.json`.
 
@@ -79,7 +79,7 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 | Styling | SCSS |
 | Auth | @pega/auth (OAuth 2.0 PKCE) |
 | Engine | @pega/constellationjs (provides PCore/PConnect APIs, owns Redux store) |
-| Unit Tests | Karma + Jasmine |
+| Unit Tests | Vitest via `@angular/build:unit-test` (jsdom) |
 | E2E Tests | Playwright |
 | Linting | ESLint (with sonarjs) + Prettier |
 
@@ -132,8 +132,8 @@ angular-sdk-components/
 | `npm run build-overrides` | Generate override templates package |
 | `npm run create_and_install_sdk_packages` | Build, pack, and install into angular-sdk repo |
 | `npm run verify` / `verify -- --quick` | **Run all CI checks with a compact report** (see Start Here) |
-| `npm run test:coverage` | Unit tests with coverage and a threshold floor (`packages/angular-sdk-components/karma.conf.js`) |
-| `npm run test:unit` | Headless Karma/Jasmine unit tests (no Pega server) — see docs/testing.md |
+| `npm run test:coverage` | Unit tests with coverage and a threshold floor (`coverageThresholds` in `angular.json`) |
+| `npm run test:unit` | Vitest unit tests (jsdom, no Pega server) — see docs/testing.md |
 | `npm run new:component -- <kind> <kebab-name> <PegaName>` | Scaffold a component and register it in `public-api.ts` + component map |
 | `npm run check:any` / `check:any:update` | `noImplicitAny` per-file ratchet (do not add new implicit-any errors) |
 | `npm run api:check` / `api:update` | Public API report guard (`etc/angular-sdk-components.api.md`) |

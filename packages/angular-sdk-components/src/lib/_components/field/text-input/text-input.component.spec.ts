@@ -61,6 +61,6 @@ describe('TextInputComponent', () => {
 
   it('uses OnPush change detection', () => {
     const def = (TextInputComponent as any).ɵcmp;
-    expect(def.onPush).toBeTrue();
+    expect(def.onPush).toBe(true);
   });
 });

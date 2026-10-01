@@ -5,20 +5,20 @@ description: Write reliable unit tests for SDK components, templates, widgets, h
 
 # Writing unit tests
 
-Run: `npm run test:unit` (headless Chrome, random order, no Pega server) and `npm run test:coverage`. Specs sit next to the code (`*.spec.ts`).
+Run: `npm run test:unit` (Vitest on jsdom, no Pega server) and `npm run test:coverage`. Specs sit next to the code (`*.spec.ts`).
 
 ## The harness
 
 | Piece                   | Location                                                                                      | Role                                                                                                                                                                                              |
 | ----------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| global `PCore` stub     | `packages/angular-sdk-components/src/test-setup.ts` (loaded as a polyfill via `angular.json`) | lenient stand-in for the engine; reset before every spec by `_hooks.spec.ts`                                                                                                                  |
+| global `PCore` stub     | `packages/angular-sdk-components/src/test-setup.ts` (a `setupFile` in `angular.json`) | lenient stand-in for the engine; reset before every spec by `test-hooks.ts`                                                                                                                  |
 | `createMockPConn()`     | same file                                                                                     | lenient PConnect double: known getters return empty values (`getConfigProps` -> `{}`, `getChildren` -> `[]`, ...), anything else is a no-op, `getPConnect()` returns itself, `meta.config` exists |
 | `getA11yViolations(el)` | same file                                                                                     | axe-core (WCAG 2.0/2.1 A and AA) over a rendered element                                                                                                                                          |
-| `_hooks.spec.ts` | `src/` | loads first (underscore): enters the module graph through the component map, resets `PCore`, stubs `ServerConfigService.getSdkConfigServer` |
+| `test-hooks.ts` | `src/` | setup file run before every spec file: enters the module graph through the component map, resets `PCore`, stubs `ServerConfigService.getSdkConfigServer`, restores mocks after each spec |
 | `stubComponentMapper()`, `getMappedComponents(fixture)` | `src/test-utils.ts` | make `<component-mapper>` inert and read what it was asked to render |
 | `createMockChild(overrides)`, `createMockActionsApi()` | `src/test-setup.ts` | child node with `getPConnect()`; actions API whose methods are bindable no-ops |
 
-Rules of the house: standalone components go in `imports` (never `declarations`); no `waitForAsync` (zoneless) - use `async`/`await` and `await fixture.whenStable()`; never import the component map from a spec (circular import; `_hooks.spec.ts` handles it) and include `_hooks.spec.ts` when running a single spec with `--include`; never commit `xdescribe`/`xit`/`fit`/`fdescribe`.
+Rules of the house: standalone components go in `imports` (never `declarations`); no `waitForAsync` (zoneless) - use `async`/`await` and `await fixture.whenStable()`; do not import the component map ahead of the setup file (circular import; `test-hooks.ts` handles it). Spec APIs are Vitest's: `vi.fn()`, `vi.spyOn(obj, 'm').mockReturnValue(x)` (calls through unless stubbed), `expect.objectContaining`; do not build a `@Component` with a dynamic template string (AOT compile fails); never commit `xdescribe`/`xit`/`fit`/`fdescribe`.
 
 ## Recipe: field component
 
@@ -77,7 +77,7 @@ beforeEach(async () => {
   await TestBed.compileComponents();
 });
 
-expect(await getMappedComponents(fixture)).toEqual([{ name: 'CaseView', props: jasmine.objectContaining({ pConn$: pConn }) }]);
+expect(await getMappedComponents(fixture)).toEqual([{ name: 'CaseView', props: expect.objectContaining({ pConn$: pConn }) }]);
 ```
 See `object-page.component.spec.ts` and `inline-dashboard.component.spec.ts`.
 
@@ -103,12 +103,12 @@ After the test passes, break the behaviour (comment out the line under test or i
 
 ## Hygiene
 
-- Order independence: the suite is randomised. Restore any global you touch; `PCore` is reset per spec; `TestBed` per spec automatically.
+- Isolation: each spec file runs in a fresh context; inside a file restore any global you touch (`PCore` is reset per spec and `vi` mocks are restored automatically).
 - Spy, do not print: `spyOn(console, 'error')` when the code logs expectedly.
 - No real network or timers. Prefer `await fixture.whenStable()`; use `fakeAsync` only for debounce logic that has no alternative.
 - Extend the shared mock (`createMockPConn`/`explicitPCore` in `test-setup.ts`) when several specs need the same fixture; keep unknown members shallow so engine-walking loops cannot spin forever.
-- Run 3 times (random order) when you changed shared mocks: `for i in 1 2 3; do npm run test:unit | grep TOTAL; done`.
+- Run the suite twice when you changed shared mocks, and once with `npm run test:coverage` (parallel runs expose isolation problems).
 
 ## Coverage
 
-`npm run test:coverage` writes `coverage/angular-sdk-components/`. The threshold floor lives in `packages/angular-sdk-components/karma.conf.js`; raise it (to a point or two below actual) whenever you add meaningful coverage, never lower it.
+`npm run test:coverage` writes `coverage/angular-sdk-components/`. The threshold floor is `coverageThresholds` in `angular.json`; raise it (to a point or two below actual) whenever you add meaningful coverage, never lower it.

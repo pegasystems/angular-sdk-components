@@ -1,4 +1,3 @@
-import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 
@@ -16,42 +15,31 @@ import { CurrencyComponent } from './currency/currency.component';
 import { DateComponent } from './date/date.component';
 import { RadioButtonsComponent } from './radio-buttons/radio-buttons.component';
 
-function createHost(selector: string, component: any, configProps: Record<string, unknown>) {
-  const pConn = createMockPConn();
-  pConn.getConfigProps = () => configProps;
-  pConn.resolveConfigProps = (p: any) => p;
-
-  const template = `<${selector} [pConn$]="pConn" [formGroup$]="formGroup"></${selector}>`;
-
-  @Component({ imports: [component], template })
-  class HostComponent {
-    pConn = pConn;
-    formGroup = new FormGroup({});
-  }
-  return HostComponent;
-}
-
 describe('Field accessibility (axe-core, WCAG 2.1 A/AA)', () => {
-  const cases: [string, string, any][] = [
-    ['TextInput', 'app-text-input', TextInputComponent],
-    ['TextArea', 'app-text-area', TextAreaComponent],
-    ['Email', 'app-email', EmailComponent],
-    ['Integer', 'app-integer', IntegerComponent],
-    ['CheckBox', 'app-check-box', CheckBoxComponent],
-    ['Url', 'app-url', UrlComponent],
-    ['Time', 'app-time', TimeComponent],
-    ['Decimal', 'app-decimal', DecimalComponent],
-    ['Percentage', 'app-percentage', PercentageComponent],
-    ['Currency', 'app-currency', CurrencyComponent],
-    ['Date', 'app-date', DateComponent],
-    ['RadioButtons', 'app-radio-buttons', RadioButtonsComponent]
+  const cases: [string, any][] = [
+    ['TextInput', TextInputComponent],
+    ['TextArea', TextAreaComponent],
+    ['Email', EmailComponent],
+    ['Integer', IntegerComponent],
+    ['CheckBox', CheckBoxComponent],
+    ['Url', UrlComponent],
+    ['Time', TimeComponent],
+    ['Decimal', DecimalComponent],
+    ['Percentage', PercentageComponent],
+    ['Currency', CurrencyComponent],
+    ['Date', DateComponent],
+    ['RadioButtons', RadioButtonsComponent]
   ];
 
-  cases.forEach(([name, selector, component]) => {
+  cases.forEach(([name, component]) => {
     it(`${name} has no detectable violations when editable`, async () => {
-      const Host = createHost(selector, component, { label: `${name} label`, caption: `${name} caption`, testId: 'f1', required: true });
-      TestBed.configureTestingModule({ imports: [Host] });
-      const fx = TestBed.createComponent(Host);
+      TestBed.configureTestingModule({ imports: [component] });
+      const fx = TestBed.createComponent(component);
+      const pConn = createMockPConn();
+      pConn.getConfigProps = () => ({ label: `${name} label`, caption: `${name} caption`, testId: 'f1', required: true });
+      pConn.resolveConfigProps = (p: any) => p;
+      (fx.componentInstance as any).pConn$ = pConn;
+      (fx.componentInstance as any).formGroup$ = new FormGroup({});
       fx.detectChanges();
       await fx.whenStable();
 

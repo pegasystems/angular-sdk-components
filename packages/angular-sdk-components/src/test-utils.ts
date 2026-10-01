@@ -1,4 +1,5 @@
 // Angular-dependent test helpers. Kept out of test-setup.ts, which is loaded as a polyfill before Angular's test environment exists.
+import { vi } from 'vitest';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -9,7 +10,7 @@ import { By } from '@angular/platform-browser';
  */
 export async function stubComponentMapper(): Promise<void> {
   const { ComponentMapperComponent } = await import('./lib/_bridge/component-mapper/component-mapper.component');
-  spyOn(ComponentMapperComponent.prototype, 'loadComponent').and.stub();
+  vi.spyOn(ComponentMapperComponent.prototype, 'loadComponent').mockImplementation(() => undefined);
 }
 
 /** The `name` and `props` of every <component-mapper> rendered by the fixture (use together with stubComponentMapper). */

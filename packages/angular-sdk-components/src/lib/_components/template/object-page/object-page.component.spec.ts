@@ -26,6 +26,6 @@ describe('ObjectPageComponent', () => {
   });
 
   it('delegates rendering to the CaseView component with its own PConnect', async () => {
-    expect(await getMappedComponents(fixture)).toEqual([{ name: 'CaseView', props: jasmine.objectContaining({ pConn$: pConn }) }]);
+    expect(await getMappedComponents(fixture)).toEqual([{ name: 'CaseView', props: expect.objectContaining({ pConn$: pConn }) }]);
   });
 });

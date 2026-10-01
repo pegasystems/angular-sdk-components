@@ -5,7 +5,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RootContainerComponent } from './root-container.component';
 
 // TODO: RootContainer bootstraps the portal (PCore.createPConnect, routing info, timers) and hangs the browser with the lenient mock; it needs a dedicated container fixture.
-xdescribe('RootContainerComponent', () => {
+describe.skip('RootContainerComponent', () => {
   let component: RootContainerComponent;
   let fixture: ComponentFixture<RootContainerComponent>;
 

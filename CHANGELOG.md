@@ -72,6 +72,8 @@
 ### **Refactoring**
 *   **Moved synchronous field components and presentational components to OnPush change detection, added FieldBase.markForCheck() and generic FieldBase<TValue> support.**
     * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+*   **Moved the library unit tests from Karma and Jasmine to Vitest using the Angular unit-test builder.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 *   **Removed the unused @angular/animations and @angular/material-experimental dependencies and updated Tiptap to 3.31.4.**
     * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 *   **Updated Angular to 21.2.25 (TypeScript stays on 5.9.x); the supported Node.js range is now 24.x.**

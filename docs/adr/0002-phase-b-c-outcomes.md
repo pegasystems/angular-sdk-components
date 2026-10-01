@@ -27,3 +27,6 @@ The OnPush changes are covered by unit tests but **must be exercised end-to-end*
 
 ## Version constraints
 The project stays on Angular 21.x (latest patch, currently 21.2.25), Node 24.x and TypeScript 5.9.x (`^5.9.3`). Angular 22, Node 26 and TypeScript 7 were evaluated as out of scope; moving to them is a separate major-version decision (see the upgrade skill).
+
+## Unit-test runner: Karma to Vitest
+Karma (deprecated) and Jasmine were replaced by Vitest through `@angular/build:unit-test` on jsdom. The suite (205 tests) passes in about 3 seconds, needs no browser, and enforces coverage thresholds (v8 coverage; the numbers are not comparable with the earlier Istanbul figures). Global hooks moved from a spec file to `src/test-hooks.ts` (a setup file) and `vitest.config.ts` sets `isolate: true`, because shared module state between files made the hooks run only once per worker. Tests that built a `@Component` from a template string were rewritten (the builder compiles ahead of time). The test app's `test` target and `tsconfig.spec.json` were removed: its scaffold specs could not compile before either, as `PCore` was not typed for them. Component specs still use a lenient engine stand-in, so real rendering behaviour remains covered only by the Playwright E2E.
