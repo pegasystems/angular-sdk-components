@@ -224,12 +224,13 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 
 ## 2.6 CI
 
+- Runners: the workflows run on GitHub-hosted `ubuntu-24.04-arm` (free and unlimited for public repositories; arm64 was measured roughly 20 to 30% faster than `ubuntu-latest` for verify and unit-tests); `copilot-setup-steps.yml` stays on `ubuntu-latest` for the Copilot agent. Heavy jobs must not use `ubuntu-slim` (1 CPU, 15-minute limit).
 - `.github/workflows/quality.yml` (PRs to `master`/`release/**`): job **verify** (lint, library build, API report, changelog check, agent assets, tooling tests, catalogue, `noImplicitAny`, overrides build + type-check, tarballs) and job **unit-tests** (`ng test ... --coverage`, uploads coverage). Node 24.x, `npm ci --ignore-scripts`.
 - `.github/workflows/install-build-sdk-pack.yml`: `npm run ci`, `build:dev`, pack.
 - `.github/workflows/commitlint.yml`: Conventional Commits.
 - `.github/workflows/copilot-setup-steps.yml`: environment for the Copilot cloud agent.
 - CodeQL uses GitHub's default setup (no workflow file). Dependabot runs quarterly with one grouped PR per ecosystem.
-- Unit tests in CI take roughly 3 to 4 minutes (per-file jsdom and setup cost; accepted, see `docs/adr/0003-follow-ups.md`).
+- Unit tests in CI take roughly 3 minutes on arm64 (about 4 on x64; per-file jsdom and setup cost; accepted, see `docs/adr/0003-follow-ups.md`).
 
 ## 2.7 Generated and protected files
 

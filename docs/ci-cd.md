@@ -15,7 +15,7 @@ Optional: `npm test` (Playwright) against a deployed environment.
 
 ## Using any CI system
 
-Nothing in the pipeline is tied to a specific CI product. In GitHub Actions, Azure DevOps, GitLab, Jenkins or anything else: run the commands from the table above on a Node 24 agent, pass the `SDK_*` values as environment variables (secrets masked: `SDK_MASHUP_PASSWORD`), and publish `dist/` as the build artifact. For E2E set `CI=true` so Playwright writes `test-results/junit.xml` (for your system's test-report import) and `tests/playwright-report` (HTML report), and use the Playwright container image matching the version in `package.json` or `npx playwright install --with-deps chromium` for browsers.
+Nothing in the pipeline is tied to a specific CI product. In GitHub Actions, Azure DevOps, GitLab, Jenkins or anything else: run the commands from the table above on a Node 24 agent (x64 or arm64; this repository's own workflows run on GitHub-hosted `ubuntu-24.04-arm` runners, except `copilot-setup-steps`, which stays on `ubuntu-latest`), pass the `SDK_*` values as environment variables (secrets masked: `SDK_MASHUP_PASSWORD`), and publish `dist/` as the build artifact. For E2E set `CI=true` so Playwright writes `test-results/junit.xml` (for your system's test-report import) and `tests/playwright-report` (HTML report), and use the Playwright container image matching the version in `package.json` or `npx playwright install --with-deps chromium` for browsers.
 
 ## Build once, deploy many
 

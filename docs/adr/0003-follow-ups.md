@@ -24,7 +24,7 @@ Run the Playwright MediaCo suite (portal and embedded) and check:
    - Constructor injection to `inject()` (enable the `prefer-inject` lint rule once done).
    - 66 `::ng-deep` usages in component styles.
    - `@angular/material-moment-adapter` in the date fields (switch to the native or Day.js adapter).
-   - CI unit tests take about 3 to 4 minutes (per-file jsdom and setup cost). A custom Vitest runner that resets state per test would make `isolate: false` safe; accepted as-is for now.
+   - CI unit tests take about 3 minutes on the arm64 runners (about 4 on x64; per-file jsdom and setup cost). A custom Vitest runner that resets state per test would make `isolate: false` safe; accepted as-is for now.
 
 ## Needs a decision
 - Google Places: `AutocompleteService` is deprecated for new customers; migrate to the Places (New) API. The usage carries an `eslint-disable` with the reason.
