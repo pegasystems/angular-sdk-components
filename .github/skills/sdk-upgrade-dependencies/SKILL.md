@@ -7,7 +7,7 @@ description: Upgrade Angular, Angular Material, Tiptap or other dependencies of 
 
 **Project constraints:** stay on **Angular 21.x** (latest 21.x patch), **Node 24.x** and **TypeScript 5.9.x** (`^5.9.3`, locked at 5.9.3). Do not run `ng update` to a new major, do not widen peer ranges to Angular 22, and do not move TypeScript to 6 or 7. Patch/minor updates inside these lines are fine.
 
-Angular packages peer-pin each other exactly (for example `@angular/platform-browser` pins `@angular/animations`), so update the whole family together: set all `@angular/core|common|compiler|forms|platform-browser|platform-browser-dynamic|router|animations|compiler-cli` ranges to the same patch in `package.json`, then `npm install --force` (npm's resolver cannot move a locked family one package at a time), and confirm `npm ls` reports no invalid entries.
+Angular packages peer-pin each other exactly (for example `@angular/platform-browser` pins `@angular/core`), so update the whole family together: set all `@angular/core|common|compiler|forms|platform-browser|platform-browser-dynamic|router|compiler-cli` ranges to the same patch in `package.json`, then `npm install --force` (npm's resolver cannot move a locked family one package at a time), and confirm `npm ls` reports no invalid entries.
 
 This repo publishes a **library** with peer dependencies: ranges in `packages/angular-sdk-components/package.json` are a contract with consumers. The root `package.json` pins what this repository itself builds with.
 
