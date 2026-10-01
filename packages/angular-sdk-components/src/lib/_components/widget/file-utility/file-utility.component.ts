@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +21,7 @@ interface FileUtilityProps {
   selector: 'app-file-utility',
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
-  imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

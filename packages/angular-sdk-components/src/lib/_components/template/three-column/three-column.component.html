@@ -1,13 +1,21 @@
 <div class="psdk-three-column">
-  <div *ngFor="let kid of arChildren$">
-    <div class="psdk-three-column-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'a'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+  @for (kid of arChildren$; track kid) {
+    <div>
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'a') {
+        <div class="psdk-three-column-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'b') {
+        <div class="psdk-three-column-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'c') {
+        <div class="psdk-three-column-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
     </div>
-    <div class="psdk-three-column-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'b'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-    </div>
-    <div class="psdk-three-column-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'c'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-    </div>
-  </div>
+  }
 </div>

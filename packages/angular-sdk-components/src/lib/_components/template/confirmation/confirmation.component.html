@@ -1,23 +1,31 @@
 <div>
-  <div *ngIf="showConfirmView">
-    <h2 id="confirm-label" class="confirm-label">{{ label }}</h2>
-    <div *ngIf="showDetails" class="confirmation-details">
-      <component-mapper name="Details" [props]="{ pConn$ }"></component-mapper>
+  @if (showConfirmView) {
+    <div>
+      <h2 id="confirm-label" class="confirm-label">{{ label }}</h2>
+      @if (showDetails) {
+        <div class="confirmation-details">
+          <component-mapper name="Details" [props]="{ pConn$ }"></component-mapper>
+        </div>
+      }
+      @if (showTasks && toDoList?.length > 0) {
+        <div>
+          <component-mapper
+            name="Todo"
+            [props]="{ pConn$, datasource$: { source: toDoList }, headerText$: 'Open Tasks', type$: CONSTS.TODO, isConfirm: true }"
+          ></component-mapper>
+        </div>
+      }
+      <div class="done-button">
+        <button mat-raised-button color="primary" (click)="onConfirmViewClose()">Done</button>
+      </div>
     </div>
-    <div *ngIf="showTasks && toDoList?.length > 0">
+  }
+  @if (!showConfirmView && toDoList?.length > 0) {
+    <div>
       <component-mapper
         name="Todo"
-        [props]="{ pConn$, datasource$: { source: toDoList }, headerText$: 'Open Tasks', type$: CONSTS.TODO, isConfirm: true }"
+        [props]="{ pConn$, datasource$: { source: toDoList }, headerText$: 'Tasks', type$: CONSTS.TODO, isConfirm: true }"
       ></component-mapper>
     </div>
-    <div class="done-button">
-      <button mat-raised-button color="primary" (click)="onConfirmViewClose()">Done</button>
-    </div>
-  </div>
-  <div *ngIf="!showConfirmView && toDoList?.length > 0">
-    <component-mapper
-      name="Todo"
-      [props]="{ pConn$, datasource$: { source: toDoList }, headerText$: 'Tasks', type$: CONSTS.TODO, isConfirm: true }"
-    ></component-mapper>
-  </div>
+  }
 </div>

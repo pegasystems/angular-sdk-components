@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-import { CommonModule } from '@angular/common';
+
 import { buildView } from '../../../_helpers/field-group-utils';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -17,7 +17,7 @@ interface DynamicTabsProps {
   selector: 'app-dynamic-tabs',
   templateUrl: './dynamic-tabs.component.html',
   styleUrls: ['./dynamic-tabs.component.scss'],
-  imports: [CommonModule, MatTabsModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatTabsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DynamicTabsComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -68,7 +68,6 @@ interface DropdownProps extends PConnFieldProps {
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,

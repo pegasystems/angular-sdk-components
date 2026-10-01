@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -33,7 +33,7 @@ type StepIndicator = 'horizontal' | 'vertical' | 'vertical-start';
   selector: 'app-assignment',
   templateUrl: './assignment.component.html',
   styleUrls: ['./assignment.component.scss'],
-  imports: [CommonModule, MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatSnackBarModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

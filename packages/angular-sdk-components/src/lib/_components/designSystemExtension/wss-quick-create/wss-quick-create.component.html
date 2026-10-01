@@ -1,13 +1,17 @@
 <div class="wss-quick-create-header">
   <h1 class="quick-link-heading">{{ heading$ }}</h1>
   <ul class="quick-link-ul-list">
-    <li *ngFor="let element of actions$" class="quick-link-list">
-      <button mat-raised-button color="primary" class="quick-link-button" mat-icon-button (click)="element.onClick()">
-        <span class="quick-link-button-span">
-          <img *ngIf="element.icon" class="quick-link-icon" [src]="element.icon" />
-          <span>{{ element.label }}</span>
-        </span>
-      </button>
-    </li>
+    @for (element of actions$; track element) {
+      <li class="quick-link-list">
+        <button mat-raised-button color="primary" class="quick-link-button" mat-icon-button (click)="element.onClick()">
+          <span class="quick-link-button-span">
+            @if (element.icon) {
+              <img class="quick-link-icon" [src]="element.icon" />
+            }
+            <span>{{ element.label }}</span>
+          </span>
+        </button>
+      </li>
+    }
   </ul>
 </div>

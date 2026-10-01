@@ -1,5 +1,5 @@
 import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatTabsModule } from '@angular/material/tabs';
 import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tab-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -9,7 +9,7 @@ import { DetailsTemplateBase } from '../base/details-template-base';
   selector: 'app-details-sub-tabs',
   templateUrl: './details-sub-tabs.component.html',
   styleUrls: ['./details-sub-tabs.component.scss'],
-  imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatTabsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsSubTabsComponent extends DetailsTemplateBase {
   override pConn$: typeof PConnect;

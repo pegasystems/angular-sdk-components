@@ -15,26 +15,28 @@
         <span class="psdk-nav-button-span">Create</span>
       </div>
     </mat-list-item>
-    <mat-list *ngIf="bShowCaseTypes$" style="margin-left: 40px">
-      <mat-list-item
-        id="case-list-item"
-        *ngFor="let caseType of caseTypes$"
-        (click)="navPanelCreateCaseType(caseType.pyClassName, caseType.pyFlowType)"
-      >
-        <span class="psdk-nav-button-span">{{
-          localeUtils.getLocaleValue(caseType.pyLabel, '', localeUtils.getCaseLocaleReference(caseType.pyClassName))
-        }}</span>
+    @if (bShowCaseTypes$) {
+      <mat-list style="margin-left: 40px">
+        @for (caseType of caseTypes$; track caseType) {
+          <mat-list-item id="case-list-item" (click)="navPanelCreateCaseType(caseType.pyClassName, caseType.pyFlowType)">
+            <span class="psdk-nav-button-span">{{
+              localeUtils.getLocaleValue(caseType.pyLabel, '', localeUtils.getCaseLocaleReference(caseType.pyClassName))
+            }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+    }
+  </mat-list>
+  @for (page of navPages$; track page) {
+    <mat-list>
+      <mat-list-item (click)="navPanelButtonClick(page)">
+        <div class="flex-box">
+          <img class="psdk-nav-svg-icon" src="{{ page.iconName }}" />
+          <span class="psdk-nav-button-span">{{ page.name }}</span>
+        </div>
       </mat-list-item>
     </mat-list>
-  </mat-list>
-  <mat-list *ngFor="let page of navPages$">
-    <mat-list-item (click)="navPanelButtonClick(page)">
-      <div class="flex-box">
-        <img class="psdk-nav-svg-icon" src="{{ page.iconName }}" />
-        <span class="psdk-nav-button-span">{{ page.name }}</span>
-      </div>
-    </mat-list-item>
-  </mat-list>
+  }
   <div class="psdk-nav-divider"></div>
   <mat-list id="profile" class="psdk-logout-button">
     <mat-list-item [matMenuTriggerFor]="menu" class="psdk-profile-list-item">

@@ -2,7 +2,7 @@ import { Component, forwardRef, Input, OnChanges, OnInit, TemplateRef, ViewChild
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { getFirstVisibleTabId, getActiveTabId, searchtabsClick } from '../../../../_helpers/tab-utils';
 import { MatRadioModule } from '@angular/material/radio';
-import { CommonModule } from '@angular/common';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -18,7 +18,6 @@ import { getFieldMeta } from '../utils';
   templateUrl: './search-form.component.html',
   styleUrls: ['./search-form.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatRadioModule,

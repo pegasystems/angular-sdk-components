@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -27,7 +28,6 @@ interface LocationProps extends PConnFieldProps {
 @Component({
   selector: 'app-location',
   imports: [
-    CommonModule,
     GoogleMapsModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -43,6 +43,7 @@ interface LocationProps extends PConnFieldProps {
 })
 export class LocationComponent extends FieldBase {
   private loader = inject(GoogleMapsLoaderService);
+  private destroyRef = inject(DestroyRef);
 
   private autocompleteService!: google.maps.places.AutocompleteService;
   private geocoder!: google.maps.Geocoder;
@@ -212,7 +213,8 @@ export class LocationComponent extends FieldBase {
     this.fieldControl.valueChanges
       .pipe(
         debounceTime(300),
-        switchMap(value => this.getSuggestions(value || ''))
+        switchMap(value => this.getSuggestions(value || '')),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(predictions => {
         this.filteredOptions = predictions;

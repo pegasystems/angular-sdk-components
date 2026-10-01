@@ -1,5 +1,5 @@
-import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { FieldBase } from '../field.base';
@@ -12,10 +12,11 @@ interface RichTextProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-rich-text',
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RichTextComponent extends FieldBase {
   configProps$: RichTextProps;

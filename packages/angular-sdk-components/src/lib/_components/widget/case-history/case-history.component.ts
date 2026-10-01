@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
 
@@ -11,7 +11,7 @@ interface CaseHistoryProps {
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss'],
-  imports: [CommonModule, MatTableModule]
+  imports: [MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

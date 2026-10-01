@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -18,7 +18,7 @@ function isChildrenUpdated(children) {
   selector: 'app-assignment-card',
   templateUrl: './assignment-card.component.html',
   styleUrls: ['./assignment-card.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AssignmentCardComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

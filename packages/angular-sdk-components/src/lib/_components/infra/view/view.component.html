@@ -1,25 +1,28 @@
-<div *ngIf="visibility$ !== false" class="ng-view-top">
-  <div *ngIf="showLabel$ && label$ && !noHeaderTemplates.includes(templateName$)" class="template-title-container">
-    <span>{{ label$ }}</span>
+@if (visibility$ !== false) {
+  <div class="ng-view-top">
+    @if (showLabel$ && label$ && !noHeaderTemplates.includes(templateName$)) {
+      <div class="template-title-container">
+        <span>{{ label$ }}</span>
+      </div>
+    }
+    @if (templateName$) {
+      <div>
+        <component-mapper
+          [name]="templateName$"
+          [props]="{ formGroup$, pConn$, displayOnlyFA$ }"
+          errorMsg="View template not recognized: [{{ templateName$ }}]"
+        ></component-mapper>
+      </div>
+    } @else {
+      @for (kid of arChildren$; track kid) {
+        <div>
+          <component-mapper
+            [name]="kid.getPConnect().getComponentName()"
+            [props]="{ pConn$: kid.getPConnect(), formGroup$ }"
+            errorMsg="View Missing (displayAll): {{ kid.getPConnect().getComponentName() }}"
+          ></component-mapper>
+        </div>
+      }
+    }
   </div>
-
-  <ng-container *ngIf="templateName$; else noTemplate">
-    <div>
-      <component-mapper
-        [name]="templateName$"
-        [props]="{ formGroup$, pConn$, displayOnlyFA$ }"
-        errorMsg="View template not recognized: [{{ templateName$ }}]"
-      ></component-mapper>
-    </div>
-  </ng-container>
-
-  <ng-template #noTemplate>
-    <div *ngFor="let kid of arChildren$">
-      <component-mapper
-        [name]="kid.getPConnect().getComponentName()"
-        [props]="{ pConn$: kid.getPConnect(), formGroup$ }"
-        errorMsg="View Missing (displayAll): {{ kid.getPConnect().getComponentName() }}"
-      ></component-mapper>
-    </div>
-  </ng-template>
-</div>
+}

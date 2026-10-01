@@ -1,18 +1,26 @@
 <div class="appshell-top">
-  <div *ngIf="bShowAppShell$ && portalTemplate !== 'wss'">
-    <component-mapper name="NavBar" [props]="{ pConn$, appName$, pages$, caseTypes$ }"></component-mapper>
-  </div>
-  <div *ngIf="bShowAppShell$ && portalTemplate === 'wss'">
-    <component-mapper
-      name="WssNavBar"
-      [props]="{ pConn$, appName$, homePage: pages$[0], pages$: links, caseTypes$, portalLogoImage$: imageURL }"
-    ></component-mapper>
-  </div>
-  <div [ngClass]="{ 'appshell-main': portalTemplate !== 'wss', 'appshell-main-wss': portalTemplate === 'wss' }">
-    <div *ngFor="let kid of arChildren$">
-      <div *ngIf="kid.getPConnect().getComponentName() == 'ViewContainer'">
-        <component-mapper name="ViewContainer" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
-      </div>
+  @if (bShowAppShell$ && portalTemplate !== 'wss') {
+    <div>
+      <component-mapper name="NavBar" [props]="{ pConn$, appName$, pages$, caseTypes$ }"></component-mapper>
     </div>
+  }
+  @if (bShowAppShell$ && portalTemplate === 'wss') {
+    <div>
+      <component-mapper
+        name="WssNavBar"
+        [props]="{ pConn$, appName$, homePage: pages$[0], pages$: links, caseTypes$, portalLogoImage$: imageURL }"
+      ></component-mapper>
+    </div>
+  }
+  <div [ngClass]="{ 'appshell-main': portalTemplate !== 'wss', 'appshell-main-wss': portalTemplate === 'wss' }">
+    @for (kid of arChildren$; track kid) {
+      <div>
+        @if (kid.getPConnect().getComponentName() == 'ViewContainer') {
+          <div>
+            <component-mapper name="ViewContainer" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+          </div>
+        }
+      </div>
+    }
   </div>
 </div>

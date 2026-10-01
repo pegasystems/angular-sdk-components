@@ -35,7 +35,7 @@ export class AngularPConnectService {
    * anything added by populateAdditionalProps.
    * Each entry is: { __componentID__: _the component's most recent props_ }
    */
-  private componentPropsArr: object[] = [];
+  private componentPropsArr: Record<string, any> = {};
 
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
@@ -83,15 +83,17 @@ export class AngularPConnectService {
    * @returns The **unsubscribe** function that should be called when the component needs
    * to unsubscribe from the store. (Typically during ngOnDestroy)
    */
-  private subscribeToStore(inComp: any = null, inCallback: Function | null = null): Function {
+  private subscribeToStore(inComp: any = null, inCallback: Function | null = null): Function | undefined {
     // const theCompName: string = inComp ? `${inComp.constructor.name}` : 'no component provided';
-    let fnUnsubscribe;
+    let fnUnsubscribe: (() => void) | undefined;
     // console.log( `Bridge subscribing: ${theCompName} `);
     if (inComp) {
       let bSubscribed = true;
       const wrappedCallback = () => {
         if (bSubscribed && inCallback) {
           inCallback();
+          // Store callbacks mutate component state outside Angular's event system; flag the view for OnPush components.
+          inComp.markForCheck?.();
         }
       };
       const storeUnsubscribe = this.getStore().subscribe(wrappedCallback);
@@ -163,7 +165,7 @@ export class AngularPConnectService {
    * Otherwise, return undefined.
    * @param inComp The component whose property is being requested.
    */
-  public getComponentID(inComp): string {
+  public getComponentID(inComp: any): string {
     return inComp.bridgeComponentID || inComp.angularPConnectData.compID;
   }
 
@@ -213,7 +215,7 @@ export class AngularPConnectService {
    * validateMessage: any validation/error message that gets generated for this object,
    * actions: any actions that are defined for this object
    */
-  registerAndSubscribeComponent(inComp, inCallback: Function | null = null): AngularPConnectData {
+  registerAndSubscribeComponent(inComp: any, inCallback: Function | null = null): AngularPConnectData {
     // Create an initial object to be returned.
     const returnObject: AngularPConnectData = {
       compID: '',
@@ -271,7 +273,7 @@ export class AngularPConnectService {
 
     // Now proceed to register and subscribe...
     const theCompID: string = this.getNextComponentId();
-    const theUnsub: Function | null = this.subscribeToStore(inComp, inCallback);
+    const theUnsub: Function | undefined = this.subscribeToStore(inComp, inCallback);
 
     if (undefined === inComp.angularPConnectData) {
       inComp.bridgeComponentID = theCompID;
@@ -279,7 +281,7 @@ export class AngularPConnectService {
       returnObject.compID = theCompID;
       returnObject.unsubscribeFn = () => {
         this.removeFormField(inComp);
-        theUnsub();
+        theUnsub?.();
       };
     }
 
@@ -292,11 +294,11 @@ export class AngularPConnectService {
     return returnObject;
   }
 
-  addFormField(inComp) {
+  addFormField(inComp: any) {
     inComp.pConn$?.addFormField();
   }
 
-  removeFormField(inComp) {
+  removeFormField(inComp: any) {
     if (inComp.pConn$?.removeFormField) {
       inComp.pConn$?.removeFormField();
     }
@@ -346,7 +348,7 @@ export class AngularPConnectService {
    * Return **false**: means the component props are the same and the component doesn't need to update (re-render).
    * If the ***inComp*** input is bad, false is also returned.
    */
-  shouldComponentUpdate(inComp): boolean {
+  shouldComponentUpdate(inComp: any): boolean {
     // const bShowLogging = false;
     let bRet = false;
     // check for reasonable input
@@ -438,7 +440,7 @@ export class AngularPConnectService {
     return bRet;
   }
 
-  isPageMessagesEmpty(incomingProps) {
+  isPageMessagesEmpty(incomingProps: any) {
     return incomingProps.pageMessages && incomingProps.pageMessages.length === 0;
   }
 
@@ -447,7 +449,7 @@ export class AngularPConnectService {
    * @param inComp The component calling the change event
    * @param event The event
    */
-  changeHandler(inComp, event) {
+  changeHandler(inComp: any, event: any) {
     const bLogging = false;
     if (bLogging) {
       // console.log(`AngularPConnect.changeHandler`);
@@ -475,7 +477,7 @@ export class AngularPConnectService {
    * @param inComp The component calling the event
    * @param event The event
    */
-  eventHandler(inComp, event) {
+  eventHandler(inComp: any, event: any) {
     const bLogging = false;
     if (bLogging) {
       // console.log(`AngularPConnect.eventHandler`);
@@ -524,7 +526,7 @@ export class AngularPConnectService {
    *  processActions exposes all actions in the metadata.
    *  Attaches common handler (eventHandler) for all actions.
    */
-  private processActions(inComp) {
+  private processActions(inComp: any) {
     const pConnect = inComp.pConn$;
     if (undefined === pConnect) {
       console.error(`AngularPConnect: bad call to processActions: pConn$: ${pConnect} from component: ${inComp.constructor.name}`);

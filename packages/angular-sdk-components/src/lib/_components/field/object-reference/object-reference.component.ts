@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, forwardRef, OnDestroy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ComponentMetadataConfig } from '@pega/pcore-pconnect-typedefs/interpreter/types';
@@ -39,7 +38,7 @@ type RenderMode = 'singleReferenceReadonly' | 'multiReferenceReadonly' | 'semant
 
 @Component({
   selector: 'app-object-reference',
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)],
+  imports: [forwardRef(() => ComponentMapperComponent)],
   templateUrl: './object-reference.component.html',
   styleUrl: './object-reference.component.scss'
 })

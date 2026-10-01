@@ -1,43 +1,45 @@
-<div *ngIf="variant !== 'card'; else cardMode">
-  <div *ngIf="displayMode$; else noDisplayMode">
-    <component-mapper
-      *ngIf="bVisible$ !== false"
-      name="FieldValueList"
-      [props]="{ label$, value$: this.localizedValue, displayMode$ }"
-    ></component-mapper>
+@if (variant !== 'card') {
+  <div>
+    @if (displayMode$) {
+      <div>
+        @if (bVisible$ !== false) {
+          <component-mapper name="FieldValueList" [props]="{ label$, value$: this.localizedValue, displayMode$ }"></component-mapper>
+        }
+      </div>
+    } @else {
+      @if (bVisible$) {
+        <div [formGroup]="formGroup$">
+          <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic">
+            <mat-label>{{ label$ }}</mat-label>
+            <input matInput [placeholder]="placeholder" style="display: none" [required]="bRequired$" />
+            <mat-radio-group
+              [value]="value$"
+              [required]="bRequired$"
+              [formControl]="fieldControl"
+              [attr.data-test-id]="testId"
+              (change)="fieldOnChange($event)"
+              class="{{ bInline$ ? 'psdk-radio-horizontal' : 'psdk-radio-vertical' }}"
+            >
+              @for (opt of options$; track opt) {
+                <mat-radio-button [checked]="isSelected(opt.key)" [disabled]="bDisabled$ || bReadonly$" [value]="opt.key" class="psdk-radio-button">
+                  {{ getLocalizedOptionValue(opt) }}
+                </mat-radio-button>
+              }
+            </mat-radio-group>
+            @if (helperText) {
+              <mat-hint [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
+            }
+            @if (fieldControl.invalid) {
+              <mat-error>{{ getErrorMessage() }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      }
+    }
   </div>
-</div>
-<ng-template #noDisplayMode>
-  <div [formGroup]="formGroup$" *ngIf="bVisible$">
-    <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic">
-      <mat-label>{{ label$ }}</mat-label>
-      <input matInput [placeholder]="placeholder" style="display: none" [required]="bRequired$" />
-      <mat-radio-group
-        [value]="value$"
-        [required]="bRequired$"
-        [formControl]="fieldControl"
-        [attr.data-test-id]="testId"
-        (change)="fieldOnChange($event)"
-        class="{{ bInline$ ? 'psdk-radio-horizontal' : 'psdk-radio-vertical' }}"
-      >
-        <mat-radio-button
-          *ngFor="let opt of options$"
-          [checked]="isSelected(opt.key)"
-          [disabled]="bDisabled$ || bReadonly$"
-          [value]="opt.key"
-          class="psdk-radio-button"
-        >
-          {{ getLocalizedOptionValue(opt) }}
-        </mat-radio-button>
-      </mat-radio-group>
-      <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
-      <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
-    </mat-form-field>
-  </div>
-</ng-template>
-<ng-template #cardMode>
+} @else {
   <h4>{{ label$ }}</h4>
   <div>
     <component-mapper name="SelectableCard" [props]="{ pConn$: pConn$, type: 'radio' }" [parent]="this"></component-mapper>
   </div>
-</ng-template>
+}

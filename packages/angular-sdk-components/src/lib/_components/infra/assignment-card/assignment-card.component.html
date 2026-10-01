@@ -1,27 +1,38 @@
 <form [formGroup]="formGroup$" name="flowContainer" class="psdk-flow-container">
-  <div *ngFor="let kid of childrenArray" class="psdk-assignment-card-child">
-    <div [ngSwitch]="kid.getPConnect().getComponentName()">
-      <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
-      <component-mapper *ngSwitchCase="'reference'" name="reference" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
-      <component-mapper
-        *ngSwitchCase="'CaseCreateStage'"
-        name="CaseCreateStage"
-        [props]="{ formGroup$, pConn$: kid.getPConnect() }"
-      ></component-mapper>
-      <component-mapper *ngSwitchCase="'Region'" name="Region" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
-      <div *ngSwitchDefault>Assignment Card wants component not yet available: {{ kid.getPConnect().getComponentName() }}</div>
+  @for (kid of childrenArray; track kid) {
+    <div class="psdk-assignment-card-child">
+      <div>
+        @switch (kid.getPConnect().getComponentName()) {
+          @case ('View') {
+            <component-mapper name="View" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @case ('reference') {
+            <component-mapper name="reference" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @case ('CaseCreateStage') {
+            <component-mapper name="CaseCreateStage" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @case ('Region') {
+            <component-mapper name="Region" [props]="{ formGroup$, pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @default {
+            <div>Assignment Card wants component not yet available: {{ kid.getPConnect().getComponentName() }}</div>
+          }
+        }
+      </div>
     </div>
-  </div>
+  }
 </form>
 
 <div>
   <div class="psdk-case-view-divider"></div>
 
-  <component-mapper
-    *ngIf="arMainButtons$ && arSecondaryButtons$"
-    name="ActionButtons"
-    [props]="{ arMainButtons$, arSecondaryButtons$ }"
-    [parent]="this"
-    [outputEvents]="{ actionButtonClick: onActionButtonClick }"
-  ></component-mapper>
+  @if (arMainButtons$ && arSecondaryButtons$) {
+    <component-mapper
+      name="ActionButtons"
+      [props]="{ arMainButtons$, arSecondaryButtons$ }"
+      [parent]="this"
+      [outputEvents]="{ actionButtonClick: onActionButtonClick }"
+    ></component-mapper>
+  }
 </div>

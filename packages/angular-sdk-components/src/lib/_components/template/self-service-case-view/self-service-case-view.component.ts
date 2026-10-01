@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +28,7 @@ interface SelfServiceCaseViewProps {
   templateUrl: './self-service-case-view.component.html',
   styleUrls: ['./self-service-case-view.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SelfServiceCaseViewComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
@@ -64,7 +64,7 @@ interface ToDoProps {
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, MatButtonModule]
+  imports: [MatButtonModule]
 })
 export class TodoComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

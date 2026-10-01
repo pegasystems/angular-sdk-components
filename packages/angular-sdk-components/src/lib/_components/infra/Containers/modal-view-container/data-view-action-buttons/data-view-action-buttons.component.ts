@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -6,7 +5,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 @Component({
   selector: 'app-data-view-action-buttons',
   templateUrl: './data-view-action-buttons.component.html',
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+  imports: [MatGridListModule, MatButtonModule]
 })
 export class DataViewActionButtonsComponent {
   @Input() pConn$: typeof PConnect;

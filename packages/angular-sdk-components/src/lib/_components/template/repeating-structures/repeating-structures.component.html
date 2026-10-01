@@ -8,10 +8,12 @@
   </mat-form-field>
 
   <table mat-table [dataSource]="repeatList$" matSort>
-    <ng-container *ngFor="let dCol of fields$" [matColumnDef]="dCol.name">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ dCol.label }}</th>
-      <td mat-cell *matCellDef="let element">{{ element[dCol.name] }}</td>
-    </ng-container>
+    @for (dCol of fields$; track dCol) {
+      <ng-container [matColumnDef]="dCol.name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ dCol.label }}</th>
+        <td mat-cell *matCellDef="let element">{{ element[dCol.name] }}</td>
+      </ng-container>
+    }
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns$"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns$" (click)="rowClick(row)"></tr>

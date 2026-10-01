@@ -1,12 +1,16 @@
-<div *ngFor="let kid of arChildren$">
-  <div *ngIf="kid.getPConnect().getConfigProps().template != ''">
-    <component-mapper
-      [name]="kid.getPConnect().getConfigProps().template"
-      [props]="{
-        pConn$: kid.getPConnect(),
-        formGroup$: formGroup$
-      }"
-      errorMsg="CreateCaseStage Missing: {{ kid.getPConnect().getConfigProps().template }}"
-    ></component-mapper>
+@for (kid of arChildren$; track kid) {
+  <div>
+    @if (kid.getPConnect().getConfigProps().template != '') {
+      <div>
+        <component-mapper
+          [name]="kid.getPConnect().getConfigProps().template"
+          [props]="{
+            pConn$: kid.getPConnect(),
+            formGroup$: formGroup$
+          }"
+          errorMsg="CreateCaseStage Missing: {{ kid.getPConnect().getConfigProps().template }}"
+        ></component-mapper>
+      </div>
+    }
   </div>
-</div>
+}

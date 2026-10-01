@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, Injector } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
@@ -27,7 +27,7 @@ interface FlowContainerProps {
   templateUrl: './flow-container.component.html',
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

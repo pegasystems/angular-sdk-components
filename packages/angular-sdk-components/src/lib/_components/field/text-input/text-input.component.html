@@ -1,28 +1,40 @@
-<div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
-</div>
-<ng-template #noDisplayMode>
-  <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
-    <div [formGroup]="formGroup$" *ngIf="bVisible$">
-      <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
-        <mat-label>{{ label$ }}</mat-label>
-        <input
-          matInput
-          [placeholder]="placeholder"
-          type="text"
-          [value]="value$"
-          [required]="bRequired$"
-          [attr.data-test-id]="testId"
-          [formControl]="fieldControl"
-          (change)="fieldOnChange($event)"
-          (blur)="fieldOnBlur($event)"
-        />
-        <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
-        <mat-error *ngIf="fieldControl.invalid">{{ getErrorMessage() }}</mat-error>
-      </mat-form-field>
-    </div>
+@if (displayMode$) {
+  <div>
+    @if (bVisible$ !== false) {
+      <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+    }
   </div>
-</ng-template>
-<ng-template #noEdit>
-  <component-mapper *ngIf="bVisible$ !== false" name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
-</ng-template>
+} @else {
+  @if (!bReadonly$ && bHasForm$) {
+    <div>
+      @if (bVisible$) {
+        <div [formGroup]="formGroup$">
+          <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
+            <mat-label>{{ label$ }}</mat-label>
+            <input
+              matInput
+              [placeholder]="placeholder"
+              type="text"
+              [value]="value$"
+              [required]="bRequired$"
+              [attr.data-test-id]="testId"
+              [formControl]="fieldControl"
+              (change)="fieldOnChange($event)"
+              (blur)="fieldOnBlur($event)"
+            />
+            @if (helperText) {
+              <mat-hint [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
+            }
+            @if (fieldControl.invalid) {
+              <mat-error>{{ getErrorMessage() }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      }
+    </div>
+  } @else {
+    @if (bVisible$ !== false) {
+      <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
+    }
+  }
+}

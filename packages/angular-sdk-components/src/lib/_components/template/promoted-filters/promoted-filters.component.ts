@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -26,7 +26,7 @@ const SUPPORTED_TYPES_IN_PROMOTED_FILTERS = [
   selector: 'app-promoted-filters',
   templateUrl: './promoted-filters.component.html',
   styleUrls: ['./promoted-filters.component.scss'],
-  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PromotedFiltersComponent implements OnInit, OnDestroy {
   @Input() viewName;

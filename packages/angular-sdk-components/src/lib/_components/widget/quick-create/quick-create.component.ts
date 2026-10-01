@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
-import { CommonModule } from '@angular/common';
+
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 interface QuickCreateProps {
@@ -14,7 +14,7 @@ interface QuickCreateProps {
   selector: 'app-quick-create',
   templateUrl: './quick-create.component.html',
   styleUrls: ['./quick-create.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class QuickCreateComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

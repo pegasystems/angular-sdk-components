@@ -1,16 +1,24 @@
 <div class="psdk-stages-bar">
-  <div class="psdk-stages-chevron" *ngFor="let stage of arStageResults$">
-    <div *ngIf="stage.visited_status == 'completed'" class="psdk-stages-inner-past">
-      <img class="psdk-stages-icon" src="{{ checkSvgIcon$ }}" />
-      <div>{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}</div>
+  @for (stage of arStageResults$; track stage) {
+    <div class="psdk-stages-chevron">
+      @if (stage.visited_status == 'completed') {
+        <div class="psdk-stages-inner-past">
+          <img class="psdk-stages-icon" src="{{ checkSvgIcon$ }}" />
+          <div>{{ PCore$.getLocaleUtils().getLocaleValue(stage.name, '', key) }}</div>
+        </div>
+      }
+      @if (stage.visited_status == 'active') {
+        <div class="psdk-stages-inner-present">
+          {{ localizationService.getLocalizedText(stage.name) }}
+        </div>
+      }
+      @if (stage.visited_status == 'future') {
+        <div class="psdk-stages-inner-future">
+          {{ localizationService.getLocalizedText(stage.name) }}
+        </div>
+      }
     </div>
-    <div *ngIf="stage.visited_status == 'active'" class="psdk-stages-inner-present">
-      {{ localizationService.getLocalizedText(stage.name) }}
-    </div>
-    <div *ngIf="stage.visited_status == 'future'" class="psdk-stages-inner-future">
-      {{ localizationService.getLocalizedText(stage.name) }}
-    </div>
-  </div>
+  }
 </div>
 
 <div class="psdk-stages-divider"></div>

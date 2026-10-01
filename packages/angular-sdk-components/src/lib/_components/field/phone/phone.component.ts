@@ -1,5 +1,5 @@
-import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTelInput } from 'mat-tel-input';
@@ -16,10 +16,11 @@ interface PhoneProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatTelInput, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatTelInput, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class PhoneComponent extends FieldBase {
   configProps$: PhoneProps;

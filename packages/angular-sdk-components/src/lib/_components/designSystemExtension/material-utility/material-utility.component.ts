@@ -1,7 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-material-utility',
   templateUrl: './material-utility.component.html',
   styleUrls: ['./material-utility.component.scss'],

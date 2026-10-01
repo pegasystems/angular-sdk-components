@@ -1,5 +1,5 @@
 import { Component, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { getComponentFromMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
 
@@ -9,7 +9,7 @@ const componentsRequireDisplayOnlyFAProp: string[] = ['HybridViewContainer', 'Mo
   selector: 'component-mapper',
   templateUrl: './component-mapper.component.html',
   styleUrls: ['./component-mapper.component.scss'],
-  imports: [CommonModule]
+  imports: []
 })
 export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild('dynamicComponent', { read: ViewContainerRef, static: true })
@@ -90,7 +90,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
         const propsKeys = Object.keys(this.outputEvents);
         const propsValues: any = Object.values(this.outputEvents);
         for (let i = 0; i < propsKeys.length; i++) {
-          this.componentRef?.instance[propsKeys[i]].subscribe(value => {
+          this.componentRef?.instance[propsKeys[i]].subscribe((value: any) => {
             const callbackFn = propsValues[i].bind(this.parent);
             callbackFn(value);
           });

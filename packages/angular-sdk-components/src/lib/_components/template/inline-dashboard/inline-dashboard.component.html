@@ -1,19 +1,20 @@
 <div class="psdk-inline-dashboard">
   <h4 class="psdk-inline-dashboard-title">{{ inlineProps.title }}</h4>
-  <div
-    [ngClass]="{
-      'psdk-inline-style': inlineProps.filterPosition === 'inline-start' || inlineProps.filterPosition === 'inline-end',
-      'psdk-inline-end': inlineProps.filterPosition === 'inline-end'
-    }"
-    *ngIf="children"
-  >
-    <div class="psdk-inline-filter">
-      <div id="filters">
-        <component-mapper name="DashboardFilter" [props]="{ children: children[1], inlineProps, filtersFormGroup$ }"></component-mapper>
+  @if (children) {
+    <div
+      [ngClass]="{
+        'psdk-inline-style': inlineProps.filterPosition === 'inline-start' || inlineProps.filterPosition === 'inline-end',
+        'psdk-inline-end': inlineProps.filterPosition === 'inline-end'
+      }"
+    >
+      <div class="psdk-inline-filter">
+        <div id="filters">
+          <component-mapper name="DashboardFilter" [props]="{ children: children[1], inlineProps, filtersFormGroup$ }"></component-mapper>
+        </div>
+      </div>
+      <div class="psdk-inline-list">
+        <component-mapper name="Region" [props]="{ pConn$: children[0].getPConnect() }"></component-mapper>
       </div>
     </div>
-    <div class="psdk-inline-list">
-      <component-mapper name="Region" [props]="{ pConn$: children[0].getPConnect() }"></component-mapper>
-    </div>
-  </div>
+  }
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 
 interface AppAnnouncementProps {
@@ -15,7 +15,7 @@ interface AppAnnouncementProps {
   selector: 'app-app-announcement',
   templateUrl: './app-announcement.component.html',
   styleUrls: ['./app-announcement.component.scss'],
-  imports: [CommonModule, MatButtonModule]
+  imports: [MatButtonModule]
 })
 export class AppAnnouncementComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

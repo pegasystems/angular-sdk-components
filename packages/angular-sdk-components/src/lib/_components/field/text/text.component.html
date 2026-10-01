@@ -1,14 +1,23 @@
-<div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
-</div>
-<ng-template #noDisplayMode>
-  <div *ngIf="bVisible$ !== false" class="psdk-label-infix-readonly">
-    <span class="psdk-label-wrapper-readonly">
-      <label class="psdk-label-readonly">{{ label$ }}</label>
-    </span>
-    <div class="psdk-data-readonly">
-      <label *ngIf="formatAs$ != 'url'">{{ formattedValue$ }}</label>
-      <a *ngIf="formatAs$ == 'url'" href="{{ formattedUrl$ }}">{{ formattedValue$ }}</a>
-    </div>
+@if (displayMode$) {
+  <div>
+    @if (bVisible$ !== false) {
+      <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+    }
   </div>
-</ng-template>
+} @else {
+  @if (bVisible$ !== false) {
+    <div class="psdk-label-infix-readonly">
+      <span class="psdk-label-wrapper-readonly">
+        <label class="psdk-label-readonly">{{ label$ }}</label>
+      </span>
+      <div class="psdk-data-readonly">
+        @if (formatAs$ != 'url') {
+          <label>{{ formattedValue$ }}</label>
+        }
+        @if (formatAs$ == 'url') {
+          <a href="{{ formattedUrl$ }}">{{ formattedValue$ }}</a>
+        }
+      </div>
+    </div>
+  }
+}
