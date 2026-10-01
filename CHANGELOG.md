@@ -29,6 +29,8 @@
     * Github: [PR-594](https://github.com/pegasystems/angular-sdk-components/pull/594)
 *   **Fixed an issue where column header labels in the SimpleTableManual and ListView table were not localized.**
     * Github: [PR-603](https://github.com/pegasystems/angular-sdk-components/pull/603)
+*   **Added tooling to configure sdk-config.json from environment variables, diagnose the environment and run the SDK in CI.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 
 ### **Bug fixes**
 *   **Fixed DataReference not making an api call on state change.**
@@ -64,6 +66,18 @@
       * Github: [PR-600](https://github.com/pegasystems/angular-sdk-components/pull/600)
 *   **Fixed the issue where required validation was not triggered in the Rich Text Editor.**
       * Github: [PR-601](https://github.com/pegasystems/angular-sdk-components/pull/601)
+*   **Fixed the @pega/angular-sdk-overrides package so that relative import type statements (for example in FieldBase) are rewritten to @pega/angular-sdk-components.**
+      * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+
+### **Refactoring**
+*   **Moved synchronous field components and presentational components to OnPush change detection, added FieldBase.markForCheck() and generic FieldBase<TValue> support.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+*   **Removed the unused @angular/animations and @angular/material-experimental dependencies and updated Tiptap to 3.31.4.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+*   **Updated Angular to 21.2.25 (TypeScript stays on 5.9.x); the supported Node.js range is now 24.x.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
+*   **Restored the previously skipped component unit tests (175 specs now run) with shared fixtures, and added unit tests for services and helpers.**
+    * Github: [PR-608](https://github.com/pegasystems/angular-sdk-components/pull/608)
 
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
