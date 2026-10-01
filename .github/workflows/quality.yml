@@ -28,8 +28,12 @@ jobs:
         run: npm run build-angular-sdk-components
       - name: Public API report is up to date
         run: npm run api:check
+      - name: noImplicitAny ratchet
+        run: npm run check:any
       - name: Build overrides package
         run: npm run build-overrides
+      - name: Overrides package type-checks against the built library
+        run: npm run check:overrides
       - name: Verify package tarballs
         run: npm run smoke:pack
 

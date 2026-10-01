@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@pega/angular-sdk-components": ["dist/angular-sdk-components"]
+    }
+  },
+  "include": ["packages/angular-sdk-overrides/lib/**/*.ts"],
+  "exclude": ["packages/angular-sdk-overrides/lib/**/*.spec.ts"]
+}

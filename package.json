@@ -64,7 +64,9 @@
     "test:unit": "ng test angular-sdk-components --watch=false --browsers=ChromeHeadless",
     "smoke:pack": "node scripts/smoke-pack.js",
     "check:any": "node scripts/check-implicit-any.js",
-    "check:any:update": "node scripts/check-implicit-any.js --update"
+    "check:any:update": "node scripts/check-implicit-any.js --update",
+    "new:component": "node scripts/new-component.js",
+    "check:overrides": "ngc -p tsconfig.overrides-check.json"
   },
   "dependencies": {
     "@angular/animations": "^21.2.4",

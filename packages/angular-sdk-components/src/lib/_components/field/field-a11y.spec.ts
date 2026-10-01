@@ -21,10 +21,9 @@ function createHost(selector: string, component: any, configProps: Record<string
   pConn.getConfigProps = () => configProps;
   pConn.resolveConfigProps = (p: any) => p;
 
-  @Component({
-    imports: [component],
-    template: `<${selector} [pConn$]="pConn" [formGroup$]="formGroup"></${selector}>`
-  })
+  const template = `<${selector} [pConn$]="pConn" [formGroup$]="formGroup"></${selector}>`;
+
+  @Component({ imports: [component], template })
   class HostComponent {
     pConn = pConn;
     formGroup = new FormGroup({});
