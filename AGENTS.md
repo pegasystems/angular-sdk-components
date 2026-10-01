@@ -64,6 +64,7 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 - **Angular 21.x** (latest 21.x patch; Angular 22 is out of scope), Angular Material/CDK 21.x.
 - **Node 24.x** (`engines: ^24.0.0`; CI uses 24.x).
 - **TypeScript 5.9.x** (`^5.9.3`, locked at 5.9.3; never 6 or 7: Angular 21 supports `>=5.9 <6.0`).
+- **Vitest 4.x** (the Angular 21 `unit-test` builder supports `^4.0.8`; Vitest 5 needs Angular 22) with the latest jsdom.
 - Update within these lines only (`sdk-upgrade-dependencies`); a major bump of any of them is a breaking change for consumers.
 
 ## Tech Stack & Tooling
