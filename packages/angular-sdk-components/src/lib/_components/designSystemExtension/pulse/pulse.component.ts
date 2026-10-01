@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, Input, forwardRef } from '@angular/core';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 interface PulseProps {
@@ -7,6 +7,7 @@ interface PulseProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-pulse',
   templateUrl: './pulse.component.html',
   styleUrls: ['./pulse.component.scss'],

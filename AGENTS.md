@@ -80,6 +80,12 @@ angular-sdk-components/
 | `npm run fix` | ESLint + Prettier auto-fix |
 | `npm run build-overrides` | Generate override templates package |
 | `npm run create_and_install_sdk_packages` | Build, pack, and install into angular-sdk repo |
+| `npm run test:unit` | Headless Karma/Jasmine unit tests (no Pega server) — see docs/testing.md |
+| `npm run new:component -- <kind> <kebab-name> <PegaName>` | Scaffold a component and register it in `public-api.ts` + component map |
+| `npm run check:any` / `check:any:update` | `noImplicitAny` per-file ratchet (do not add new implicit-any errors) |
+| `npm run api:check` / `api:update` | Public API report guard (`etc/angular-sdk-components.api.md`) |
+| `npm run check:overrides` | Type-check the generated overrides package against the built library |
+| `npm run docs:components` | Regenerate `docs/components.md` from the component map |
 
 ### Prerequisites
 
