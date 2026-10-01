@@ -18,6 +18,28 @@ with the Angular SDK using the information (including pointers to online documen
 [**Pega Community**](https://community.pega.com/marketplace/component/angular-sdk) and the Angular SDK code
 on [**GitHub**](https://community.pega.com/marketplace/component/angular-sdk).
 
+## Quick start for developers
+
+Clone this repository to build and customize your own Constellation Angular app, then:
+
+```bash
+npm ci
+export SDK_INFINITY_REST_SERVER_URL=https://my-pega.example.com/prweb   # and SDK_PORTAL_CLIENT_ID, ...
+npm run configure                        # writes sdk-config.json from the environment
+npm run doctor                           # pre-flight check of your setup
+npm run start-dev                        # http://localhost:3500
+```
+
+| | |
+| --- | --- |
+| Setup walkthrough | [docs/getting-started.md](docs/getting-started.md) |
+| Configuration reference (`sdk-config.json`, environment variables) | [docs/configuration.md](docs/configuration.md) |
+| CI/CD (any CI system), E2E | [docs/ci-cd.md](docs/ci-cd.md) |
+| Customize, override or add components | [docs/customizing.md](docs/customizing.md) |
+| Troubleshooting | [docs/troubleshooting.md](docs/troubleshooting.md) |
+| Working with an AI coding agent | [AGENTS.md](AGENTS.md) (`npm run verify` is the one command to run) |
+| All docs | [docs/README.md](docs/README.md) |
+
 ## Packages in this repo
 
 * [**angular-sdk-components**](https://www.npmjs.com/package/@pega/angular-sdk-components) <br />
