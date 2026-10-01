@@ -7,5 +7,5 @@ Essentials:
 - Verify with `node scripts/verify.js --quick` while iterating and `node scripts/verify.js` before you finish. Report anything you could not verify (Playwright E2E needs a Pega Infinity server).
 - All data access goes through `pConn$`/PConnect; never call Infinity directly. Children render through `<component-mapper>`. Field components extend `FieldBase`.
 - New components: `node scripts/new-component.js <kind> <kebab-name> <PegaName>` (registers in `public-api.ts` and the component map).
-- Do not edit `dist/`, `packages/angular-sdk-overrides/lib` (generated), `etc/*.api.md` or `docs/components.md` by hand; use the generating scripts.
+- Do not edit `dist/`, `packages/angular-sdk-overrides/lib` (generated), or `etc/*.api.md` by hand; use the generating scripts.
 - Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`).

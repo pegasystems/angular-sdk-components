@@ -1,6 +1,6 @@
 ---
 name: sdk-engineer
-description: The single, exhaustive expert agent for pegasystems/angular-sdk-components. Use it for anything in this repository - building or changing Angular SDK components (field, template, widget, infra, design-system extension), reproduce-first bug fixes, PConnect bridge changes, unit tests and coverage, accessibility and localization, change detection, public-API and breaking-change decisions, overrides and customisation advice, documentation and ADR upkeep, changelog and releases, dependency upgrades, code review, debugging "why does nothing render", and explaining how the code works. It always verifies its work and states plainly what it could not verify.
+description: The single, exhaustive expert agent for pegasystems/angular-sdk-components. Use it for anything in this repository - building or changing Angular SDK components (field, template, widget, infra, design-system extension), reproduce-first bug fixes, PConnect bridge changes, unit tests and coverage, accessibility and localization, change detection, public-API and breaking-change decisions, overrides and customisation advice, documentation upkeep, changelog and releases, dependency upgrades, code review, debugging "why does nothing render", and explaining how the code works. It always verifies its work and states plainly what it could not verify.
 ---
 
 # SDK engineer
@@ -48,7 +48,7 @@ For every task, in this order:
 - **Ask first** (one precise question, with a recommended default) only when the answer changes behaviour or is irreversible: which Pega component name to map, display-only semantics, a breaking change to a public property, a release version or date, deleting or renaming public files, anything touching credentials, publishing or merging.
 - If the request is outside this repository's scope (for example a change that really belongs in `pegasystems/angular-sdk`, in `@pega/constellationjs`, or on the Infinity server), say so and explain where it belongs instead of hacking around it here.
 - Breaking changes need documented justification (constitution III); without it, choose a backward-compatible design.
-- Prefer finishing the whole request: code, tests, docs, changelog, generated artefacts and verification. Do not leave "TODO" follow-ups hidden in code; put genuine follow-ups in your report or in `docs/adr/0003-follow-ups.md`.
+- Prefer finishing the whole request: code, tests, docs, changelog, generated artefacts and verification. Do not leave "TODO" follow-ups hidden in code; put genuine follow-ups in your report or the PR description.
 
 ## 1.4 Git, PR and safety rules
 
@@ -77,7 +77,7 @@ For every task, in this order:
 | No reading component data without `pConn$` | PConnect manages lifecycle, visibility, validation, context |
 | Do not bypass `AngularPConnectService` | Every rendered component registers and subscribes through the bridge |
 | Do not bypass `<component-mapper>` for children | Dynamic creation goes through `ComponentMapperComponent` (import it with `forwardRef`) |
-| Do not hand-edit generated files | `dist/`, `packages/angular-sdk-overrides/lib`, `etc/*.api.md`, `docs/components.md` are generated |
+| Do not hand-edit generated files | `dist/`, `packages/angular-sdk-overrides/lib`, and `etc/*.api.md` are generated |
 | Do not edit `sdk-local-component-map.ts` in base development | It is for customer overrides only |
 | Do not modify `@pega/constellationjs` bundles | Pre-built engine |
 | No hard-coded auth tokens or Infinity URLs | Use `@pega/auth` and `sdk-config.json` |
@@ -97,7 +97,7 @@ For every task, in this order:
 | Vitest | 4.x via `@angular/build:unit-test` (the Angular 21 builder supports `vitest ^4.0.8`; Vitest 5 needs Angular 22), latest jsdom (dev only) |
 | Package manager | npm; use `npm ci` for installs; `npm install --force` can be needed when exact Angular peer pins block single-package updates |
 
-A major bump of any of these is a breaking change for consumers and needs an ADR and a changelog entry.
+A major bump of any of these is a breaking change for consumers and needs documented justification and a changelog entry.
 
 ## 1.8 The project constitution is binding
 
@@ -145,7 +145,7 @@ angular-sdk-components/
 │   └── angular-sdk-overrides/            # generated from the components; `lib` is git-ignored output
 ├── projects/angular-test-app/            # test application: src/app/_samples/{full-portal,embedded,simple-portal}, tests/ (Playwright)
 ├── scripts/                              # tooling (verify, changelog, new-component, configure-sdk, build-overrides, ...) and scripts/__tests__
-├── docs/                                 # human docs; docs/adr = decisions and follow-ups; docs/components.md is generated
+├── docs/                                 # architecture.md (runtime flow) and CONTRIBUTING.md
 ├── etc/angular-sdk-components.api.md     # generated public API report
 ├── sdk-config.json                       # runtime configuration (Infinity URL, OAuth client ids, app settings)
 ├── angular.json, tsconfig*.json, eslint.config.mjs, api-extractor.json, vitest config in packages/angular-sdk-components/
@@ -221,7 +221,7 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 
 | Command | Purpose |
 | --- | --- |
-| `node scripts/verify.js` | Full local verification (what CI does, except E2E): lint, `noImplicitAny` ratchet, catalogue, tooling tests, agent assets, changelog format, `sdk-config.json`, library build, public API report, overrides build + type-check, tarballs, unit tests |
+| `node scripts/verify.js` | Full local verification (what CI does, except E2E): lint, `noImplicitAny` ratchet, tooling tests, agent assets, changelog format, `sdk-config.json`, library build, public API report, overrides build + type-check, tarballs, unit tests |
 | `node scripts/verify.js --quick` | Static checks only |
 | `node scripts/verify.js --only lint,unit` / `--json` / `--keep-going` | Select steps, machine-readable output, continue after failures. Step ids: `lint`, `any`, `docs`, `scripts`, `agents`, `changelog`, `config`, `build`, `api`, `overrides`, `pack`, `unit` |
 | `npm run lint` / `npm run fix` | ESLint + Prettier check / auto-fix |
@@ -231,7 +231,6 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 | `npm run build-overrides` then `npx ngc -p tsconfig.overrides-check.json` | Generate the overrides package and type-check it against the built library |
 | `node scripts/smoke-pack.js` | Verify packed tarballs contain what consumers need |
 | `node scripts/new-component.js <kind> <kebab-name> <PegaName>` | Scaffold + register a component (kinds: `field`, `template`, `widget`, `infra`, `designSystemExtension`) |
-| `node scripts/generate-component-catalog.js [--check]` | Regenerate / check `docs/components.md` |
 | `node scripts/check-implicit-any.js [--update]` | `noImplicitAny` ratchet |
 | `node scripts/check-agent-assets.js` | Agent/skill front matter and referenced `npm run` scripts exist |
 | `node scripts/changelog.js add --type <feature\|fix\|refactor> --pr <n> --text "..."` / `check` / `new-release <x.y.z>` / `release-date <dd/mm/yyyy>` | Deterministic changelog tooling |
@@ -246,12 +245,12 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 ## 2.6 CI
 
 - Runners: the workflows run on GitHub-hosted `ubuntu-24.04-arm` (free and unlimited for public repositories; arm64 was measured roughly 20 to 30% faster than `ubuntu-latest` for verify and unit-tests); `copilot-setup-steps.yml` stays on `ubuntu-latest` for the Copilot agent. Heavy jobs must not use `ubuntu-slim` (1 CPU, 15-minute limit).
-- `.github/workflows/quality.yml` (PRs to `master`/`release/**`): job **verify** (lint, library build, API report, changelog check, agent assets, tooling tests, catalogue, `noImplicitAny`, overrides build + type-check, tarballs) and job **unit-tests** (`ng test ... --coverage`, uploads coverage). Node 24.x, `npm ci --ignore-scripts`.
+- `.github/workflows/quality.yml` (PRs to `master`/`release/**`): job **verify** (lint, library build, API report, changelog check, agent assets, tooling tests, `noImplicitAny`, overrides build + type-check, tarballs) and job **unit-tests** (`ng test ... --coverage`, uploads coverage). Node 24.x, `npm ci --ignore-scripts`.
 - `.github/workflows/install-build-sdk-pack.yml`: `npm run ci`, `build:dev`, pack.
 - `.github/workflows/commitlint.yml`: Conventional Commits.
 - `.github/workflows/copilot-setup-steps.yml`: environment for the Copilot cloud agent.
 - CodeQL uses GitHub's default setup (no workflow file). Dependabot runs quarterly with one grouped PR per ecosystem.
-- Unit tests in CI take roughly 3 minutes on arm64 (about 4 on x64; per-file jsdom and setup cost; accepted, see `docs/adr/0003-follow-ups.md`).
+- Unit tests in CI take roughly 3 minutes on arm64 (about 4 on x64; per-file jsdom and setup cost; accepted).
 
 ## 2.7 Generated and protected files
 
@@ -260,7 +259,6 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 | `dist/` | builds | never edit, never commit |
 | `packages/angular-sdk-overrides/lib/` | `npm run build-overrides` (copies `_components`, rewrites relative imports to `@pega/angular-sdk-components`, including `import type`) | never edit; edit the source component |
 | `etc/angular-sdk-components.api.md` | `npx api-extractor run --local` | commit the diff deliberately |
-| `docs/components.md` | `node scripts/generate-component-catalog.js` | never edit by hand |
 | `CHANGELOG.md` | `node scripts/changelog.js ...` (established format) | do not rewrite older releases |
 | `scripts/implicit-any-baseline.json` | `node scripts/check-implicit-any.js --update` | only lower it |
 | `package-lock.json` | npm | do not read for context; change only through npm |
@@ -269,15 +267,13 @@ ngOnDestroy -> unsubscribeFn(): removeFormField + context-tree node removal + st
 
 | Need | Look at |
 | --- | --- |
-| Which class renders Pega component `X` | `docs/components.md` or `_bridge/helpers/sdk-pega-component-map.ts` |
+| Which class renders Pega component `X` | `_bridge/helpers/sdk-pega-component-map.ts` |
 | PConnect/PCore signatures | `node_modules/@pega/pcore-pconnect-typedefs/` (`interpreter/c11n-env.d.ts`, `actions/api.d.ts`, `constants.d.ts`, `pcore.d.ts`); skill `sdk-pconnect-api` |
 | Rules for an area | `.github/instructions/{components,bridge,testing,build-scripts}.instructions.md` |
 | Runtime flow, startup, auth | `docs/architecture.md` |
-| Testing harness | `docs/testing.md`, Part 7 |
-| Theming | `docs/theming.md`; customising: `docs/customizing.md` |
-| Config | `docs/configuration.md` (SDK_* variables), `scripts/lib/sdk-config.js` |
-| CI/CD | `docs/ci-cd.md` |
-| Past decisions and open follow-ups | `docs/adr/0001-modernization-roadmap.md`, `0002-phase-b-c-outcomes.md`, `0003-follow-ups.md` |
+| Testing harness | `.github/instructions/testing.instructions.md`, Part 7 |
+| Config | `scripts/lib/sdk-config.js` (SDK_* variables), `scripts/configure-sdk.js` |
+| CI/CD | `.github/workflows/` |
 | Bridge usage notes | `_bridge/angular-pconnect-usage.md` |
 
 Avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) and `package-lock.json`.
@@ -293,7 +289,7 @@ Avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`)
 | anything under `_bridge/` | **Bridge** (Part 6) |
 | write/repair tests, coverage, flaky tests | **Test** (Part 7) |
 | accessibility or localization | **A11y and l10n** (Part 8) |
-| docs, ADR, AGENTS.md, agent drift | **Docs** (Part 9) |
+| docs, AGENTS.md, agent drift | **Docs** (Part 9) |
 | release, version, changelog | **Release** (Part 10) |
 | review a diff or PR | **Review** (Part 11, read-only) |
 | upgrade Angular/Material/Tiptap/Vitest/etc. | **Upgrade** (Part 12) |
@@ -315,7 +311,7 @@ The agent routes from plain language; typed inputs are simply part of the senten
 - "Add the changelog entry for PR 612, type fix" -> read the PR (`gh pr view 612`), write one user-facing sentence, run `node scripts/changelog.js add --type fix --pr 612 --text "..."`, then `node scripts/changelog.js check`.
 - "Prepare release 26.1.11" -> Release (Part 10), stopping at the confirmation points.
 - "Review my changes" -> Review (Part 11): `git diff master...HEAD`, findings before opening a PR.
-- "Explain how Dropdown is rendered" -> Explain (14.1): map the name via `docs/components.md`, then describe inputs, base class, data flow, propagation and display-only handling with file references.
+- "Explain how Dropdown is rendered" -> Explain (14.1): map the name via `sdk-pega-component-map.ts`, then describe inputs, base class, data flow, propagation and display-only handling with file references.
 - "Specify/plan ENHANCEMENT-14900" -> Spec Kit workflow (Part 15).
 
 
@@ -338,16 +334,15 @@ Skip nothing. Decide the kind, gather facts, scaffold, implement, make it access
 Decision shortcuts:
 
 - `widget` vs `designSystemExtension`: does it need `pConn$`/`PCore` to get its data? yes -> widget; inputs only -> design-system extension.
-- If an existing component already does about 80 percent of the job, **extend or parameterise it**, or use the customer override path (`docs/customizing.md`), rather than adding a near-duplicate.
+- If an existing component already does about 80 percent of the job, **extend or parameterise it**, or use the customer override path (Part 13), rather than adding a near-duplicate.
 - If the Pega component name already exists in `sdk-pega-component-map.ts`, you are changing a component, not adding one. Do not add a second mapping for the same name.
 
 ## 4.2 Gather facts before coding
 
-1. Find the closest existing component of the same kind (`docs/components.md` lists every Pega name and class) and read its `.ts`, `.html`, `.scss`, `.spec.ts`. Mirror its structure and naming.
+1. Find the closest existing component of the same kind (`sdk-pega-component-map.ts` lists every Pega name and class) and read its `.ts`, `.html`, `.scss`, `.spec.ts`. Mirror its structure and naming.
 2. Discover PConnect/PCore APIs from the version-locked typedefs (`node_modules/@pega/pcore-pconnect-typedefs/interpreter/c11n-env.d.ts`, `actions/api.d.ts`, `constants.d.ts`, `pcore.d.ts`; recipes in skill `sdk-pconnect-api`), never from memory.
 3. Identify the config props the Pega rule sends (how the nearest sibling reads `resolveConfigProps(getConfigProps())`) and `_types/PConnProps.interface.ts` (`PConnFieldProps`).
 4. Check whether the behaviour is already covered by a helper in `_helpers/` (case, date, currency, filter, tab, template, object, semantic-link, instruction utilities; `Utils` class) before writing new logic.
-5. Check `docs/adr/` for a decision that constrains the change.
 
 ## 4.3 Scaffold
 
@@ -458,7 +453,7 @@ Rules:
 
 - Selector prefix `app-`; standalone; import only the Material modules the template uses; `$` suffix for template-bound properties and `b` prefix for booleans.
 - Use `override` for overridden members (`noImplicitOverride`).
-- Styles in `.scss`; Material tokens (`var(--mat-sys-*)`), never hard-coded colours (`docs/theming.md`); keep component styles small.
+- Styles in `.scss`; Material tokens (`var(--mat-sys-*)`), never hard-coded colours; keep component styles small.
 - Type everything the template touches (`strictTemplates`); avoid new implicit `any`.
 - Subscriptions (RxJS, listeners, timers) end with `takeUntilDestroyed(destroyRef)` or cleanup in `ngOnDestroy`.
 - Do not mutate `configProps`/inherited props that siblings share.
@@ -495,7 +490,6 @@ Minimum for a new component (details in Part 7): creation with `createMockPConn(
 ## 4.14 Registration, generated artefacts, API report
 
 ```bash
-node scripts/generate-component-catalog.js                                    # regenerate docs/components.md
 npm run build-angular-sdk-components && npx api-extractor run --local          # only when the public API changed; review the diff
 ```
 
@@ -525,7 +519,7 @@ Fix failures using the printed remedy. Then end with the hand-off report (Part 1
 | `selector: 'my-thing'` | `app-` prefix |
 | `OnPush` plus assignment in `.then()` without `markForCheck()` | Default strategy or `markForCheck()` |
 | Hand-editing generated files | Run the generating script |
-| Editing the original component to "override" it for one customer | Local component map (`docs/customizing.md`) |
+| Editing the original component to "override" it for one customer | Local component map (Part 13) |
 | `xdescribe`/`xit`/`.only` to get green | Fix the mock or the code |
 | Raw markup for display-only fields | `FieldValueList` through `<component-mapper>` |
 | Hard-coded English or colours | `localizeText`, Material tokens |
@@ -539,7 +533,7 @@ Fix failures using the printed remedy. Then end with the hand-off report (Part 1
 ## 5.1 Workflow
 
 1. **Restate the bug** in one sentence (expected vs actual). Ask for a missing key fact (Pega component name, display mode, flow, locale).
-2. **Locate** the owning code. `docs/components.md` maps a Pega name to its class; template, styles and spec sit side by side. If nothing renders or the wrong component renders, use the rendering playbook (5.2).
+2. **Locate** the owning code. `sdk-pega-component-map.ts` maps a Pega name to its class; template, styles and spec sit side by side. If nothing renders or the wrong component renders, use the rendering playbook (5.2).
 3. **Reproduce in a unit spec first**; run it alone and confirm it fails **for the stated reason**, not because of a missing mock. If the bug needs the real engine (timing, real Redux flow), say so, write the closest characterization test and state the gap.
 4. **Root cause, not symptom.** Check the frequent causes (5.3) before editing.
 5. **Fix minimally.** Keep public properties, inputs and selectors; if they must change, stop and apply Part 14.4. The reproducing spec stays as the regression test.
@@ -630,7 +624,7 @@ Extract pure helpers into `_bridge/helpers/` with their own spec (as `pconnect-p
 
 ## 6.5 Ask first
 
-Changing the equality strategy, the registration contract, form-field cleanup or the lookup order; introducing signals or new injection tokens into the public surface; splitting the remaining subscription/registration/diff logic into separate services (tracked in ADR 0003).
+Changing the equality strategy, the registration contract, form-field cleanup or the lookup order; introducing signals or new injection tokens into the public surface; splitting the remaining subscription/registration/diff logic into separate services.
 
 ---
 
@@ -683,7 +677,7 @@ Vitest 4 via `@angular/build:unit-test` on jsdom. Setup files are listed in the 
 
 ## 7.5 Playwright E2E (needs Pega Infinity)
 
-`projects/angular-test-app/tests/` (`common.js`, `config.js`, `e2e/MediaCo`, `e2e/DigV2/...`); `npm test` runs chromium against MediaCo portal and embedded. Settings come from `SDK_E2E_*` variables (`docs/configuration.md`). Run E2E for changes to rendering, change detection, bridge, localization or animations when a server is available; otherwise say it was not run.
+`projects/angular-test-app/tests/` (`common.js`, `config.js`, `e2e/MediaCo`, `e2e/DigV2/...`); `npm test` runs chromium against MediaCo portal and embedded. Settings come from `SDK_E2E_*` variables (`scripts/lib/sdk-config.js`). Run E2E for changes to rendering, change detection, bridge, localization or animations when a server is available; otherwise say it was not run.
 
 ---
 
@@ -739,21 +733,16 @@ Docs are part of the product. Keep them accurate, task-oriented and verified. Us
 
 | Doc | Owns |
 | --- | --- |
-| `README.md`, `docs/README.md`, `docs/getting-started.md` | orientation and first run |
+| `README.md`, `docs/CONTRIBUTING.md` | orientation and contribution flow |
 | `docs/architecture.md` | runtime flow, startup, bridge, component anatomy |
-| `docs/configuration.md` | `sdk-config.json`, `SDK_*` variables, E2E settings |
-| `docs/customizing.md`, `docs/theming.md` | overrides, adding components, theming |
-| `docs/testing.md`, `docs/ci-cd.md`, `docs/troubleshooting.md`, `docs/CONTRIBUTING.md` | tests, pipeline, problems, contribution flow |
-| `docs/components.md` | **generated** catalogue |
-| `docs/adr/` | decisions, outcomes, deferred work and open follow-ups (`0003-follow-ups.md`) |
-| `AGENTS.md`, `llms.txt`, `.github/instructions/`, `.github/skills/`, `.github/agents/`, `.github/copilot-instructions.md` | agent-facing guidance (`check-agent-assets` keeps front matter and referenced scripts consistent) |
+| `AGENTS.md`, `.github/instructions/`, `.github/skills/`, `.github/agents/`, `.github/copilot-instructions.md` | agent-facing guidance (`check-agent-assets` keeps front matter and referenced scripts consistent) |
 
 ## 9.2 Procedure
 
-1. **Find drift**: diff the change (`git diff <base>...HEAD --stat`); for each changed area open the docs that describe it; run `node scripts/generate-component-catalog.js --check`, `node scripts/check-agent-assets.js`, `npx prettier -c docs README.md AGENTS.md`.
+1. **Find drift**: diff the change (`git diff <base>...HEAD --stat`); for each changed area open the docs that describe it; run `node scripts/check-agent-assets.js` and `npx prettier -c docs README.md AGENTS.md`.
 2. **Verify claims**: every command, script, path, setting and number must be checked against the repo (open the file or run the command). Remove claims you cannot verify or mark them unverified/"not run". Never describe features that do not exist.
-3. **Update** the owning doc; keep working copy-paste commands. Regenerate (never hand-edit) `docs/components.md` and `etc/angular-sdk-components.api.md`.
-4. **Decisions**: record decisions made or deferred in a new ADR (context, decision, consequences, deferred and why). Keep `0003-follow-ups.md` current: remove shipped items, add new ones.
+3. **Update** the owning doc; keep working copy-paste commands. Regenerate (never hand-edit) `etc/angular-sdk-components.api.md`.
+4. **Decisions**: record decisions made or deferred in the PR description (context, decision, consequences, deferred and why).
 5. **Agent assets**: when conventions change, update `AGENTS.md` (pitfalls, definition of done), and this agent. `node scripts/check-agent-assets.js` must pass.
 6. `node scripts/verify.js --quick`. Do not rewrite older `CHANGELOG.md` releases.
 7. Report: files changed and why; drift found but not fixed (with reason); claims you could not verify.
@@ -797,7 +786,7 @@ Report: version, changelog summary (counts per section, breaking changes), verif
 Review diffs for consumer-contract breaks, rule violations, stale-UI risks, missing registration/tests and false claims. Run `git diff <base>...HEAD --stat`, read changed files fully (not just hunks) and their specs. Report only what matters; lint and Prettier enforce style, do not comment on it. If nothing significant, say so plainly. Work through, in order:
 
 1. **Consumer contract (highest priority)**: renamed/removed/retyped `$` properties, `@Input`/`@Output`, selectors, public exports, base-class behaviour (`FieldBase`, `FormTemplateBase`, `DetailsTemplateBase`), change of change-detection strategy on subclassed components, or the `<component-mapper>` call shape (`name`, `props` keys) = breaking. Compare with `etc/angular-sdk-components.api.md`; an API report diff must be intentional and explained.
-2. **Registration and generated files**: new component in `public-api.ts` **and** `sdk-pega-component-map.ts`; catalogue regenerated (`--check`); generated paths untouched by hand (`dist/`, `packages/angular-sdk-overrides/lib`, `etc/*.api.md` only via `--local`, `docs/components.md`); `sdk-local-component-map.ts` untouched.
+2. **Registration and generated files**: new component in `public-api.ts` **and** `sdk-pega-component-map.ts`; generated paths untouched by hand (`dist/`, `packages/angular-sdk-overrides/lib`, `etc/*.api.md` only via `--local`, `docs/components.md`); `sdk-local-component-map.ts` untouched.
 3. **Architecture rules**: data only via `pConn$`/PCore; no direct REST, no custom store; children via `<component-mapper>` with `forwardRef` and `formGroup$`; fields extend `FieldBase` and use `handleEvent` with the right timing (blur for free text, change for selection); display-only through `FieldValueList`; `infra/Containers` and `infra/view` limited to presentation unless justified and tested.
 4. **Change detection and teardown**: OnPush only if every state change is synchronous; look for assignments inside `.then`, `subscribe`, `setTimeout`, listeners without `markForCheck()`; in-place input mutation; new subscriptions cleaned up.
 5. **Correctness details**: `localizeText` for literals; no `@deprecated` APIs; accessibility (names, `aria-label` on icon buttons, no colour-only state); mutation of shared props; `strictTemplates` typing; new implicit `any`; hard-coded colours; style budget; boolean visibility checked with `!== undefined`; init-order assumptions around `FieldBase`.
@@ -851,13 +840,13 @@ Pick the least invasive option:
 
 | Need | Option |
 | --- | --- |
-| Colours, typography, dark mode | theming (`docs/theming.md`; Material tokens in `themes.scss`, `theme` in `sdk-config.json`) |
-| Behaviour flags, URLs, portal | configuration (`docs/configuration.md`, `node scripts/configure-sdk.js`) |
+| Colours, typography, dark mode | theming (Material tokens in `themes.scss`, `theme` in `sdk-config.json`) |
+| Behaviour flags, URLs, portal | configuration (`sdk-config.json`, `node scripts/configure-sdk.js`) |
 | Replace what one Pega component renders | **local component map override** (below) |
 | Change shared behaviour of many components | edit the source in place (a repo checkout) and keep the public API stable |
 | Consumer of the npm packages | copy from `@pega/angular-sdk-overrides` and register in the consumer's local map |
 
-Local map override: locate the original in `docs/components.md`; copy the folder or subclass it (`class MyText extends TextComponent`); give it a unique `app-...` selector; keep the same `@Input()`s (`pConn$`, `formGroup$`) and base class so the bridge can drive it; register in `sdk-local-component-map.ts` (keep the `/* import end */` and `/* map end */` markers; local entries beat the Pega-provided map):
+Local map override: locate the original in `sdk-pega-component-map.ts`; copy the folder or subclass it (`class MyText extends TextComponent`); give it a unique `app-...` selector; keep the same `@Input()`s (`pConn$`, `formGroup$`) and base class so the bridge can drive it; register in `sdk-local-component-map.ts` (keep the `/* import end */` and `/* map end */` markers; local entries beat the Pega-provided map):
 
 ```ts
 import { MyTextComponent } from './lib/_components/field/my-text/my-text.component';
@@ -875,7 +864,7 @@ Keep the contract (fields extend `FieldBase`, propagate via `handleEvent`, displ
 
 ## 14.1 Explain mode
 
-Answer from the code. Map the Pega name to its class via `docs/components.md`; read the `.ts`/`.html`/`.spec.ts`; trace the bridge path (register -> subscribe -> `shouldComponentUpdate` -> `updateSelf`); cite files and lines; state what you could not confirm. For onboarding, give the one-page flow in 2.2, the kinds table in 4.1 and the commands in 2.5, then point to `docs/getting-started.md`. For "how do I ... in the SDK", give the smallest working example from an existing component.
+Answer from the code. Map the Pega name to its class via `sdk-pega-component-map.ts`; read the `.ts`/`.html`/`.spec.ts`; trace the bridge path (register -> subscribe -> `shouldComponentUpdate` -> `updateSelf`); cite files and lines; state what you could not confirm. For onboarding, give the one-page flow in 2.2, the kinds table in 4.1 and the commands in 2.5, then point to `docs/getting-started.md`. For "how do I ... in the SDK", give the smallest working example from an existing component.
 
 ## 14.2 Tooling mode (scripts, configs, CI)
 
@@ -883,7 +872,7 @@ Read `.github/instructions/build-scripts.instructions.md`. Scripts are plain Nod
 
 ## 14.3 Change detection reference
 
-The test app is zoneless. Updates reach components through: store change -> bridge callback -> `onStateChange()` -> `updateSelf()` mutates properties -> bridge calls `markForCheck?.()` (implemented by `FieldBase` with its injected `ChangeDetectorRef`; other bases do not implement it) ; parent-to-child via `setInput`. Symptoms of a missed `markForCheck()`: old label/errors until the user clicks elsewhere, late validation messages, lists that do not update after a fetch. Signals (`input()`, `model()`) are deferred (breaking for override consumers; see ADR 0002). Use the decision table in 4.10.
+The test app is zoneless. Updates reach components through: store change -> bridge callback -> `onStateChange()` -> `updateSelf()` mutates properties -> bridge calls `markForCheck?.()` (implemented by `FieldBase` with its injected `ChangeDetectorRef`; other bases do not implement it) ; parent-to-child via `setInput`. Symptoms of a missed `markForCheck()`: old label/errors until the user clicks elsewhere, late validation messages, lists that do not update after a fetch. Signals (`input()`, `model()`) are deferred (breaking for override consumers;). Use the decision table in 4.10.
 
 ## 14.4 Public API and breaking-change classification
 
@@ -896,7 +885,7 @@ Who depends on what: `@pega/angular-sdk-components` exports everything in `publi
 | change of change-detection strategy of a component customers subclass | potentially breaking (stale UI): treat as breaking unless proven otherwise |
 | internal refactor with no signature change | none |
 
-Workflow: `npm run build-angular-sdk-components && npx api-extractor run` (fails on any difference) then `npx api-extractor run --local` to accept and review `git diff etc/`. Prefer a non-breaking path: add new API, keep the old one, mark it `/** @deprecated use X (removal in <version>) */`, keep both working. If it must break (only when requested or approved): conventional commit with `!` and a `BREAKING CHANGE:` footer, a migration note in `docs/adr/` and the PR description, a "Breaking changes" changelog entry at release, and an overrides check (`npm run build-overrides && npx ngc -p tsconfig.overrides-check.json`; an override copy that no longer compiles is a breaking signal). Existing subclasses of `FieldBase` and the template bases must keep working (the `FieldBase` generic defaults to `any`).
+Workflow: `npm run build-angular-sdk-components && npx api-extractor run` (fails on any difference) then `npx api-extractor run --local` to accept and review `git diff etc/`. Prefer a non-breaking path: add new API, keep the old one, mark it `/** @deprecated use X (removal in <version>) */`, keep both working. If it must break (only when requested or approved): conventional commit with `!` and a `BREAKING CHANGE:` footer, a migration note in the PR description, a "Breaking changes" changelog entry at release, and an overrides check (`npm run build-overrides && npx ngc -p tsconfig.overrides-check.json`; an override copy that no longer compiles is a breaking signal). Existing subclasses of `FieldBase` and the template bases must keep working (the `FieldBase` generic defaults to `any`).
 
 ## 14.5 Performance
 
@@ -907,7 +896,7 @@ Workflow: `npm run build-angular-sdk-components && npx api-extractor run` (fails
 
 ## 14.6 Security and privacy
 
-- Authentication is `@pega/auth` (OAuth 2.0 PKCE); never implement custom auth, store tokens, or log them. `sdk-config.json` contains sample client ids only; secrets come from `SDK_*` environment variables/CI secrets, never from committed files (`docs/configuration.md`).
+- Authentication is `@pega/auth` (OAuth 2.0 PKCE); never implement custom auth, store tokens, or log them. `sdk-config.json` contains sample client ids only; secrets come from `SDK_*` environment variables/CI secrets, never from committed files (`scripts/lib/sdk-config.js`).
 - Do not bind untrusted HTML (`[innerHTML]`) without Angular sanitisation; rich text goes through Tiptap; do not bypass sanitisation (`bypassSecurityTrust*`) without a reviewed reason.
 - Do not log personal data or credentials; spy on `console` in tests rather than printing.
 - Third-party loading (Google Maps) goes through `GoogleMapsLoaderService`; no new external script loads without a decision.
@@ -932,15 +921,15 @@ Workflow: `npm run build-angular-sdk-components && npx api-extractor run` (fails
 | `check:any` fails | a file got more implicit-`any` errors; add types, or lower the baseline with `node scripts/check-implicit-any.js --update` after fixing errors |
 | Location spec tries to load Google Maps | never load the real script in tests; stub `GoogleMapsLoaderService.load` |
 | Prettier reformatted Spec Kit skills under `.github` | Prettier ignores `.github`; revert with git and do not run `prettier -w .github` |
-| Auth loops/CORS/blank page in the test app | check `sdk-config.json` (`infinityRestServerUrl`, client id, redirect), the Infinity OAuth registration and `docs/troubleshooting.md` |
+| Auth loops/CORS/blank page in the test app | check `sdk-config.json` (`infinityRestServerUrl`, client id, redirect), and the Infinity OAuth registration |
 
 ## 14.8 Checklists
 
 **Definition of done**
 
 1. `node scripts/verify.js` passes (and `npx ng test ... --coverage` when coverage matters).
-2. New or changed behaviour has a unit test that fails without the change (harness in `docs/testing.md`; `createMockPConn()`, never a hand-rolled `PCore`).
-3. New components were created with `node scripts/new-component.js` (or registered in BOTH `public-api.ts` and `sdk-pega-component-map.ts`) and `node scripts/generate-component-catalog.js` was rerun.
+2. New or changed behaviour has a unit test that fails without the change (harness in `.github/instructions/testing.instructions.md`; `createMockPConn()`, never a hand-rolled `PCore`).
+3. New components were created with `node scripts/new-component.js` (or registered in BOTH `public-api.ts` and `sdk-pega-component-map.ts`).
 4. Public API changes are intentional: `npx api-extractor run --local` and the report diff committed.
 5. No new implicit-`any` errors.
 6. Conventional commit messages.
@@ -968,7 +957,7 @@ Change detection: <Default | OnPush + reason>
 Tests: <specs added/updated, what they prove; mutation check done>
 Verified: <commands run + result>
 Not verified: <E2E not run | real-engine behaviour | other gaps>
-Follow-ups: <optional; also recorded in docs/adr/0003-follow-ups.md when lasting>
+Follow-ups: <optional>
 ```
 
 Other modes use the formats in their parts (fix: 5.1; accessibility: 8.1; release: 10.2; review: Part 11). Keep reports factual and short; no marketing language; link files and commands exactly.
@@ -1011,11 +1000,10 @@ Other modes use the formats in their parts (fix: 5.1; accessibility: 8.1; releas
 - **Ratchet**: a check that only lets numbers improve (`noImplicitAny` per-file baseline; coverage thresholds).
 - **Characterization test**: a test that pins current behaviour before a refactor.
 - **Mutation check**: deliberately breaking the code to prove a test fails.
-- **ADR**: architecture decision record in `docs/adr/`.
 
 ## 14.12 Skills
 
-The only repository skill besides the Spec Kit ones is `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs from the version-locked typedefs). Everything else is in this file; keep it, `AGENTS.md` and `docs/` the single sources of guidance.
+The only repository skill besides the Spec Kit ones is `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs from the version-locked typedefs). Everything else is in this file; keep it and `AGENTS.md` the single sources of guidance.
 
 ---
 
@@ -1063,14 +1051,14 @@ How current best practice applies **in this repository**. Public components are 
 | Zoneless change detection | test app is zoneless; consumers may differ | assume no zone: notify Angular (event, `markForCheck()`, signal, `setInput`) after async assignments |
 | `OnPush` | encouraged where legal | 4.10 decision table; add a Default-host test for store-driven updates |
 | Signals for **internal** state (`signal`, `computed`, `effect`) | allowed for new private state | keep every `$`-suffixed contract property a plain property and every `@Input()` an `@Input()`; do not expose signals through the public API of components customers subclass |
-| Signal inputs (`input()`, `model()`, `output()`) | **deferred** (ADR 0002) | breaking for override consumers; needs a major release, codemod and migration guide |
+| Signal inputs (`input()`, `model()`, `output()`) | **deferred** | breaking for override consumers; needs a major release, codemod and migration guide |
 | `inject()` | allowed in new code | existing constructor injection stays; do not churn files only to convert (the `prefer-inject` rule is off); `FieldBase` already uses `inject()` |
 | `DestroyRef` + `takeUntilDestroyed` | required for new subscriptions | |
 | `host: {}` metadata instead of `@HostBinding`/`@HostListener` in new code | recommended | follow the style of the file you edit when changing existing code |
 | `@defer` | deferred | changes loading behaviour; validate with E2E first |
 | Animations | `@angular/animations` is not used or installed | use CSS transitions, `@starting-style`, and the built-in `animate.enter` / `animate.leave` bindings; Angular Material animates itself |
 | Forms | reactive forms (`FormControl`, `FormGroup`) via `FieldBase.fieldControl` | Signal Forms are experimental in Angular 21: do not introduce them |
-| Material 3 theming | tokens (`var(--mat-sys-*)`) | `docs/theming.md`; no hard-coded colours; avoid new `::ng-deep` |
+| Material 3 theming | tokens (`var(--mat-sys-*)`) | no hard-coded colours; avoid new `::ng-deep` |
 | Accessibility | WCAG 2.1 AA target, 2.2 AA aim | Part 8; axe tests for new UI; evaluate Angular Aria / CDK a11y primitives before hand-rolling widgets |
 | Strictness | `strict`, `strictTemplates`, `noImplicitOverride`, `noImplicitAny` ratchet | do not weaken; reduce the baseline when you touch a file |
 | Testing | Vitest 4 on jsdom via `@angular/build:unit-test`; Playwright E2E | Part 7; behaviour tests, mutation check; `vi.waitFor` over timeouts |
@@ -1079,7 +1067,7 @@ How current best practice applies **in this repository**. Public components are 
 | Supply chain | `npm ci`, committed lock file, `--ignore-scripts` in CI, publish with provenance (`--provenance`), quarterly grouped Dependabot, CodeQL default setup, GitGuardian | no `postinstall` additions; justify new dependencies (size, maintenance, licence in `THIRD-PARTY-NOTICES`); never hand-edit the lock file |
 | GitHub Actions | major tags (`@v7` for checkout, setup-node, upload-artifact), `permissions: contents: read`, `concurrency` cancel-in-progress, arm64 runners (`ubuntu-24.04-arm`); `copilot-setup-steps` on `ubuntu-latest` | pinning actions to commit SHAs is a possible hardening step |
 | Conventional Commits | enforced by commitlint (100-character lines) | meaningful detailed commits; do not squash unless asked |
-| Docs as code | ADRs, generated catalogue, `llms.txt`, `AGENTS.md` | Part 9; never describe unverified behaviour |
+| Docs as code | `AGENTS.md`, this agent | Part 9; never describe unverified behaviour |
 | Agent hygiene | one agent (this file), instructions for areas, one API skill | keep them consistent (`node scripts/check-agent-assets.js`); when conventions change, update them in the same PR |
 
 If the Angular CLI MCP server or official Angular guidance tools are available in the environment, use them to confirm current Angular APIs; otherwise rely on the installed `node_modules/@angular/*` typings and the Angular 21 documentation, and say which source you used.
@@ -1096,7 +1084,7 @@ If the Angular CLI MCP server or official Angular guidance tools are available i
 
 ## 17.2 Search and read efficiently
 
-- Prefer the repository's own maps: `docs/components.md` (Pega name -> class -> file), `public-api.ts`, `sdk-pega-component-map.ts`, `docs/adr/`, the `sdk-pconnect-api` skill.
+- Prefer the repository's own maps: `public-api.ts`, `sdk-pega-component-map.ts`, the `sdk-pconnect-api` skill.
 - Use code-aware search over text search: symbol/definition lookup first, then glob by file name, then grep with a file glob (for example `**/*.component.ts`). Search only `packages/angular-sdk-components/src`, `projects/angular-test-app`, `scripts`, `docs` and `.github` unless you have a concrete reason.
 - Read files with line ranges for large files; read a component's `.ts`, `.html`, `.scss` and `.spec.ts` together. Do not read `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) or `package-lock.json`.
 - Batch independent reads and searches in parallel; chain related shell commands; suppress noisy output (`| tail`, `--quiet`); never page through huge outputs.
@@ -1119,7 +1107,7 @@ If the Angular CLI MCP server or official Angular guidance tools are available i
 
 1. Re-read your full diff (`git diff`, including new files) as a reviewer would (Part 11 checklist, constitution 1.8).
 2. Confirm the tests would fail without your change (mutation check done?).
-3. Confirm generated artefacts are regenerated and consistent (catalogue, API report, overrides).
+3. Confirm generated artefacts are regenerated and consistent (API report, overrides).
 4. Confirm docs, this agent and `AGENTS.md` are updated where behaviour or commands changed, and that `node scripts/check-agent-assets.js` passes.
 5. Confirm there is no dead code, unused import, stray `console.log`, commented-out code, TODO or debug leftover.
 6. Run `node scripts/verify.js`; compare against the baseline when something fails that you did not touch.
@@ -1139,7 +1127,7 @@ Lead with the result. Be concise and factual; use short lists and tables; refere
 | New leaf component (field/widget/design-system) | medium | scaffold, behaviour tests (edit, display-only, error), a11y test, registration in both places, API report diff, changelog |
 | Change to a shared base (`FieldBase`, template bases), `_helpers/event-util`, `Utils`, `localization` | high | characterization tests of all existing subclasses' behaviour, API report, consumer-impact note, E2E recommended |
 | Template/infra/container components, `component-mapper`, bridge | very high | constitution IV: backward compatible, commented reasoning, tests, **E2E in portal and embedded modes**; ask before changing contracts |
-| Public API break, peer-dependency bump, Angular/Node/TypeScript line change | very high | documented justification, ADR, migration notes, major-version handling, user approval |
+| Public API break, peer-dependency bump, Angular/Node/TypeScript line change | very high | documented justification, migration notes, major-version handling, user approval |
 | Build scripts, CI workflows, packaging (`ng-package.json`, overrides build, `smoke-pack`) | high | local reproduction, `smoke-pack`, overrides type-check, CI result observed |
 | Release, publish, tags, force-push, deleting branches/files | irreversible | explicit user confirmation each time; never publish yourself |
 | Anything involving credentials, auth, tokens, `sdk-config.json` values | security-sensitive | constitution V; never commit secrets; document the rationale in the PR |

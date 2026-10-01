@@ -44,7 +44,7 @@ npx ng test angular-sdk-components --watch=false --coverage    # same + coverage
 ### Configuration
 - Runner: `test` target in `angular.json` (`@angular/build:unit-test`, `runner: vitest`), `packages/angular-sdk-components/vitest.config.ts`; coverage thresholds (`coverageThresholds`) are a floor, raise them as coverage grows
 - TypeScript: `packages/angular-sdk-components/tsconfig.spec.json`
-- Harness: `src/test-setup.ts` (global `PCore` stand-in, `createMockPConn()`, `getA11yViolations()`) and `src/test-hooks.ts` (global hooks, a setup file) and `src/test-utils.ts` (`stubComponentMapper`, `getMappedComponents`). See `docs/testing.md`.
+- Harness: `src/test-setup.ts` (global `PCore` stand-in, `createMockPConn()`, `getA11yViolations()`) and `src/test-hooks.ts` (global hooks, a setup file) and `src/test-utils.ts` (`stubComponentMapper`, `getMappedComponents`).
 
 ### Writing Unit Tests
 - Place spec files alongside the component: `component-name.component.spec.ts`

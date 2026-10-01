@@ -22,8 +22,8 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 **Definition of done** — a change is complete when all of these hold:
 
 1. `node scripts/verify.js` passes.
-2. New/changed behaviour has a unit test (harness: `docs/testing.md`; use `createMockPConn()`, never hand-roll a PCore).
-3. New components were created with `node scripts/new-component.js` (or are registered in BOTH `public-api.ts` and `sdk-pega-component-map.ts`), and `node scripts/generate-component-catalog.js` was rerun.
+2. New/changed behaviour has a unit test (harness: `.github/instructions/testing.instructions.md`; use `createMockPConn()`, never hand-roll a PCore).
+3. New components were created with `node scripts/new-component.js` (or are registered in BOTH `public-api.ts` and `sdk-pega-component-map.ts`).
 4. Public API changes are intentional: `npx api-extractor run --local` and the report diff is committed.
 5. You did not add implicit-`any` errors (`check:any`); lowering the baseline with `node scripts/check-implicit-any.js --update` after fixing errors is welcome.
 6. Conventional commit message (`feat:`, `fix:`, `chore:`, `docs:` ...) — enforced by commitlint.
@@ -37,8 +37,7 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 | Add a field/template/widget component | `node scripts/new-component.js field star-rating StarRating`, implement, add a spec, `node scripts/verify.js` |
 | Fix a component bug | Reproduce in a unit spec first (mock `pConn$`), fix, `node scripts/verify.js` |
 | Change the bridge (`_bridge/`) | Read `.github/instructions/bridge.instructions.md`; extend `angular-pconnect.service.spec.ts` BEFORE changing behaviour |
-| Change `sdk-config.json` handling | `scripts/lib/sdk-config.js` + `scripts/__tests__`; docs in `docs/configuration.md` |
-| Update docs for a component list | `node scripts/generate-component-catalog.js` (generated; do not hand-edit `docs/components.md`) |
+| Change `sdk-config.json` handling | `scripts/lib/sdk-config.js` + `scripts/__tests__`; header comment of `scripts/configure-sdk.js` |
 | Public API changed | `npm run build-angular-sdk-components && npx api-extractor run --local` |
 
 **Pitfalls that cost time**
@@ -51,11 +50,11 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 - Do not rely on `console` output in unit tests; spy on it.
 - Use the `view`/search tools on `packages/angular-sdk-components/src`; avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) and `package-lock.json`.
 
-**Map of the docs** (all in `docs/`): `architecture.md` (runtime flow), `testing.md`, `configuration.md`, `ci-cd.md`, `customizing.md`, `theming.md`, `troubleshooting.md`, `components.md` (generated catalogue), `adr/` (decisions and the reasons for deferred work). Scoped rules for each area live in `.github/instructions/`. Agent: `.github/agents/sdk-engineer.agent.md`; skills: `.github/skills/`.
+**Docs:** `docs/architecture.md` (runtime flow) and `docs/CONTRIBUTING.md`. Scoped rules for each area live in `.github/instructions/`.
 
 **Agent** (`.github/agents/sdk-engineer.agent.md`): one expert agent that covers everything in this repo through modes: build/change components, reproduce-first bug fixes, bridge changes, tests, accessibility and localization, docs/ADR drift, releases (with confirmation gates), read-only review, dependency upgrades, customisation advice and explanations. It loads the skills below as needed.
 
-**Skills** (`.github/skills/`): `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs) plus the Spec Kit `speckit-*` skills. Everything else is in the agent file and `docs/`.
+**Skills** (`.github/skills/`): `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs) plus the Spec Kit `speckit-*` skills. Everything else is in the agent file.
 
 ---
 
@@ -134,17 +133,16 @@ angular-sdk-components/
 | `npm run create_and_install_sdk_packages` | Build, pack, and install into angular-sdk repo |
 | `node scripts/verify.js` / `node scripts/verify.js --quick` | **Run all CI checks with a compact report** (see Start Here) |
 | `npx ng test angular-sdk-components --watch=false --coverage` | Unit tests with coverage and a threshold floor (`coverageThresholds` in `angular.json`) |
-| `npx ng test angular-sdk-components --watch=false` | Vitest unit tests (jsdom, no Pega server) — see docs/testing.md |
+| `npx ng test angular-sdk-components --watch=false` | Vitest unit tests (jsdom, no Pega server) — see `.github/instructions/testing.instructions.md` |
 | `node scripts/new-component.js <kind> <kebab-name> <PegaName>` | Scaffold a component and register it in `public-api.ts` + component map |
 | `node scripts/check-implicit-any.js` / `node scripts/check-implicit-any.js --update` | `noImplicitAny` per-file ratchet (do not add new implicit-any errors) |
 | `npx api-extractor run` / `npx api-extractor run --local` | Public API report guard (`etc/angular-sdk-components.api.md`) |
 | `npx ngc -p tsconfig.overrides-check.json` | Type-check the generated overrides package against the built library |
-| `node scripts/configure-sdk.js` | Render `sdk-config.json` from `SDK_*` env vars (see docs/configuration.md) |
+| `node scripts/configure-sdk.js` | Render `sdk-config.json` from `SDK_*` env vars (see the header of `scripts/configure-sdk.js`) |
 | `node scripts/changelog.js add ...` / `node scripts/changelog.js check` | Add/validate `CHANGELOG.md` entries in the project's format |
 | `node scripts/set-version.js <x.y.z>` | Set the release version in root, both packages and the lock file |
 | `node scripts/check-agent-assets.js` | Validate agent/skill front matter and that every npm script they mention exists |
 | `node --test "scripts/__tests__/*.test.js"` | Unit tests for the tooling scripts (`scripts/__tests__`) |
-| `node scripts/generate-component-catalog.js` | Regenerate `docs/components.md` from the component map |
 
 ### Prerequisites
 

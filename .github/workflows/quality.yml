@@ -34,8 +34,6 @@ jobs:
         run: node scripts/check-agent-assets.js
       - name: Tooling script tests
         run: node --test "scripts/__tests__/*.test.js"
-      - name: Component catalogue is up to date
-        run: node scripts/generate-component-catalog.js --check
       - name: noImplicitAny ratchet
         run: node scripts/check-implicit-any.js
       - name: Build overrides package

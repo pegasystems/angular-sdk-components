@@ -10,7 +10,7 @@
  *   node scripts/configure-sdk.js --check          validate only (exit 1 on errors), nothing is written
  *   node scripts/configure-sdk.js --print          print the resulting config with secrets masked
  *
- * See docs/configuration.md for the variable list.
+ * Variables are listed in scripts/lib/sdk-config.js (SDK_* names).
  */
 const fs = require('node:fs');
 const path = require('node:path');

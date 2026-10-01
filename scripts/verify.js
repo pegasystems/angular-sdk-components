@@ -25,13 +25,6 @@ const STEPS = [
     cmd: 'node scripts/check-implicit-any.js',
     fix: 'Add types; if errors were fixed run `node scripts/check-implicit-any.js --update`'
   },
-  {
-    id: 'docs',
-    quick: true,
-    title: 'Component catalogue up to date',
-    cmd: 'node scripts/generate-component-catalog.js --check',
-    fix: 'Run `node scripts/generate-component-catalog.js`'
-  },
   { id: 'scripts', quick: true, title: 'Tooling script tests', cmd: 'node --test "scripts/__tests__/*.test.js"' },
   {
     id: 'agents',

@@ -32,9 +32,7 @@ Be sure to reference the original issue in the pull request.
 
 ## Run Tests
 
-Unit tests (`npx ng test angular-sdk-components --watch=false`) and static checks run without a Pega server; see [testing.md](testing.md). To add a component use `node scripts/new-component.js` (it also registers the component in `public-api.ts` and the component map).
-
-End-to-end verification still requires interaction with a running Pega Infinity&trade; server.
+Since the Angular SDK requires interaction with a running Pega Infinity&trade; server, there is not an automated set of tests provided at this time.
 
 We suggest you begin by using the **MediaCo** application provided in the [Angular SDK download](https://community.pega.com/marketplace/components/angular-sdk). Test your change by using the MediaCo application and completing a complete case flow using the **New Service** casetype provided in that sample application.
 
