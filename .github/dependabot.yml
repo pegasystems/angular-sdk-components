@@ -1,0 +1,20 @@
+version: 2
+updates:
+  # Version updates run once a quarter and are grouped into a single PR per ecosystem to keep noise to a minimum.
+  # Dependabot security updates are controlled separately in the repository settings.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: quarterly
+    open-pull-requests-limit: 1
+    groups:
+      all-dependencies:
+        patterns: ['*']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: quarterly
+    open-pull-requests-limit: 1
+    groups:
+      all-actions:
+        patterns: ['*']
