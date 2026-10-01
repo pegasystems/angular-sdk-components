@@ -6864,9 +6864,9 @@ export class WideNarrowPageComponent implements OnInit, OnDestroy {
 
 // Warnings were encountered during analysis:
 //
-// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1802:9 - (ae-forgotten-export) The symbol "SearchCategory" needs to be exported by the entry point pega-angular-sdk-components.d.ts
-// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1802:9 - (ae-forgotten-export) The symbol "SearchGroup" needs to be exported by the entry point pega-angular-sdk-components.d.ts
-// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1803:9 - (ae-forgotten-export) The symbol "getComponentStateOptions" needs to be exported by the entry point pega-angular-sdk-components.d.ts
+// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1794:9 - (ae-forgotten-export) The symbol "SearchCategory" needs to be exported by the entry point pega-angular-sdk-components.d.ts
+// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1794:9 - (ae-forgotten-export) The symbol "SearchGroup" needs to be exported by the entry point pega-angular-sdk-components.d.ts
+// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1795:9 - (ae-forgotten-export) The symbol "getComponentStateOptions" needs to be exported by the entry point pega-angular-sdk-components.d.ts
 
 // (No @packageDocumentation comment for this package)
 

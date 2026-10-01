@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, inject } from '@angular/core';
 
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -59,6 +59,9 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
   imagePosition: any;
   showImageDescription: any;
   private isUpdatingFromDataCallback = false;
+
+  // inject() instead of a constructor parameter keeps the constructor signature stable for override subclasses
+  private cdRef = inject(ChangeDetectorRef);
 
   constructor(
     private angularPConnect: AngularPConnectService,
@@ -121,6 +124,9 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
               this.isUpdatingFromDataCallback = true;
               this.updateSelf();
               this.isUpdatingFromDataCallback = false;
+              // The data arrives outside Angular's event system. Without flagging the view, a zoneless app does not
+              // refresh it, and the dev-mode check then reports the new children as NG0100.
+              this.cdRef.markForCheck();
             } else {
               const ddDataSource: any = [];
               this.dropDownDataSource = ddDataSource;

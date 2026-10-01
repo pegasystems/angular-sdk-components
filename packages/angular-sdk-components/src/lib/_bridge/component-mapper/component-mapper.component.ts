@@ -54,6 +54,14 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
       this.dynamicComponent.clear();
       this.componentRef = this.dynamicComponent.createComponent(component);
 
+      // The bridge calls markForCheck() after every store update so a zoneless app refreshes the view. Only FieldBase
+      // implements it; for every other component flag the view through its ComponentRef. Without this, a store update
+      // changes state that is not refreshed, and the dev-mode check pass reports NG0100 (ExpressionChangedAfterItHasBeenChecked).
+      const { instance, changeDetectorRef } = this.componentRef;
+      if (instance && typeof instance.markForCheck !== 'function') {
+        instance.markForCheck = () => changeDetectorRef.markForCheck();
+      }
+
       if (component === ErrorBoundaryComponent) {
         this.componentRef.instance.message = this.errorMsg;
       } else {

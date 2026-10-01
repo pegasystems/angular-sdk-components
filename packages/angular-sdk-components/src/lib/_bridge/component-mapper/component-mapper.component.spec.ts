@@ -21,4 +21,16 @@ describe('ComponentMapperComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('gives components without markForCheck one that flags their view, so store updates refresh them in a zoneless app', () => {
+    component.name = 'NotAMappedComponent';
+    component.loadComponent();
+
+    const ref = component.componentRef!;
+    const markForCheck = vi.spyOn(ref.changeDetectorRef, 'markForCheck');
+    expect(typeof ref.instance.markForCheck).toBe('function');
+
+    ref.instance.markForCheck();
+    expect(markForCheck).toHaveBeenCalledTimes(1);
+  });
 });

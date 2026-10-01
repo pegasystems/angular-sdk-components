@@ -1,4 +1,4 @@
-import { ApplicationRef, Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { interval } from 'rxjs';
 import isEqual from 'fast-deep-equal';
 import { ProgressSpinnerService } from '../_messages/progress-spinner.service';
@@ -38,9 +38,6 @@ export class AngularPConnectService {
    * Each entry is: { __componentID__: _the component's most recent props_ }
    */
   private componentPropsArr: Record<string, any> = {};
-
-  // inject() instead of a constructor parameter keeps the constructor signature stable for subclasses
-  private appRef = inject(ApplicationRef);
 
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
@@ -94,28 +91,12 @@ export class AngularPConnectService {
     // console.log( `Bridge subscribing: ${theCompName} `);
     if (inComp) {
       let bSubscribed = true;
-      const applyCallback = () => {
+      const wrappedCallback = () => {
         if (bSubscribed && inCallback) {
           inCallback();
           // Store callbacks mutate component state outside Angular's event system; flag the view for OnPush components.
           inComp.markForCheck?.();
         }
-      };
-      const wrappedCallback = () => {
-        if (!this.isChangeDetectionRunning()) {
-          applyCallback();
-          return;
-        }
-        // The engine can dispatch while Angular is checking the view tree (for example from a child's ngOnInit).
-        // Updating a component then replaces state its template has already been checked against, which dev mode
-        // reports as NG0100 (ExpressionChangedAfterItHasBeenChecked) once @for/@if blocks are re-evaluated.
-        // Apply the update right after the current change detection pass and schedule another pass to render it.
-        queueMicrotask(() => {
-          applyCallback();
-          if (bSubscribed && !inComp.markForCheck) {
-            this.scheduleChangeDetection();
-          }
-        });
       };
       const storeUnsubscribe = this.getStore().subscribe(wrappedCallback);
       fnUnsubscribe = () => {
@@ -124,22 +105,6 @@ export class AngularPConnectService {
       };
     }
     return fnUnsubscribe;
-  }
-
-  /**
-   * True while Angular runs a change detection pass (including the dev-mode check that follows it).
-   * ApplicationRef has no public API for this, so the internal flag is read defensively: when it is missing
-   * the answer is false and store callbacks are applied synchronously as before.
-   */
-  private isChangeDetectionRunning(): boolean {
-    return (this.appRef as unknown as { _runningTick?: boolean })._runningTick === true;
-  }
-
-  private scheduleChangeDetection(): void {
-    if (this.appRef.destroyed || this.isChangeDetectionRunning()) {
-      return;
-    }
-    this.appRef.tick();
   }
 
   /**
