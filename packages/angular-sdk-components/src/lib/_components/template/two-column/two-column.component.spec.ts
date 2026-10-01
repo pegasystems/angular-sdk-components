@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { createMockPConn } from '../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TwoColumnComponent } from './two-column.component';
 
@@ -6,15 +7,16 @@ describe('TwoColumnComponent', () => {
   let component: TwoColumnComponent;
   let fixture: ComponentFixture<TwoColumnComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [TwoColumnComponent]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [TwoColumnComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TwoColumnComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

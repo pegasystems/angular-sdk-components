@@ -16,31 +16,33 @@
     </mat-toolbar>
 
     <div class="psdk-case-view-buttons">
-      <button *ngIf="editAction" mat-raised-button color="secondary" (click)="_editClick()">{{ localizedVal('Edit', localeCategory) }}</button>
+      @if (editAction) {
+        <button mat-raised-button color="secondary" (click)="_editClick()">{{ localizedVal('Edit', localeCategory) }}</button>
+      }
       <button mat-raised-button color="secondary" [matMenuTriggerFor]="actionMenu" [disabled]="bActionsMenuDisabled$">
         {{ localizedVal('Actions...', localeCategory) }}
       </button>
       <mat-menu #actionMenu="matMenu" overlapTrigger="false">
-        <ng-container *ngFor="let action of arAvailableActions$">
+        @for (action of arAvailableActions$; track action) {
           <button mat-menu-item (click)="_menuActionClick(action)">
             {{ localizedVal(action.name, '', localeKey) }}
           </button>
-        </ng-container>
-        <ng-container *ngFor="let process of arAvailabeProcesses$">
+        }
+        @for (process of arAvailabeProcesses$; track process) {
           <button mat-menu-item (click)="_menuProcessClick(process)">
             {{ process.name }}
           </button>
-        </ng-container>
-        <ng-container *ngFor="let action of arDataObjectActions$">
+        }
+        @for (action of arDataObjectActions$; track action) {
           <button mat-menu-item (click)="_menuDataObjectActionClick(action)">
             {{ localizedVal(action.name, '', localeKey) }}
           </button>
-        </ng-container>
-        <ng-container *ngFor="let action of arCreateCaseActions$">
+        }
+        @for (action of arCreateCaseActions$; track action) {
           <button mat-menu-item (click)="_menuCreateCaseActionClick(action)">
             {{ localizedVal(action.name, '', localeKey) }}
           </button>
-        </ng-container>
+        }
       </mat-menu>
     </div>
 
@@ -50,52 +52,69 @@
       <component-mapper name="reference" [props]="{ pConn$: caseSummaryPConn$ }"></component-mapper>
     </div>
 
-    <component-mapper
-      *ngIf="caseTabs$.length > 1"
-      name="VerticalTabs"
-      [props]="{ tabConfig$: caseTabs$ }"
-      [parent]="this"
-      [outputEvents]="{ tabClick: onTabClick }"
-    ></component-mapper>
+    @if (caseTabs$.length > 1) {
+      <component-mapper
+        name="VerticalTabs"
+        [props]="{ tabConfig$: caseTabs$ }"
+        [parent]="this"
+        [outputEvents]="{ tabClick: onTabClick }"
+      ></component-mapper>
+    }
   </div>
   <div class="psdk-case-view-main">
     <div>
-      <div *ngFor="let kid of arChildren$">
-        <div
-          *ngIf="
+      @for (kid of arChildren$; track kid) {
+        <div>
+          @if (
             kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'stages'
-          "
-        >
-          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+          ) {
+            <div>
+              <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+            </div>
+          }
         </div>
-      </div>
+      }
     </div>
 
-    <div *ngFor="let kid of arChildren$">
-      <div
-        *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'todo'"
-      >
-        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+    @for (kid of arChildren$; track kid) {
+      <div>
+        @if (kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name.toLowerCase() == 'todo') {
+          <div>
+            <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+          </div>
+        }
       </div>
-    </div>
+    }
 
-    <div *ngFor="let kid of arChildren$">
-      <div *ngIf="kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name == 'Main'">
-        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+    @for (kid of arChildren$; track kid) {
+      <div>
+        @if (kid.getPConnect().getRawMetadata().type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata().name == 'Main') {
+          <div>
+            <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+          </div>
+        }
       </div>
-    </div>
+    }
 
-    <div *ngIf="tabData$">
-      <component-mapper name="DeferLoad" [props]="{ pConn$, name: tabData$?.config?.name }"></component-mapper>
-    </div>
+    @if (tabData$) {
+      <div>
+        <component-mapper name="DeferLoad" [props]="{ pConn$, name: tabData$?.config?.name }"></component-mapper>
+      </div>
+    }
   </div>
   <div>
-    <div *ngIf="arChildren$" class="psdk-case-view-utilities">
-      <div *ngFor="let kid of arChildren$">
-        <div *ngIf="kid.getPConnect().getRawMetadata()?.type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata()?.name == 'Utilities'">
-          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
-        </div>
+    @if (arChildren$) {
+      <div class="psdk-case-view-utilities">
+        @for (kid of arChildren$; track kid) {
+          <div>
+            @if (kid.getPConnect().getRawMetadata()?.type.toLowerCase() == 'region' && kid.getPConnect().getRawMetadata()?.name == 'Utilities') {
+              <div>
+                <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+              </div>
+            }
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
 </div>

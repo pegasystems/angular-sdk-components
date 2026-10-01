@@ -1,0 +1,24 @@
+name: Copilot Setup Steps
+
+# Prepares the environment used by the GitHub Copilot coding agent so it can run `node scripts/verify.js` immediately.
+on:
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+  pull_request:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Sanity check
+        run: node scripts/verify.js --quick

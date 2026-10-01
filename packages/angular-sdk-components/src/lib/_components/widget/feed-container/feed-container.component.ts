@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatInputModule } from '@angular/material/input';
@@ -14,7 +14,7 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './feed-container.component.html',
   styleUrls: ['./feed-container.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
+  imports: [MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

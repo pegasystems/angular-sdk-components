@@ -1,5 +1,5 @@
-import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +11,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
 import { Utils } from '../../../_helpers/utils';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { localizeText } from '../../../_helpers/localization';
 
 interface IOption {
   key: string;
@@ -25,12 +26,12 @@ interface RadioButtonsProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-radio-buttons',
   templateUrl: './radio-buttons.component.html',
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -99,7 +100,8 @@ export class RadioButtonsComponent extends FieldBase {
     this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
 
     // Get localized value
-    this.localizedValue = this.pConn$.getLocalizedValue(
+    this.localizedValue = localizeText(
+      this.pConn$,
       this.value$,
       this.localePath,
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
@@ -115,7 +117,8 @@ export class RadioButtonsComponent extends FieldBase {
   }
 
   getLocalizedOptionValue(opt: IOption) {
-    return this.pConn$.getLocalizedValue(
+    return localizeText(
+      this.pConn$,
       opt.value,
       this.localePath,
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)

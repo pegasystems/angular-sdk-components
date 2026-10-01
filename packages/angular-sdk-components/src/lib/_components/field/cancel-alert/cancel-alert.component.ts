@@ -1,15 +1,16 @@
 import { Component, Input, Output, EventEmitter, OnChanges, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
+import { localizeText } from '../../../_helpers/localization';
 
 @Component({
   selector: 'app-cancel-alert',
   templateUrl: './cancel-alert.component.html',
   styleUrls: ['./cancel-alert.component.scss'],
-  imports: [CommonModule, MatGridListModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatGridListModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;
@@ -54,12 +55,12 @@ export class CancelAlertComponent implements OnChanges {
     this.discardButton = {
       actionID: 'discard',
       jsAction: 'discard',
-      name: this.pConn$.getLocalizedValue('Discard', '', '')
+      name: localizeText(this.pConn$, 'Discard', '', '')
     };
     this.goBackButton = {
       actionID: 'continue',
       jsAction: 'continue',
-      name: this.pConn$.getLocalizedValue('Go back', '', '')
+      name: localizeText(this.pConn$, 'Go back', '', '')
     };
   }
 

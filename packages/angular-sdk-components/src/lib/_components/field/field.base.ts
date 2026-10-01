@@ -1,4 +1,4 @@
-import { Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { AngularPConnectData, AngularPConnectService } from '../../_bridge/angular-pconnect';
@@ -6,12 +6,16 @@ import { Utils } from '../../_helpers/utils';
 import type { PConnFieldProps } from '../../_types/PConnProps.interface';
 
 @Directive()
-export class FieldBase implements OnInit, OnDestroy {
+/**
+ * @typeParam TValue type of the field value held in `value$`; defaults to `any` so existing subclasses are unaffected.
+ */
+export class FieldBase<TValue = any> implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
   @Input() formGroup$: FormGroup;
 
   protected angularPConnect = inject(AngularPConnectService);
   protected utils = inject(Utils);
+  private readonly fieldCdr = inject(ChangeDetectorRef);
 
   protected angularPConnectData: AngularPConnectData = {};
 
@@ -24,7 +28,7 @@ export class FieldBase implements OnInit, OnDestroy {
   testId: string;
   helperText: string;
   placeholder: string;
-  value$: any = '';
+  value$: TValue = '' as TValue;
   label$ = '';
   hideLabel = false;
   bRequired$ = false;
@@ -45,6 +49,11 @@ export class FieldBase implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange.bind(this));
     this.controlName$ = this.angularPConnect.getComponentID(this);
 
+    // Resolve the actions API and property name before the first update: subclasses such as RadioButtons use
+    // `propName` inside updateSelf() (locale lookups), which previously ran with propName still undefined.
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // call checkAndUpdate
     this.checkAndUpdate();
 
@@ -56,9 +65,6 @@ export class FieldBase implements OnInit, OnDestroy {
       this.bReadonly$ = true;
       this.bHasForm$ = false;
     }
-
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
   }
 
   /**
@@ -72,6 +78,13 @@ export class FieldBase implements OnInit, OnDestroy {
     if (this.angularPConnectData.unsubscribeFn) {
       this.angularPConnectData.unsubscribeFn();
     }
+  }
+
+  /**
+   * Called by the bridge after a store-driven update so OnPush subclasses re-render.
+   */
+  markForCheck(): void {
+    this.fieldCdr.markForCheck();
   }
 
   // Callback passed when subscribing to store change

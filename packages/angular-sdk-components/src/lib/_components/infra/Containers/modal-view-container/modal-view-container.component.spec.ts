@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { stubComponentMapper } from '../../../../../test-utils';
+import { createMockPConn } from '../../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ModalViewContainerComponent } from './modal-view-container.component';
 
@@ -6,15 +8,16 @@ describe('ModalViewContainerComponent', () => {
   let component: ModalViewContainerComponent;
   let fixture: ComponentFixture<ModalViewContainerComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ModalViewContainerComponent]
-    }).compileComponents();
-  }));
+  beforeEach(async () => {
+    TestBed.configureTestingModule({ imports: [ModalViewContainerComponent] });
+    await stubComponentMapper();
+    await TestBed.compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ModalViewContainerComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

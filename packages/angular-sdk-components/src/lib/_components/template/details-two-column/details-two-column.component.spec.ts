@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DetailsTwoColumnComponent } from './details-two-column.component';
@@ -8,13 +9,14 @@ describe('DetailsTwoColumnComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DetailsTwoColumnComponent]
+      imports: [DetailsTwoColumnComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DetailsTwoColumnComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

@@ -11,12 +11,16 @@
 </div>
 
 <div>
-  <div *ngIf="bShowPopover$" class="psdk-operator-popover">
-    <dl>
-      <div *ngFor="let field of fields$; let i = index">
-        <dt>{{ field.name }}</dt>
-        <dd class="psdk-operator-value">{{ field.value }}</dd>
-      </div>
-    </dl>
-  </div>
+  @if (bShowPopover$) {
+    <div class="psdk-operator-popover">
+      <dl>
+        @for (field of fields$; track field; let i = $index) {
+          <div>
+            <dt>{{ field.name }}</dt>
+            <dd class="psdk-operator-value">{{ field.value }}</dd>
+          </div>
+        }
+      </dl>
+    </div>
+  }
 </div>

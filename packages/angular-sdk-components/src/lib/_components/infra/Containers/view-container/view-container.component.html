@@ -1,31 +1,37 @@
 <div class="psdk-view-container-top" id="{{ buildName$ }}">
-  <div *ngIf="isViewContainer$; else isReference">
-    <h3 *ngIf="title$ !== ''">{{ title$ }}</h3>
-    <div *ngIf="templateName$; else showChildren">
-      <component-mapper
-        [name]="templateName$"
-        [props]="{
-          pConn$: createdViewPConn$,
-          formGroup$: formGroup$,
-          displayOnlyFA$: displayOnlyFA$
-        }"
-        errorMsg="View Container missing Template {{ templateName$ }}"
-      ></component-mapper>
+  @if (isViewContainer$) {
+    <div>
+      @if (title$ !== '') {
+        <h3>{{ title$ }}</h3>
+      }
+      @if (templateName$) {
+        <div>
+          <component-mapper
+            [name]="templateName$"
+            [props]="{
+              pConn$: createdViewPConn$,
+              formGroup$: formGroup$,
+              displayOnlyFA$: displayOnlyFA$
+            }"
+            errorMsg="View Container missing Template {{ templateName$ }}"
+          ></component-mapper>
+        </div>
+      } @else {
+        @for (kid of arChildren$; track kid) {
+          <div>
+            <component-mapper
+              [name]="kid.getPConnect().getComponentName()"
+              [props]="{
+                pConn$: kid.getPConnect(),
+                displayOnlyFA$: displayOnlyFA$
+              }"
+              errorMsg="ViewContainer Missing (no template): {{ kid.getPConnect().getComponentName() }}"
+            ></component-mapper>
+          </div>
+        }
+      }
     </div>
-    <ng-template #showChildren>
-      <div *ngFor="let kid of arChildren$">
-        <component-mapper
-          [name]="kid.getPConnect().getComponentName()"
-          [props]="{
-            pConn$: kid.getPConnect(),
-            displayOnlyFA$: displayOnlyFA$
-          }"
-          errorMsg="ViewContainer Missing (no template): {{ kid.getPConnect().getComponentName() }}"
-        ></component-mapper>
-      </div>
-    </ng-template>
-  </div>
-  <ng-template #isReference>
+  } @else {
     <component-mapper name="reference" [props]="{ pConn$: viewPConn$, formGroup$, displayOnlyFA$ }"></component-mapper>
-  </ng-template>
+  }
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { FormTemplateBase } from '../base/form-template-base';
@@ -8,7 +8,7 @@ import { FormTemplateBase } from '../base/form-template-base';
   selector: 'app-wide-narrow-form',
   templateUrl: './wide-narrow-form.component.html',
   styleUrls: ['./wide-narrow-form.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowFormComponent extends FormTemplateBase implements OnInit, OnChanges {
   @Input() override pConn$: typeof PConnect;

@@ -1,10 +1,10 @@
 ---
 applyTo: "projects/angular-test-app/tests/**,**/*.spec.*,**/*.test.*"
-description: "Use when writing or modifying tests. Covers Karma/Jasmine unit tests, Playwright E2E setup, test credentials, helpers, and configuration."
+description: "Use when writing or modifying tests. Covers Vitest unit tests, Playwright E2E setup, test credentials, helpers, and configuration."
 ---
 # Testing
 
-This project uses Karma/Jasmine for unit tests and Playwright for end-to-end tests.
+This project uses Vitest (via Angular's `unit-test` builder) for unit tests and Playwright for end-to-end tests.
 
 ## Structure
 
@@ -33,24 +33,26 @@ packages/angular-sdk-components/src/lib/
     └── angular-pconnect.service.spec.ts       # Bridge service unit test
 ```
 
-## Unit Tests (Karma/Jasmine)
+## Unit Tests (Vitest)
 
 ### Running
 ```bash
-ng test angular-sdk-components    # Run library unit tests
+npx ng test angular-sdk-components --watch=false        # Vitest on jsdom, no Pega server needed
+npx ng test angular-sdk-components --watch=false --coverage    # same + coverage report in coverage/ and a threshold floor
 ```
 
 ### Configuration
-- Karma config: `packages/angular-sdk-components/tsconfig.spec.json`
-- Framework: Jasmine with Karma runner
-- Browser: Chrome (karma-chrome-launcher)
-- Coverage: karma-coverage reporter
+- Runner: `test` target in `angular.json` (`@angular/build:unit-test`, `runner: vitest`), `packages/angular-sdk-components/vitest.config.ts`; coverage thresholds (`coverageThresholds`) are a floor, raise them as coverage grows
+- TypeScript: `packages/angular-sdk-components/tsconfig.spec.json`
+- Harness: `src/test-setup.ts` (global `PCore` stand-in, `createMockPConn()`, `getA11yViolations()`) and `src/test-hooks.ts` (global hooks, a setup file) and `src/test-utils.ts` (`stubComponentMapper`, `getMappedComponents`).
 
 ### Writing Unit Tests
 - Place spec files alongside the component: `component-name.component.spec.ts`
-- Use `TestBed.configureTestingModule()` for component setup
-- Use `ComponentFixture` for component interaction
-- Mock `PCore` and `pConn$` — components always expect these runtime globals
+- Standalone components go in `imports`, never `declarations`; do not use `waitForAsync` (the app is zoneless): use `async`/`await`
+- Set `component.pConn$ = createMockPConn()`; override only what the test needs (`pConn.getConfigProps = () => ({...})`, `pConn.resolveConfigProps = p => p`). Field components also need `formGroup$ = new FormGroup({})`
+- Do not import the component map in a spec at module level (circular import); load it lazily like `sdk_component_map.spec.ts`
+- Use `getA11yViolations(el)` for accessibility assertions (see `field-a11y.spec.ts`)
+- No specs are skipped; keep it that way. `vi.mock` of relative modules is unsupported by the Angular builder: provide `PCore` data instead
 
 ### Example
 ```typescript
@@ -68,7 +70,7 @@ describe('TextInputComponent', () => {
     fixture = TestBed.createComponent(TextInputComponent);
     component = fixture.componentInstance;
     // Must mock pConn$ before detectChanges
-    component.pConn$ = mockPConnect;
+    (component as any).pConn$ = createMockPConn(); // from src/test-setup.ts
     fixture.detectChanges();
   });
 

@@ -6,7 +6,7 @@
       "angular-sdk-components": ["dist/angular-sdk-components"]
     },
     "typeRoots": ["node_modules/@types", "node_modules/@pega"],
-    "types": ["pcore-pconnect-typedefs", "jasmine"],
+    "types": ["pcore-pconnect-typedefs"],
     "baseUrl": "./",
     "outDir": "./projects/angular-test-app/lib",
     "forceConsistentCasingInFileNames": true,

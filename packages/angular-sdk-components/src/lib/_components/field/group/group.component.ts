@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -17,7 +16,7 @@ interface GroupProps extends PConnFieldProps {
   selector: 'app-group',
   templateUrl: './group.component.html',
   styleUrls: ['./group.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class GroupComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
@@ -26,7 +26,7 @@ interface ViewContainerProps {
   selector: 'app-view-container',
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

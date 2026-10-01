@@ -1,10 +1,11 @@
+import type { Mock } from 'vitest';
 import { ChangeDetectorRef } from '@angular/core';
 
 import { CaseViewComponent } from './case-view.component';
 
 describe('CaseViewComponent', () => {
   let component: CaseViewComponent;
-  let actionsApi: { openDataObjectAction: jasmine.Spy; createWork: jasmine.Spy };
+  let actionsApi: { openDataObjectAction: Mock; createWork: Mock };
   let dataInfoActions: any;
   let dataRecord: any;
   let caseInfo: any;
@@ -22,8 +23,8 @@ describe('CaseViewComponent', () => {
     };
 
     actionsApi = {
-      openDataObjectAction: jasmine.createSpy('openDataObjectAction'),
-      createWork: jasmine.createSpy('createWork')
+      openDataObjectAction: vi.fn(),
+      createWork: vi.fn()
     };
     dataInfoActions = undefined;
     dataRecord = { PlanID: 'P-1', CustomerID: 'C-9' };
@@ -80,7 +81,7 @@ describe('CaseViewComponent', () => {
   it('disables the actions menu when no action of any kind is available', () => {
     component.fullUpdate();
 
-    expect(component.bActionsMenuDisabled$).toBeTrue();
+    expect(component.bActionsMenuDisabled$).toBe(true);
   });
 
   it('enables the actions menu when only data object actions are available', () => {
@@ -88,12 +89,12 @@ describe('CaseViewComponent', () => {
 
     component.fullUpdate();
 
-    expect(component.bActionsMenuDisabled$).toBeFalse();
+    expect(component.bActionsMenuDisabled$).toBe(false);
   });
 
   it('picks up case actions that arrive after the first update, without a case ID change', () => {
     component.fullUpdate();
-    expect(component.bActionsMenuDisabled$).toBeTrue();
+    expect(component.bActionsMenuDisabled$).toBe(true);
     expect(component.editAction).toBeUndefined();
 
     caseInfo.availableActions = [{ ID: 'pyUpdateCaseDetails', name: 'Edit details' }];
@@ -101,7 +102,7 @@ describe('CaseViewComponent', () => {
 
     expect(component.arAvailableActions$.length).toBe(1);
     expect(component.editAction).toBeTruthy();
-    expect(component.bActionsMenuDisabled$).toBeFalse();
+    expect(component.bActionsMenuDisabled$).toBe(false);
   });
 
   it('opens a data object action with the record class and content', () => {

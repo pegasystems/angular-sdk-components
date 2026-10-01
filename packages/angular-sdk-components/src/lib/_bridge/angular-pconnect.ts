@@ -4,6 +4,8 @@ import isEqual from 'fast-deep-equal';
 import { ProgressSpinnerService } from '../_messages/progress-spinner.service';
 import { ErrorMessagesService } from '../_messages/error-messages.service';
 import { Utils } from '../_helpers/utils';
+import { resolveComponentProps } from './helpers/pconnect-props';
+import { removeFormFieldAndContextNode } from './helpers/pconnect-form-field';
 
 export interface AngularPConnectData {
   compID?: string;
@@ -35,7 +37,7 @@ export class AngularPConnectService {
    * anything added by populateAdditionalProps.
    * Each entry is: { __componentID__: _the component's most recent props_ }
    */
-  private componentPropsArr: object[] = [];
+  private componentPropsArr: Record<string, any> = {};
 
   /* Used to toggle some class-wide logging */
   private static bLogging = false;
@@ -83,15 +85,17 @@ export class AngularPConnectService {
    * @returns The **unsubscribe** function that should be called when the component needs
    * to unsubscribe from the store. (Typically during ngOnDestroy)
    */
-  private subscribeToStore(inComp: any = null, inCallback: Function | null = null): Function {
+  private subscribeToStore(inComp: any = null, inCallback: Function | null = null): Function | undefined {
     // const theCompName: string = inComp ? `${inComp.constructor.name}` : 'no component provided';
-    let fnUnsubscribe;
+    let fnUnsubscribe: (() => void) | undefined;
     // console.log( `Bridge subscribing: ${theCompName} `);
     if (inComp) {
       let bSubscribed = true;
       const wrappedCallback = () => {
         if (bSubscribed && inCallback) {
           inCallback();
+          // Store callbacks mutate component state outside Angular's event system; flag the view for OnPush components.
+          inComp.markForCheck?.();
         }
       };
       const storeUnsubscribe = this.getStore().subscribe(wrappedCallback);
@@ -105,57 +109,14 @@ export class AngularPConnectService {
 
   /**
    * Gets the Component's properties that are used (a) to populate componentPropsArr
-  //  and (b) to determine whether the component should update itself (re-render)
+   * and (b) to determine whether the component should update itself (re-render)
    * @param inComp The component whose properties are being obtained
    */
   private getComponentProps(inComp: any = null): object {
-    let compProps: any;
-    let addProps = {};
-
     if (inComp === null) {
       console.error(`AngularPConnect: getComponentProps called with bad component: ${inComp}`);
     }
-
-    // if ((inComp.constructor.name === "FlowContainerComponent") || (inComp.constructor.name === "ViewContainerComponent")
-    //     || (inComp.constructor.name === "ViewComponent") || (inComp.constructor.name === "DeferLoadComponent")) {
-    //   console.log(`--> AngularPConnect getComponentProps: ${inComp.constructor.name}`);
-    // }
-
-    if (inComp.additionalProps !== undefined) {
-      if (typeof inComp.additionalProps === 'object') {
-        addProps = inComp.pConn$.resolveConfigProps(inComp.additionalProps);
-      } else if (typeof inComp.additionalProps === 'function') {
-        const propsToAdd = inComp.additionalProps(PCore.getStore().getState(), inComp.pConn$);
-        addProps = inComp.pConn$.resolveConfigProps(propsToAdd);
-      }
-    }
-
-    compProps = inComp.pConn$.getConfigProps();
-
-    // const componentName = inComp.constructor.name;
-
-    // populate additional props which are component specific and not present in configurations
-    // This block can be removed once all these props will be added as part of configs
-    inComp.pConn$.populateAdditionalProps(compProps);
-
-    compProps = inComp.pConn$.resolveConfigProps(compProps);
-
-    if (compProps && undefined !== compProps.validatemessage && compProps.validatemessage != '') {
-      // console.log( `   validatemessage for ${inComp.constructor.name} ${inComp.angularPConnectData.compID}: ${compProps.validatemessage}`);
-    }
-
-    const result: any = {
-      ...compProps,
-      ...addProps
-    };
-
-    // Include inheritedProps in comparison (matches React SDK areStatePropsEqual in react_pconnect.jsx)
-    const stateProps = inComp.pConn$.getStateProps();
-    if (stateProps?.inheritedProps) {
-      result.inheritedProps = inComp.pConn$.getInheritedProps();
-    }
-
-    return result;
+    return resolveComponentProps(inComp);
   }
 
   /**
@@ -163,7 +124,7 @@ export class AngularPConnectService {
    * Otherwise, return undefined.
    * @param inComp The component whose property is being requested.
    */
-  public getComponentID(inComp): string {
+  public getComponentID(inComp: any): string {
     return inComp.bridgeComponentID || inComp.angularPConnectData.compID;
   }
 
@@ -213,7 +174,7 @@ export class AngularPConnectService {
    * validateMessage: any validation/error message that gets generated for this object,
    * actions: any actions that are defined for this object
    */
-  registerAndSubscribeComponent(inComp, inCallback: Function | null = null): AngularPConnectData {
+  registerAndSubscribeComponent(inComp: any, inCallback: Function | null = null): AngularPConnectData {
     // Create an initial object to be returned.
     const returnObject: AngularPConnectData = {
       compID: '',
@@ -271,7 +232,7 @@ export class AngularPConnectService {
 
     // Now proceed to register and subscribe...
     const theCompID: string = this.getNextComponentId();
-    const theUnsub: Function | null = this.subscribeToStore(inComp, inCallback);
+    const theUnsub: Function | undefined = this.subscribeToStore(inComp, inCallback);
 
     if (undefined === inComp.angularPConnectData) {
       inComp.bridgeComponentID = theCompID;
@@ -279,7 +240,7 @@ export class AngularPConnectService {
       returnObject.compID = theCompID;
       returnObject.unsubscribeFn = () => {
         this.removeFormField(inComp);
-        theUnsub();
+        theUnsub?.();
       };
     }
 
@@ -292,36 +253,12 @@ export class AngularPConnectService {
     return returnObject;
   }
 
-  addFormField(inComp) {
+  addFormField(inComp: any) {
     inComp.pConn$?.addFormField();
   }
 
-  removeFormField(inComp) {
-    if (inComp.pConn$?.removeFormField) {
-      inComp.pConn$?.removeFormField();
-    }
-
-    const contextName = inComp.pConn$.getContextName();
-    const pageReference = inComp.pConn$.getPageReference();
-    const rawConfig = inComp.pConn$._rawConfig;
-    const index = inComp.pConn$.index;
-
-    if (Object.hasOwn(rawConfig?.config ?? {}, 'value') && inComp.pConn$._type !== 'Address') {
-      PCore.getContextTreeManager().removeFieldNode(
-        contextName,
-        pageReference,
-        inComp.pConn$.viewName || '',
-        inComp.pConn$._getPropertyName(),
-        index as number
-      );
-    } else if (inComp.pConn$._type === 'Address' && rawConfig?.config?.associatedView) {
-      // remove address node and its children
-      PCore.getContextTreeManager().removeViewNode(contextName, pageReference, rawConfig.config.associatedView, index as number);
-    } else {
-      // remove view node and its children
-      const pageRef = rawConfig?.config?.context ? `${pageReference}${rawConfig?.config.context}` : pageReference;
-      PCore.getContextTreeManager().removeViewNode(contextName, pageRef, rawConfig?.config?.name || rawConfig?.config?.id || '', index);
-    }
+  removeFormField(inComp: any) {
+    removeFormFieldAndContextNode(inComp);
   }
 
   // Returns true if the component's entry in ___componentPropsArr___ is
@@ -346,7 +283,7 @@ export class AngularPConnectService {
    * Return **false**: means the component props are the same and the component doesn't need to update (re-render).
    * If the ***inComp*** input is bad, false is also returned.
    */
-  shouldComponentUpdate(inComp): boolean {
+  shouldComponentUpdate(inComp: any): boolean {
     // const bShowLogging = false;
     let bRet = false;
     // check for reasonable input
@@ -438,7 +375,7 @@ export class AngularPConnectService {
     return bRet;
   }
 
-  isPageMessagesEmpty(incomingProps) {
+  isPageMessagesEmpty(incomingProps: any) {
     return incomingProps.pageMessages && incomingProps.pageMessages.length === 0;
   }
 
@@ -447,7 +384,7 @@ export class AngularPConnectService {
    * @param inComp The component calling the change event
    * @param event The event
    */
-  changeHandler(inComp, event) {
+  changeHandler(inComp: any, event: any) {
     const bLogging = false;
     if (bLogging) {
       // console.log(`AngularPConnect.changeHandler`);
@@ -475,7 +412,7 @@ export class AngularPConnectService {
    * @param inComp The component calling the event
    * @param event The event
    */
-  eventHandler(inComp, event) {
+  eventHandler(inComp: any, event: any) {
     const bLogging = false;
     if (bLogging) {
       // console.log(`AngularPConnect.eventHandler`);
@@ -524,7 +461,7 @@ export class AngularPConnectService {
    *  processActions exposes all actions in the metadata.
    *  Attaches common handler (eventHandler) for all actions.
    */
-  private processActions(inComp) {
+  private processActions(inComp: any) {
     const pConnect = inComp.pConn$;
     if (undefined === pConnect) {
       console.error(`AngularPConnect: bad call to processActions: pConn$: ${pConnect} from component: ${inComp.constructor.name}`);

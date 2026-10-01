@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, signal, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -29,7 +29,7 @@ interface FieldGroupTemplateProps {
   selector: 'app-field-group-template',
   templateUrl: './field-group-template.component.html',
   styleUrls: ['./field-group-template.component.scss'],
-  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges {
   @Input() configProps$: FieldGroupTemplateProps;

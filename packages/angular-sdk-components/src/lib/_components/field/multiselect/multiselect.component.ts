@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -19,7 +18,6 @@ import { handleEvent } from '../../../_helpers/event-util';
   templateUrl: './multiselect.component.html',
   styleUrls: ['./multiselect.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -60,6 +58,11 @@ export class MultiselectComponent extends FieldBase {
     this.updateComponentCommonProperties(this.configProps$);
 
     this.setPropertyValuesFromProps();
+
+    // `listType` is destructured below as a local, but later code reads `this.listType` (to skip the group/display
+    // field metadata for 'associated' lists). Without this assignment the field was always undefined, so that
+    // check was always true and the metadata was built even for associated lists.
+    this.listType = this.configProps$.listType ?? '';
 
     const {
       groupDataSource = [],

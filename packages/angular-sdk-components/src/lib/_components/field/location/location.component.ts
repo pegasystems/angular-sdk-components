@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -27,7 +28,6 @@ interface LocationProps extends PConnFieldProps {
 @Component({
   selector: 'app-location',
   imports: [
-    CommonModule,
     GoogleMapsModule,
     MatAutocompleteModule,
     MatButtonModule,
@@ -43,7 +43,11 @@ interface LocationProps extends PConnFieldProps {
 })
 export class LocationComponent extends FieldBase {
   private loader = inject(GoogleMapsLoaderService);
+  private destroyRef = inject(DestroyRef);
 
+  // Google deprecated AutocompleteService in favour of AutocompleteSuggestion (Places API New); migrating needs the new API enabled
+  // for the customer's key and a manual check against Google Maps, so it stays until that can be verified.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   private autocompleteService!: google.maps.places.AutocompleteService;
   private geocoder!: google.maps.Geocoder;
 
@@ -92,6 +96,10 @@ export class LocationComponent extends FieldBase {
       const latitude = Number(latAndLong[0]);
       const longitude = Number(latAndLong[1]);
       this.updateMap(latitude, longitude, this.configProps$.value);
+      // updateMap writes the displayed text (address or coordinates) into the form control. FieldBase.ngOnInit
+      // calls updateSelf() first and then resets the control to value$, so value$ has to carry the same text or
+      // the stored location is blank on first render.
+      this.value$ = this.fieldControl.value;
     }
 
     this.valueProp = this.pConn$.getStateProps().value;
@@ -204,6 +212,7 @@ export class LocationComponent extends FieldBase {
   }
 
   private initializeGoogleServices() {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- see the note on autocompleteService
     this.autocompleteService = new google.maps.places.AutocompleteService();
     this.geocoder = new google.maps.Geocoder();
   }
@@ -212,7 +221,8 @@ export class LocationComponent extends FieldBase {
     this.fieldControl.valueChanges
       .pipe(
         debounceTime(300),
-        switchMap(value => this.getSuggestions(value || ''))
+        switchMap(value => this.getSuggestions(value || '')),
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(predictions => {
         this.filteredOptions = predictions;

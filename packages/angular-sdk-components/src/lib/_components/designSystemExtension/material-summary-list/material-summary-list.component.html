@@ -1,3 +1,3 @@
-<ng-container *ngFor="let item of arItems$">
+@for (item of arItems$; track item) {
   <component-mapper name="SummaryItem" [props]="{ item$: item, menuIconOverride$, menuIconOverrideAction$ }"></component-mapper>
-</ng-container>
+}

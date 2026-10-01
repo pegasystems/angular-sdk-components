@@ -1,5 +1,5 @@
-import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,10 +15,11 @@ interface EmailProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-email',
   templateUrl: './email.component.html',
   styleUrls: ['./email.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class EmailComponent extends FieldBase implements OnInit, OnDestroy {
   configProps$: EmailProps;

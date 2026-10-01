@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, SimpleChanges, OnDestroy, OnChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -92,7 +92,7 @@ interface ViewProps {
   selector: 'app-view',
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

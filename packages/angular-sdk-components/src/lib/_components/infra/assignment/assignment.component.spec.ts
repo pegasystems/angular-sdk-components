@@ -1,4 +1,6 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { stubComponentMapper } from '../../../../test-utils';
+import { createMockPConn } from '../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AssignmentComponent } from './assignment.component';
 
@@ -6,15 +8,17 @@ describe('AssignmentComponent', () => {
   let component: AssignmentComponent;
   let fixture: ComponentFixture<AssignmentComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [AssignmentComponent]
-    }).compileComponents();
-  }));
+  beforeEach(async () => {
+    TestBed.configureTestingModule({ imports: [AssignmentComponent] });
+    await stubComponentMapper();
+    await TestBed.compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AssignmentComponent);
     component = fixture.componentInstance;
+    const pConn = createMockPConn();
+    (component as any).pConn$ = pConn;
     fixture.detectChanges();
   });
 

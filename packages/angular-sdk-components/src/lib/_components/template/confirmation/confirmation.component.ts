@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -18,7 +18,7 @@ interface ConfirmationProps {
   selector: 'app-confirmation',
   templateUrl: './confirmation.component.html',
   styleUrls: ['./confirmation.component.scss'],
-  imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ConfirmationComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -34,7 +35,7 @@ export class DashboardFilterComponent implements OnInit {
   private filterChangeSubject = new Subject<string>();
 
   constructor() {
-    this.filterChangeSubject.pipe(debounceTime(500)).subscribe(val => this.fireFilterChange(val));
+    this.filterChangeSubject.pipe(debounceTime(500), takeUntilDestroyed()).subscribe(val => this.fireFilterChange(val));
   }
 
   ngOnInit() {

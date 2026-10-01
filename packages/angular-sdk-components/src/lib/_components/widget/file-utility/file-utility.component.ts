@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +10,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { getResolvedConstantValue } from '../../../_helpers/object-utils';
+import { localizeText } from '../../../_helpers/localization';
 
 interface FileUtilityProps {
   // If any, enter additional props that only exist on this component
@@ -21,7 +22,7 @@ interface FileUtilityProps {
   selector: 'app-file-utility',
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
-  imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -91,12 +92,12 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
     this.closeSvgIcon$ = this.utils.getImageSrc('times', this.utils.getSDKStaticContentUrl());
     this.addAttachmentsActions = [
       {
-        text: this.pConn$.getLocalizedValue('Add files', '', ''),
+        text: localizeText(this.pConn$, 'Add files', '', ''),
         id: 'addNewFiles',
         onClick: () => this.createModal('addLocalFile')
       },
       {
-        text: this.pConn$.getLocalizedValue('Add links', '', ''),
+        text: localizeText(this.pConn$, 'Add links', '', ''),
         id: 'addNewLinks',
         onClick: () => this.createModal('addLocalLink')
       }
@@ -383,7 +384,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       actions = [
         {
           id: `Cancel-${att.ID}`,
-          text: this.pConn$.getLocalizedValue('Cancel', '', ''),
+          text: localizeText(this.pConn$, 'Cancel', '', ''),
           icon: 'times',
           onClick: cancelFile
         }
@@ -396,7 +397,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
           'download',
           {
             id: `download-${ID}`,
-            text: isFile ? this.pConn$.getLocalizedValue('Download', '', '') : this.pConn$.getLocalizedValue('Open', '', ''),
+            text: isFile ? localizeText(this.pConn$, 'Download', '', '') : localizeText(this.pConn$, 'Open', '', ''),
             icon: isFile ? 'download' : 'open',
             onClick: downloadFile
           }
@@ -405,7 +406,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
           'delete',
           {
             id: `Delete-${ID}`,
-            text: this.pConn$.getLocalizedValue('Delete', '', ''),
+            text: localizeText(this.pConn$, 'Delete', '', ''),
             icon: 'trash',
             onClick: deleteFile
           }
@@ -423,7 +424,7 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
       actions = [
         {
           id: `Remove-${att.ID}`,
-          text: this.pConn$.getLocalizedValue('Remove', '', ''),
+          text: localizeText(this.pConn$, 'Remove', '', ''),
           icon: 'trash',
           onClick: removeFile
         }
@@ -586,11 +587,11 @@ export class FileUtilityComponent implements OnInit, OnDestroy {
   }
 
   createModalButtons() {
-    this.arFileMainButtons$.push({ actionID: 'attach', jsAction: 'attachFiles', name: this.pConn$.getLocalizedValue('Attach files', '', '') });
-    this.arFileSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: this.pConn$.getLocalizedValue('Cancel', '', '') });
+    this.arFileMainButtons$.push({ actionID: 'attach', jsAction: 'attachFiles', name: localizeText(this.pConn$, 'Attach files', '', '') });
+    this.arFileSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: localizeText(this.pConn$, 'Cancel', '', '') });
 
-    this.arLinkMainButtons$.push({ actionID: 'attach', jsAction: 'attachLinks', name: this.pConn$.getLocalizedValue('Attach links', '', '') });
-    this.arLinkSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: this.pConn$.getLocalizedValue('Cancel', '', '') });
+    this.arLinkMainButtons$.push({ actionID: 'attach', jsAction: 'attachLinks', name: localizeText(this.pConn$, 'Attach links', '', '') });
+    this.arLinkSecondaryButtons$.push({ actionID: 'cancel', jsAction: 'cancel', name: localizeText(this.pConn$, 'Cancel', '', '') });
   }
 
   uploadMyFiles($event) {

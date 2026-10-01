@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -8,7 +8,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-wide-narrow-page',
   templateUrl: './wide-narrow-page.component.html',
   styleUrls: ['./wide-narrow-page.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class WideNarrowPageComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

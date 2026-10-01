@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getDataReferenceInfo, isLinkTextEmpty } from '../../../_helpers/semanticLink-utils';
@@ -21,7 +21,7 @@ interface SemanticLinkProps extends PConnFieldProps {
   selector: 'app-semantic-link',
   templateUrl: './semantic-link.component.html',
   styleUrls: ['./semantic-link.component.scss'],
-  imports: [CommonModule]
+  imports: []
 })
 export class SemanticLinkComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;
@@ -134,7 +134,9 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
     this.value$ = this.configProps$.text || this.configProps$.value || '';
     this.displayMode$ = this.configProps$.displayMode;
     this.label$ = this.configProps$.label;
-    if (this.configProps$.visibility) {
+    // Only an explicit visibility value changes the default (visible). It must be checked against undefined and not for
+    // truthiness: a boolean `false` is falsy and previously skipped this block, so the link could never be hidden.
+    if (this.configProps$.visibility !== undefined) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
     this.referenceType = this.configProps$.referenceType;

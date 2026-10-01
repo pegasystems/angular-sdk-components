@@ -1,50 +1,66 @@
 <div class="psdk-todo">
-  <div *ngIf="showTodoList$" class="psdk-todo-header">
-    <div class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
-    <div id="worklist" class="psdk-todo-text">{{ headerText$ }}</div>
-    <div class="psdk-assignment-count">{{ count }}</div>
-  </div>
-  <div *ngIf="showTodoList$" class="psdk-display-divider"></div>
+  @if (showTodoList$) {
+    <div class="psdk-todo-header">
+      <div class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
+      <div id="worklist" class="psdk-todo-text">{{ headerText$ }}</div>
+      <div class="psdk-assignment-count">{{ count }}</div>
+    </div>
+  }
+  @if (showTodoList$) {
+    <div class="psdk-display-divider"></div>
+  }
 
   <div class="psdk-todo-assignments">
-    <div *ngFor="let assignment of arAssignments$">
-      <div class="psdk-todo-assignment">
-        <div class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
-        <div class="psdk-todo-card">
-          <div class="psdk-todo-assignment-title">{{ getAssignmentName(assignment) }}</div>
-          <div class="psdk-todo-assignment-data">
-            <div class="psdk-todo-assignment-task">
-              {{ localizedVal('In', localeCategory) }}
-              <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)" *ngIf="!isConfirm || canPerform; else readOnlyText">
-                {{ localizedVal(assignment?.name, '', localeUtils.getCaseLocaleReference(assignment.classname)) }} {{ getID(assignment) }}
-              </button>
-              <ng-template #readOnlyText> {{ localizedVal(assignment?.name, localeCategory) }} {{ getID(assignment) }} </ng-template>
-              <span *ngIf="assignment.status != undefined">
-                &bull;
-                <span class="psdk-todo-assignment-status">{{
-                  localizedVal(assignment.status, '', localeUtils.getCaseLocaleReference(assignment.classname))
-                }}</span>
-              </span>
-              &bull; {{ localizedVal('Urgency', localeCategory) }} {{ getPriority(assignment) }}
+    @for (assignment of arAssignments$; track assignment) {
+      <div>
+        <div class="psdk-todo-assignment">
+          <div class="psdk-avatar">{{ this.currentUserInitials$ }}</div>
+          <div class="psdk-todo-card">
+            <div class="psdk-todo-assignment-title">{{ getAssignmentName(assignment) }}</div>
+            <div class="psdk-todo-assignment-data">
+              <div class="psdk-todo-assignment-task">
+                {{ localizedVal('In', localeCategory) }}
+                @if (!isConfirm || canPerform) {
+                  <button class="psdk-todo-id" style="cursor: pointer" (click)="clickGo(assignment)">
+                    {{ localizedVal(assignment?.name, '', localeUtils.getCaseLocaleReference(assignment.classname)) }} {{ getID(assignment) }}
+                  </button>
+                } @else {
+                  {{ localizedVal(assignment?.name, localeCategory) }} {{ getID(assignment) }}
+                }
+                @if (assignment.status != undefined) {
+                  <span>
+                    &bull;
+                    <span class="psdk-todo-assignment-status">{{
+                      localizedVal(assignment.status, '', localeUtils.getCaseLocaleReference(assignment.classname))
+                    }}</span>
+                  </span>
+                }
+                &bull; {{ localizedVal('Urgency', localeCategory) }} {{ getPriority(assignment) }}
+              </div>
             </div>
           </div>
+          @if (!isConfirm || canPerform) {
+            <div class="psdk-todo-assignment-action">
+              <button mat-flat-button color="primary" (click)="clickGo(assignment)">{{ goLocalizedValue === 'go' ? 'Go' : goLocalizedValue }}</button>
+            </div>
+          }
         </div>
-        <div *ngIf="!isConfirm || canPerform" class="psdk-todo-assignment-action">
-          <button mat-flat-button color="primary" (click)="clickGo(assignment)">{{ goLocalizedValue === 'go' ? 'Go' : goLocalizedValue }}</button>
-        </div>
+        <div class="psdk-display-divider"></div>
       </div>
-      <div class="psdk-display-divider"></div>
-    </div>
+    }
   </div>
 </div>
 
-<div *ngIf="count > 3">
-  <div *ngIf="bShowMore$; else showLess" class="psdk-todo-show-more">
-    <button mat-stroked-button (click)="_showMore()">{{ showMoreLocalizedValue === 'show_more' ? 'Show more' : showMoreLocalizedValue }}</button>
+@if (count > 3) {
+  <div>
+    @if (bShowMore$) {
+      <div class="psdk-todo-show-more">
+        <button mat-stroked-button (click)="_showMore()">{{ showMoreLocalizedValue === 'show_more' ? 'Show more' : showMoreLocalizedValue }}</button>
+      </div>
+    } @else {
+      <div class="psdk-todo-show-more">
+        <button mat-stroked-button (click)="_showLess()">{{ showlessLocalizedValue === 'show_less' ? 'Show less' : showlessLocalizedValue }}</button>
+      </div>
+    }
   </div>
-  <ng-template #showLess>
-    <div class="psdk-todo-show-more">
-      <button mat-stroked-button (click)="_showLess()">{{ showlessLocalizedValue === 'show_less' ? 'Show less' : showlessLocalizedValue }}</button>
-    </div>
-  </ng-template>
-</div>
+}

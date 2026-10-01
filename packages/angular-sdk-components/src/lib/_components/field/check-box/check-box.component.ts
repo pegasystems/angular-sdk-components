@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -30,6 +30,7 @@ interface CheckboxProps extends Omit<PConnFieldProps, 'value'> {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-check-box',
   templateUrl: './check-box.component.html',
   styleUrls: ['./check-box.component.scss'],

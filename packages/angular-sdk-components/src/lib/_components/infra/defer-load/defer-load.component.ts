@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -13,7 +13,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
   selector: 'app-defer-load',
   templateUrl: './defer-load.component.html',
   styleUrls: ['./defer-load.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DeferLoadComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

@@ -13,7 +13,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "builder": "@angular/build:ng-packagr",
           "options": {
             "project": "packages/angular-sdk-components/ng-package.json"
           },
@@ -28,10 +28,22 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "packages/angular-sdk-components/tsconfig.spec.json",
-            "polyfills": []
+            "runner": "vitest",
+            "runnerConfig": "packages/angular-sdk-components/vitest.config.ts",
+            "include": ["packages/angular-sdk-components/src/**/*.spec.ts"],
+            "setupFiles": ["packages/angular-sdk-components/src/test-setup.ts", "packages/angular-sdk-components/src/test-hooks.ts"],
+            "coverageInclude": ["packages/angular-sdk-components/src/lib/**/*.ts"],
+            "coverageExclude": ["**/*.spec.ts"],
+            "coverageReporters": ["html", "text-summary", "lcovonly"],
+            "coverageThresholds": {
+              "statements": 48,
+              "branches": 45,
+              "functions": 45,
+              "lines": 46
+            }
           }
         }
       }
@@ -159,17 +171,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "buildTarget": "angular-test-app:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "polyfills": [],
-            "tsConfig": "projects/angular-test-app/tsconfig.spec.json",
-            "inlineStyleLanguage": "scss",
-            "assets": ["projects/angular-test-app/src/favicon.ico", "projects/angular-test-app/src/assets"],
-            "styles": ["projects/angular-test-app/src/styles.scss"],
-            "scripts": []
           }
         }
       }

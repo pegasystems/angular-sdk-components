@@ -3,14 +3,14 @@ import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tab-utils';
-import { CommonModule } from '@angular/common';
+
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
 @Component({
   selector: 'app-sub-tabs',
   templateUrl: './sub-tabs.component.html',
   styleUrls: ['./sub-tabs.component.scss'],
-  imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatTabsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SubTabsComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

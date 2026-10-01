@@ -1,5 +1,4 @@
-import { CommonModule } from '@angular/common';
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 
 import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -14,10 +13,11 @@ interface ScalarListProps extends Omit<PConnFieldProps, 'value'> {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-scalar-list',
   templateUrl: './scalar-list.component.html',
   styleUrls: ['./scalar-list.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ScalarListComponent extends FieldBase {
   configProps$: ScalarListProps;

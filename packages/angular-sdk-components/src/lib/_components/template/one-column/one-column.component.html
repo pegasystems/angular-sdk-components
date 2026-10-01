@@ -1,14 +1,24 @@
-<div *ngFor="let kid of arChildren$">
-  <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'Region' && kid.getPConnect().getRawMetadata()['name'] === 'A'">
-    <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+@for (kid of arChildren$; track kid) {
+  <div>
+    @if (kid.getPConnect().getRawMetadata()['type'] === 'Region' && kid.getPConnect().getRawMetadata()['name'] === 'A') {
+      <div>
+        <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+      </div>
+    }
+    @if (kid.getPConnect().getRawMetadata()['type'] === 'View') {
+      <div>
+        <component-mapper name="View" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+      </div>
+    }
+    @if (kid.getPConnect().getRawMetadata()['type'] === 'reference') {
+      <div>
+        <component-mapper name="reference" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+      </div>
+    }
+    @if (kid.getPConnect().getRawMetadata()['type'] === 'CaseCreateStage') {
+      <div>
+        <component-mapper name="CaseCreateStage" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+      </div>
+    }
   </div>
-  <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'View'">
-    <component-mapper name="View" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-  </div>
-  <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'reference'">
-    <component-mapper name="reference" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-  </div>
-  <div *ngIf="kid.getPConnect().getRawMetadata()['type'] === 'CaseCreateStage'">
-    <component-mapper name="CaseCreateStage" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-  </div>
-</div>
+}

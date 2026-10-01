@@ -1,12 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-action-buttons',
   templateUrl: './action-buttons.component.html',
   styleUrls: ['./action-buttons.component.scss'],
-  imports: [CommonModule, MatButtonModule]
+  imports: [MatButtonModule]
 })
 export class ActionButtonsComponent {
   @Input() arMainButtons$: any[];

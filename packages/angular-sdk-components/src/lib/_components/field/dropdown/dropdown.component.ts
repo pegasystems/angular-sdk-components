@@ -1,5 +1,5 @@
 import { Component, OnInit, forwardRef, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -11,6 +11,7 @@ import { FieldWarningDirective } from '../../../_directives/field-warning.direct
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { handleEvent } from '../../../_helpers/event-util';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
+import { localizeText } from '../../../_helpers/localization';
 
 function flattenParameters(params = {}) {
   const flatParams = {};
@@ -68,7 +69,6 @@ interface DropdownProps extends PConnFieldProps {
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
@@ -94,7 +94,8 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
     this.options$ = options;
     if (this.displayMode$) {
       this.value$ = this.value$ === 'Select' ? '' : this.options$?.find(option => option.key === this.value$)?.value || this.value$;
-      this.localizedValue = this.pConn$.getLocalizedValue(
+      this.localizedValue = localizeText(
+        this.pConn$,
         this.value$,
         this.localePath,
         this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
@@ -155,7 +156,8 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
     this.localeName = this.localeContext === 'datapage' ? metaData?.datasource?.name : refName;
     this.localePath = this.localeContext === 'datapage' ? displayName : this.localeName;
 
-    this.localizedValue = this.pConn$.getLocalizedValue(
+    this.localizedValue = localizeText(
+      this.pConn$,
       this.value$,
       this.localePath,
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
@@ -232,7 +234,7 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
 
   // Uses the authored placeholder, falling back to 'Select...' when none is authored
   private getPlaceholderOption(): IOption {
-    return { key: 'Select', value: this.pConn$.getLocalizedValue(this.placeholder || 'Select...', '', '') };
+    return { key: 'Select', value: localizeText(this.pConn$, this.placeholder || 'Select...', '', '') };
   }
 
   isSelected(buttonValue: string): boolean {
@@ -254,7 +256,8 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
   }
 
   getLocalizedOptionValue(opt: IOption) {
-    return this.pConn$.getLocalizedValue(
+    return localizeText(
+      this.pConn$,
       opt.value,
       this.localePath,
       this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)

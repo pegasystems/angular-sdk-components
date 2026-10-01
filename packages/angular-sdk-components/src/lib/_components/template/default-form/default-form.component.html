@@ -1,31 +1,33 @@
-<ng-container *ngIf="instructions && bShowInstructions$">
-  <component-mapper
-    *ngIf="instructionBannerVariant$; else instructionText"
-    name="Alert"
-    [props]="{
-      message: instructions,
-      messageIsHtml: true,
-      severity: instructionBannerVariant$,
-      hideClose: !bDismissInstructions$
-    }"
-    [parent]="this"
-    [outputEvents]="{ onClose: dismissInstructions }"
-  ></component-mapper>
-  <ng-template #instructionText>
+@if (instructions && bShowInstructions$) {
+  @if (instructionBannerVariant$) {
+    <component-mapper
+      name="Alert"
+      [props]="{
+        message: instructions,
+        messageIsHtml: true,
+        severity: instructionBannerVariant$,
+        hideClose: !bDismissInstructions$
+      }"
+      [parent]="this"
+      [outputEvents]="{ onClose: dismissInstructions }"
+    ></component-mapper>
+  } @else {
     <div class="psdk-default-form-instruction-text">
       <div key="instructions" id="instruction-text" [innerHTML]="instructions"></div>
     </div>
-  </ng-template>
-</ng-container>
+  }
+}
 <div [className]="divClass$">
-  <div *ngFor="let kid of arChildren$" [ngClass]="{ 'grid-column': kid.getPConnect().getComponentName() === 'reference' }">
-    <component-mapper
-      [name]="kid.getPConnect().getComponentName()"
-      [props]="{
-        pConn$: kid.getPConnect(),
-        formGroup$: formGroup$
-      }"
-      errorMsg="DefaultForm wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
-    ></component-mapper>
-  </div>
+  @for (kid of arChildren$; track kid) {
+    <div [ngClass]="{ 'grid-column': kid.getPConnect().getComponentName() === 'reference' }">
+      <component-mapper
+        [name]="kid.getPConnect().getComponentName()"
+        [props]="{
+          pConn$: kid.getPConnect(),
+          formGroup$: formGroup$
+        }"
+        errorMsg="DefaultForm wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
+      ></component-mapper>
+    </div>
+  }
 </div>

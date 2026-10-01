@@ -11,11 +11,14 @@
 
     <span class="spacer"></span>
 
-    <div *ngFor="let page of navPages$">
-      <div class="flex-box mat-list-item" style="cursor: pointer; font-size: 1rem; text-transform: capitalize" (click)="navPanelButtonClick(page)">
-        <div mat-button class="psdk-nav-button-span">{{ page.pyLabel }}</div>
+    <!-- navPages$ is rebuilt (new objects) on every refresh: track a stable key so the views are reused instead of recreated mid change detection (NG0100) -->
+    @for (page of navPages$; track page.pyClassName + page.pyRuleName) {
+      <div>
+        <div class="flex-box mat-list-item" style="cursor: pointer; font-size: 1rem; text-transform: capitalize" (click)="navPanelButtonClick(page)">
+          <div mat-button class="psdk-nav-button-span">{{ page.pyLabel }}</div>
+        </div>
       </div>
-    </div>
+    }
 
     <!-- <span class="spacer"></span> -->
 

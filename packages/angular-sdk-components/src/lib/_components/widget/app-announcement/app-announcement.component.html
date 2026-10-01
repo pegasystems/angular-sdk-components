@@ -4,9 +4,13 @@
     <p>{{ configProps$.description }}</p>
     <div>
       <ul>
-        <li *ngFor="let detail of details$">{{ detail }}</li>
+        @for (detail of details$; track detail) {
+          <li>{{ detail }}</li>
+        }
       </ul>
     </div>
   </div>
-  <a *ngIf="configProps$.whatsnewlink != ''" mat-raised-button [href]="configProps$.whatsnewlink">See what's new</a>
+  @if (configProps$.whatsnewlink != '') {
+    <a mat-raised-button [href]="configProps$.whatsnewlink">See what's new</a>
+  }
 </article>

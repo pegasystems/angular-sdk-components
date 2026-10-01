@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
+import { localizeText } from '../../../_helpers/localization';
 
 interface CaseHistoryProps {
   label?: string;
@@ -11,7 +12,7 @@ interface CaseHistoryProps {
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss'],
-  imports: [CommonModule, MatTableModule]
+  imports: [MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {
   @Input() pConn$: typeof PConnect;
@@ -45,9 +46,9 @@ export class CaseHistoryComponent implements OnInit {
 
     caseHistoryData.then((historyJSON: any) => {
       this.fields$ = [
-        { label: this.pConn$.getLocalizedValue('Date', '', ''), type: 'DateTime', fieldName: 'pxTimeCreated' },
-        { label: this.pConn$.getLocalizedValue('Description', '', ''), type: 'TextInput', fieldName: 'pyMessageKey' },
-        { label: this.pConn$.getLocalizedValue('Performed by', '', ''), type: 'TextInput', fieldName: 'pyPerformer' }
+        { label: localizeText(this.pConn$, 'Date', '', ''), type: 'DateTime', fieldName: 'pxTimeCreated' },
+        { label: localizeText(this.pConn$, 'Description', '', ''), type: 'TextInput', fieldName: 'pyMessageKey' },
+        { label: localizeText(this.pConn$, 'Performed by', '', ''), type: 'TextInput', fieldName: 'pyPerformer' }
       ];
 
       const tableDataResults = this.updateData(historyJSON.data.data, this.fields$);

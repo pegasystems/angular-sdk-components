@@ -1,6 +1,10 @@
+// Point the suite at any deployment: SDK_E2E_BASE_URL=https://my-env.example.com npx playwright test
+const origin = (process.env.SDK_E2E_BASE_URL || 'http://localhost:3500').replace(/\/$/, '');
+
 const config = {
-  baseUrl: 'http://localhost:3500/portal',
-  baseEmbedUrl: 'http://localhost:3500/embedded',
+  origin,
+  baseUrl: `${origin}/portal`,
+  baseEmbedUrl: `${origin}/embedded`,
   apps: {
     mediaCo: {
       rep: {

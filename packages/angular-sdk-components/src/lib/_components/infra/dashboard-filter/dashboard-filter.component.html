@@ -3,32 +3,38 @@
     'psdk-block-style': inlineProps.filterPosition === 'block-start'
   }"
 >
-  <div *ngFor="let kid of children">
-    <div *ngIf="kid.type === 'DateTime'" [formGroup]="filtersFormGroup$">
-      <mat-form-field class="psdk-full-width">
-        <mat-label>{{ kid.label }}</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate placeholder="Start date" formControlName="start" />
-          <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChangeHandler(kid)" />
-        </mat-date-range-input>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
+  @for (kid of children; track kid) {
+    <div>
+      @if (kid.type === 'DateTime') {
+        <div [formGroup]="filtersFormGroup$">
+          <mat-form-field class="psdk-full-width">
+            <mat-label>{{ kid.label }}</mat-label>
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate placeholder="Start date" formControlName="start" />
+              <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChangeHandler(kid)" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+          </mat-form-field>
+        </div>
+      }
+      @if (kid.c11nEnv) {
+        <div>
+          <span (input)="updateTmpData({ event: $event, field: kid })">
+            <component-mapper
+              [name]="kid.c11nEnv.getPConnect().getComponentName()"
+              [props]="{
+                pConn$: kid.c11nEnv.getPConnect(),
+                formGroup$: filtersFormGroup$
+              }"
+              errorMsg="Dashboard filter wants component not yet available: {{ kid.c11nEnv.getPConnect().getComponentName() }}"
+            >
+            </component-mapper>
+          </span>
+        </div>
+      }
     </div>
-    <div *ngIf="kid.c11nEnv">
-      <span (input)="updateTmpData({ event: $event, field: kid })">
-        <component-mapper
-          [name]="kid.c11nEnv.getPConnect().getComponentName()"
-          [props]="{
-            pConn$: kid.c11nEnv.getPConnect(),
-            formGroup$: filtersFormGroup$
-          }"
-          errorMsg="Dashboard filter wants component not yet available: {{ kid.c11nEnv.getPConnect().getComponentName() }}"
-        >
-        </component-mapper>
-      </span>
-    </div>
-  </div>
+  }
   <div>
     <button mat-button color="primary" (click)="clearFilters()">Clear All</button>
   </div>

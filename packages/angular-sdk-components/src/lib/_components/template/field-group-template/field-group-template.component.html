@@ -1,33 +1,49 @@
 <div id="field-group">
-  <h3 *ngIf="showLabel$" class="field-group-template-header" style="font-weight: bold">
-    {{ label$ }}
-  </h3>
-  <div *ngIf="readonlyMode; else editable">
-    <div *ngIf="children && children.length > 0">
-      <div *ngFor="let item of children; let i = index">
-        <component-mapper name="FieldGroupList" [props]="{ heading: item.name, formGroup$, item }"></component-mapper>
-      </div>
-    </div>
-  </div>
-  <ng-template #editable>
-    <div *ngIf="children && children.length > 0">
-      <div class="field-group-template-item" *ngFor="let child of children; let i = index">
-        <div class="header-div">
-          <div style="width: 80%">
-            <b>{{ child.name }}</b>
-          </div>
-          <div *ngIf="allowDelete && child.allowRowDelete" style="width: 20%; text-align: right">
-            <button id="delete-button" mat-icon-button (click)="deleteFieldGroupItem(i)">
-              <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
-            </button>
-          </div>
+  @if (showLabel$) {
+    <h3 class="field-group-template-header" style="font-weight: bold">
+      {{ label$ }}
+    </h3>
+  }
+  @if (readonlyMode) {
+    <div>
+      @if (children && children.length > 0) {
+        <div>
+          @for (item of children; track item; let i = $index) {
+            <div>
+              <component-mapper name="FieldGroupList" [props]="{ heading: item.name, formGroup$, item }"></component-mapper>
+            </div>
+          }
         </div>
-
-        <div *ngIf="child.children.getPConnect().getRawMetadata().type.toLowerCase() == 'region'">
-          <component-mapper name="Region" [props]="{ pConn$: child.children.getPConnect(), formGroup$ }"></component-mapper>
-        </div>
-      </div>
+      }
     </div>
-    <button *ngIf="allowAdd()" mat-button color="primary" style="font-size: 16px" (click)="addFieldGroupItem()">{{ getAddBtnLabel() }}</button>
-  </ng-template>
+  } @else {
+    @if (children && children.length > 0) {
+      <div>
+        @for (child of children; track child; let i = $index) {
+          <div class="field-group-template-item">
+            <div class="header-div">
+              <div style="width: 80%">
+                <b>{{ child.name }}</b>
+              </div>
+              @if (allowDelete && child.allowRowDelete) {
+                <div style="width: 20%; text-align: right">
+                  <button id="delete-button" mat-icon-button (click)="deleteFieldGroupItem(i)">
+                    <img class="psdk-utility-card-action-svg-icon" src="{{ menuIconOverride$ }}" />
+                  </button>
+                </div>
+              }
+            </div>
+            @if (child.children.getPConnect().getRawMetadata().type.toLowerCase() == 'region') {
+              <div>
+                <component-mapper name="Region" [props]="{ pConn$: child.children.getPConnect(), formGroup$ }"></component-mapper>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+    @if (allowAdd()) {
+      <button mat-button color="primary" style="font-size: 16px" (click)="addFieldGroupItem()">{{ getAddBtnLabel() }}</button>
+    }
+  }
 </div>
