@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
@@ -25,6 +25,7 @@ interface RadioButtonsProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-radio-buttons',
   templateUrl: './radio-buttons.component.html',
   styleUrls: ['./radio-buttons.component.scss'],

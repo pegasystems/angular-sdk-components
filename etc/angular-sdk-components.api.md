@@ -135,7 +135,7 @@ export class AngularPConnectService {
     getComponentID(inComp: any): string;
     getComponentProp(inComp?: any, inProp?: string): any;
     // (undocumented)
-    getCurrentCompleteProps(inComp?: any): object;
+    getCurrentCompleteProps(inComp?: any): any;
     // (undocumented)
     getState(bLogMsg?: boolean, inComp?: any): object;
     // (undocumented)
@@ -3094,7 +3094,7 @@ export class FeedContainerComponent implements OnInit, OnDestroy {
 }
 
 // @public (undocumented)
-export class FieldBase implements OnInit, OnDestroy {
+export class FieldBase<TValue = any> implements OnInit, OnDestroy {
     // (undocumented)
     actionsApi: object;
     // (undocumented)
@@ -3132,6 +3132,7 @@ export class FieldBase implements OnInit, OnDestroy {
     hideLabel: boolean;
     // (undocumented)
     label$: string;
+    markForCheck(): void;
     ngOnDestroy(): void;
     ngOnInit(): void;
     // (undocumented)
@@ -3151,11 +3152,11 @@ export class FieldBase implements OnInit, OnDestroy {
     // (undocumented)
     protected utils: Utils;
     // (undocumented)
-    value$: any;
+    value$: TValue;
     // (undocumented)
-    static ɵdir: i0.ɵɵDirectiveDeclaration<FieldBase, never, never, { "pConn$": { "alias": "pConn$"; "required": false; }; "formGroup$": { "alias": "formGroup$"; "required": false; }; }, {}, never, never, true, never>;
+    static ɵdir: i0.ɵɵDirectiveDeclaration<FieldBase<any>, never, never, { "pConn$": { "alias": "pConn$"; "required": false; }; "formGroup$": { "alias": "formGroup$"; "required": false; }; }, {}, never, never, true, never>;
     // (undocumented)
-    static ɵfac: i0.ɵɵFactoryDeclaration<FieldBase, never>;
+    static ɵfac: i0.ɵɵFactoryDeclaration<FieldBase<any>, never>;
 }
 
 // @public (undocumented)
@@ -6860,9 +6861,9 @@ export class WideNarrowPageComponent implements OnInit, OnDestroy {
 
 // Warnings were encountered during analysis:
 //
-// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1789:9 - (ae-forgotten-export) The symbol "SearchCategory" needs to be exported by the entry point pega-angular-sdk-components.d.ts
-// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1789:9 - (ae-forgotten-export) The symbol "SearchGroup" needs to be exported by the entry point pega-angular-sdk-components.d.ts
-// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1790:9 - (ae-forgotten-export) The symbol "getComponentStateOptions" needs to be exported by the entry point pega-angular-sdk-components.d.ts
+// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1794:9 - (ae-forgotten-export) The symbol "SearchCategory" needs to be exported by the entry point pega-angular-sdk-components.d.ts
+// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1794:9 - (ae-forgotten-export) The symbol "SearchGroup" needs to be exported by the entry point pega-angular-sdk-components.d.ts
+// dist/angular-sdk-components/types/pega-angular-sdk-components.d.ts:1795:9 - (ae-forgotten-export) The symbol "getComponentStateOptions" needs to be exported by the entry point pega-angular-sdk-components.d.ts
 
 // (No @packageDocumentation comment for this package)
 

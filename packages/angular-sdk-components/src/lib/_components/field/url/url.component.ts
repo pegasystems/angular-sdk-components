@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -15,6 +15,7 @@ interface URLProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-url',
   templateUrl: './url.component.html',
   styleUrls: ['./url.component.scss'],

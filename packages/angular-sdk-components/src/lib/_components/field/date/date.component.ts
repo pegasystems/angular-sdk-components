@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -40,6 +40,7 @@ class MyFormat {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-date',
   templateUrl: './date.component.html',
   styleUrls: ['./date.component.scss'],

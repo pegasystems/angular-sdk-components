@@ -62,7 +62,9 @@
     "test:headed": "playwright test --headed --project=chromium MediaCo/portal MediaCo/embedded",
     "test-report": "playwright show-report",
     "test:unit": "ng test angular-sdk-components --watch=false --browsers=ChromeHeadless",
-    "smoke:pack": "node scripts/smoke-pack.js"
+    "smoke:pack": "node scripts/smoke-pack.js",
+    "check:any": "node scripts/check-implicit-any.js",
+    "check:any:update": "node scripts/check-implicit-any.js --update"
   },
   "dependencies": {
     "@angular/animations": "^21.2.4",

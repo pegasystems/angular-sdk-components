@@ -9,7 +9,7 @@ import pegaSdkComponentMap from './sdk-pega-component-map';
 // Note: Initializing SdkComponentMap to null seems to cause lots of compile issues with references
 //  within other components and the value potentially being null (so try to leave it undefined)
 
-export let SdkComponentMap;
+export let SdkComponentMap: any;
 let SdkComponentMapCreateInProgress = false;
 
 interface ISdkComponentMap {
@@ -84,7 +84,7 @@ class ComponentMap {
     return this.sdkComponentMap.localComponentMap;
   };
 
-  setLocalComponentMap(inLocalSdkComponentMap) {
+  setLocalComponentMap(inLocalSdkComponentMap: any) {
     this.sdkComponentMap.localComponentMap = inLocalSdkComponentMap;
     return this.sdkComponentMap.localComponentMap;
   }
@@ -93,7 +93,7 @@ class ComponentMap {
     return this.sdkComponentMap.pegaProvidedComponentMap;
   };
 
-  setPegaProvidedComponentMap = inPegaProvidedComponentMap => {
+  setPegaProvidedComponentMap = (inPegaProvidedComponentMap: any) => {
     this.sdkComponentMap.pegaProvidedComponentMap = inPegaProvidedComponentMap;
     return this.sdkComponentMap.pegaProvidedComponentMap;
   };
@@ -111,7 +111,7 @@ async function createSdkComponentMap(inLocalComponentMap = {}) {
 // Initialize exported SdkComponentMap structure
 export async function getSdkComponentMap(inLocalComponentMap = {}) {
   return new Promise(resolve => {
-    let idNextCheck;
+    let idNextCheck: any;
     if (!SdkComponentMap && !SdkComponentMapCreateInProgress) {
       SdkComponentMapCreateInProgress = true;
       createSdkComponentMap(inLocalComponentMap).then(theComponentMap => {

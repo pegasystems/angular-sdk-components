@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +16,7 @@ interface PhoneProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-phone',
   templateUrl: './phone.component.html',
   styleUrls: ['./phone.component.scss'],

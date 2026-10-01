@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -16,6 +16,7 @@ interface TextAreaProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-text-area',
   templateUrl: './text-area.component.html',
   styleUrls: ['./text-area.component.scss'],

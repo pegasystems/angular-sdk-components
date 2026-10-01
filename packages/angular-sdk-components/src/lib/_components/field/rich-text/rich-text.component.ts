@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef } from '@angular/core';
 
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -12,6 +12,7 @@ interface RichTextProps extends PConnFieldProps {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-rich-text',
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],

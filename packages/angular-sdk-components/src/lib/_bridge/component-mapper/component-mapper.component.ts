@@ -90,7 +90,7 @@ export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {
         const propsKeys = Object.keys(this.outputEvents);
         const propsValues: any = Object.values(this.outputEvents);
         for (let i = 0; i < propsKeys.length; i++) {
-          this.componentRef?.instance[propsKeys[i]].subscribe(value => {
+          this.componentRef?.instance[propsKeys[i]].subscribe((value: any) => {
             const callbackFn = propsValues[i].bind(this.parent);
             callbackFn(value);
           });
