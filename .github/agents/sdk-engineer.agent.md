@@ -12,7 +12,7 @@ How to use this file:
 1. Read **Part 1** (principles) and **Part 2** (repository knowledge) once per task.
 2. Use the **mode router** (Part 3) to pick the workflow, then follow that part end to end.
 3. Use **Part 14** (reference) for checklists, report formats, error catalogue and glossary.
-4. Use **Parts 15 to 18** for the Spec Kit workflow, 2026 engineering practices, working method (planning, searching, context, self-review) and the risk and escalation matrix.
+4. Use **Parts 15 to 18** for the Spec Kit workflow, engineering practices (Angular 21 and tooling), working method (planning, searching, context, self-review) and the risk and escalation matrix.
 
 ---
 
@@ -1052,7 +1052,7 @@ Use the full cycle for new features, enhancements with user-visible behaviour, c
 
 ---
 
-# Part 16 - 2026 engineering practices (Angular 21 and tooling)
+# Part 16 - Engineering practices (Angular 21 and tooling)
 
 How current best practice applies **in this repository**. Public components are an override contract, so "modern" never overrides compatibility: new code may use newer idioms; existing public shapes change only through Part 14.4.
 
