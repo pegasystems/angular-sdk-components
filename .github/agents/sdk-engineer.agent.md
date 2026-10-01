@@ -46,7 +46,6 @@ You are the one agent for this repository. You are expected to be an expert in A
 | Register a component / why is it invisible? | 4.3, 4.14, 5.2 |
 | Nothing renders, ErrorBoundary box, wrong component | 5.2, 16.5 |
 | Wrong value propagated, stale UI | 5.3, 4.4, 4.10 |
-| NG0100 ExpressionChangedAfterItHasBeenChecked | 16.5, 22.1 |
 | `Duplicate column definition name provided: undefined` | 16.5 |
 | Change the bridge (AngularPConnectService, ComponentMapper) | Part 6, 6.2 |
 | Write a test; harness, mocks, builder limits, mutation check | 7.1 to 7.4 |
@@ -1227,8 +1226,8 @@ For a theme change report: the class and tokens changed, the modes and states ch
 
 # Part 16 - Troubleshooting runbook (Troubleshoot mode)
 
-> **Use when:** Troubleshooting runbook: method, setup, login, build/CI and runtime rendering errors (NG0100, duplicate column).
-> **Keywords:** troubleshooting, error, blank page, login loop, redirect_uri, CORS, NG0100, ExpressionChangedAfterItHasBeenChecked, duplicate column, zoneless, markForCheck
+> **Use when:** Troubleshooting runbook: method, setup, login, build/CI and runtime rendering errors.
+> **Keywords:** troubleshooting, error, blank page, login loop, redirect_uri, CORS, duplicate column, ErrorBoundary, markForCheck
 
 Pega's [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html) page covers platform-side issues; this part covers this repository.
 
@@ -1284,15 +1283,11 @@ The longer symptom catalogue for unit tests and tooling is in 22.5.
 
 | Symptom | What it means and what to do |
 | --- | --- |
-| `NG0100 ExpressionChangedAfterItHasBeenChecked` on a store-driven or async-loaded component (seen in DataReference, Stages) | The app is **zoneless**: Angular only refreshes views flagged dirty. State changed from a store callback or a promise without flagging the view, so the dev-mode check pass (which looks at every view) finds new state. Production would show a stale UI instead. Fix by flagging the view: `markForCheck()` after the assignment (`inject(ChangeDetectorRef)`), and for store updates make sure the component has a `markForCheck` (`FieldBase` has one; other components need their own, or a generic one attached by the component mapper from the `ComponentRef`, an approach that was prototyped and reverted in PR 608, see its follow-ups). Prove it with a unit test that uses real `ApplicationRef.tick()` calls and `await`s the async update |
-| NG0100 where a `@for` creates views in the check pass | The list was replaced (new object identities) after the template was checked. Track a stable key in `@for` and flag the view as above; do not call engine getters in the template that can change between passes |
-| NG0100 appears only when a unit test mutates a component then calls `fixture.detectChanges()` | Zoneless fixtures do not refresh a non-dirty component; mutate through a signal, `markForCheck()` or an input, then `await fixture.whenStable()` |
 | "RootContainer Missing: undefined" flashes on load | The root component name is only known after the first routing update; the fallback message must wait for the name |
 | `Duplicate column definition name provided: "undefined"` from `MatTable` | Two table columns resolved to no name. In ListView the id comes from the field definition at the same index; fall back to the configured property name. Check the data that produced the columns |
 | A component renders the red "ErrorBoundary" box | The Pega component name is not in `sdk-pega-component-map.ts` (case-sensitive) or a local-map override shadows it (Part 5.2) |
 | UI updates only after a click | OnPush or zoneless plus state set outside an event without `markForCheck()` (Part 4.10) |
 
-**Diagnostic to find who changes a component during a pass** (temporary; never commit): add a field `private appRef = inject(ApplicationRef);` to the suspect component and put `if ((this.appRef as any)._runningTick) console.trace('<component>.updateSelf during CD');` at the top of the suspect method, reproduce, and read the stack. `_runningTick` is an internal Angular flag used only for diagnosis.
 
 ## 16.6 Escalation and issue reports
 
