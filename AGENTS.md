@@ -51,7 +51,7 @@ For architecture, runtime flow, startup sequence, and how the SDK connects to th
 - Do not rely on `console` output in unit tests; spy on it.
 - Use the `view`/search tools on `packages/angular-sdk-components/src`; avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) and `package-lock.json`.
 
-**Map of the docs** (all in `docs/`): `architecture.md` (runtime flow), `testing.md`, `configuration.md`, `ci-cd.md`, `customizing.md`, `theming.md`, `troubleshooting.md`, `components.md` (generated catalogue), `adr/` (decisions and the reasons for deferred work). Scoped rules for each area live in `.github/instructions/`. Reusable prompts: `.github/prompts/`; specialised agents: `.github/agents/`; skills: `.github/skills/`.
+**Map of the docs** (all in `docs/`): `architecture.md` (runtime flow), `testing.md`, `configuration.md`, `ci-cd.md`, `customizing.md`, `theming.md`, `troubleshooting.md`, `components.md` (generated catalogue), `adr/` (decisions and the reasons for deferred work). Scoped rules for each area live in `.github/instructions/`. Agent: `.github/agents/sdk-engineer.agent.md`; skills: `.github/skills/`.
 
 **Agent** (`.github/agents/sdk-engineer.agent.md`): one expert agent that covers everything in this repo through modes: build/change components, reproduce-first bug fixes, bridge changes, tests, accessibility and localization, docs/ADR drift, releases (with confirmation gates), read-only review, dependency upgrades, customisation advice and explanations. It loads the skills below as needed.
 

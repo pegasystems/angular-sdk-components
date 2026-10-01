@@ -12,6 +12,7 @@ How to use this file:
 1. Read **Part 1** (principles) and **Part 2** (repository knowledge) once per task.
 2. Use the **mode router** (Part 3) to pick the workflow, then follow that part end to end.
 3. Use **Part 14** (reference) for checklists, report formats, error catalogue and glossary.
+4. Use **Parts 15 to 18** for the Spec Kit workflow, 2026 engineering practices, working method (planning, searching, context, self-review) and the risk and escalation matrix.
 
 ---
 
@@ -46,6 +47,7 @@ For every task, in this order:
 - Make reasonable decisions for ordinary ambiguity (naming, file layout, test structure) and state the assumption in your report.
 - **Ask first** (one precise question, with a recommended default) only when the answer changes behaviour or is irreversible: which Pega component name to map, display-only semantics, a breaking change to a public property, a release version or date, deleting or renaming public files, anything touching credentials, publishing or merging.
 - If the request is outside this repository's scope (for example a change that really belongs in `pegasystems/angular-sdk`, in `@pega/constellationjs`, or on the Infinity server), say so and explain where it belongs instead of hacking around it here.
+- Breaking changes need documented justification (constitution III); without it, choose a backward-compatible design.
 - Prefer finishing the whole request: code, tests, docs, changelog, generated artefacts and verification. Do not leave "TODO" follow-ups hidden in code; put genuine follow-ups in your report or in `docs/adr/0003-follow-ups.md`.
 
 ## 1.4 Git, PR and safety rules
@@ -97,6 +99,24 @@ For every task, in this order:
 
 A major bump of any of these is a breaking change for consumers and needs an ADR and a changelog entry.
 
+## 1.8 The project constitution is binding
+
+`.specify/memory/constitution.md` (version 2.0.0, ratified 2026-08-13) supersedes conflicting local conventions. Plans, specs, tasks, code and reviews must comply; any conscious relaxation is justified in the plan's "Complexity Tracking" section. Its nine principles, with the checks that make them "done":
+
+| Principle | Binding rules (summary) |
+| --- | --- |
+| I Platform boundary | No HTTP or direct backend access in components; no custom state store; all case data through the engine API and engine-provided props |
+| II Component contracts | Every component declares a **typed** config-props interface (`any` is never acceptable for config props; fields extend `PConnFieldProps`); fields propagate through the shared event utility (text input buffers and propagates on blur, selection on change); read-only rendering always delegates to the design-system extension; children through the component mapper; register in the component map and export from the public API |
+| III Backward compatibility | Changes to props, bridge behaviour or exports stay backward compatible; **breaking changes are not allowed without documented justification**; old and new contracts coexist during deprecation; local-before-default resolution preserved; base components never reference the overrides package; release notes call out impacted consumers |
+| IV Infrastructure protection | Bridge and container changes are backward compatible, commented with the reasoning, tested, and validated in **both portal and embedded modes** |
+| V Security | No secrets, credentials or platform URLs in source, tests, mocks, configs or scripts; auth only through the auth package; security-relevant changes are documented in the PR |
+| VI Testing standards | Unit tests for every behaviour change, covering edit mode, display-only mode and error/validation states; field blur propagation tested; changes affecting case flow or form behaviour need E2E against a live platform in both modes; **coverage must not regress** below main; linter with zero errors and zero warnings |
+| VII Spec and plan separation | `spec.md` = WHAT and WHY, technology-agnostic (no tool, framework, library or file names); `plan.md` = HOW; a "Complexity Tracking" section whenever a principle is relaxed |
+| VIII Minimal change and code health | Smallest effective change; no unrelated edits, dead code, unused imports or unresolved TODOs; follow the existing pattern for the component subtype; confirm destructive operations |
+| IX UX consistency | Design-system components only (no raw HTML form controls); every user-facing string localized through the engine's localization API; consistent display-mode handling across fields |
+
+When the constitution and this file seem to disagree, the constitution wins; tell the user and propose the fix to this file.
+
 ---
 
 # Part 2 - Repository knowledge
@@ -129,7 +149,8 @@ angular-sdk-components/
 ├── etc/angular-sdk-components.api.md     # generated public API report
 ├── sdk-config.json                       # runtime configuration (Infinity URL, OAuth client ids, app settings)
 ├── angular.json, tsconfig*.json, eslint.config.mjs, api-extractor.json, vitest config in packages/angular-sdk-components/
-└── .github/                              # agents, skills, prompts, instructions, workflows, copilot-instructions.md
+├── .specify/ and specs/                  # Spec Kit: constitution (.specify/memory/constitution.md), templates, per-feature specs (specs/<ENHANCEMENT-n-slug>/{spec,plan,tasks}.md)
+└── .github/                              # agent, skills, instructions, workflows, copilot-instructions.md
 ```
 
 ## 2.2 Runtime architecture in one page
@@ -279,8 +300,24 @@ Avoid reading `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`)
 | consumer wants to customise or override | **Customise** (Part 13) | `sdk-override-component` |
 | "how does X work", onboarding | **Explain** (Part 14.1) | `sdk-pconnect-api` |
 | change to build scripts, configs, tooling | **Tooling** (Part 14.2) | `sdk-verify`, `sdk-docs` |
+| a feature or enhancement request (for example `ENHANCEMENT-14479`), anything larger than a small change, or "spec/plan/tasks" | **Spec Kit workflow** (Part 15) | `speckit-specify`, `speckit-clarify`, `speckit-plan`, `speckit-tasks`, `speckit-analyze`, `speckit-implement`, `speckit-converge`, `speckit-checklist`, `speckit-constitution`, `speckit-taskstoissues` |
 
 Many tasks combine modes (a bug fix that touches the bridge; a component plus tests, docs, changelog). Run the checks of every mode that applies.
+
+## 3.1 How users can ask (replaces separate prompt files)
+
+The agent routes from plain language; typed inputs are simply part of the sentence. Examples:
+
+- "Create a field component `star-rating` mapped to Pega `StarRating`" -> Build (4.x), scaffold with `node scripts/new-component.js field star-rating StarRating`.
+- "Fix: Dropdown shows the old value after a refresh" -> Fix (5.x), reproduce first.
+- "Add unit tests for `template/list-view`" -> Test (7.x).
+- "Audit accessibility of the field components" -> Accessibility (8.1).
+- "Add the changelog entry for PR 612, type fix" -> read the PR (`gh pr view 612`), write one user-facing sentence, run `node scripts/changelog.js add --type fix --pr 612 --text "..."`, then `node scripts/changelog.js check`.
+- "Prepare release 26.1.11" -> Release (Part 10), stopping at the confirmation points.
+- "Review my changes" -> Review (Part 11): `git diff master...HEAD`, findings before opening a PR.
+- "Explain how Dropdown is rendered" -> Explain (14.1): map the name via `docs/components.md`, then describe inputs, base class, data flow, propagation and display-only handling with file references.
+- "Specify/plan ENHANCEMENT-14900" -> Spec Kit workflow (Part 15).
+
 
 ---
 
@@ -709,7 +746,7 @@ Docs are part of the product. Keep them accurate, task-oriented and verified. Lo
 | `docs/testing.md`, `docs/ci-cd.md`, `docs/troubleshooting.md`, `docs/CONTRIBUTING.md` | tests, pipeline, problems, contribution flow |
 | `docs/components.md` | **generated** catalogue |
 | `docs/adr/` | decisions, outcomes, deferred work and open follow-ups (`0003-follow-ups.md`) |
-| `AGENTS.md`, `llms.txt`, `.github/instructions/`, `.github/skills/`, `.github/agents/`, `.github/prompts/`, `.github/copilot-instructions.md` | agent-facing guidance (`check-agent-assets` keeps front matter and referenced scripts consistent) |
+| `AGENTS.md`, `llms.txt`, `.github/instructions/`, `.github/skills/`, `.github/agents/`, `.github/copilot-instructions.md` | agent-facing guidance (`check-agent-assets` keeps front matter and referenced scripts consistent) |
 
 ## 9.2 Procedure
 
@@ -979,3 +1016,134 @@ Other modes use the formats in their parts (fix: 5.1; accessibility: 8.1; releas
 ## 14.12 Skills index
 
 `sdk-add-component` (kinds, scaffolding, registration), `sdk-pconnect-api` (finding and mocking PConnect/PCore APIs), `sdk-write-unit-tests` (harness, recipes, mutation check), `sdk-change-detection` (Default vs OnPush, `markForCheck`), `sdk-public-api-change` (contract and breaking changes), `sdk-debug-rendering` (why nothing renders), `sdk-override-component` (customisation paths), `sdk-upgrade-dependencies` (dependency upgrades), `sdk-localization`, `sdk-accessibility`, `sdk-docs`, `sdk-changelog`, `sdk-release`, `sdk-verify`. Load the ones the mode router names; they hold the detailed recipes this agent summarises.
+
+---
+
+# Part 15 - Spec Kit workflow (features, enhancements, anything larger than a small change)
+
+This repository uses GitHub Spec Kit (`.specify/`, version recorded in `.specify/init-options.json`) for spec-driven development. Specs live in `specs/<ENHANCEMENT-n-slug>/` (look at the existing folders, for example `specs/ENHANCEMENT-14851-vertical-stepper-alignment/`, and follow their naming) with `spec.md`, `plan.md` and `tasks.md` (plus research, data model, contracts and quickstart files when the plan needs them). The workflow definition is `.specify/workflows/speckit/workflow.yml` (specify -> review gate -> plan -> tasks -> implement, with gates). The constitution (1.8) is checked at planning and review time.
+
+## 15.1 When to use it
+
+Use the full cycle for new features, enhancements with user-visible behaviour, changes to public contracts, and anything that spans several components or needs E2E validation. Skip it for small bug fixes, typo-level changes, dependency bumps and pure tooling/doc changes: those use Fix, Docs or Tooling mode directly. If unsure, propose the smaller path and say why.
+
+## 15.2 Steps and the skills that implement them
+
+| Step | Skill | Output / rule |
+| --- | --- | --- |
+| 1 Specify | `speckit-specify` | `spec.md`: WHAT and WHY, user stories with priorities and independent tests, functional requirements, success criteria, edge cases, assumptions. **Technology-agnostic: no framework, library, tool or file names** (constitution VII) |
+| 2 Clarify | `speckit-clarify` | up to 5 targeted questions; answers are written back into the spec; ask the user only what changes behaviour |
+| 3 Plan | `speckit-plan` | `plan.md`: HOW (files, APIs, decisions), technical context (TypeScript 5.9, Angular 21, Angular Material, PConnect APIs, **Vitest** unit tests, Playwright E2E), constitution check, **Complexity Tracking** whenever a principle is relaxed; design artifacts as needed |
+| 4 Tasks | `speckit-tasks` | `tasks.md`: dependency-ordered, grouped by phase and user story (`[P]` parallelisable, `[US1]` story tags), exact file paths, test tasks, checkpoints |
+| 5 Checklist (optional) | `speckit-checklist` | requirement-quality checklist for the feature |
+| 6 Analyze | `speckit-analyze` | read-only consistency check across spec, plan, tasks and the constitution; fix findings before implementing |
+| 7 Implement | `speckit-implement` | executes `tasks.md` in order, marks tasks `[X]`, runs the verification loop, respects checkpoints |
+| 8 Converge | `speckit-converge` | compares the code with spec/plan/tasks and appends any unbuilt work as new tasks |
+| Maintenance | `speckit-constitution`, `speckit-taskstoissues` | amend the constitution (semantic versioning, maintainer approval); convert tasks to GitHub issues |
+
+## 15.3 Rules
+
+- Keep the lanes separate: no technology in `spec.md`; no behaviour redefinition in `plan.md`. The two must read independently without contradiction.
+- Ask the user at the gates (after the spec; before implementation) unless they told you to proceed autonomously; record assumptions in the spec's Assumptions section.
+- Tasks must include unit tests (edit mode, display-only mode, error/validation states, blur propagation for text fields) and E2E tasks when the change touches case flow, containers or the bridge (both portal and embedded).
+- During implementation, the minimal-change rule still applies: implement exactly the tasks; record deviations in the plan and the hand-off report.
+- Do not edit the Spec Kit scripts or templates in `.specify/` unless the task is to maintain Spec Kit itself; do not copy stale values from older specs (older plans mention Karma/Jasmine; this repository now uses Vitest).
+- Finish with the normal definition of done (14.8), a changelog entry, and the hand-off report (14.9) that lists which tasks are complete, which are not, and what was not verified.
+
+---
+
+# Part 16 - 2026 engineering practices (Angular 21 and tooling)
+
+How current best practice applies **in this repository**. Public components are an override contract, so "modern" never overrides compatibility: new code may use newer idioms; existing public shapes change only through Part 14.4.
+
+| Practice | Status here | Guidance |
+| --- | --- | --- |
+| Standalone components, no NgModules | required | `imports: [...]`; `forwardRef` for the component mapper |
+| Built-in control flow (`@if`, `@for ... track`, `@switch`, `@let`) | required | never `*ngIf`/`*ngFor`; `track` by a stable key where one exists |
+| Zoneless change detection | test app is zoneless; consumers may differ | assume no zone: notify Angular (event, `markForCheck()`, signal, `setInput`) after async assignments |
+| `OnPush` | encouraged where legal | 4.10 decision table; add a Default-host test for store-driven updates |
+| Signals for **internal** state (`signal`, `computed`, `effect`) | allowed for new private state | keep every `$`-suffixed contract property a plain property and every `@Input()` an `@Input()`; do not expose signals through the public API of components customers subclass |
+| Signal inputs (`input()`, `model()`, `output()`) | **deferred** (ADR 0002) | breaking for override consumers; needs a major release, codemod and migration guide |
+| `inject()` | allowed in new code | existing constructor injection stays; do not churn files only to convert (the `prefer-inject` rule is off); `FieldBase` already uses `inject()` |
+| `DestroyRef` + `takeUntilDestroyed` | required for new subscriptions | |
+| `host: {}` metadata instead of `@HostBinding`/`@HostListener` in new code | recommended | follow the style of the file you edit when changing existing code |
+| `@defer` | deferred | changes loading behaviour; validate with E2E first |
+| Animations | `@angular/animations` is not used or installed | use CSS transitions, `@starting-style`, and the built-in `animate.enter` / `animate.leave` bindings; Angular Material animates itself |
+| Forms | reactive forms (`FormControl`, `FormGroup`) via `FieldBase.fieldControl` | Signal Forms are experimental in Angular 21: do not introduce them |
+| Material 3 theming | tokens (`var(--mat-sys-*)`) | `docs/theming.md`; no hard-coded colours; avoid new `::ng-deep` |
+| Accessibility | WCAG 2.1 AA target, 2.2 AA aim | Part 8; axe tests for new UI; evaluate Angular Aria / CDK a11y primitives before hand-rolling widgets |
+| Strictness | `strict`, `strictTemplates`, `noImplicitOverride`, `noImplicitAny` ratchet | do not weaken; reduce the baseline when you touch a file |
+| Testing | Vitest 4 on jsdom via `@angular/build:unit-test`; Playwright E2E | Part 7; behaviour tests, mutation check; `vi.waitFor` over timeouts |
+| Linting | ESLint 10 flat config, typescript-eslint, angular-eslint, sonarjs; `no-deprecated` is an error | zero warnings (`--max-warnings=0`) |
+| Build | `@angular/build` (esbuild) for the unit-test target and `@angular/build:ng-packagr` for the library; the test app still uses webpack custom builders (migration is a tracked follow-up) | do not add new webpack customisation |
+| Supply chain | `npm ci`, committed lock file, `--ignore-scripts` in CI, publish with provenance (`--provenance`), quarterly grouped Dependabot, CodeQL default setup, GitGuardian | no `postinstall` additions; justify new dependencies (size, maintenance, licence in `THIRD-PARTY-NOTICES`); never hand-edit the lock file |
+| GitHub Actions | major tags (`@v7` for checkout, setup-node, upload-artifact), `permissions: contents: read`, `concurrency` cancel-in-progress, arm64 runners (`ubuntu-24.04-arm`); `copilot-setup-steps` on `ubuntu-latest` | pinning actions to commit SHAs is a possible hardening step |
+| Conventional Commits | enforced by commitlint (100-character lines) | meaningful detailed commits; do not squash unless asked |
+| Docs as code | ADRs, generated catalogue, `llms.txt`, `AGENTS.md`, skills | Part 9; never describe unverified behaviour |
+| Agent hygiene | one agent (this file), skills for recipes, instructions for areas | keep them consistent (`node scripts/check-agent-assets.js`); when conventions change, update them in the same PR |
+
+If the Angular CLI MCP server or official Angular guidance tools are available in the environment, use them to confirm current Angular APIs; otherwise rely on the installed `node_modules/@angular/*` typings and the Angular 21 documentation, and say which source you used.
+
+---
+
+# Part 17 - Working method (planning, searching, context, self-review)
+
+## 17.1 Plan and track
+
+- For anything beyond a one-file change, write a short plan (numbered steps, files, tests, verification) before editing, and keep a visible checklist of steps (the session todo list if available). Mark steps done as you finish them; do not report completion with open steps.
+- Order work so each step leaves the tree green: tests first, then code, then docs and generated files, then changelog, then verification.
+- Re-plan when evidence contradicts the plan; say what changed.
+
+## 17.2 Search and read efficiently
+
+- Prefer the repository's own maps: `docs/components.md` (Pega name -> class -> file), `public-api.ts`, `sdk-pega-component-map.ts`, `docs/adr/`, the skills.
+- Use code-aware search over text search: symbol/definition lookup first, then glob by file name, then grep with a file glob (for example `**/*.component.ts`). Search only `packages/angular-sdk-components/src`, `projects/angular-test-app`, `scripts`, `docs` and `.github` unless you have a concrete reason.
+- Read files with line ranges for large files; read a component's `.ts`, `.html`, `.scss` and `.spec.ts` together. Do not read `dist/`, `node_modules/` (except `@pega/pcore-pconnect-typedefs/`) or `package-lock.json`.
+- Batch independent reads and searches in parallel; chain related shell commands; suppress noisy output (`| tail`, `--quiet`); never page through huge outputs.
+- Use sub-agents only for genuinely separate, bounded work (broad exploration across many unrelated areas, long builds/tests, an independent review). Give them complete context, a stop condition and the instruction not to commit or change git state; do not duplicate their work yourself afterwards, and verify their results by running the tests.
+
+## 17.3 Run commands safely
+
+- Run the smallest command that proves the change (one spec: `npx ng test angular-sdk-components --watch=false --include '**/<name>.spec.ts'`), then the full loop at the end.
+- Long commands (builds, full tests) run to completion; read their output before the next step. Do not leave dev servers or watchers running when you are done.
+- Do not run commands that need credentials, a Pega server, or network access to unknown hosts unless the user provided them; say what you skipped.
+- Never print or log secrets; never paste tokens into commands that persist in shell history or CI logs.
+
+## 17.4 Make changes
+
+- Edit existing files rather than recreating them; keep diffs small and reviewable; one concern per commit when committing is requested.
+- Generated files change only through their generators; after generating, review the diff.
+- When you must touch many files mechanically (renames, regex rewrites), do it with a script, review the diff with `git diff --stat` and spot-check, and run `node scripts/verify.js`.
+
+## 17.5 Self-review before reporting (always)
+
+1. Re-read your full diff (`git diff`, including new files) as a reviewer would (Part 11 checklist, constitution 1.8).
+2. Confirm the tests would fail without your change (mutation check done?).
+3. Confirm generated artefacts are regenerated and consistent (catalogue, API report, overrides).
+4. Confirm docs, skills, this agent and `AGENTS.md` are updated where behaviour or commands changed, and that `node scripts/check-agent-assets.js` passes.
+5. Confirm there is no dead code, unused import, stray `console.log`, commented-out code, TODO or debug leftover.
+6. Run `node scripts/verify.js`; compare against the baseline when something fails that you did not touch.
+7. Write the report with exact commands and results; list everything not verified (E2E, real-engine behaviour, other browsers, screen readers, locales).
+
+## 17.6 Communication style
+
+Lead with the result. Be concise and factual; use short lists and tables; reference files and commands exactly; no hype, no filler, no unverifiable claims. When you made an assumption, state it once. When you could not do something, say what and why, and what the user can do. Keep long explanations for when the user asks.
+
+---
+
+# Part 18 - Risk matrix and escalation
+
+| Change | Risk | Required extras |
+| --- | --- | --- |
+| Docs, comments, tests only | low | `verify --quick` |
+| New leaf component (field/widget/design-system) | medium | scaffold, behaviour tests (edit, display-only, error), a11y test, registration in both places, API report diff, changelog |
+| Change to a shared base (`FieldBase`, template bases), `_helpers/event-util`, `Utils`, `localization` | high | characterization tests of all existing subclasses' behaviour, API report, consumer-impact note, E2E recommended |
+| Template/infra/container components, `component-mapper`, bridge | very high | constitution IV: backward compatible, commented reasoning, tests, **E2E in portal and embedded modes**; ask before changing contracts |
+| Public API break, peer-dependency bump, Angular/Node/TypeScript line change | very high | documented justification, ADR, migration notes, major-version handling, user approval |
+| Build scripts, CI workflows, packaging (`ng-package.json`, overrides build, `smoke-pack`) | high | local reproduction, `smoke-pack`, overrides type-check, CI result observed |
+| Release, publish, tags, force-push, deleting branches/files | irreversible | explicit user confirmation each time; never publish yourself |
+| Anything involving credentials, auth, tokens, `sdk-config.json` values | security-sensitive | constitution V; never commit secrets; document the rationale in the PR |
+
+**Stop and ask the user (one precise question with a recommended default) when:** the Pega component name or display-only semantics are unknown; the change would break a public contract and no justification exists; two constitution principles conflict; the request needs a decision about versions, dates, naming of released artefacts or deletions; verification fails for reasons you cannot attribute; or the work belongs in another repository.
+
+**Never proceed silently past:** a failing verification step you did not cause, a generated file you would have to edit by hand, a missing registration, an unexplained API report diff, or an E2E expectation you cannot meet. Report it.

@@ -22,7 +22,7 @@ description: Write and maintain documentation in this repository - which doc own
 | decisions              | `docs/adr/NNNN-title.md`                                                                                   | no                                                |
 | public API             | `etc/angular-sdk-components.api.md`                                                                        | **yes**: `npx api-extractor run --local`                     |
 | release notes          | `CHANGELOG.md`                                                                                             | via `node scripts/changelog.js` (`sdk-changelog`)         |
-| agent instructions     | `AGENTS.md`, `.github/instructions/`, `.github/agents/`, `.github/skills/`, `.github/prompts/`, `llms.txt` | no; `node scripts/check-agent-assets.js` validates              |
+| agent instructions     | `AGENTS.md`, `.github/instructions/`, `.github/agents/`, `.github/skills/`, `llms.txt` | no; `node scripts/check-agent-assets.js` validates              |
 
 Never hand-edit generated files.
 
@@ -38,7 +38,7 @@ Never hand-edit generated files.
 
 - Task-oriented: start with what the reader wants to do; commands in fenced `bash` blocks that work when pasted from the repo root.
 - Short sentences, active voice, present tense; tables for options; no marketing language.
-- Every command or script name mentioned must exist (`node scripts/check-agent-assets.js` checks `npm run <script>` mentions in docs, agents, skills and prompts).
+- Every command or script name mentioned must exist (`node scripts/check-agent-assets.js` checks `npm run <script>` mentions in docs, agents, and skills).
 - Relative links for repo files; verify they resolve.
 - Do not document what is not verified; say "not run"/"untested" explicitly.
 

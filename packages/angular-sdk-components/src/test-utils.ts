@@ -6,7 +6,7 @@ import { By } from '@angular/platform-browser';
 
 /**
  * Makes <component-mapper> inert (it keeps its inputs but no longer instantiates real components) so a component can be
- * tested in isolation from the rest of the rendering pipeline. Call from a beforeEach; Jasmine restores the spy afterwards.
+ * tested in isolation from the rest of the rendering pipeline. Call from a beforeEach; Vitest restores the spy automatically.
  */
 export async function stubComponentMapper(): Promise<void> {
   const { ComponentMapperComponent } = await import('./lib/_bridge/component-mapper/component-mapper.component');
