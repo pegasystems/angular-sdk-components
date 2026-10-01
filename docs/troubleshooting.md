@@ -1,13 +1,13 @@
 # Troubleshooting
 
-Start with `node scripts/doctor.js`; it detects most setup problems and prints how to fix them. Pega's [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html) page covers platform-side issues.
+Pega's [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html) page covers platform-side issues.
 
 ## Setup
 
 | Symptom | Likely cause and fix |
 | --- | --- |
 | `engines` / syntax errors on install or build | Node older than 24; install Node 24 or newer. |
-| `doctor`: "node_modules is missing" | Run `npm ci`. |
+| "node_modules is missing" or missing `@angular/*` packages | Run `npm ci`. |
 | `npm ci` cannot reach packages | `.npmrc` points at the public npm registry. Behind a corporate proxy/registry, override it in your user-level `.npmrc` or CI environment, and prefer `npm ci` over `npm install`. |
 | Port 3500 already in use | Stop the other process or run `npx ng serve --port 3501`. Update `SDK_E2E_BASE_URL` accordingly. |
 | Browser warns about the HTTPS certificate | Expected with the bundled dev certificate in `keys/`; trust it locally or use `start-dev` over HTTP. |
@@ -17,7 +17,7 @@ Start with `node scripts/doctor.js`; it detects most setup problems and prints h
 | Symptom | Likely cause and fix |
 | --- | --- |
 | `node scripts/configure-sdk.js` fails validation | The message names the setting and the environment variable that sets it. |
-| Blank page or network error on load | `serverConfig.infinityRestServerUrl` is wrong or unreachable (VPN, trailing slash, certificate). `node scripts/doctor.js` probes it. |
+| Blank page or network error on load | `serverConfig.infinityRestServerUrl` is wrong or unreachable (VPN, trailing slash, certificate). |
 | Login redirect loop / `redirect_uri` error | The URL you open (including port and path) must be registered as a redirect URI on the Pega OAuth 2.0 client. |
 | CORS errors | Add your app origin to the Infinity CORS configuration. |
 | Embedded/mashup login fails | `mashupClientId`, `mashupUserIdentifier` and the Base64 `mashupPassword` must be set (`SDK_MASHUP_PASSWORD` is encoded for you). |
@@ -37,4 +37,4 @@ Start with `node scripts/doctor.js`; it detects most setup problems and prints h
 
 ## Still stuck?
 
-Open an issue with the output of `node scripts/doctor.js`, your Node/npm versions and the failing command's log (remove secrets first).
+Open an issue with your Node/npm versions and the failing command's log (remove secrets first).

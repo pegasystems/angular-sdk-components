@@ -26,7 +26,6 @@ Clone this repository to build and customize your own Constellation Angular app,
 npm ci
 export SDK_INFINITY_REST_SERVER_URL=https://my-pega.example.com/prweb   # and SDK_PORTAL_CLIENT_ID, ...
 node scripts/configure-sdk.js                        # writes sdk-config.json from the environment
-node scripts/doctor.js                           # pre-flight check of your setup
 npm run start-dev                        # http://localhost:3500
 ```
 

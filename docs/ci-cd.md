@@ -2,12 +2,11 @@
 
 Everything a pipeline needs is exposed as an npm script and is configured through environment variables, so the same repository builds for every environment and no secret is committed.
 
-## The pipeline in five steps
+## The pipeline in four steps
 
 | Step | Command | Notes |
 | --- | --- | --- |
 | Install | `npm ci --ignore-scripts` | Deterministic; `--ignore-scripts` skips the git-hook installer, which is not needed in CI. |
-| Pre-flight | `node scripts/doctor.js --offline` | Fails fast on wrong Node version, missing dependencies or an invalid `sdk-config.json`. |
 | Quality | `npm run lint` and `npx ng test angular-sdk-components --watch=false` | Unit tests need no Pega server. |
 | Configure | `node scripts/configure-sdk.js` | Applies `SDK_*` variables ([configuration.md](configuration.md)). |
 | Build | `npm run prod-build-angularsdk` | Output in `dist/` (brotli/gzip compressed). |

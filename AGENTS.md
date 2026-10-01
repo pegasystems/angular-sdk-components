@@ -139,7 +139,7 @@ angular-sdk-components/
 | `node scripts/check-implicit-any.js` / `node scripts/check-implicit-any.js --update` | `noImplicitAny` per-file ratchet (do not add new implicit-any errors) |
 | `npx api-extractor run` / `npx api-extractor run --local` | Public API report guard (`etc/angular-sdk-components.api.md`) |
 | `npx ngc -p tsconfig.overrides-check.json` | Type-check the generated overrides package against the built library |
-| `node scripts/doctor.js` / `node scripts/configure-sdk.js` | Pre-flight environment check / render `sdk-config.json` from `SDK_*` env vars (see docs/configuration.md) |
+| `node scripts/configure-sdk.js` | Render `sdk-config.json` from `SDK_*` env vars (see docs/configuration.md) |
 | `node scripts/changelog.js add ...` / `node scripts/changelog.js check` | Add/validate `CHANGELOG.md` entries in the project's format (skill `sdk-changelog`) |
 | `node scripts/set-version.js <x.y.z>` | Set the release version in root, both packages and the lock file (skill `sdk-release`) |
 | `node scripts/check-agent-assets.js` | Validate agent/skill front matter and that every npm script they mention exists |

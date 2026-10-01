@@ -50,7 +50,6 @@ Write the failing unit spec first (`sdk-write-unit-tests`), observe it, then fix
 grep -rn "<ComponentName>" packages/angular-sdk-components/src/lib/_bridge/helpers/sdk-pega-component-map.ts
 grep -rn "component-mapper name=\"<Name>\"" packages/angular-sdk-components/src
 npx ng test angular-sdk-components --watch=false
-node scripts/doctor.js            # environment/config problems (Infinity URL, client ID)
 ```
 
 For environment problems (blank page, login loops, CORS) see `docs/troubleshooting.md`.

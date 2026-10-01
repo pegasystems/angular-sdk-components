@@ -27,15 +27,7 @@ node scripts/configure-sdk.js        # writes the values into sdk-config.json
 
 At minimum set `SDK_INFINITY_REST_SERVER_URL` and `SDK_PORTAL_CLIENT_ID`. All settings are described in [configuration.md](configuration.md).
 
-## 4. Check your environment
-
-```bash
-node scripts/doctor.js
-```
-
-It verifies the Node version, installed dependencies, `sdk-config.json`, HTTPS keys, port 3500 and that your Infinity server is reachable, and tells you how to fix anything that is wrong. Use `node scripts/doctor.js --offline` to skip the network probe.
-
-## 5. Run
+## 4. Run
 
 ```bash
 npm run start-dev            # http://localhost:3500
@@ -44,13 +36,13 @@ npm run start-dev-https      # with the bundled dev certificate in keys/
 
 Entry pages: `/portal` (full portal), `/embedded` (mashup / embedded), `/fullportal`, `/simpleportal`.
 
-## 6. Make it yours
+## 5. Make it yours
 
 - Change a component: edit it under `packages/angular-sdk-components/src/lib/_components/`.
 - Add a component: `node scripts/new-component.js field star-rating StarRating` (see [customizing.md](customizing.md)).
 - Override a Pega-provided component without editing the originals: [customizing.md](customizing.md#overriding-a-component).
 
-## 7. Verify and ship
+## 6. Verify and ship
 
 ```bash
 npm run lint
