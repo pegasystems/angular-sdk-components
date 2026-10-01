@@ -7,9 +7,9 @@ Everything a pipeline needs is exposed as an npm script and is configured throug
 | Step | Command | Notes |
 | --- | --- | --- |
 | Install | `npm ci --ignore-scripts` | Deterministic; `--ignore-scripts` skips the git-hook installer, which is not needed in CI. |
-| Pre-flight | `npm run doctor -- --offline` | Fails fast on wrong Node version, missing dependencies or an invalid `sdk-config.json`. |
-| Quality | `npm run lint` and `npm run test:unit` | Unit tests need no Pega server. |
-| Configure | `npm run configure` | Applies `SDK_*` variables ([configuration.md](configuration.md)). |
+| Pre-flight | `node scripts/doctor.js --offline` | Fails fast on wrong Node version, missing dependencies or an invalid `sdk-config.json`. |
+| Quality | `npm run lint` and `npx ng test angular-sdk-components --watch=false` | Unit tests need no Pega server. |
+| Configure | `node scripts/configure-sdk.js` | Applies `SDK_*` variables ([configuration.md](configuration.md)). |
 | Build | `npm run prod-build-angularsdk` | Output in `dist/` (brotli/gzip compressed). |
 
 Optional: `npm test` (Playwright) against a deployed environment.
@@ -23,7 +23,7 @@ Nothing in the pipeline is tied to a specific CI product. In GitHub Actions, Azu
 ```bash
 npm run prod-build-angularsdk                                   # once
 SDK_INFINITY_REST_SERVER_URL=https://test.example.com/prweb \
-  npm run configure -- --out dist/sdk-config.json               # per environment
+  node scripts/configure-sdk.js --out dist/sdk-config.json               # per environment
 ```
 
 Because `sdk-config.json` is read by the browser at runtime, you can promote the same `dist/` through test, staging and production. Serve `sdk-config.json` with `Cache-Control: no-store`, and register each environment's URL as an allowed redirect URI on the Pega OAuth client.

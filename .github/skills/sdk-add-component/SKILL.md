@@ -20,8 +20,8 @@ Before creating anything, search `docs/components.md` for an existing implementa
 ## 2. Scaffold
 
 ```bash
-npm run new:component -- <kind> <kebab-name> <PegaComponentName>
-# e.g. npm run new:component -- field star-rating StarRating
+node scripts/new-component.js <kind> <kebab-name> <PegaComponentName>
+# e.g. node scripts/new-component.js field star-rating StarRating
 ```
 
 Creates `.ts/.html/.scss/.spec.ts`, exports it from `packages/angular-sdk-components/src/public-api.ts`, imports it and adds `PegaComponentName: ClassName` to `src/lib/_bridge/helpers/sdk-pega-component-map.ts`. Never register by hand-editing only one file. The generator emits an OnPush field skeleton for `field` and a generic bridge-registered skeleton for the other kinds; rebase templates onto `FormTemplateBase`/`DetailsTemplateBase`.
@@ -103,15 +103,15 @@ At least: creation, label/value rendering, store-driven update, value propagatio
 ## 6. Refresh generated artefacts
 
 ```bash
-npm run docs:components
-npm run build-angular-sdk-components && npm run api:update   # review: additions only
+node scripts/generate-component-catalog.js
+npm run build-angular-sdk-components && npx api-extractor run --local   # review: additions only
 ```
 
 ## 7. Verify
 
 ```bash
-npm run verify -- --quick
-npm run verify
+node scripts/verify.js --quick
+node scripts/verify.js
 ```
 
 Playwright E2E (Pega Infinity needed) is separate; state whether it ran.
@@ -124,4 +124,4 @@ Playwright E2E (Pega Infinity needed) is separate; state whether it ran.
 - [ ] a11y + localization + teardown handled
 - [ ] change detection choice justified (OnPush only if synchronous)
 - [ ] `docs/components.md` and `etc/angular-sdk-components.api.md` regenerated and reviewed
-- [ ] `npm run verify` green; not-verified list written
+- [ ] `node scripts/verify.js` green; not-verified list written

@@ -5,7 +5,7 @@ description: Write reliable unit tests for SDK components, templates, widgets, h
 
 # Writing unit tests
 
-Run: `npm run test:unit` (Vitest on jsdom, no Pega server) and `npm run test:coverage`. Specs sit next to the code (`*.spec.ts`).
+Run: `npx ng test angular-sdk-components --watch=false` (Vitest on jsdom, no Pega server) and `npx ng test angular-sdk-components --watch=false --coverage`. Specs sit next to the code (`*.spec.ts`).
 
 ## The harness
 
@@ -116,8 +116,8 @@ After the test passes, break the behaviour (comment out the line under test or i
 - Spy, do not print: `spyOn(console, 'error')` when the code logs expectedly.
 - No real network or timers. Prefer `await fixture.whenStable()`; use `fakeAsync` only for debounce logic that has no alternative.
 - Extend the shared mock (`createMockPConn`/`explicitPCore` in `test-setup.ts`) when several specs need the same fixture; keep unknown members shallow so engine-walking loops cannot spin forever.
-- Run the suite twice when you changed shared mocks, and once with `npm run test:coverage` (parallel runs expose isolation problems).
+- Run the suite twice when you changed shared mocks, and once with `npx ng test angular-sdk-components --watch=false --coverage` (parallel runs expose isolation problems).
 
 ## Coverage
 
-`npm run test:coverage` writes `coverage/angular-sdk-components/`. The threshold floor is `coverageThresholds` in `angular.json`; raise it (to a point or two below actual) whenever you add meaningful coverage, never lower it.
+`npx ng test angular-sdk-components --watch=false --coverage` writes `coverage/angular-sdk-components/`. The threshold floor is `coverageThresholds` in `angular.json`; raise it (to a point or two below actual) whenever you add meaningful coverage, never lower it.

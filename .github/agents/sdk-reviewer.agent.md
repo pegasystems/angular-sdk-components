@@ -16,8 +16,8 @@ This repo is consumed by `pegasystems/angular-sdk` and by customers who copy/sub
 - Anything that changes how `<component-mapper>` is called (`name`, `props` keys) breaks overrides.
 
 ### 2. Registration and generated files
-- New component present in `public-api.ts` **and** `sdk-pega-component-map.ts`; `docs/components.md` regenerated (`npm run docs:components:check`).
-- Generated/ignored paths untouched by hand: `dist/`, `packages/angular-sdk-overrides/lib`, `etc/*.api.md` (changed only via `api:update`), `docs/components.md`.
+- New component present in `public-api.ts` **and** `sdk-pega-component-map.ts`; `docs/components.md` regenerated (`node scripts/generate-component-catalog.js --check`).
+- Generated/ignored paths untouched by hand: `dist/`, `packages/angular-sdk-overrides/lib`, `etc/*.api.md` (changed only via `npx api-extractor run --local`), `docs/components.md`.
 - `sdk-local-component-map.ts` not edited.
 
 ### 3. Architecture rules
@@ -33,7 +33,7 @@ This repo is consumed by `pegasystems/angular-sdk` and by customers who copy/sub
 - Localization: user-facing literals go through `localizeText` (`_helpers/localization.ts`); new uses of APIs marked `@deprecated` (lint rule `no-deprecated`) are not allowed without a justified `eslint-disable` comment.
 - Accessibility: names for controls, `aria-label` on icon buttons, no colour-only state.
 - Mutation of `configProps`/inherited props shared with siblings; mutated inputs on OnPush children.
-- `resolveConfigProps` result types vs template usage under `strictTemplates`; new implicit `any` (`npm run check:any`).
+- `resolveConfigProps` result types vs template usage under `strictTemplates`; new implicit `any` (`node scripts/check-implicit-any.js`).
 - Hard-coded colours instead of Material tokens; large component styles (budget warning at 2 kB).
 
 ### 6. Tests
@@ -45,7 +45,7 @@ This repo is consumed by `pegasystems/angular-sdk` and by customers who copy/sub
 - Script changes have tests (`scripts/__tests__`); docs updated where behaviour/commands changed; commit message conventional.
 
 ### 8. Honesty of the PR description
-- States what was verified (`npm run verify`) and what was not (Playwright E2E needs a Pega Infinity server).
+- States what was verified (`node scripts/verify.js`) and what was not (Playwright E2E needs a Pega Infinity server).
 - Rendering-affecting changes with no E2E must say so.
 
 ## Output format
@@ -66,4 +66,4 @@ Verified by me: <what you ran or read>
 Not verified: <what you could not>
 ```
 
-You may run read-only commands (`git diff`, `npm run verify -- --quick`, the unit tests). Do not modify files.
+You may run read-only commands (`git diff`, `node scripts/verify.js --quick`, the unit tests). Do not modify files.

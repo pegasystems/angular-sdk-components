@@ -5,17 +5,17 @@ description: Write, assemble and finalise CHANGELOG.md entries in this project's
 
 # Changelog
 
-`CHANGELOG.md` is hand-maintained: contributors add an entry per PR to the **in-progress** release at the top; maintainers finalise it at release time. The format below is taken from the existing file; the tooling reproduces it exactly and `npm run changelog:check` (part of `npm run verify`) enforces it. Do not use release-please or any generator that imposes another format.
+`CHANGELOG.md` is hand-maintained: contributors add an entry per PR to the **in-progress** release at the top; maintainers finalise it at release time. The format below is taken from the existing file; the tooling reproduces it exactly and `node scripts/changelog.js check` (part of `node scripts/verify.js`) enforces it. Do not use release-please or any generator that imposes another format.
 
 ## Tooling
 
 ```bash
-npm run changelog:check                                   # validate the file
-npm run changelog -- add --type fix --pr 610 --text "Fixed the issue where ..."
-npm run changelog -- add --type feature --pr 611 --pr 612 --text "Added support for ..."
-npm run changelog -- add --type refactor --pr 613 --text "Refactored ..."
-npm run changelog -- new-release 26.1.11                  # open the next in-progress release
-npm run changelog -- release-date 30/10/2026              # stamp the in-progress release when releasing
+node scripts/changelog.js check                                   # validate the file
+node scripts/changelog.js add --type fix --pr 610 --text "Fixed the issue where ..."
+node scripts/changelog.js add --type feature --pr 611 --pr 612 --text "Added support for ..."
+node scripts/changelog.js add --type refactor --pr 613 --text "Refactored ..."
+node scripts/changelog.js new-release 26.1.11                  # open the next in-progress release
+node scripts/changelog.js release-date 30/10/2026              # stamp the in-progress release when releasing
 ```
 
 - `add` writes to the newest release if it has **no** "- Released:" date; it creates the section in canonical order if missing, uses the section's indentation (Features 4 spaces, Bug fixes 6, Refactoring 4), wraps the text in `**...**`, links each PR as `[PR-n](https://github.com/pegasystems/angular-sdk-components/pull/n)`, and refuses duplicates.
@@ -52,7 +52,7 @@ Older released sections are history: never reformat or "fix" them (one has a kno
 1. Decide whether the change is user-visible (behaviour, new/changed component, fix, public API, dependency that consumers see). Internal-only chores/tests/CI usually get no entry (check how the existing file treats similar changes).
 2. The PR number is needed: open the PR first (or ask the user for the number), then add the entry in a follow-up commit on the PR branch.
 3. Pick the type: new capability/component/option -> `feature`; defect -> `fix`; restructuring with no behaviour change -> `refactor`.
-4. Write the sentence (rules below), run the command, then `npm run changelog:check` (or `npm run verify -- --quick`).
+4. Write the sentence (rules below), run the command, then `node scripts/changelog.js check` (or `node scripts/verify.js --quick`).
 5. Breaking change: also record it under "Breaking changes" when the release is finalised (section 3) and mention it in the PR.
 
 ### Wording rules (from the existing entries)
@@ -107,8 +107,8 @@ The following table lists the packages whose versions have been updated:
 - "Breaking changes": list each breaking change with its `Github:` PR line (see 25.1.10/25.1.12), or `*   None.`
 - Dependencies table: the two SDK packages at the release version, plus every dependency whose version changed since the previous release: `git diff <previous-release-commit>..HEAD -- package.json` (Angular family, `ng-packagr`, `zone.js`, `@pega/*`, ...). Use exact versions from `package.json`/`package-lock.json`.
 
-4. Stamp the date: `npm run changelog -- release-date <dd/mm/yyyy>`.
-5. `npm run changelog:check`, `npm run verify`.
+4. Stamp the date: `node scripts/changelog.js release-date <dd/mm/yyyy>`.
+5. `node scripts/changelog.js check`, `node scripts/verify.js`.
 6. Continue with `sdk-release` (version bump commit, publish).
 
 ## Review checklist

@@ -9,7 +9,7 @@ Work top-down; stop at the first confirmed cause. State what you checked.
 
 ## 1. Is the right component chosen?
 
-- Browser console: `Requested component has neither Local nor Pega-provided implementation: <Name>` -> the Pega component name is not in the map. Check `docs/components.md`; add it with `npm run new:component` or map it (names are case-sensitive).
+- Browser console: `Requested component has neither Local nor Pega-provided implementation: <Name>` -> the Pega component name is not in the map. Check `docs/components.md`; add it with `node scripts/new-component.js` or map it (names are case-sensitive).
 - An `ErrorBoundary` card is shown -> same cause (lookup fell back).
 - Wrong implementation shown -> a **local** map entry wins over the Pega map (`packages/angular-sdk-components/src/sdk-local-component-map.ts`, customer overrides). Check it.
 - Template picks children by `getRawMetadata().type`: verify the type string the engine sends.
@@ -49,8 +49,8 @@ Write the failing unit spec first (`sdk-write-unit-tests`), observe it, then fix
 ```bash
 grep -rn "<ComponentName>" packages/angular-sdk-components/src/lib/_bridge/helpers/sdk-pega-component-map.ts
 grep -rn "component-mapper name=\"<Name>\"" packages/angular-sdk-components/src
-npm run test:unit
-npm run doctor            # environment/config problems (Infinity URL, client ID)
+npx ng test angular-sdk-components --watch=false
+node scripts/doctor.js            # environment/config problems (Infinity URL, client ID)
 ```
 
 For environment problems (blank page, login loops, CORS) see `docs/troubleshooting.md`.

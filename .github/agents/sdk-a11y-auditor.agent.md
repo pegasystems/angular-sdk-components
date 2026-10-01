@@ -16,7 +16,7 @@ Given a component, a kind (field, template, widget, infra, designSystemExtension
 3. **Manual checklist** (axe cannot see these): names in context, focus order and focus return after dialogs, keyboard operation, live announcements for async updates, not-colour-only state, heading structure, zoom/reflow, localized `aria-label`s.
 4. **Fix** with the smallest change. Localize any new or touched accessible text (`sdk-localization`). Keep English output identical.
 5. **Prove**: the axe assertion passes; add tests for new `aria-*` behaviour (for example `aria-label` present and localized). Mutation-check them.
-6. `npm run verify`.
+6. `node scripts/verify.js`.
 7. If user-visible, add a changelog entry (`sdk-changelog`, type `fix`).
 
 ## Report

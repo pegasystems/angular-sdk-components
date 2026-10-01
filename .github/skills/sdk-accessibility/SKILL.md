@@ -36,5 +36,5 @@ Limits: the Material theme is not loaded in unit tests, so colour contrast there
 1. List the component's interactive elements from its template.
 2. Run the axe helper in a spec; record violations verbatim.
 3. Walk the checklist above for what axe cannot see (focus order, announcements, labels in context).
-4. Fix in the template/class; add the axe assertion to the spec; rerun `npm run verify`.
+4. Fix in the template/class; add the axe assertion to the spec; rerun `node scripts/verify.js`.
 5. Report: violations found/fixed, items needing manual verification in a browser with a screen reader, and anything deferred.

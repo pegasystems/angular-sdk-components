@@ -10,9 +10,9 @@ Load skills `sdk-release`, `sdk-changelog`, `sdk-public-api-change`, `sdk-verify
 ## Steps (confirm with the user where marked)
 1. **Version**: ask the user for the release version (the angular-sdk release number, for example `26.1.11`). Never guess. **Confirm.**
 2. **Scope**: find the previous release commit (`git log --grep "version release" -5 --format='%h %s'`) and list merged changes since (`git log <prev>..HEAD --format='%h %s'`).
-3. **Changelog**: ensure every user-visible PR has an entry (`npm run changelog -- add ...`), using PR text via `gh pr view <n>` when a subject is unclear. Classify breaking changes with `sdk-public-api-change`. Restructure the in-progress block (Breaking / Non Breaking, Dependencies table from `git diff <prev>..HEAD -- package.json`). **Show the user the final section before stamping.**
-4. **Date and version**: `npm run changelog -- release-date <dd/mm/yyyy>` (**confirm the date**), branch `chore/<version>`, `npm run release:version -- <version>`, commit `chore: <version> version release`.
-5. **Verify**: `npm run verify`, `npm run test:coverage`. State plainly that Playwright E2E needs a Pega Infinity environment and whether it was run.
+3. **Changelog**: ensure every user-visible PR has an entry (`node scripts/changelog.js add ...`), using PR text via `gh pr view <n>` when a subject is unclear. Classify breaking changes with `sdk-public-api-change`. Restructure the in-progress block (Breaking / Non Breaking, Dependencies table from `git diff <prev>..HEAD -- package.json`). **Show the user the final section before stamping.**
+4. **Date and version**: `node scripts/changelog.js release-date <dd/mm/yyyy>` (**confirm the date**), branch `chore/<version>`, `node scripts/set-version.js <version>`, commit `chore: <version> version release`.
+5. **Verify**: `node scripts/verify.js`, `npx ng test angular-sdk-components --watch=false --coverage`. State plainly that Playwright E2E needs a Pega Infinity environment and whether it was run.
 6. **Smoke test** in angular-sdk with `npm run create_and_install_sdk_packages` (needs the user's angular-sdk path) when possible; otherwise say it was not done.
 7. **PR**: open the release PR; do not merge.
 8. **Publish**: explain the manual publish steps from the `sdk-release` skill (dry-run first). **Never publish yourself.**

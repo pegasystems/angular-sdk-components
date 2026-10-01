@@ -5,11 +5,11 @@
  * One command that runs every check CI runs, with a compact report. Built for humans and for coding agents:
  * output is short, failures include only the relevant log tail, and --json gives machine-readable results.
  *
- *   npm run verify                 full run (what CI does, except E2E)
- *   npm run verify -- --quick      fast static checks only (about a minute)
- *   npm run verify -- --only lint,unit
- *   npm run verify -- --json       machine-readable report on stdout
- *   npm run verify -- --keep-going continue after a failing step
+ *   node scripts/verify.js                 full run (what CI does, except E2E)
+ *   node scripts/verify.js --quick      fast static checks only (about a minute)
+ *   node scripts/verify.js --only lint,unit
+ *   node scripts/verify.js --json       machine-readable report on stdout
+ *   node scripts/verify.js --keep-going continue after a failing step
  */
 const { spawnSync } = require('node:child_process');
 const path = require('node:path');
@@ -22,36 +22,42 @@ const STEPS = [
     id: 'any',
     quick: true,
     title: 'noImplicitAny ratchet',
-    cmd: 'npm run check:any',
-    fix: 'Add types; if errors were fixed run `npm run check:any:update`'
+    cmd: 'node scripts/check-implicit-any.js',
+    fix: 'Add types; if errors were fixed run `node scripts/check-implicit-any.js --update`'
   },
-  { id: 'docs', quick: true, title: 'Component catalogue up to date', cmd: 'npm run docs:components:check', fix: 'Run `npm run docs:components`' },
-  { id: 'scripts', quick: true, title: 'Tooling script tests', cmd: 'npm run test:scripts' },
+  {
+    id: 'docs',
+    quick: true,
+    title: 'Component catalogue up to date',
+    cmd: 'node scripts/generate-component-catalog.js --check',
+    fix: 'Run `node scripts/generate-component-catalog.js`'
+  },
+  { id: 'scripts', quick: true, title: 'Tooling script tests', cmd: 'node --test "scripts/__tests__/*.test.js"' },
   {
     id: 'agents',
     quick: true,
     title: 'Agent assets consistent',
-    cmd: 'npm run check:agents',
+    cmd: 'node scripts/check-agent-assets.js',
     fix: 'Fix front matter or the npm script name mentioned in .github/agents, .github/skills, AGENTS.md or docs'
   },
   {
     id: 'changelog',
     quick: true,
     title: 'CHANGELOG.md format',
-    cmd: 'npm run changelog:check',
-    fix: 'See skill sdk-changelog; use `npm run changelog -- add ...` to add entries in the right format'
+    cmd: 'node scripts/changelog.js check',
+    fix: 'See skill sdk-changelog; use `node scripts/changelog.js add ...` to add entries in the right format'
   },
-  { id: 'config', quick: true, title: 'sdk-config.json valid', cmd: 'npm run configure:check' },
+  { id: 'config', quick: true, title: 'sdk-config.json valid', cmd: 'node scripts/configure-sdk.js --check' },
   { id: 'build', title: 'Library build (ng-packagr)', cmd: 'npm run build-angular-sdk-components' },
   {
     id: 'api',
     title: 'Public API report',
-    cmd: 'npm run api:check',
-    fix: 'If the change is intended run `npm run api:update` and commit etc/angular-sdk-components.api.md'
+    cmd: 'npx api-extractor run',
+    fix: 'If the change is intended run `npx api-extractor run --local` and commit etc/angular-sdk-components.api.md'
   },
-  { id: 'overrides', title: 'Overrides build + type-check', cmd: 'npm run build-overrides && npm run check:overrides' },
-  { id: 'pack', title: 'Package tarballs', cmd: 'npm run smoke:pack' },
-  { id: 'unit', title: 'Unit tests', cmd: 'npm run test:unit' }
+  { id: 'overrides', title: 'Overrides build + type-check', cmd: 'npm run build-overrides && npx ngc -p tsconfig.overrides-check.json' },
+  { id: 'pack', title: 'Package tarballs', cmd: 'node scripts/smoke-pack.js' },
+  { id: 'unit', title: 'Unit tests', cmd: 'npx ng test angular-sdk-components --watch=false' }
 ];
 
 function parseArgs(argv) {

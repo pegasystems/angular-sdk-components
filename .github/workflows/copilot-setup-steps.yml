@@ -1,6 +1,6 @@
 name: Copilot Setup Steps
 
-# Prepares the environment used by the GitHub Copilot coding agent so it can run `npm run verify` immediately.
+# Prepares the environment used by the GitHub Copilot coding agent so it can run `node scripts/verify.js` immediately.
 on:
   workflow_dispatch:
   push:
@@ -21,4 +21,4 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - name: Sanity check
-        run: npm run verify -- --quick
+        run: node scripts/verify.js --quick

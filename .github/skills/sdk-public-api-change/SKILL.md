@@ -17,8 +17,8 @@ description: Assess, make and document changes that affect the public API or the
 
 ```bash
 npm run build-angular-sdk-components
-npm run api:check                  # fails on any difference
-npm run api:update                 # accepts the new API; review `git diff etc/`
+npx api-extractor run                  # fails on any difference
+npx api-extractor run --local                 # accepts the new API; review `git diff etc/`
 ```
 
 ## Classify the change
@@ -35,8 +35,8 @@ npm run api:update                 # accepts the new API; review `git diff etc/`
 
 1. Prefer a non-breaking path: add new API, keep the old one, mark old with `/** @deprecated use X (removal in <version>) */`, keep both working.
 2. If it must break (it also belongs under the "Breaking changes" heading of the release in `CHANGELOG.md`, see `sdk-changelog`): conventional commit with `!` and a `BREAKING CHANGE:` footer (helps reviewers; the release version is chosen manually at release time); add a migration note to `docs/adr/` (decision, reason, before/after code) and to the PR description.
-3. Update overrides impact: run `npm run build-overrides && npm run check:overrides`; an override copy that no longer compiles is a breaking signal.
-4. Update docs that show the API (`docs/customizing.md`, `docs/components.md` via `npm run docs:components`).
+3. Update overrides impact: run `npm run build-overrides && npx ngc -p tsconfig.overrides-check.json`; an override copy that no longer compiles is a breaking signal.
+4. Update docs that show the API (`docs/customizing.md`, `docs/components.md` via `node scripts/generate-component-catalog.js`).
 
 ## Review checklist
 

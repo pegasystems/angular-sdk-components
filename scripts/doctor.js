@@ -2,7 +2,7 @@
 'use strict';
 
 /*
- * Pre-flight checks for a new checkout or a CI agent: `npm run doctor` (add `-- --offline` to skip the network probe).
+ * Pre-flight checks for a new checkout or a CI agent: `node scripts/doctor.js` (add `-- --offline` to skip the network probe).
  * Exits 1 when a blocking problem is found so it can gate a pipeline.
  */
 const fs = require('node:fs');

@@ -21,9 +21,9 @@ The bridge under `packages/angular-sdk-components/src/lib/_bridge/` is the most 
 
 1. **Pin current behaviour first.** Extend `_bridge/angular-pconnect.service.spec.ts` (or `helpers/sdk_component_map.spec.ts`) with tests that describe what the code does today in the area you will change. They must pass before your edit.
 2. Make the smallest change. Prefer adding behaviour behind optional methods/params over changing signatures.
-3. **Public API**: the bridge exports are consumed by customers. Run `npm run build-angular-sdk-components && npm run api:check`; any diff is deliberate and reviewed (`sdk-public-api-change`).
-4. **Typing**: `_bridge` is clean under `noImplicitAny`; keep it that way (`npm run check:any`).
-5. **Verify**: `npm run verify`. Then reason explicitly about runtime effects the unit tests cannot show (re-render frequency, subscription count, memory) and list them as unverified unless measured.
+3. **Public API**: the bridge exports are consumed by customers. Run `npm run build-angular-sdk-components && npx api-extractor run`; any diff is deliberate and reviewed (`sdk-public-api-change`).
+4. **Typing**: `_bridge` is clean under `noImplicitAny`; keep it that way (`node scripts/check-implicit-any.js`).
+5. **Verify**: `node scripts/verify.js`. Then reason explicitly about runtime effects the unit tests cannot show (re-render frequency, subscription count, memory) and list them as unverified unless measured.
 
 ## Typical safe tasks
 

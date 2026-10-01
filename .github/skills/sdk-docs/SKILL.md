@@ -18,11 +18,11 @@ description: Write and maintain documentation in this repository - which doc own
 | testing                | `docs/testing.md`                                                                                          | no                                                |
 | troubleshooting        | `docs/troubleshooting.md`                                                                                  | no                                                |
 | runtime architecture   | `docs/architecture.md`                                                                                     | no                                                |
-| component catalogue    | `docs/components.md`                                                                                       | **yes**: `npm run docs:components`                |
+| component catalogue    | `docs/components.md`                                                                                       | **yes**: `node scripts/generate-component-catalog.js`                |
 | decisions              | `docs/adr/NNNN-title.md`                                                                                   | no                                                |
-| public API             | `etc/angular-sdk-components.api.md`                                                                        | **yes**: `npm run api:update`                     |
-| release notes          | `CHANGELOG.md`                                                                                             | via `npm run changelog` (`sdk-changelog`)         |
-| agent instructions     | `AGENTS.md`, `.github/instructions/`, `.github/agents/`, `.github/skills/`, `.github/prompts/`, `llms.txt` | no; `npm run check:agents` validates              |
+| public API             | `etc/angular-sdk-components.api.md`                                                                        | **yes**: `npx api-extractor run --local`                     |
+| release notes          | `CHANGELOG.md`                                                                                             | via `node scripts/changelog.js` (`sdk-changelog`)         |
+| agent instructions     | `AGENTS.md`, `.github/instructions/`, `.github/agents/`, `.github/skills/`, `.github/prompts/`, `llms.txt` | no; `node scripts/check-agent-assets.js` validates              |
 
 Never hand-edit generated files.
 
@@ -38,7 +38,7 @@ Never hand-edit generated files.
 
 - Task-oriented: start with what the reader wants to do; commands in fenced `bash` blocks that work when pasted from the repo root.
 - Short sentences, active voice, present tense; tables for options; no marketing language.
-- Every command or script name mentioned must exist (`npm run check:agents` checks `npm run <script>` mentions in docs, agents, skills and prompts).
+- Every command or script name mentioned must exist (`node scripts/check-agent-assets.js` checks `npm run <script>` mentions in docs, agents, skills and prompts).
 - Relative links for repo files; verify they resolve.
 - Do not document what is not verified; say "not run"/"untested" explicitly.
 
@@ -46,7 +46,7 @@ Never hand-edit generated files.
 
 ```bash
 npx prettier -c docs README.md AGENTS.md      # formatting
-npm run check:agents                          # scripts mentioned exist; agent/skill front matter
-npm run docs:components:check                 # catalogue current
-npm run verify -- --quick
+node scripts/check-agent-assets.js                          # scripts mentioned exist; agent/skill front matter
+node scripts/generate-component-catalog.js --check                 # catalogue current
+node scripts/verify.js --quick
 ```

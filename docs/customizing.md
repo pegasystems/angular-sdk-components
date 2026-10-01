@@ -31,17 +31,17 @@ The `@pega/angular-sdk-overrides` npm package contains ready-to-edit copies of e
 ## Adding a component
 
 ```bash
-npm run new:component -- <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>
+node scripts/new-component.js <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>
 # example
-npm run new:component -- field star-rating StarRating
+node scripts/new-component.js field star-rating StarRating
 ```
 
 It creates the component (`.ts`, `.html`, `.scss`, `.spec.ts`) following the repository conventions and registers it in `public-api.ts` and `sdk-pega-component-map.ts`. Then:
 
 ```bash
 npm run fix                                          # format
-npm run build-angular-sdk-components && npm run api:update   # refresh the public API report
-npm run docs:components                              # refresh the component catalogue
+npm run build-angular-sdk-components && npx api-extractor run --local   # refresh the public API report
+node scripts/generate-component-catalog.js                              # refresh the component catalogue
 ```
 
 ## Editing a component in place
@@ -49,8 +49,8 @@ npm run docs:components                              # refresh the component cat
 Allowed and supported. Keep these in mind:
 
 - Field value propagation, display-mode delegation and `<component-mapper>` usage are described in `AGENTS.md` and `.github/instructions/components.instructions.md`.
-- Run `npm run test:unit` and the relevant parts of the Playwright suite.
-- `npm run check:any` guards against new implicit-`any` errors; `npm run api:check` flags public API changes.
+- Run `npx ng test angular-sdk-components --watch=false` and the relevant parts of the Playwright suite.
+- `node scripts/check-implicit-any.js` guards against new implicit-`any` errors; `npx api-extractor run` flags public API changes.
 
 ## Catalogue
 

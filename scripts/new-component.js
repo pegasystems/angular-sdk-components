@@ -3,8 +3,8 @@
  *   1. export from packages/angular-sdk-components/src/public-api.ts
  *   2. mapping in src/lib/_bridge/helpers/sdk-pega-component-map.ts
  *
- * Usage: npm run new:component -- <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>
- * Example: npm run new:component -- field star-rating StarRating
+ * Usage: node scripts/new-component.js <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>
+ * Example: node scripts/new-component.js field star-rating StarRating
  */
 const fs = require('node:fs');
 const path = require('node:path');
@@ -13,7 +13,7 @@ const KINDS = ['field', 'template', 'widget', 'infra', 'designSystemExtension'];
 const [kind, kebab, pegaName] = process.argv.slice(2);
 
 if (!KINDS.includes(kind) || !/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(kebab || '') || !/^[A-Z][A-Za-z0-9]*$/.test(pegaName || '')) {
-  console.error('Usage: npm run new:component -- <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>');
+  console.error('Usage: node scripts/new-component.js <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>');
   process.exit(1);
 }
 
@@ -191,4 +191,4 @@ map = map.replace(/,,\n/g, ',\n');
 fs.writeFileSync(mapPath, map);
 
 console.log(`Created ${path.relative(process.cwd(), dir)} and registered ${className} as "${pegaName}".`);
-console.log('Next: npm run fix, then build-angular-sdk-components && npm run api:update');
+console.log('Next: npm run fix, then build-angular-sdk-components && npx api-extractor run --local');

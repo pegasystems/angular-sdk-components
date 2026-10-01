@@ -37,7 +37,7 @@ If an existing component already does 80 percent of the job, **extend or paramet
 ## 3. Scaffold
 
 ```bash
-npm run new:component -- <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>
+node scripts/new-component.js <field|template|widget|infra|designSystemExtension> <kebab-name> <PegaComponentName>
 ```
 
 This creates `.ts/.html/.scss/.spec.ts`, exports the class from `packages/angular-sdk-components/src/public-api.ts` and maps it in `src/lib/_bridge/helpers/sdk-pega-component-map.ts`. Never register by hand-editing only one of the two files. For `template` and `infra` kinds the generator produces a generic bridge-registered skeleton: rebase it onto the right base class (`FormTemplateBase`/`DetailsTemplateBase`) yourself.
@@ -100,21 +100,21 @@ Specs that need richer engine fixtures must not be skipped to make the run green
 ## 7. Registration, API report, docs
 
 ```bash
-npm run docs:components                                        # regenerate the catalogue
-npm run build-angular-sdk-components && npm run api:update     # only when the public API changed; review the diff
+node scripts/generate-component-catalog.js                                        # regenerate the catalogue
+npm run build-angular-sdk-components && npx api-extractor run --local     # only when the public API changed; review the diff
 ```
 
 Review the `etc/angular-sdk-components.api.md` diff: additions are fine; removals/renames are breaking (stop and apply the `sdk-public-api-change` skill).
 
 ## 8. Changelog
 
-For user-visible changes add an entry in the established format with `npm run changelog -- add --type <feature|fix|refactor> --pr <n> --text "..."` (the PR number exists once the PR is open; if it does not yet, say so in the hand-off). Skill `sdk-changelog` has the wording rules.
+For user-visible changes add an entry in the established format with `node scripts/changelog.js add --type <feature|fix|refactor> --pr <n> --text "..."` (the PR number exists once the PR is open; if it does not yet, say so in the hand-off). Skill `sdk-changelog` has the wording rules.
 
 ## 9. Verify
 
 ```bash
-npm run verify -- --quick     # while iterating
-npm run verify                # before you finish
+node scripts/verify.js --quick     # while iterating
+node scripts/verify.js                # before you finish
 ```
 
 Fix failures using the remedy printed for each step. Playwright E2E needs a Pega Infinity server; if you changed rendering behaviour and could not run E2E, say so explicitly.

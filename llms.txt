@@ -2,7 +2,7 @@
 
 > Source for @pega/angular-sdk-components (PConnect bridge + Angular Material components) and @pega/angular-sdk-overrides, used by the Pega Constellation Angular SDK (github.com/pegasystems/angular-sdk). Angular 21, zoneless, standalone components, TypeScript.
 
-Start with AGENTS.md: it has the project map, the verification loop (`npm run verify`), the definition of done, task recipes and the rules that must not be broken.
+Start with AGENTS.md: it has the project map, the verification loop (`node scripts/verify.js`), the definition of done, task recipes and the rules that must not be broken.
 
 ## Docs
 - [AGENTS.md](AGENTS.md): instructions for AI coding agents and contributors

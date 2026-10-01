@@ -37,8 +37,8 @@ packages/angular-sdk-components/src/lib/
 
 ### Running
 ```bash
-npm run test:unit        # Vitest on jsdom, no Pega server needed
-npm run test:coverage    # same + coverage report in coverage/ and a threshold floor
+npx ng test angular-sdk-components --watch=false        # Vitest on jsdom, no Pega server needed
+npx ng test angular-sdk-components --watch=false --coverage    # same + coverage report in coverage/ and a threshold floor
 ```
 
 ### Configuration

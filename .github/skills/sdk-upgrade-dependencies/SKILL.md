@@ -22,11 +22,11 @@ This repo publishes a **library** with peer dependencies: ranges in `packages/an
 3. Update `packages/angular-sdk-components/package.json` peer ranges to match what you now support (do not widen to untested majors). Keep root and package ranges consistent.
 4. `npm install` (refresh `package-lock.json`), then:
    ```bash
-   npm run verify
+   node scripts/verify.js
    npm run build            # test app dev build
    npm run prod-build-angularsdk   # production budgets (styles/initial bundle) - see angular.json
    ```
-5. Expect and review: API report diff (`npm run api:update`; type changes from newer Angular typings can show up), `check:any` baseline changes, ESLint rule changes, Material token/CSS changes (visual regressions need a manual look in the test app).
+5. Expect and review: API report diff (`npx api-extractor run --local`; type changes from newer Angular typings can show up), `check:any` baseline changes, ESLint rule changes, Material token/CSS changes (visual regressions need a manual look in the test app).
 6. Run Playwright E2E against a Pega Infinity environment when available; otherwise say clearly that rendering was not exercised end to end.
 7. Commit as `chore(deps): ...`; if consumers must upgrade too (peer range bump), call it out in the PR and treat it as a **breaking** change for `@pega/angular-sdk-components` (see `sdk-public-api-change`).
 

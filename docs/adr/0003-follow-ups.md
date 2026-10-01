@@ -19,7 +19,7 @@ Run the Playwright MediaCo suite (portal and embedded) and check:
    - Rich-text toolbar `aria-label`s are hard-coded English.
    - Add ARIA and axe tests for templates and widgets (axe currently covers 12 field components).
 2. **Behaviour tests for the remaining placeholder specs** (about 80 still assert only "should create"): containers, templates, widgets, then design-system components. Prioritise components with branching logic; skip trivial wrappers. Use the mutation check from the `sdk-write-unit-tests` skill and raise `coverageThresholds` in `angular.json` as coverage grows (currently 48/45/45/46).
-3. **`noImplicitAny` baseline** (about 1,000 errors in `scripts/implicit-any-baseline.json`): reduce by folder, then `npm run check:any:update`.
+3. **`noImplicitAny` baseline** (about 1,000 errors in `scripts/implicit-any-baseline.json`): reduce by folder, then `node scripts/check-implicit-any.js --update`.
 4. **Bridge**: `angular-pconnect.ts` already delegates prop resolution and form-field cleanup to `_bridge/helpers`. Splitting subscription, registration and `shouldComponentUpdate` into separate services is higher risk; add more characterization tests first.
 5. **Known smaller items**
    - Constructor injection to `inject()` (enable the `prefer-inject` lint rule once done).

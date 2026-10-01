@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-/* Release helper: npm run release:version -- 26.1.11  (root, both packages and package-lock.json get the same version). */
+/* Release helper: node scripts/set-version.js 26.1.11  (root, both packages and package-lock.json get the same version). */
 const path = require('node:path');
 const { setVersion, readVersions } = require('./lib/set-version');
 

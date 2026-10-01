@@ -27,23 +27,23 @@ jobs:
       - name: Build library
         run: npm run build-angular-sdk-components
       - name: Public API report is up to date
-        run: npm run api:check
+        run: npx api-extractor run
       - name: CHANGELOG.md follows the project format
-        run: npm run changelog:check
+        run: node scripts/changelog.js check
       - name: Agent assets are consistent
-        run: npm run check:agents
+        run: node scripts/check-agent-assets.js
       - name: Tooling script tests
-        run: npm run test:scripts
+        run: node --test "scripts/__tests__/*.test.js"
       - name: Component catalogue is up to date
-        run: npm run docs:components:check
+        run: node scripts/generate-component-catalog.js --check
       - name: noImplicitAny ratchet
-        run: npm run check:any
+        run: node scripts/check-implicit-any.js
       - name: Build overrides package
         run: npm run build-overrides
       - name: Overrides package type-checks against the built library
-        run: npm run check:overrides
+        run: npx ngc -p tsconfig.overrides-check.json
       - name: Verify package tarballs
-        run: npm run smoke:pack
+        run: node scripts/smoke-pack.js
 
   unit-tests:
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
           node-version: 24.x
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm run test:coverage
+      - run: npx ng test angular-sdk-components --watch=false --coverage
       - uses: actions/upload-artifact@v4
         if: always()
         with:

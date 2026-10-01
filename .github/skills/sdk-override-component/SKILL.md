@@ -10,7 +10,7 @@ Pick the least invasive option that satisfies the requirement.
 | Need                                         | Option                                                                                      |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | change colours/typography/dark mode          | theming (`docs/theming.md`): Material tokens in `themes.scss`, `theme` in `sdk-config.json` |
-| change behaviour flags/URLs/portal           | configuration (`docs/configuration.md`, `npm run configure`)                                |
+| change behaviour flags/URLs/portal           | configuration (`docs/configuration.md`, `node scripts/configure-sdk.js`)                                |
 | replace what one Pega component renders      | **local component map override** (below)                                                    |
 | change shared behaviour of many components   | edit the source component(s) in place (repo checkout) and keep the public API stable        |
 | consumer of the npm packages (not this repo) | copy from `@pega/angular-sdk-overrides` and register in the consumer's local map            |
@@ -29,7 +29,7 @@ Pick the least invasive option that satisfies the requirement.
    ```
    Local entries beat the Pega-provided map.
 4. Keep the contract: fields extend `FieldBase`, propagate via `handleEvent`, render display-only through `FieldValueList`, import `ComponentMapperComponent` with `forwardRef`.
-5. Test it (`createMockPConn()`), then `npm run verify`.
+5. Test it (`createMockPConn()`), then `node scripts/verify.js`.
 
 Note: the base repository's own development never edits `sdk-local-component-map.ts`; it is for consumers' customisations.
 
@@ -37,4 +37,4 @@ Note: the base repository's own development never edits `sdk-local-component-map
 
 - Prefer subclassing and overriding the smallest method (`updateSelf`, a template fragment) over copying whole components.
 - Record why an override exists (comment above the map entry).
-- When upgrading the SDK, diff `etc/angular-sdk-components.api.md` and the original component against your copy; rerun `npm run check:overrides` if you use the overrides package.
+- When upgrading the SDK, diff `etc/angular-sdk-components.api.md` and the original component against your copy; rerun `npx ngc -p tsconfig.overrides-check.json` if you use the overrides package.

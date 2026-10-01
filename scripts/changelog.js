@@ -4,11 +4,11 @@
 /*
  * Maintains CHANGELOG.md in the project's established format (see scripts/lib/changelog.js).
  *
- *   npm run changelog:check
- *   npm run changelog -- add --type fix --pr 610 --text "Fixed the issue where ..."
- *   npm run changelog -- add --type feature --pr 611 --pr 612 --text "Added support for ..."
- *   npm run changelog -- new-release 26.1.11
- *   npm run changelog -- release-date 30/10/2026
+ *   node scripts/changelog.js check
+ *   node scripts/changelog.js add --type fix --pr 610 --text "Fixed the issue where ..."
+ *   node scripts/changelog.js add --type feature --pr 611 --pr 612 --text "Added support for ..."
+ *   node scripts/changelog.js new-release 26.1.11
+ *   node scripts/changelog.js release-date 30/10/2026
  *
  * Types: feature | fix | refactor. The skill `sdk-changelog` explains how to word entries.
  */

@@ -4,7 +4,7 @@ Runtime settings live in `sdk-config.json` in the repository root. It is copied 
 
 ## Environment variables
 
-`npm run configure` (`node scripts/configure-sdk.js`) applies these variables to `sdk-config.json`. Unset or empty variables leave the file value untouched, so you can mix a committed base file with per-environment overrides.
+`node scripts/configure-sdk.js` (`node scripts/configure-sdk.js`) applies these variables to `sdk-config.json`. Unset or empty variables leave the file value untouched, so you can mix a committed base file with per-environment overrides.
 
 | Variable | `sdk-config.json` setting | Notes |
 | --- | --- | --- |
@@ -26,18 +26,18 @@ Other settings in the file (for example `excludePortals`) are documented in the 
 ## Commands
 
 ```bash
-npm run configure                                   # apply env vars in place
-npm run configure -- --out dist/sdk-config.json     # write the result to another file (the source is untouched)
-npm run configure -- --print                        # also print the result (secrets masked)
-npm run configure:check                             # validate only; exit 1 on errors, nothing written
+node scripts/configure-sdk.js                                   # apply env vars in place
+node scripts/configure-sdk.js --out dist/sdk-config.json     # write the result to another file (the source is untouched)
+node scripts/configure-sdk.js --print                        # also print the result (secrets masked)
+node scripts/configure-sdk.js --check                             # validate only; exit 1 on errors, nothing written
 ```
 
 ## Choosing where to apply configuration
 
 | Approach | When |
 | --- | --- |
-| `npm run configure` before the build | One build per environment (simple pipelines). |
-| `npm run configure -- --out dist/sdk-config.json` after the build | Build once, deploy many: promote the same `dist/` and render the config per environment. |
+| `node scripts/configure-sdk.js` before the build | One build per environment (simple pipelines). |
+| `node scripts/configure-sdk.js --out dist/sdk-config.json` after the build | Build once, deploy many: promote the same `dist/` and render the config per environment. |
 
 ## Secrets
 

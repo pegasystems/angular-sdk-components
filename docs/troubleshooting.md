@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Start with `npm run doctor`; it detects most setup problems and prints how to fix them. Pega's [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html) page covers platform-side issues.
+Start with `node scripts/doctor.js`; it detects most setup problems and prints how to fix them. Pega's [Troubleshooting Constellation SDKs](https://docs.pega.com/bundle/constellation-sdk/page/constellation-sdks/sdks/troubleshooting-constellation-sdks.html) page covers platform-side issues.
 
 ## Setup
 
@@ -16,8 +16,8 @@ Start with `npm run doctor`; it detects most setup problems and prints how to fi
 
 | Symptom | Likely cause and fix |
 | --- | --- |
-| `npm run configure` fails validation | The message names the setting and the environment variable that sets it. |
-| Blank page or network error on load | `serverConfig.infinityRestServerUrl` is wrong or unreachable (VPN, trailing slash, certificate). `npm run doctor` probes it. |
+| `node scripts/configure-sdk.js` fails validation | The message names the setting and the environment variable that sets it. |
+| Blank page or network error on load | `serverConfig.infinityRestServerUrl` is wrong or unreachable (VPN, trailing slash, certificate). `node scripts/doctor.js` probes it. |
 | Login redirect loop / `redirect_uri` error | The URL you open (including port and path) must be registered as a redirect URI on the Pega OAuth 2.0 client. |
 | CORS errors | Add your app origin to the Infinity CORS configuration. |
 | Embedded/mashup login fails | `mashupClientId`, `mashupUserIdentifier` and the Base64 `mashupPassword` must be set (`SDK_MASHUP_PASSWORD` is encoded for you). |
@@ -28,13 +28,13 @@ Start with `npm run doctor`; it detects most setup problems and prints how to fi
 | Symptom | Likely cause and fix |
 | --- | --- |
 | `check:overrides` fails with "Cannot find module '@pega/angular-sdk-components'" | The library has not been built (`npm run build-angular-sdk-components`), or `npm run build` replaced `dist/`. |
-| `api:check` fails | The public API changed. If intended: `npm run build-angular-sdk-components && npm run api:update` and commit `etc/angular-sdk-components.api.md`. |
-| `check:any` fails | A file got more implicit-`any` errors than its baseline. Add types; if you fixed errors, `npm run check:any:update`. |
-| `docs:components:check` fails | `npm run docs:components` and commit. |
+| `api:check` fails | The public API changed. If intended: `npm run build-angular-sdk-components && npx api-extractor run --local` and commit `etc/angular-sdk-components.api.md`. |
+| `check:any` fails | A file got more implicit-`any` errors than its baseline. Add types; if you fixed errors, `node scripts/check-implicit-any.js --update`. |
+| `docs:components:check` fails | `node scripts/generate-component-catalog.js` and commit. |
 | Production build exceeds a style budget | See the budgets in `angular.json`; keep component styles small. |
 | Playwright can't find browsers on the agent | `npx playwright install --with-deps chromium`, or use the Playwright container image (matching the version in `package.json`) as the CI agent. |
 | E2E tests time out in CI | Check `SDK_E2E_BASE_URL` is reachable from the agent and the test users exist in the target app. |
 
 ## Still stuck?
 
-Open an issue with the output of `npm run doctor`, your Node/npm versions and the failing command's log (remove secrets first).
+Open an issue with the output of `node scripts/doctor.js`, your Node/npm versions and the failing command's log (remove secrets first).

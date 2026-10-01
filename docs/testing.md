@@ -3,7 +3,7 @@
 ## Unit tests (no Pega server needed)
 
 ```
-npm run test:unit
+npx ng test angular-sdk-components --watch=false
 ```
 
 Runs Vitest through Angular's `@angular/build:unit-test` builder (jsdom, no browser needed) against the library. The harness lives in `packages/angular-sdk-components/src`:
@@ -32,11 +32,11 @@ Guidelines:
 
 | Command | Guards |
 | --- | --- |
-| `npm run check:any` | Per-file `noImplicitAny` baseline (`scripts/implicit-any-baseline.json`). Fixing errors? run `npm run check:any:update` to lower it. |
-| `npm run api:check` | Public API report (`etc/angular-sdk-components.api.md`). Intentional change? `npm run api:update`. |
-| `npm run check:overrides` | The generated overrides package type-checks against the built library. |
-| `npm run docs:components:check` | `docs/components.md` matches the component map. |
-| `npm run smoke:pack` | Published tarballs contain the expected files. |
+| `node scripts/check-implicit-any.js` | Per-file `noImplicitAny` baseline (`scripts/implicit-any-baseline.json`). Fixing errors? run `node scripts/check-implicit-any.js --update` to lower it. |
+| `npx api-extractor run` | Public API report (`etc/angular-sdk-components.api.md`). Intentional change? `npx api-extractor run --local`. |
+| `npx ngc -p tsconfig.overrides-check.json` | The generated overrides package type-checks against the built library. |
+| `node scripts/generate-component-catalog.js --check` | `docs/components.md` matches the component map. |
+| `node scripts/smoke-pack.js` | Published tarballs contain the expected files. |
 
 ## End-to-end
 

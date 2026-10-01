@@ -25,8 +25,8 @@ Clone this repository to build and customize your own Constellation Angular app,
 ```bash
 npm ci
 export SDK_INFINITY_REST_SERVER_URL=https://my-pega.example.com/prweb   # and SDK_PORTAL_CLIENT_ID, ...
-npm run configure                        # writes sdk-config.json from the environment
-npm run doctor                           # pre-flight check of your setup
+node scripts/configure-sdk.js                        # writes sdk-config.json from the environment
+node scripts/doctor.js                           # pre-flight check of your setup
 npm run start-dev                        # http://localhost:3500
 ```
 
@@ -37,7 +37,7 @@ npm run start-dev                        # http://localhost:3500
 | CI/CD (any CI system), E2E | [docs/ci-cd.md](docs/ci-cd.md) |
 | Customize, override or add components | [docs/customizing.md](docs/customizing.md) |
 | Troubleshooting | [docs/troubleshooting.md](docs/troubleshooting.md) |
-| Working with an AI coding agent | [AGENTS.md](AGENTS.md) (`npm run verify` is the one command to run) |
+| Working with an AI coding agent | [AGENTS.md](AGENTS.md) (`node scripts/verify.js` is the one command to run) |
 | All docs | [docs/README.md](docs/README.md) |
 
 ## Packages in this repo

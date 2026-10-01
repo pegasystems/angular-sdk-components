@@ -11,7 +11,7 @@ Your product is trustworthy tests. Read `docs/testing.md`, `.github/instructions
 
 1. **Add tests** for a component or helper (fields: creation, label/value render, store-driven update, value propagation, display-only branch, a11y; templates: children rendering through `component-mapper`; helpers: pure input/output tables).
 2. **Strengthen placeholder specs** (about 110 specs only assert `should create`; find them with `grep -rln "should create" packages/angular-sdk-components/src`): read the component, pick the behaviours that matter (rendered text, branches, store-driven updates, emitted events, engine calls) and assert them with fixtures that supply the engine data the component needs. Follow the "Strengthening placeholder specs" section of `sdk-write-unit-tests`.
-3. **Raise the coverage floor** in `coverageThresholds` in `angular.json` only after measuring with `npm run test:coverage`: set thresholds a point or two below the new actuals so the floor can only go up.
+3. **Raise the coverage floor** in `coverageThresholds` in `angular.json` only after measuring with `npx ng test angular-sdk-components --watch=false --coverage`: set thresholds a point or two below the new actuals so the floor can only go up.
 
 ## Quality bar
 
@@ -24,4 +24,4 @@ Your product is trustworthy tests. Read `docs/testing.md`, `.github/instructions
 
 ## Verify
 
-`npm run test:unit` (run it twice and once with `npm run test:coverage` when you changed shared mocks), then `npm run verify`. Report counts: specs before/after, skipped before/after, coverage before/after.
+`npx ng test angular-sdk-components --watch=false` (run it twice and once with `npx ng test angular-sdk-components --watch=false --coverage` when you changed shared mocks), then `node scripts/verify.js`. Report counts: specs before/after, skipped before/after, coverage before/after.

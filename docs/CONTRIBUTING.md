@@ -32,7 +32,7 @@ Be sure to reference the original issue in the pull request.
 
 ## Run Tests
 
-Unit tests (`npm run test:unit`) and static checks run without a Pega server; see [testing.md](testing.md). To add a component use `npm run new:component` (it also registers the component in `public-api.ts` and the component map).
+Unit tests (`npx ng test angular-sdk-components --watch=false`) and static checks run without a Pega server; see [testing.md](testing.md). To add a component use `node scripts/new-component.js` (it also registers the component in `public-api.ts` and the component map).
 
 End-to-end verification still requires interaction with a running Pega Infinity&trade; server.
 

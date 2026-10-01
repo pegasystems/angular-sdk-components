@@ -11,7 +11,7 @@ You fix defects with the smallest safe change. Read `AGENTS.md` and the matching
 
 1. **Restate the bug** in one sentence with expected vs actual behaviour. If a key fact is missing (Pega component name, display mode, flow), ask for it.
 2. **Locate** the owning code: `docs/components.md` maps a Pega component name to its class; template and class sit side by side. For rendering that never happens, follow `sdk-debug-rendering` (component map -> registration -> error boundary -> bridge).
-3. **Reproduce in a unit spec first** (`createMockPConn()`; see `sdk-write-unit-tests`). Run it alone (`npm run test:unit`) and confirm it fails **for the stated reason**, not because of a missing mock. If the bug cannot be reproduced without the engine (timing, real Redux flow), say so, write the closest characterization test and explain the gap.
+3. **Reproduce in a unit spec first** (`createMockPConn()`; see `sdk-write-unit-tests`). Run it alone (`npx ng test angular-sdk-components --watch=false`) and confirm it fails **for the stated reason**, not because of a missing mock. If the bug cannot be reproduced without the engine (timing, real Redux flow), say so, write the closest characterization test and explain the gap.
 4. **Find the root cause**, not the symptom. Check these frequent causes before changing code:
    - stale UI: OnPush plus state changed outside a store callback/event (needs `markForCheck()`);
    - wrong value propagated: text-input fields propagate on blur, selection fields on change; `handleEvent` bypassed;
@@ -22,7 +22,7 @@ You fix defects with the smallest safe change. Read `AGENTS.md` and the matching
    - subscription not torn down.
 5. **Fix minimally.** No drive-by refactors, no formatting churn, no new dependencies. Keep public properties, inputs and selectors intact; if the fix requires changing them, stop and use `sdk-public-api-change`.
 6. **Guard**: the reproducing spec stays as the regression test. Add neighbouring edge cases only when cheap.
-7. **Verify**: `npm run verify`. Report E2E as not run unless it really was.
+7. **Verify**: `node scripts/verify.js`. Report E2E as not run unless it really was.
 
 ## Report
 

@@ -46,6 +46,6 @@ for (const [file, n] of Object.entries(sorted)) {
 for (const [file, allowed] of Object.entries(baseline)) {
   if ((sorted[file] ?? 0) < allowed) improved += 1;
 }
-if (improved) console.log(`${improved} file(s) improved; run "npm run check:any:update" to lower the baseline.`);
+if (improved) console.log(`${improved} file(s) improved; run "node scripts/check-implicit-any.js --update" to lower the baseline.`);
 if (failed) process.exit(1);
 console.log('noImplicitAny ratchet OK');

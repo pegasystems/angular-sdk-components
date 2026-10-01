@@ -6,11 +6,11 @@ Status: Accepted
 
 ## Delivered
 **Phase B (additive)**
-- `noImplicitAny` per-file ratchet (`npm run check:any`); `_bridge` is clean. Strict null checks were already enabled through `strict: true`.
+- `noImplicitAny` per-file ratchet (`node scripts/check-implicit-any.js`); `_bridge` is clean. Strict null checks were already enabled through `strict: true`.
 - `FieldBase<TValue = any>` generic (non-breaking default) and a `markForCheck()` hook.
 - Bridge characterization tests (`AngularPConnectService`, component map) so the bridge can be refactored safely.
 - axe-core accessibility checks for 12 field components.
-- `npm run new:component` scaffolds and registers components; `npm run check:overrides` type-checks the generated overrides package. This found and fixed a real defect: `build-overrides` did not rewrite `import type` paths, so the shipped `field.base.ts` in `@pega/angular-sdk-overrides` pointed at a non-existent relative module.
+- `node scripts/new-component.js` scaffolds and registers components; `npx ngc -p tsconfig.overrides-check.json` type-checks the generated overrides package. This found and fixed a real defect: `build-overrides` did not rewrite `import type` paths, so the shipped `field.base.ts` in `@pega/angular-sdk-overrides` pointed at a non-existent relative module.
 - Generated component catalogue (`docs/components.md`), testing and theming guides.
 
 **Phase C (applied where it is verifiable without a Pega server)**

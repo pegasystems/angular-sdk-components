@@ -22,7 +22,7 @@ Edit `sdk-config.json`, **or** keep the file untouched and use environment varia
 ```bash
 export SDK_INFINITY_REST_SERVER_URL=https://my-pega.example.com/prweb
 export SDK_PORTAL_CLIENT_ID=<oauth client id>
-npm run configure        # writes the values into sdk-config.json
+node scripts/configure-sdk.js        # writes the values into sdk-config.json
 ```
 
 At minimum set `SDK_INFINITY_REST_SERVER_URL` and `SDK_PORTAL_CLIENT_ID`. All settings are described in [configuration.md](configuration.md).
@@ -30,10 +30,10 @@ At minimum set `SDK_INFINITY_REST_SERVER_URL` and `SDK_PORTAL_CLIENT_ID`. All se
 ## 4. Check your environment
 
 ```bash
-npm run doctor
+node scripts/doctor.js
 ```
 
-It verifies the Node version, installed dependencies, `sdk-config.json`, HTTPS keys, port 3500 and that your Infinity server is reachable, and tells you how to fix anything that is wrong. Use `npm run doctor -- --offline` to skip the network probe.
+It verifies the Node version, installed dependencies, `sdk-config.json`, HTTPS keys, port 3500 and that your Infinity server is reachable, and tells you how to fix anything that is wrong. Use `node scripts/doctor.js --offline` to skip the network probe.
 
 ## 5. Run
 
@@ -47,14 +47,14 @@ Entry pages: `/portal` (full portal), `/embedded` (mashup / embedded), `/fullpor
 ## 6. Make it yours
 
 - Change a component: edit it under `packages/angular-sdk-components/src/lib/_components/`.
-- Add a component: `npm run new:component -- field star-rating StarRating` (see [customizing.md](customizing.md)).
+- Add a component: `node scripts/new-component.js field star-rating StarRating` (see [customizing.md](customizing.md)).
 - Override a Pega-provided component without editing the originals: [customizing.md](customizing.md#overriding-a-component).
 
 ## 7. Verify and ship
 
 ```bash
 npm run lint
-npm run test:unit            # no Pega server needed
+npx ng test angular-sdk-components --watch=false            # no Pega server needed
 npm run prod-build-angularsdk
 ```
 
