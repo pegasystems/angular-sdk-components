@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { Utils } from '../../../_helpers/utils';
@@ -8,7 +8,7 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-material-summary-item',
   templateUrl: './material-summary-item.component.html',
   styleUrls: ['./material-summary-item.component.scss'],
-  imports: [CommonModule, MatButtonModule, MatMenuModule]
+  imports: [MatButtonModule, MatMenuModule]
 })
 export class MaterialSummaryItemComponent implements OnInit {
   @Input() item$: any;

@@ -31,7 +31,7 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "tsConfig": "packages/angular-sdk-components/tsconfig.spec.json",
-            "polyfills": []
+            "polyfills": ["packages/angular-sdk-components/src/test-setup.ts"]
           }
         }
       }

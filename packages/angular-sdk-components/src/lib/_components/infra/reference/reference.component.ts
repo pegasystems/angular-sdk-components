@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -12,7 +12,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-reference',
   templateUrl: './reference.component.html',
   styleUrls: ['./reference.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ReferenceComponent implements OnInit, OnDestroy, OnChanges {
   @Input() pConn$: typeof PConnect;

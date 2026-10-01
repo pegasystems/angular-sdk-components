@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { buildFilterComponents } from '../../../_helpers/filter-utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -15,7 +15,7 @@ interface InlineDashboardPageProps {
   selector: 'app-inline-dashboard-page',
   templateUrl: './inline-dashboard-page.component.html',
   styleUrls: ['./inline-dashboard-page.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardPageComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

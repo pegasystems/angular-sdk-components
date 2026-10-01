@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ErrorBoundaryComponent } from './error-boundary.component';
@@ -8,11 +9,12 @@ describe('ErrorBoundaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ErrorBoundaryComponent]
+      imports: [ErrorBoundaryComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ErrorBoundaryComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

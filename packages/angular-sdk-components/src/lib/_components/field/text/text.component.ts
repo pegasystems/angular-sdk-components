@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -15,7 +15,7 @@ interface TextProps extends PConnFieldProps {
   selector: 'app-text',
   templateUrl: './text.component.html',
   styleUrls: ['./text.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class TextComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -1,44 +1,62 @@
 <div style="text-align: left" class="psdk-flow-container-top">
-  <div *ngIf="!bShowConfirm">
-    <div *ngIf="!todo_showTodo$">
-      <h2 *ngIf="containerName$">{{ containerName$ }}</h2>
-      <div *ngIf="banners.length">
-        <component-mapper name="AlertBanner" [props]="{ banners }"></component-mapper>
-      </div>
+  @if (!bShowConfirm) {
+    <div>
+      @if (!todo_showTodo$) {
+        <div>
+          @if (containerName$) {
+            <h2>{{ containerName$ }}</h2>
+          }
+          @if (banners.length) {
+            <div>
+              <component-mapper name="AlertBanner" [props]="{ banners }"></component-mapper>
+            </div>
+          }
+        </div>
+      }
+      @if (todo_showTodo$) {
+        <div>
+          @if (pConnectOfActiveContainerItem) {
+            <component-mapper
+              name="Todo"
+              [props]="{
+                pConn$: pConnectOfActiveContainerItem,
+                caseInfoID$: todo_caseInfoID$,
+                datasource$: todo_datasource$,
+                showTodoList$: todo_showTodoList$,
+                headerText$: todo_headerText$,
+                type$: 'TODO',
+                context$: todo_context$,
+                isConfirm: true
+              }"
+            ></component-mapper>
+          }
+        </div>
+      }
+      @if (!todo_showTodo$) {
+        <div>
+          @if (pConnectOfActiveContainerItem) {
+            <component-mapper
+              name="Assignment"
+              [props]="{ pConn$: pConnectOfActiveContainerItem, formGroup$, arChildren$, itemKey$ }"
+            ></component-mapper>
+          }
+        </div>
+      }
     </div>
-    <div *ngIf="todo_showTodo$">
-      <component-mapper
-        *ngIf="pConnectOfActiveContainerItem"
-        name="Todo"
-        [props]="{
-          pConn$: pConnectOfActiveContainerItem,
-          caseInfoID$: todo_caseInfoID$,
-          datasource$: todo_datasource$,
-          showTodoList$: todo_showTodoList$,
-          headerText$: todo_headerText$,
-          type$: 'TODO',
-          context$: todo_context$,
-          isConfirm: true
-        }"
-      ></component-mapper>
+  }
+  @if (bHasCaseMessages$) {
+    <div>
+      <mat-card class="psdk-message-card">
+        <div style="display: flex; flex-direction: row; align-items: center">
+          <div><img class="psdk-icon" src="{{ checkSvg$ }}" /></div>
+          <div>{{ caseMessages$ }}</div>
+        </div>
+      </mat-card>
     </div>
-    <div *ngIf="!todo_showTodo$">
-      <component-mapper
-        *ngIf="pConnectOfActiveContainerItem"
-        name="Assignment"
-        [props]="{ pConn$: pConnectOfActiveContainerItem, formGroup$, arChildren$, itemKey$ }"
-      ></component-mapper>
+  }
+  @if (bShowBanner && bShowConfirm && confirm_pconn) {
+    <div>
+      <component-mapper name="reference" [props]="{ formGroup$, pConn$: confirm_pconn }"></component-mapper>
     </div>
-  </div>
-  <div *ngIf="bHasCaseMessages$">
-    <mat-card class="psdk-message-card">
-      <div style="display: flex; flex-direction: row; align-items: center">
-        <div><img class="psdk-icon" src="{{ checkSvg$ }}" /></div>
-        <div>{{ caseMessages$ }}</div>
-      </div>
-    </mat-card>
-  </div>
-  <div *ngIf="bShowBanner && bShowConfirm && confirm_pconn">
-    <component-mapper name="reference" [props]="{ formGroup$, pConn$: confirm_pconn }"></component-mapper>
-  </div>
+  }
 </div>

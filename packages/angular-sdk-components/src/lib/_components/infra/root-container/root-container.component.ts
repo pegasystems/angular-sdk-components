@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -20,13 +20,7 @@ const options = { context: 'app' };
   selector: 'app-root-container',
   templateUrl: './root-container.component.html',
   styleUrls: ['./root-container.component.scss'],
-  imports: [
-    CommonModule,
-    MatProgressSpinnerModule,
-    ModalViewContainerComponent,
-    PreviewViewContainerComponent,
-    forwardRef(() => ComponentMapperComponent)
-  ]
+  imports: [MatProgressSpinnerModule, ModalViewContainerComponent, PreviewViewContainerComponent, forwardRef(() => ComponentMapperComponent)]
 })
 export class RootContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

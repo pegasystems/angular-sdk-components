@@ -2,12 +2,24 @@
   <h2>{{ title$ }}</h2>
 </div>
 <div class="page-body">
-  <div *ngFor="let kid of arChildren$">
-    <div [ngSwitch]="kid.getPConnect().getComponentName()">
-      <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
-      <component-mapper *ngSwitchCase="'reference'" name="reference" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
-      <component-mapper *ngSwitchCase="'Region'" name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
-      <div *ngSwitchDefault>Page Missing: {{ kid.getPConnect().getComponentName() }}</div>
+  @for (kid of arChildren$; track kid) {
+    <div>
+      <div>
+        @switch (kid.getPConnect().getComponentName()) {
+          @case ('View') {
+            <component-mapper name="View" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @case ('reference') {
+            <component-mapper name="reference" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @case ('Region') {
+            <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect() }"></component-mapper>
+          }
+          @default {
+            <div>Page Missing: {{ kid.getPConnect().getComponentName() }}</div>
+          }
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>

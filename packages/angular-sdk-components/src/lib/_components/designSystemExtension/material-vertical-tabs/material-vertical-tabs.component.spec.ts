@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { createMockPConn } from '../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MaterialVerticalTabsComponent } from './material-vertical-tabs.component';
 
@@ -6,15 +7,16 @@ describe('MaterialVerticalTabsComponent', () => {
   let component: MaterialVerticalTabsComponent;
   let fixture: ComponentFixture<MaterialVerticalTabsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MaterialVerticalTabsComponent]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MaterialVerticalTabsComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MaterialVerticalTabsComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

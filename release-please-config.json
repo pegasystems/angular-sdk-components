@@ -1,0 +1,10 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "@pega/angular-sdk-components",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": ["packages/angular-sdk-components/package.json"]
+    }
+  }
+}

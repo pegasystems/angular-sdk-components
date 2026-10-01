@@ -1,7 +1,9 @@
-<div *ngIf="childComponentPConnect">
-  <component-mapper
-    [name]="childComponentPConnect.getComponentName()"
-    [props]="{ pConn$: childComponentPConnect, formGroup$ }"
-    errorMsg="Defer Load Missing: {{ childComponentPConnect.getComponentName() }}"
-  ></component-mapper>
-</div>
+@if (childComponentPConnect) {
+  <div>
+    <component-mapper
+      [name]="childComponentPConnect.getComponentName()"
+      [props]="{ pConn$: childComponentPConnect, formGroup$ }"
+      errorMsg="Defer Load Missing: {{ childComponentPConnect.getComponentName() }}"
+    ></component-mapper>
+  </div>
+}

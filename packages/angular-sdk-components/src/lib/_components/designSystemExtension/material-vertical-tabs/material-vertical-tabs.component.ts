@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
@@ -7,7 +7,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   selector: 'app-material-vertical-tabs',
   templateUrl: './material-vertical-tabs.component.html',
   styleUrls: ['./material-vertical-tabs.component.scss'],
-  imports: [CommonModule, MatButtonToggleModule, MatBadgeModule]
+  imports: [MatButtonToggleModule, MatBadgeModule]
 })
 export class MaterialVerticalTabsComponent implements OnInit {
   @Input() tabConfig$: any[];

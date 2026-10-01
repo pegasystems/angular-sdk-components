@@ -1,4 +1,5 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { createMockPConn } from '../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MultiStepComponent } from './multi-step.component';
 
@@ -6,15 +7,16 @@ describe('MultiStepComponent', () => {
   let component: MultiStepComponent;
   let fixture: ComponentFixture<MultiStepComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [MultiStepComponent]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MultiStepComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MultiStepComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

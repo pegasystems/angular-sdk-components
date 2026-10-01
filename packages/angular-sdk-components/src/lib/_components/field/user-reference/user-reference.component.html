@@ -1,49 +1,68 @@
 <div>
-  <div *ngIf="displayMode$; else noDisplayMode">
-    <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
-  </div>
-  <ng-template #noDisplayMode>
-    <div class="psdk-user-reference">
-      <div *ngIf="this.userID$ && type === 'operator'">
-        <component-mapper name="Operator" [props]="{ pConn$, name$: userName$ }"></component-mapper>
-      </div>
-      <div [formGroup]="formGroup$" *ngIf="type === 'dropdown'">
-        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
-          <mat-select [required]="bRequired$" [formControl]="fieldControl" [attr.data-test-id]="testId" (selectionChange)="fieldOnChange($event)">
-            <mat-option *ngFor="let opt of options$" [value]="opt.key">
-              {{ opt.value }}
-            </mat-option>
-          </mat-select>
-          <mat-label>{{ label$ }}</mat-label>
-          <mat-error *ngIf="fieldControl.invalid">
-            {{ getErrorMessage() }}
-          </mat-error>
-          <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
-        </mat-form-field>
-      </div>
-      <div [formGroup]="formGroup$" *ngIf="type === 'searchbox'">
-        <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
-          <mat-label>{{ label$ }}</mat-label>
-          <input
-            matInput
-            [placeholder]="placeholder"
-            [formControl]="fieldControl"
-            [required]="bRequired$"
-            [matAutocomplete]="auto"
-            [attr.data-test-id]="testId"
-            (blur)="fieldOnBlur($event)"
-          />
-          <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="optionChanged($event)">
-            <mat-option *ngFor="let opt of filteredOptions | async" [value]="opt.value">
-              <span>{{ opt.value }}</span>
-            </mat-option>
-          </mat-autocomplete>
-          <mat-error *ngIf="fieldControl.invalid">
-            {{ getErrorMessage() }}
-          </mat-error>
-          <mat-hint *ngIf="helperText" [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
-        </mat-form-field>
-      </div>
+  @if (displayMode$) {
+    <div>
+      <component-mapper name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
     </div>
-  </ng-template>
+  } @else {
+    <div class="psdk-user-reference">
+      @if (this.userID$ && type === 'operator') {
+        <div>
+          <component-mapper name="Operator" [props]="{ pConn$, name$: userName$ }"></component-mapper>
+        </div>
+      }
+      @if (type === 'dropdown') {
+        <div [formGroup]="formGroup$">
+          <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
+            <mat-select [required]="bRequired$" [formControl]="fieldControl" [attr.data-test-id]="testId" (selectionChange)="fieldOnChange($event)">
+              @for (opt of options$; track opt) {
+                <mat-option [value]="opt.key">
+                  {{ opt.value }}
+                </mat-option>
+              }
+            </mat-select>
+            <mat-label>{{ label$ }}</mat-label>
+            @if (fieldControl.invalid) {
+              <mat-error>
+                {{ getErrorMessage() }}
+              </mat-error>
+            }
+            @if (helperText) {
+              <mat-hint [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
+            }
+          </mat-form-field>
+        </div>
+      }
+      @if (type === 'searchbox') {
+        <div [formGroup]="formGroup$">
+          <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
+            <mat-label>{{ label$ }}</mat-label>
+            <input
+              matInput
+              [placeholder]="placeholder"
+              [formControl]="fieldControl"
+              [required]="bRequired$"
+              [matAutocomplete]="auto"
+              [attr.data-test-id]="testId"
+              (blur)="fieldOnBlur($event)"
+            />
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="optionChanged($event)">
+              @for (opt of filteredOptions | async; track opt) {
+                <mat-option [value]="opt.value">
+                  <span>{{ opt.value }}</span>
+                </mat-option>
+              }
+            </mat-autocomplete>
+            @if (fieldControl.invalid) {
+              <mat-error>
+                {{ getErrorMessage() }}
+              </mat-error>
+            }
+            @if (helperText) {
+              <mat-hint [appFieldWarning]="bFieldMessageVisible$">{{ helperText }}</mat-hint>
+            }
+          </mat-form-field>
+        </div>
+      }
+    </div>
+  }
 </div>

@@ -1,5 +1,5 @@
 import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,7 +18,7 @@ interface IntegerProps extends PConnFieldProps {
   selector: 'app-integer',
   templateUrl: './integer.component.html',
   styleUrls: ['./integer.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, FieldWarningDirective, forwardRef(() => ComponentMapperComponent)]
 })
 export class IntegerComponent extends FieldBase {
   configProps$: IntegerProps;

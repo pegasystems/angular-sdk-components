@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input, OnInit, OnChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 import { DataReferenceAdvancedSearchService } from '../../../_services/data-reference-advanced-search.service';
@@ -9,7 +9,7 @@ import { getFirstChildConfig } from '../data-reference/utils';
   selector: 'app-advanced-search',
   templateUrl: './advanced-search.component.html',
   styleUrls: ['./advanced-search.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class AdvancedSearchComponent implements OnInit, OnChanges {
   @Input() pConn$: typeof PConnect;

@@ -1,7 +1,19 @@
-<div *ngIf="bVisible$ !== false" class="psdk-data-readonly">
-  <div *ngIf="displayAs$ == 'Paragraph'" class="mat-subtitle-2">{{ content$ }}</div>
-  <div *ngIf="displayAs$ == 'Heading 1'" class="mat-h1">{{ content$ }}</div>
-  <div *ngIf="displayAs$ == 'Heading 2'" class="mat-h2">{{ content$ }}</div>
-  <div *ngIf="displayAs$ == 'Heading 3'" class="mat-h3">{{ content$ }}</div>
-  <div *ngIf="displayAs$ == 'Heading 4'" class="mat-h4">{{ content$ }}</div>
-</div>
+@if (bVisible$ !== false) {
+  <div class="psdk-data-readonly">
+    @if (displayAs$ == 'Paragraph') {
+      <div class="mat-subtitle-2">{{ content$ }}</div>
+    }
+    @if (displayAs$ == 'Heading 1') {
+      <div class="mat-h1">{{ content$ }}</div>
+    }
+    @if (displayAs$ == 'Heading 2') {
+      <div class="mat-h2">{{ content$ }}</div>
+    }
+    @if (displayAs$ == 'Heading 3') {
+      <div class="mat-h3">{{ content$ }}</div>
+    }
+    @if (displayAs$ == 'Heading 4') {
+      <div class="mat-h4">{{ content$ }}</div>
+    }
+  </div>
+}

@@ -5,7 +5,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ComponentMapperComponent } from '../../../../_bridge/component-mapper/component-mapper.component';
 import { getCacheInfo, isValidInput } from '../search-groups/utils';
@@ -76,7 +76,6 @@ export const initializeSearchFields = (searchFields, getPConnect, referenceListC
   templateUrl: './search-groups.component.html',
   styleUrls: ['./search-groups.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatRadioModule,

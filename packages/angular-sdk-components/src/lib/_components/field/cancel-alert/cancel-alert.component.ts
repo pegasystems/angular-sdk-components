@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnChanges, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ProgressSpinnerService } from '../../../_messages/progress-spinner.service';
@@ -9,7 +9,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-cancel-alert',
   templateUrl: './cancel-alert.component.html',
   styleUrls: ['./cancel-alert.component.scss'],
-  imports: [CommonModule, MatGridListModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [MatGridListModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CancelAlertComponent implements OnChanges {
   @Input() pConn$: typeof PConnect;

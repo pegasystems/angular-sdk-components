@@ -1,16 +1,26 @@
 <div class="psdk-narrow-wide-column">
-  <div *ngFor="let kid of arChildren$">
-    <div class="psdk-narrow-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'left'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+  @for (kid of arChildren$; track kid) {
+    <div>
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'left') {
+        <div class="psdk-narrow-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'right') {
+        <div class="psdk-wide-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'a') {
+        <div class="psdk-narrow-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
+      @if (kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'b') {
+        <div class="psdk-wide-column">
+          <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
     </div>
-    <div class="psdk-wide-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'right'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-    </div>
-    <div class="psdk-narrow-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'a'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-    </div>
-    <div class="psdk-wide-column" *ngIf="kid.getPConnect().getRawMetadata()['name'].toLowerCase() === 'b'">
-      <component-mapper name="Region" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
-    </div>
-  </div>
+  }
 </div>

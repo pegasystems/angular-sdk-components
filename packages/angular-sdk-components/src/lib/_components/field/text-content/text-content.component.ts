@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
@@ -14,7 +14,7 @@ interface TextContentProps extends PConnFieldProps {
   selector: 'app-text-content',
   templateUrl: './text-content.component.html',
   styleUrls: ['./text-content.component.scss'],
-  imports: [CommonModule]
+  imports: []
 })
 export class TextContentComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

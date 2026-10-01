@@ -1,4 +1,4 @@
-<ng-container *ngIf="visibility$ && arChildren$.length">
+@if (visibility$ && arChildren$.length) {
   <component-mapper
     name="FieldGroup"
     [props]="{
@@ -9,17 +9,18 @@
     }"
   >
   </component-mapper>
-
   <ng-template #childrenTemplate>
-    <div *ngFor="let kid of arChildren$">
-      <component-mapper
-        [name]="kid.getPConnect().getComponentName()"
-        [props]="{
-          pConn$: kid.getPConnect(),
-          formGroup$: formGroup$
-        }"
-        errorMsg="Field Group wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
-      ></component-mapper>
-    </div>
+    @for (kid of arChildren$; track kid) {
+      <div>
+        <component-mapper
+          [name]="kid.getPConnect().getComponentName()"
+          [props]="{
+            pConn$: kid.getPConnect(),
+            formGroup$: formGroup$
+          }"
+          errorMsg="Field Group wants component not yet available: {{ kid.getPConnect().getComponentName() }}"
+        ></component-mapper>
+      </div>
+    }
   </ng-template>
-</ng-container>
+}

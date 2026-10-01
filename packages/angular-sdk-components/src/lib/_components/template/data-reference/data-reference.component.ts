@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -14,7 +14,7 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
   selector: 'app-data-reference',
   templateUrl: './data-reference.component.html',
   styleUrls: ['./data-reference.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class DataReferenceComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

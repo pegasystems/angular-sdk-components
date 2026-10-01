@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DetailsNarrowWideComponent } from './details-narrow-wide.component';
@@ -8,13 +9,14 @@ describe('DetailsNarrowWideComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DetailsNarrowWideComponent]
+      imports: [DetailsNarrowWideComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DetailsNarrowWideComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

@@ -26,3 +26,4 @@ packages/angular-sdk-overrides/SECURITY.md
 /tests/playwright-report
 
 **/tsconfig.*.tsbuildinfo
+temp/

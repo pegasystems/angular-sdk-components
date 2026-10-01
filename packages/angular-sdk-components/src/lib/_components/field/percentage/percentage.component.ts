@@ -1,5 +1,5 @@
 import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -26,7 +26,6 @@ interface PercentageProps extends Omit<PConnFieldProps, 'value'> {
   templateUrl: './percentage.component.html',
   styleUrls: ['./percentage.component.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

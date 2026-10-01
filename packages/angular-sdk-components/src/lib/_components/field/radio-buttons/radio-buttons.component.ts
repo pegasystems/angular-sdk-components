@@ -1,5 +1,5 @@
 import { Component, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatInputModule } from '@angular/material/input';
@@ -30,7 +30,6 @@ interface RadioButtonsProps extends PConnFieldProps {
   styleUrls: ['./radio-buttons.component.scss'],
   providers: [Utils],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,

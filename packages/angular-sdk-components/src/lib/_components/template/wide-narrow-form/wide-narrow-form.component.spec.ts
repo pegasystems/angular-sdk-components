@@ -1,3 +1,4 @@
+import { createMockPConn } from '../../../../test-setup';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WideNarrowFormComponent } from './wide-narrow-form.component';
@@ -8,13 +9,14 @@ describe('WideNarrowFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [WideNarrowFormComponent]
+      imports: [WideNarrowFormComponent]
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(WideNarrowFormComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Input, Output, EventEmitter, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
 import { ProgressSpinnerService } from '../../../../_messages/progress-spinner.service';
@@ -31,7 +31,7 @@ interface ModalEntry {
   selector: 'app-modal-view-container',
   templateUrl: './modal-view-container.component.html',
   styleUrls: ['./modal-view-container.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class ModalViewContainerComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

@@ -1,61 +1,78 @@
-<div *ngIf="variant !== 'card'; else cardMode">
-  <div *ngIf="displayMode$; else noDisplayMode">
-    <component-mapper
-      *ngIf="bVisible$ !== false"
-      name="FieldValueList"
-      [props]="{ label$: caption$, value$: value$ ? trueLabel$ : falseLabel$, displayMode$ }"
-    ></component-mapper>
-  </div>
-</div>
-<ng-template #noDisplayMode>
-  <div *ngIf="bHasForm$; else noEdit">
-    <div [formGroup]="formGroup$" *ngIf="bVisible$">
-      <div class="mat-form-field-infix" *ngIf="showLabel$">
-        <span>
-          <label class="mat-form-field-label psdk-label-readonly" [ngClass]="{ 'label-required': bRequired$ && selectionMode === 'multi' }">
-            {{ label$ }}</label
-          >
-        </span>
+@if (variant !== 'card') {
+  <div>
+    @if (displayMode$) {
+      <div>
+        @if (bVisible$ !== false) {
+          <component-mapper
+            name="FieldValueList"
+            [props]="{ label$: caption$, value$: value$ ? trueLabel$ : falseLabel$, displayMode$ }"
+          ></component-mapper>
+        }
       </div>
-      <div *ngIf="selectionMode === 'multi'; else single">
-        <div class="mat-mdc-option" *ngFor="let item of listOfCheckboxes">
-          <mat-checkbox
-            [labelPosition]="'after'"
-            [checked]="item.selected"
-            [required]="bRequired$"
-            [attr.data-test-id]="testId + ':' + item.value"
-            (change)="handleChangeMultiMode($event, item)"
-            (blur)="fieldOnBlur($event)"
-            >{{ item.text ?? item.value }}
-          </mat-checkbox>
+    } @else {
+      @if (bHasForm$) {
+        <div>
+          @if (bVisible$) {
+            <div [formGroup]="formGroup$">
+              @if (showLabel$) {
+                <div class="mat-form-field-infix">
+                  <span>
+                    <label class="mat-form-field-label psdk-label-readonly" [ngClass]="{ 'label-required': bRequired$ && selectionMode === 'multi' }">
+                      {{ label$ }}</label
+                    >
+                  </span>
+                </div>
+              }
+              @if (selectionMode === 'multi') {
+                <div>
+                  @for (item of listOfCheckboxes; track item) {
+                    <div class="mat-mdc-option">
+                      <mat-checkbox
+                        [labelPosition]="'after'"
+                        [checked]="item.selected"
+                        [required]="bRequired$"
+                        [attr.data-test-id]="testId + ':' + item.value"
+                        (change)="handleChangeMultiMode($event, item)"
+                        (blur)="fieldOnBlur($event)"
+                        >{{ item.text ?? item.value }}
+                      </mat-checkbox>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <mat-checkbox
+                  [labelPosition]="'after'"
+                  [checked]="isChecked$"
+                  [disabled]="bDisabled$ || bReadonly$"
+                  [required]="bRequired$"
+                  [attr.data-test-id]="testId"
+                  [formControl]="fieldControl"
+                  (change)="fieldOnChange($event)"
+                  (blur)="fieldOnBlur($event)"
+                  ><span [ngClass]="{ 'label-required': bRequired$ }">{{ caption$ }}</span></mat-checkbox
+                >
+                @if (helperText && !(fieldControl.invalid && (fieldControl.touched || fieldControl.dirty))) {
+                  <p [appFieldWarning]="bFieldMessageVisible$">
+                    {{ helperText }}
+                  </p>
+                }
+              }
+              @if (fieldControl.invalid && (fieldControl.touched || fieldControl.dirty)) {
+                <mat-error>{{ getErrorMessage() }}</mat-error>
+              }
+            </div>
+          }
         </div>
-      </div>
-      <ng-template #single>
-        <mat-checkbox
-          [labelPosition]="'after'"
-          [checked]="isChecked$"
-          [disabled]="bDisabled$ || bReadonly$"
-          [required]="bRequired$"
-          [attr.data-test-id]="testId"
-          [formControl]="fieldControl"
-          (change)="fieldOnChange($event)"
-          (blur)="fieldOnBlur($event)"
-          ><span [ngClass]="{ 'label-required': bRequired$ }">{{ caption$ }}</span></mat-checkbox
-        >
-        <p *ngIf="helperText && !(fieldControl.invalid && (fieldControl.touched || fieldControl.dirty))" [appFieldWarning]="bFieldMessageVisible$">
-          {{ helperText }}
-        </p>
-      </ng-template>
-      <mat-error *ngIf="fieldControl.invalid && (fieldControl.touched || fieldControl.dirty)">{{ getErrorMessage() }}</mat-error>
-    </div>
+      } @else {
+        @if (bVisible$ !== false) {
+          <component-mapper name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
+        }
+      }
+    }
   </div>
-</ng-template>
-<ng-template #noEdit>
-  <component-mapper *ngIf="bVisible$ !== false" name="Text" [props]="{ pConn$, formatAs$: 'text' }"></component-mapper>
-</ng-template>
-<ng-template #cardMode>
+} @else {
   <h4>{{ label$ }}</h4>
   <div>
     <component-mapper name="SelectableCard" [props]="{ pConn$: pConn$, type: 'checkbox' }" [parent]="this"></component-mapper>
   </div>
-</ng-template>
+}

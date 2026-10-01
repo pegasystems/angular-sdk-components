@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -72,7 +72,6 @@ interface RowActions {
   templateUrl: './simple-table-manual.component.html',
   styleUrls: ['./simple-table-manual.component.scss'],
   imports: [
-    CommonModule,
     MatTableModule,
     MatButtonModule,
     MatSortModule,

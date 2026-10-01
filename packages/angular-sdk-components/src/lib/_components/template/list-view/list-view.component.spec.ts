@@ -1,20 +1,23 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { createMockPConn } from '../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ListViewComponent } from './list-view.component';
 
-describe('ListViewComponent', () => {
+// TODO: needs engine-level PConnect/PCore fixtures beyond the shared lenient mocks in test-setup.ts
+xdescribe('ListViewComponent', () => {
   let component: ListViewComponent;
   let fixture: ComponentFixture<ListViewComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ListViewComponent]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ListViewComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ListViewComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

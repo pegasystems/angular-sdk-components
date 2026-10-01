@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormGroup } from '@angular/forms';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -11,7 +11,7 @@ type StepIndicator = 'horizontal' | 'vertical' | 'vertical-start';
   templateUrl: './multi-step.component.html',
   styleUrls: ['./multi-step.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiStepComponent implements OnInit {
   @Input() pConn$: typeof PConnect;

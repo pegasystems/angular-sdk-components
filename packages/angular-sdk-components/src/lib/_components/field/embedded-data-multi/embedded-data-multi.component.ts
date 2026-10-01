@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, OnDestroy, forwardRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
@@ -25,7 +24,7 @@ interface EmbeddedDataMultiProps {
   selector: 'app-embedded-data-multi',
   templateUrl: './embedded-data-multi.component.html',
   styleUrls: ['./embedded-data-multi.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class EmbeddedDataMultiComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

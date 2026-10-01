@@ -1,73 +1,103 @@
 <div class="psdk-case-summary-fields">
   <dl class="psdk-case-summary-fields-primary">
-    <div *ngFor="let field of primaryFieldsWithStatus$" class="psdk-csf-primary-field">
-      <dt
-        *ngIf="
+    @for (field of primaryFieldsWithStatus$; track field) {
+      <div class="psdk-csf-primary-field">
+        @if (
           field.type.toLowerCase() !== 'objectreference' && field.type.toLowerCase() !== 'reference' && field.type.toLowerCase() !== 'caseoperator'
-        "
-        class="psdk-csf-primary-field-header"
-      >
-        {{ field.config?.label }}
-      </dt>
-      <dd class="psdk-csf-primary-field-data" [ngSwitch]="field.type.toLowerCase()">
-        <span *ngSwitchCase="'textinput'" class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
-        <span *ngSwitchCase="'status'" class="psdk-csf-status-style">{{ field.config.value || '---' }}</span>
-        <a *ngSwitchCase="'phone'" class="psdk-primary-color" as="a" href="tel: {{ field.config.value }}">{{ field.config.value || '---' }}</a>
-        <a *ngSwitchCase="'email'" class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ field.config.value || '---' }}</a>
-        <span *ngSwitchCase="'date'" class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
-        <div class="psdk-case-summary-operator" *ngSwitchCase="'caseoperator'">
+        ) {
+          <dt class="psdk-csf-primary-field-header">
+            {{ field.config?.label }}
+          </dt>
+        }
+        <dd class="psdk-csf-primary-field-data">
+          @switch (field.type.toLowerCase()) {
+            @case ('textinput') {
+              <span class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
+            }
+            @case ('status') {
+              <span class="psdk-csf-status-style">{{ field.config.value || '---' }}</span>
+            }
+            @case ('phone') {
+              <a class="psdk-primary-color" as="a" href="tel: {{ field.config.value }}">{{ field.config.value || '---' }}</a>
+            }
+            @case ('email') {
+              <a class="psdk-primary-color" href="mailto: {{ field.config.value }}">{{ field.config.value || '---' }}</a>
+            }
+            @case ('date') {
+              <span class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
+            }
+            @case ('caseoperator') {
+              <div class="psdk-case-summary-operator">
+                <component-mapper
+                  name="Operator"
+                  [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
+                ></component-mapper>
+              </div>
+            }
+            @case ('objectreference') {
+              <div>
+                <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid }"></component-mapper>
+              </div>
+            }
+            @case ('reference') {
+              <div class="psdk-csf-object-reference-value">
+                <component-mapper name="reference" [props]="{ pConn$: field.kid }"></component-mapper>
+              </div>
+            }
+            @default {
+              <span class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
+            }
+          }
+        </dd>
+      </div>
+    }
+  </dl>
+</div>
+<div class="psdk-case-summary-fields">
+  @for (field of secondaryFields$; track field) {
+    <dl class="psdk-case-summary-fields-secondary">
+      @if (
+        field?.config?.label?.toLowerCase() == 'create operator' ||
+        field?.displayLabel?.toLowerCase() == 'create operator' ||
+        field?.config?.label?.toLowerCase() == 'update operator' ||
+        field?.displayLabel?.toLowerCase() == 'update operator'
+      ) {
+        <div>
           <component-mapper
             name="Operator"
             [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
           ></component-mapper>
         </div>
-        <div *ngSwitchCase="'objectreference'">
-          <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid }"></component-mapper>
+      } @else if (field.type.toLowerCase() === 'objectreference') {
+        <div class="psdk-csf-object-reference-value">
+          <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"></component-mapper>
         </div>
-        <div *ngSwitchCase="'reference'" class="psdk-csf-object-reference-value">
+      } @else if (field.type.toLowerCase() === 'reference') {
+        <div class="psdk-csf-object-reference-value">
           <component-mapper name="reference" [props]="{ pConn$: field.kid }"></component-mapper>
         </div>
-        <span *ngSwitchDefault class="psdk-csf-text-style">{{ field.config.value || '---' }}</span>
-      </dd>
-    </div>
-  </dl>
-</div>
-<div class="psdk-case-summary-fields">
-  <dl *ngFor="let field of secondaryFields$" class="psdk-case-summary-fields-secondary">
-    @if (
-      field?.config?.label?.toLowerCase() == 'create operator' ||
-      field?.displayLabel?.toLowerCase() == 'create operator' ||
-      field?.config?.label?.toLowerCase() == 'update operator' ||
-      field?.displayLabel?.toLowerCase() == 'update operator'
-    ) {
-      <div>
-        <component-mapper
-          name="Operator"
-          [props]="{ pConn$: field?.kid, displayLabel: field?.displayLabel || field?.config.displayLabel }"
-        ></component-mapper>
-      </div>
-    } @else if (field.type.toLowerCase() === 'objectreference') {
-      <div class="psdk-csf-object-reference-value">
-        <component-mapper name="ObjectReference" [props]="{ pConn$: field.kid, displayMode: 'DISPLAY_ONLY', hideLabel: true }"></component-mapper>
-      </div>
-    } @else if (field.type.toLowerCase() === 'reference') {
-      <div class="psdk-csf-object-reference-value">
-        <component-mapper name="reference" [props]="{ pConn$: field.kid }"></component-mapper>
-      </div>
-    } @else {
-      <div class="psdk-csf-secondary-field">
-        <dt class="psdk-csf-secondary-field-header">
-          {{ field.config?.displayLabel || field.config?.label }}
-        </dt>
-
-        <dd class="psdk-csf-secondary-field-data">
-          <div [ngSwitch]="field.type.toLowerCase()">
-            <label *ngSwitchCase="'userreference'" class="psdk-secondary-value">{{ field.config.value.userName || '---' }}</label>
-            <label *ngSwitchCase="'checkbox'" class="psdk-secondary-value">{{ field.config.falseLabel || '---' }}</label>
-            <label *ngSwitchDefault class="psdk-secondary-value">{{ field.config.value || '---' }}</label>
-          </div>
-        </dd>
-      </div>
-    }
-  </dl>
+      } @else {
+        <div class="psdk-csf-secondary-field">
+          <dt class="psdk-csf-secondary-field-header">
+            {{ field.config?.displayLabel || field.config?.label }}
+          </dt>
+          <dd class="psdk-csf-secondary-field-data">
+            <div>
+              @switch (field.type.toLowerCase()) {
+                @case ('userreference') {
+                  <label class="psdk-secondary-value">{{ field.config.value.userName || '---' }}</label>
+                }
+                @case ('checkbox') {
+                  <label class="psdk-secondary-value">{{ field.config.falseLabel || '---' }}</label>
+                }
+                @default {
+                  <label class="psdk-secondary-value">{{ field.config.value || '---' }}</label>
+                }
+              }
+            </div>
+          </dd>
+        </div>
+      }
+    </dl>
+  }
 </div>

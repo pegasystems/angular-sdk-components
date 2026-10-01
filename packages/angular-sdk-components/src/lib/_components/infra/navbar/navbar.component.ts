@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { logout } from '@pega/auth/lib/sdk-auth-manager';
@@ -17,7 +17,7 @@ interface NavBarProps {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
   providers: [Utils],
-  imports: [CommonModule, MatListModule, MatMenuModule]
+  imports: [MatListModule, MatMenuModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   @Input() pConn$: typeof PConnect;

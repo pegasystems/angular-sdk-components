@@ -1,65 +1,86 @@
-<div class="file-upload-container" *ngIf="bVisible$">
-  <span class="attachment-label" [ngClass]="{ 'file-label': bRequired$ }">{{ label$ }}</span>
-  <div *ngIf="displayMode !== 'DISPLAY_ONLY' && ((files.length === 0 && !allowMultiple$) || allowMultiple$)">
-    <div
-      style="margin-bottom: 10px"
-      id="attachment-container"
-      [ngClass]="validateMessage ? 'psdk-modal-file-selector-error' : 'psdk-modal-file-selector'"
-    >
-      <div [hidden]="true" id="attachment-ID">
-        {{ valueRef }}
-      </div>
-      <input hidden type="file" [required]="bRequired$" #uploader [id]="valueRef" [multiple]="allowMultiple$" (change)="onFileAdded($event)" />
-      <button mat-stroked-button color="primary" [disabled]="bDisabled$" (click)="uploader.click()">
-        {{
-          allowMultiple$
-            ? uploadMultipleFilesLabel === 'file_upload_text_multiple'
-              ? 'Choose files'
-              : uploadMultipleFilesLabel
-            : uploadSingleFileLabel === 'file_upload_text_one'
-              ? 'Choose a file'
-              : uploadSingleFileLabel
-        }}
-      </button>
-    </div>
-  </div>
-  <span *ngIf="validateMessage" class="file-error">{{ validateMessage }}</span>
-  <div *ngIf="files && files.length > 0">
-    <div *ngFor="let file of files; let i = index">
-      <div class="psdk-attachment-card">
-        <div className="psdk-utility-card-icon">
-          <img *ngIf="!file.inProgress" class="psdk-attachment-card-svg-icon" src="{{ srcImg }}" />
-          <mat-spinner *ngIf="file.inProgress" class="progress-spinner" diameter="40"></mat-spinner>
-        </div>
-        <div class="psdk-attachment-card-main">
-          <div class="psdk-attachment-card-main-primary-label">{{ file.props.name }}</div>
-          <div *ngIf="file.props.meta" [ngStyle]="{ color: file.props.error ? 'red' : null }">{{ file.props.meta }}</div>
-        </div>
-        <div class="psdk-attachment-action">
-          <div *ngIf="displayMode === 'DISPLAY_ONLY'; else editableActions">
-            <button id="setting-button" mat-icon-button [matMenuTriggerFor]="actionMenu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #actionMenu="matMenu">
-              <button mat-menu-item (click)="downloadFile(file.responseProps ? file.responseProps : {})">Download</button>
-            </mat-menu>
+@if (bVisible$) {
+  <div class="file-upload-container">
+    <span class="attachment-label" [ngClass]="{ 'file-label': bRequired$ }">{{ label$ }}</span>
+    @if (displayMode !== 'DISPLAY_ONLY' && ((files.length === 0 && !allowMultiple$) || allowMultiple$)) {
+      <div>
+        <div
+          style="margin-bottom: 10px"
+          id="attachment-container"
+          [ngClass]="validateMessage ? 'psdk-modal-file-selector-error' : 'psdk-modal-file-selector'"
+        >
+          <div [hidden]="true" id="attachment-ID">
+            {{ valueRef }}
           </div>
-          <ng-template #editableActions>
-            <button id="delete-attachment" *ngIf="file.ID" class="psdk-utility-button" (click)="deleteFile(file, i)">
-              <img class="psdk-utility-card-action-svg-icon" src="{{ deleteIcon }}" />
-            </button>
-            <div *ngIf="!file.ID">
-              <button id="setting-button" mat-icon-button [matMenuTriggerFor]="actionMenu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #actionMenu="matMenu">
-                <button mat-menu-item (click)="downloadFile(file.responseProps ? file.responseProps : {})">Download</button>
-                <button mat-menu-item (click)="deleteFile(file, i)">Delete</button>
-              </mat-menu>
-            </div>
-          </ng-template>
+          <input hidden type="file" [required]="bRequired$" #uploader [id]="valueRef" [multiple]="allowMultiple$" (change)="onFileAdded($event)" />
+          <button mat-stroked-button color="primary" [disabled]="bDisabled$" (click)="uploader.click()">
+            {{
+              allowMultiple$
+                ? uploadMultipleFilesLabel === 'file_upload_text_multiple'
+                  ? 'Choose files'
+                  : uploadMultipleFilesLabel
+                : uploadSingleFileLabel === 'file_upload_text_one'
+                  ? 'Choose a file'
+                  : uploadSingleFileLabel
+            }}
+          </button>
         </div>
       </div>
-    </div>
+    }
+    @if (validateMessage) {
+      <span class="file-error">{{ validateMessage }}</span>
+    }
+    @if (files && files.length > 0) {
+      <div>
+        @for (file of files; track file; let i = $index) {
+          <div>
+            <div class="psdk-attachment-card">
+              <div className="psdk-utility-card-icon">
+                @if (!file.inProgress) {
+                  <img class="psdk-attachment-card-svg-icon" src="{{ srcImg }}" />
+                }
+                @if (file.inProgress) {
+                  <mat-spinner class="progress-spinner" diameter="40"></mat-spinner>
+                }
+              </div>
+              <div class="psdk-attachment-card-main">
+                <div class="psdk-attachment-card-main-primary-label">{{ file.props.name }}</div>
+                @if (file.props.meta) {
+                  <div [ngStyle]="{ color: file.props.error ? 'red' : null }">{{ file.props.meta }}</div>
+                }
+              </div>
+              <div class="psdk-attachment-action">
+                @if (displayMode === 'DISPLAY_ONLY') {
+                  <div>
+                    <button id="setting-button" mat-icon-button [matMenuTriggerFor]="actionMenu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #actionMenu="matMenu">
+                      <button mat-menu-item (click)="downloadFile(file.responseProps ? file.responseProps : {})">Download</button>
+                    </mat-menu>
+                  </div>
+                } @else {
+                  @if (file.ID) {
+                    <button id="delete-attachment" class="psdk-utility-button" (click)="deleteFile(file, i)">
+                      <img class="psdk-utility-card-action-svg-icon" src="{{ deleteIcon }}" />
+                    </button>
+                  }
+                  @if (!file.ID) {
+                    <div>
+                      <button id="setting-button" mat-icon-button [matMenuTriggerFor]="actionMenu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #actionMenu="matMenu">
+                        <button mat-menu-item (click)="downloadFile(file.responseProps ? file.responseProps : {})">Download</button>
+                        <button mat-menu-item (click)="deleteFile(file, i)">Delete</button>
+                      </mat-menu>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
   </div>
-</div>
+}

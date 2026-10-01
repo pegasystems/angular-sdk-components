@@ -1,0 +1,45 @@
+name: quality
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master, 'release/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Lint and format
+        run: npm run lint
+      - name: Build library
+        run: npm run build-angular-sdk-components
+      - name: Public API report is up to date
+        run: npm run api:check
+      - name: Build overrides package
+        run: npm run build-overrides
+      - name: Verify package tarballs
+        run: npm run smoke:pack
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run test:unit

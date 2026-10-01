@@ -1,24 +1,38 @@
-<div class="progress-box" *ngIf="bIsProgress$">
-  <mat-spinner class="progress-spinner"></mat-spinner>
-</div>
-
-<div *ngIf="bShowRoot$">
-  <div [ngSwitch]="componentName$">
-    <component-mapper *ngSwitchCase="'View'" name="View" [props]="{ pConn$, displayOnlyFA$ }"></component-mapper>
-    <component-mapper
-      *ngSwitchCase="'ViewContainer'"
-      name="ViewContainer"
-      [props]="{ pConn$: viewContainerPConn$, displayOnlyFA$ }"
-    ></component-mapper>
-    <component-mapper *ngSwitchCase="'reference'" name="reference" [props]="{ pConn$ }"></component-mapper>
-    <div *ngSwitchDefault>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
+@if (bIsProgress$) {
+  <div class="progress-box">
+    <mat-spinner class="progress-spinner"></mat-spinner>
   </div>
-</div>
+}
 
-<div *ngIf="pvConn$ != null">
-  <app-preview-view-container [pConn$]="pvConn$"></app-preview-view-container>
-</div>
+@if (bShowRoot$) {
+  <div>
+    <div>
+      @switch (componentName$) {
+        @case ('View') {
+          <component-mapper name="View" [props]="{ pConn$, displayOnlyFA$ }"></component-mapper>
+        }
+        @case ('ViewContainer') {
+          <component-mapper name="ViewContainer" [props]="{ pConn$: viewContainerPConn$, displayOnlyFA$ }"></component-mapper>
+        }
+        @case ('reference') {
+          <component-mapper name="reference" [props]="{ pConn$ }"></component-mapper>
+        }
+        @default {
+          <div>{{ localizedVal('RootContainer Missing: ' + componentName$, localeCategory) }}.</div>
+        }
+      }
+    </div>
+  </div>
+}
 
-<div *ngIf="mConn$ != null">
-  <app-modal-view-container [pConn$]="mConn$"></app-modal-view-container>
-</div>
+@if (pvConn$ != null) {
+  <div>
+    <app-preview-view-container [pConn$]="pvConn$"></app-preview-view-container>
+  </div>
+}
+
+@if (mConn$ != null) {
+  <div>
+    <app-modal-view-container [pConn$]="mConn$"></app-modal-view-container>
+  </div>
+}

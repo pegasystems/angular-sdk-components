@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -7,7 +6,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
   selector: 'app-list-view-action-buttons',
   templateUrl: './list-view-action-buttons.component.html',
   styleUrls: ['./list-view-action-buttons.component.scss'],
-  imports: [CommonModule, MatGridListModule, MatButtonModule]
+  imports: [MatGridListModule, MatButtonModule]
 })
 export class ListViewActionButtonsComponent {
   @Input() pConn$: typeof PConnect;

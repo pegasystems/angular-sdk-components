@@ -4,20 +4,16 @@
 ></component-mapper>
 
 <ng-template #detailsContent>
-  <ng-container *ngIf="showHighlightedData && highlightedDataArr.length > 0">
+  @if (showHighlightedData && highlightedDataArr.length > 0) {
     <div class="psdk-grid-highlighted">
-      <component-mapper
-        *ngFor="let field of highlightedDataArr"
-        [name]="field.getComponentName()"
-        [props]="{ pConn$: field, formGroup$ }"
-      ></component-mapper>
+      @for (field of highlightedDataArr; track field) {
+        <component-mapper [name]="field.getComponentName()" [props]="{ pConn$: field, formGroup$ }"></component-mapper>
+      }
     </div>
-  </ng-container>
+  }
   <div class="psdk-grid-filter-2">
-    <component-mapper
-      *ngFor="let child of children"
-      [name]="child.getPConnect().getComponentName()"
-      [props]="{ pConn$: child.getPConnect(), formGroup$ }"
-    ></component-mapper>
+    @for (child of children; track child) {
+      <component-mapper [name]="child.getPConnect().getComponentName()" [props]="{ pConn$: child.getPConnect(), formGroup$ }"></component-mapper>
+    }
   </div>
 </ng-template>

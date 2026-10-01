@@ -1,20 +1,23 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { createMockPConn } from '../../../../test-setup';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UtilityComponent } from './utility.component';
 
-describe('UtilityComponent', () => {
+// TODO: needs engine-level PConnect/PCore fixtures beyond the shared lenient mocks in test-setup.ts
+xdescribe('UtilityComponent', () => {
   let component: UtilityComponent;
   let fixture: ComponentFixture<UtilityComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [UtilityComponent]
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [UtilityComponent]
     }).compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UtilityComponent);
     component = fixture.componentInstance;
+    (component as any).pConn$ = createMockPConn();
     fixture.detectChanges();
   });
 

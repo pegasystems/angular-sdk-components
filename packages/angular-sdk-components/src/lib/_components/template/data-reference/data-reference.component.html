@@ -1,16 +1,25 @@
-<div *ngIf="showAdvancedSearch; else notadvancedSearch">
-  <component-mapper name="SearchForm" [props]="{ pConn$: pConn$, formGroup$, searchSelectCacheKey: '' }"></component-mapper>
-</div>
-<ng-template #notadvancedSearch>
-  <div *ngIf="displaySingleRef">
-    <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$: firstChildPConnect(), dataRelationshipContext }"></component-mapper>
+@if (showAdvancedSearch) {
+  <div>
+    <component-mapper name="SearchForm" [props]="{ pConn$: pConn$, formGroup$, searchSelectCacheKey: '' }"></component-mapper>
   </div>
-  <div *ngIf="displayMultiRef">
-    <component-mapper name="MultiReferenceReadOnly" [props]="{ pConn$: firstChildPConnect() }"></component-mapper>
-  </div>
-  <div *ngIf="displayChild && childrenToRender && childrenToRender.length > 0">
-    <div *ngFor="let kid of childrenToRender">
-      <component-mapper [name]="kid?.getPConnect().getComponentName()" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+} @else {
+  @if (displaySingleRef) {
+    <div>
+      <component-mapper name="SingleReferenceReadOnly" [props]="{ pConn$: firstChildPConnect(), dataRelationshipContext }"></component-mapper>
     </div>
-  </div>
-</ng-template>
+  }
+  @if (displayMultiRef) {
+    <div>
+      <component-mapper name="MultiReferenceReadOnly" [props]="{ pConn$: firstChildPConnect() }"></component-mapper>
+    </div>
+  }
+  @if (displayChild && childrenToRender && childrenToRender.length > 0) {
+    <div>
+      @for (kid of childrenToRender; track kid) {
+        <div>
+          <component-mapper [name]="kid?.getPConnect().getComponentName()" [props]="{ pConn$: kid.getPConnect(), formGroup$ }"></component-mapper>
+        </div>
+      }
+    </div>
+  }
+}

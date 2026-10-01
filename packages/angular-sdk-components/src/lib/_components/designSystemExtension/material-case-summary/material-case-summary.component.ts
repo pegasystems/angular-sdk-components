@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, forwardRef, OnChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -7,7 +7,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-material-case-summary',
   templateUrl: './material-case-summary.component.html',
   styleUrls: ['./material-case-summary.component.scss'],
-  imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
+  imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class MaterialCaseSummaryComponent implements OnInit, OnChanges {
   @Input() status$: string;
