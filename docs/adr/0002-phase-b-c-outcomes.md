@@ -1,5 +1,7 @@
 # ADR 0002: Phase B and C outcomes
 
+Open follow-ups are tracked in [ADR 0003](0003-follow-ups.md).
+
 Status: Accepted
 
 ## Delivered
@@ -20,7 +22,7 @@ Status: Accepted
 - **OnPush for the remaining components** (templates, infra, widgets, async fields such as AutoComplete/Dropdown/Location): these mutate state in promise/subscription callbacks and in the containers' rendering pipeline. Zoneless + OnPush there needs each mutation site to call `markForCheck()` or move to signals, and must be validated end-to-end against Infinity (Playwright MediaCo), which was not available here.
 - **Secondary entry points** (`/fields`, `/templates`, `/widgets`): components import each other and the bridge by relative path; ng-packagr entry points require package-name imports across entries and would change public import paths. Needs its own design and a major release.
 - **`@defer` for heavy widgets** (rich text/maps): changes loading behavior; validate with E2E first.
-- **Bridge split**: the characterization tests are in place; splitting `angular-pconnect.ts` into registry/subscription/diff services is the next step.
+- **Bridge split**: prop resolution and form-field cleanup now live in `_bridge/helpers`; splitting the remaining subscription/registration/diff logic is tracked in [ADR 0003](0003-follow-ups.md).
 
 ## Verification required before release
 The OnPush changes are covered by unit tests but **must be exercised end-to-end** (MediaCo portal + embedded) before merging, since runtime store-driven rendering cannot be fully reproduced with mocks.
