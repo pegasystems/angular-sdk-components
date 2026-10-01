@@ -32,6 +32,12 @@ export class ListViewActionButtonsComponent {
       .then(() => {
         this.closeActionsDialog.emit();
       })
+      // A rejected submit (for example a validation or server error) must not surface as an unhandled promise
+      // rejection. The engine reports the error itself; here the dialog simply stays open so the user can correct
+      // the input and retry, and `finally` below re-enables the buttons.
+      .catch(error => {
+        console.error('ListViewActionButtons: submitEmbeddedDataModal failed', error);
+      })
       .finally(() => {
         this.isDisabled = false;
       });

@@ -139,6 +139,16 @@ describe('RadioButtonsComponent', () => {
       expect(c.getErrorMessage()).toBe('Pick a colour');
     });
 
+    it('renders mat-error once the control is invalid and touched', () => {
+      const fx = setup({ label: 'Colour', visibility: true, listType: 'associated', datasource: options });
+      const c = fx.componentInstance;
+      c.fieldControl.setErrors({ required: true });
+      c.fieldControl.markAsTouched();
+      c.markForCheck();
+      fx.detectChanges();
+      expect(fx.nativeElement.querySelector('mat-error')?.textContent).toContain('You must enter a value');
+    });
+
     it('renders helper text from the config', () => {
       const fx = setup({ label: 'Colour', visibility: true, helperText: 'Choose one', listType: 'associated', datasource: options });
       expect(fx.nativeElement.querySelector('mat-hint')?.textContent).toContain('Choose one');
@@ -194,8 +204,6 @@ describe('RadioButtonsComponent', () => {
         'My-Class'
       );
       const c = fx.componentInstance;
-      // propName is only assigned after the first updateSelf() during ngOnInit, so refresh once more (see report: first render has no locale name).
-      c.updateSelf();
       expect(c.localeContext).toBe('associated');
       expect(c.localeClass).toBe('My-Class');
       expect(c.localeName).toBe('Color');

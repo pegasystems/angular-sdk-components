@@ -11,7 +11,8 @@
         <div [formGroup]="formGroup$">
           <mat-form-field class="psdk-radio-form" subscriptSizing="dynamic">
             <mat-label>{{ label$ }}</mat-label>
-            <input matInput [placeholder]="placeholder" style="display: none" [required]="bRequired$" />
+            <!-- Hidden input bound to the same control so mat-form-field tracks the control's error state and shows <mat-error> -->
+            <input matInput [placeholder]="placeholder" style="display: none" [required]="bRequired$" [formControl]="fieldControl" />
             <mat-radio-group
               [value]="value$"
               [required]="bRequired$"

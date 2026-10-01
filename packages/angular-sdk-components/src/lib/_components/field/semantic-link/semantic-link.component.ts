@@ -134,7 +134,9 @@ export class SemanticLinkComponent implements OnInit, OnDestroy {
     this.value$ = this.configProps$.text || this.configProps$.value || '';
     this.displayMode$ = this.configProps$.displayMode;
     this.label$ = this.configProps$.label;
-    if (this.configProps$.visibility) {
+    // Only an explicit visibility value changes the default (visible). It must be checked against undefined and not for
+    // truthiness: a boolean `false` is falsy and previously skipped this block, so the link could never be hidden.
+    if (this.configProps$.visibility !== undefined) {
       this.bVisible$ = this.utils.getBooleanValue(this.configProps$.visibility);
     }
     this.referenceType = this.configProps$.referenceType;

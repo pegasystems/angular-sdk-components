@@ -110,6 +110,12 @@ describe('MultiselectComponent behaviour', () => {
     expect(c2.displayFieldMeta.key).toBe('Id');
   });
 
+  it('skips display field metadata for associated lists', () => {
+    const { c } = setup(refCfg);
+    expect(c.listType).toBe('associated');
+    expect(c.displayFieldMeta).toBeNull();
+  });
+
   it('adds secondary columns only for Case reference type', () => {
     const { c } = setup({ ...refCfg, listType: 'other', referenceType: 'Case' });
     expect(c.displayFieldMeta.secondary).toEqual(['Id']);

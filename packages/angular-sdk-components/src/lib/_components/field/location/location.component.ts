@@ -96,6 +96,10 @@ export class LocationComponent extends FieldBase {
       const latitude = Number(latAndLong[0]);
       const longitude = Number(latAndLong[1]);
       this.updateMap(latitude, longitude, this.configProps$.value);
+      // updateMap writes the displayed text (address or coordinates) into the form control. FieldBase.ngOnInit
+      // calls updateSelf() first and then resets the control to value$, so value$ has to carry the same text or
+      // the stored location is blank on first render.
+      this.value$ = this.fieldControl.value;
     }
 
     this.valueProp = this.pConn$.getStateProps().value;

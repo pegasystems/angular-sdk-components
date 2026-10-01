@@ -109,9 +109,8 @@ describe('SemanticLinkComponent', () => {
       expect(fx.nativeElement.querySelector('.psdk-value')?.textContent).toBe('---');
     });
 
-    it('renders nothing when visibility is false', () => {
-      // A string 'false' is used: a boolean false is ignored by the component (`if (visibility)`), see report.
-      const fx = setup({ text: 'C-1', visibility: 'false' });
+    it.each([false, 'false'])('renders nothing when visibility is %s', visibility => {
+      const fx = setup({ text: 'C-1', visibility });
       expect(fx.componentInstance.bVisible$).toBe(false);
       expect(fx.nativeElement.querySelector('.psdk-value')).toBeNull();
     });

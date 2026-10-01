@@ -84,7 +84,6 @@ describe('LocationComponent behaviour', () => {
 
   it('positions the map and sets the value from configured coordinates', () => {
     const { c } = setup({ ...cfg, coordinates: '12.5, 77.25', value: '10 Main St' });
-    c.updateSelf(); // ngOnInit later resets the control to value$ (see report), so re-run the update
     expect(c.center).toEqual({ lat: 12.5, lng: 77.25 });
     expect(c.markerPosition).toEqual({ lat: 12.5, lng: 77.25 });
     expect(c.coordinates).toBe('12.5, 77.25');
@@ -93,7 +92,6 @@ describe('LocationComponent behaviour', () => {
 
   it('uses the coordinates as the value when onlyCoordinates is set', () => {
     const { c } = setup({ ...cfg, onlyCoordinates: true, coordinates: '1, 2', value: 'ignored' });
-    c.updateSelf();
     expect(c.fieldControl.value).toBe('1, 2');
   });
 

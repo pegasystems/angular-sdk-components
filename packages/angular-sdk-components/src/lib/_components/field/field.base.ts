@@ -49,6 +49,11 @@ export class FieldBase<TValue = any> implements OnInit, OnDestroy {
     this.angularPConnectData = this.angularPConnect.registerAndSubscribeComponent(this, this.onStateChange.bind(this));
     this.controlName$ = this.angularPConnect.getComponentID(this);
 
+    // Resolve the actions API and property name before the first update: subclasses such as RadioButtons use
+    // `propName` inside updateSelf() (locale lookups), which previously ran with propName still undefined.
+    this.actionsApi = this.pConn$.getActionsApi();
+    this.propName = this.pConn$.getStateProps().value;
+
     // call checkAndUpdate
     this.checkAndUpdate();
 
@@ -60,9 +65,6 @@ export class FieldBase<TValue = any> implements OnInit, OnDestroy {
       this.bReadonly$ = true;
       this.bHasForm$ = false;
     }
-
-    this.actionsApi = this.pConn$.getActionsApi();
-    this.propName = this.pConn$.getStateProps().value;
   }
 
   /**

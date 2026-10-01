@@ -66,4 +66,18 @@ describe('ListViewActionButtonsComponent', () => {
     await vi.waitFor(() => expect(comp.isDisabled).toBe(false));
     expect(closed).toHaveBeenCalledTimes(1);
   });
+
+  it('Submit keeps the dialog open, re-enables the button and does not leave an unhandled rejection on failure', async () => {
+    const error = new Error('server says no');
+    const submitEmbeddedDataModal = vi.fn().mockRejectedValue(error);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const { comp, el } = setup({ submitEmbeddedDataModal });
+    const closed = vi.fn();
+    comp.closeActionsDialog.subscribe(closed);
+    (el.querySelectorAll('button')[1] as HTMLButtonElement).click();
+    await vi.waitFor(() => expect(comp.isDisabled).toBe(false));
+    expect(closed).not.toHaveBeenCalled();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('submitEmbeddedDataModal failed'), error);
+    errorSpy.mockRestore();
+  });
 });

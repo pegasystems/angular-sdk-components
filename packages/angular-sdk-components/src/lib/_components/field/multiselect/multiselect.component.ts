@@ -59,6 +59,11 @@ export class MultiselectComponent extends FieldBase {
 
     this.setPropertyValuesFromProps();
 
+    // `listType` is destructured below as a local, but later code reads `this.listType` (to skip the group/display
+    // field metadata for 'associated' lists). Without this assignment the field was always undefined, so that
+    // check was always true and the metadata was built even for associated lists.
+    this.listType = this.configProps$.listType ?? '';
+
     const {
       groupDataSource = [],
       parameters = {},
