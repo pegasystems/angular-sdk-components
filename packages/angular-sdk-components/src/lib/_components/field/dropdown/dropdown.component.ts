@@ -89,11 +89,12 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
   localeName = '';
   localePath = '';
   localizedValue = '';
+  placeholderText = '';
 
   set options(options: IOption[]) {
     this.options$ = options;
     if (this.displayMode$) {
-      this.value$ = this.value$ === 'Select' ? '' : this.options$?.find(option => option.key === this.value$)?.value || this.value$;
+      this.value$ = this.options$?.find(option => option.key === this.value$)?.value || this.value$;
       this.localizedValue = this.pConn$.getLocalizedValue(
         this.value$,
         this.localePath,
@@ -124,20 +125,15 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
     const { value, fieldMetadata, datasource } = configProps;
 
     this.value$ = value;
+    this.placeholderText = this.pConn$.getLocalizedValue(this.placeholder || 'Select...', '', '');
 
     if (!isEqual(datasource, this.theDatasource)) {
       // inbound datasource is different, so update theDatasource
       this.theDatasource = datasource || null;
     }
 
-    if (this.value$ === '' && !this.bReadonly$) {
-      this.value$ = 'Select';
-    }
-
     if (this.theDatasource) {
-      const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-      optionsList?.unshift(this.getPlaceholderOption());
-      this.options = optionsList;
+      this.options = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
@@ -224,32 +220,21 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
             };
             optionsData.push(obj);
           });
-          optionsData?.unshift(this.getPlaceholderOption());
           this.options = optionsData;
         });
       });
   }
 
-  // Uses the authored placeholder, falling back to 'Select...' when none is authored
-  private getPlaceholderOption(): IOption {
-    return { key: 'Select', value: this.pConn$.getLocalizedValue(this.placeholder || 'Select...', '', '') };
-  }
-
-  isSelected(buttonValue: string): boolean {
-    return this.value$ === buttonValue;
-  }
-
   fieldOnChange(event: any) {
-    if (event?.value === 'Select') {
-      event.value = '';
-    }
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
+    // The reset option has no value; Pega expects '' for a cleared field
+    const value = event.value ?? '';
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
 
     this.pConn$.clearErrorMessages({
       property: this.propName
     });
     if (this.onRecordChange) {
-      this.onRecordChange.emit(event.value);
+      this.onRecordChange.emit(value);
     }
   }
 
