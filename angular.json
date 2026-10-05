@@ -48,7 +48,7 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist",
             "index": "projects/angular-test-app/src/index.html",
@@ -57,6 +57,16 @@
             "tsConfig": "projects/angular-test-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              {
+                "glob": "auth.html",
+                "input": "./node_modules/@pega/auth/lib/oauth-client",
+                "output": "./"
+              },
+              {
+                "glob": "authDone.js",
+                "input": "./node_modules/@pega/auth/lib/oauth-client",
+                "output": "./"
+              },
               {
                 "glob": "sdk-config.json",
                 "input": "./",
@@ -107,9 +117,6 @@
             ],
             "styles": ["projects/angular-test-app/src/styles.scss"],
             "scripts": [],
-            "customWebpackConfig": {
-              "path": "./scripts/extra-webpack.config.js"
-            },
             "allowedCommonJsDependencies": ["lodash.clonedeep", "lodash.debounce", "downloadjs", "dayjs", "fast-deep-equal", "moment"]
           },
           "configurations": {
@@ -140,7 +147,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
+          "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "buildTarget": "angular-test-app:build:development",
             "port": 3500

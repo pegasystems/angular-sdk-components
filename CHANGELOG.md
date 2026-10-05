@@ -67,6 +67,10 @@
 *   **Fixed the issue where required validation was not triggered in the Rich Text Editor.**
       * Github: [PR-601](https://github.com/pegasystems/angular-sdk-components/pull/601)
 
+### **Dependencies & Infrastructure**
+*   Replaced the custom webpack builders with Angular CLI builders and moved OAuth asset copying into `angular.json`.
+      * Github: [PR-618](https://github.com/pegasystems/angular-sdk-components/pull/618)
+
 # [25.1.13](https://github.com/pegasystems/angular-sdk/tree/release/25.1.13) - Released: 12/06/2026
 
 ## Breaking changes
