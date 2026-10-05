@@ -11,12 +11,14 @@
       <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
         <mat-select
           [value]="value$"
+          [placeholder]="placeholderText"
           [required]="bRequired$"
           [disabled]="bDisabled$"
           [attr.data-test-id]="testId"
           (selectionChange)="fieldOnChange($event)"
           [formControl]="fieldControl"
         >
+          <mat-option>{{ placeholderText }}</mat-option>
           <mat-option *ngFor="let opt of options$" [value]="opt.key">
             {{ getLocalizedOptionValue(opt) }}
           </mat-option>
