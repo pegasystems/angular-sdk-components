@@ -152,8 +152,7 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     this.isDisplayModeEnabled = ['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(displayMode);
     this.refFieldMetadata = this.pConn$.getFieldMetadata(this.rawViewMetadata?.config?.authorContext);
     this.pyID = getMappedKey('pyID');
-    // @ts-ignore
-    const { allowImplicitRefresh } = PCore.getFieldDefaultUtils().fieldDefaults?.DataReference || {};
+    const { allowImplicitRefresh } = PCore.getFieldDefaultUtils().fieldDefaults?.['DataReference'] || {};
 
     this.allowImplicitRefresh = allowImplicitRefresh;
     this.isDDSourceDeferred =
@@ -398,7 +397,6 @@ export class DataReferenceComponent implements OnInit, OnDestroy {
     if (['Dropdown', 'Checkbox', 'RadioButtons'].includes(type) && !config.deferDatasource && config.datasource) {
       const isCardVariant = config.variant === 'card';
       const hasParameters = this.rawViewMetadata.config?.parameters;
-      // @ts-ignore
       const isDeferDataPageCallEnabled = isCardVariant && hasParameters && !this.firstChildPConnect()?.getSharedDataPageForReferenceList();
 
       const useDropDownDataSource = (isCardVariant && (this.dropDownDataSource || isDeferDataPageCallEnabled)) || (!isCardVariant && hasParameters);

@@ -464,7 +464,6 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
     if (typeof allowRowDelete === 'string' && allowRowDelete.startsWith('@E ')) {
       try {
         const expression = allowRowDelete.replace('@E ', '');
-        // @ts-expect-error - options param is optional per corejs docs
         return PCore.getExpressionEngine().evaluate(expression, row);
       } catch {
         return true;
