@@ -80,13 +80,14 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
   localeName = '';
   localePath = '';
   localizedValue = '';
+  placeholderText = '';
 
   set options(options: IOption[]) {
     this.options$ = options;
     if (this.displayMode$) {
       this.value$ = this.options$?.find(option => option.key === this.value$)?.value || this.value$;
       this.localizedValue = this.pConn$.getLocalizedValue(
-        this.value$ === 'Select...' ? '' : this.value$,
+        this.value$,
         this.localePath,
         this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
       );
@@ -115,20 +116,15 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
     const { value, fieldMetadata, datasource } = configProps;
 
     this.value$ = value;
+    this.placeholderText = this.pConn$.getLocalizedValue(this.placeholder || 'Select...', '', '');
 
     if (!isEqual(datasource, this.theDatasource)) {
       // inbound datasource is different, so update theDatasource
       this.theDatasource = datasource || null;
     }
 
-    if (this.value$ === '' && !this.bReadonly$) {
-      this.value$ = 'Select';
-    }
-
     if (this.theDatasource) {
-      const optionsList = [...this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject())];
-      optionsList?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
-      this.options = optionsList;
+      this.options = this.utils.getOptionList(this.configProps$, this.pConn$.getDataObject());
     }
 
     this.actionsApi = this.pConn$.getActionsApi();
@@ -215,27 +211,21 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
             };
             optionsData.push(obj);
           });
-          optionsData?.unshift({ key: 'Select', value: this.pConn$.getLocalizedValue('Select...', '', '') });
           this.options = optionsData;
         });
       });
   }
 
-  isSelected(buttonValue: string): boolean {
-    return this.value$ === buttonValue;
-  }
-
   fieldOnChange(event: any) {
-    if (event?.value === 'Select') {
-      event.value = '';
-    }
-    handleEvent(this.actionsApi, 'changeNblur', this.propName, event.value);
+    // The reset option has no value; Pega expects '' for a cleared field
+    const value = event.value ?? '';
+    handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
 
     this.pConn$.clearErrorMessages({
       property: this.propName
     });
     if (this.onRecordChange) {
-      this.onRecordChange.emit(event.value);
+      this.onRecordChange.emit(value);
     }
   }
 
