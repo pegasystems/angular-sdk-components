@@ -1,4 +1,4 @@
-import { Directive, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Directive, inject, Input, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { AngularPConnectData, AngularPConnectService } from '../../_bridge/angular-pconnect';
@@ -11,6 +11,7 @@ export class FieldBase implements OnInit, OnDestroy {
 
   protected angularPConnect = inject(AngularPConnectService);
   protected utils = inject(Utils);
+  protected cdRef = inject(ChangeDetectorRef);
 
   protected angularPConnectData: AngularPConnectData = {};
 
