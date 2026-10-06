@@ -1,3 +1,9 @@
+# [26.1.11](https://github.com/pegasystems/angular-sdk/tree/release/26.1.11)
+
+### **Bug fixes**
+*   **Fixed Dropdown labels not displaying the selected value after a lookup data page call.**
+    * Github: [PR-623](https://github.com/pegasystems/angular-sdk-components/pull/623)
+
 # [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10)
 
 ### **Features**
