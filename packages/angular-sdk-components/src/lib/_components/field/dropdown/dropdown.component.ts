@@ -100,6 +100,8 @@ export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {
         this.localePath,
         this.pConn$.getLocaleRuleNameFromKeys(this.localeClass, this.localeContext, this.localeName)
       );
+
+      this.cdRef.markForCheck();
     }
   }
 
