@@ -1,6 +1,5 @@
 /** This file contains various utility methods to generate filter components, regionLayout data, filter expressions, etc.  */
 // Remove this and use "real" PCore type once .d.ts is fixed (currently shows 5 errors)
-import { v4 as uuidv4 } from 'uuid';
 
 export const createFilter = (value, fieldId, comparator = 'EQ') => {
   return {
@@ -38,7 +37,7 @@ export const combineFilters = (filterList, existingFilters) => {
 export const createFilterComponent = (getPConnect, filterMeta, index) => {
   // const dashboardFilter = [];
   const name = filterMeta.config.value.substring(4);
-  const filterId = uuidv4();
+  const filterId = crypto.randomUUID();
   let cleanedName = name;
   if (name.indexOf('.') !== -1) {
     cleanedName = name.substring(name.indexOf('.') + 1);
