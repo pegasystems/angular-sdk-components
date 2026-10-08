@@ -1,0 +1,53 @@
+name: Playwright against deployed branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_url:
+        description: 'Deployed app origin (for example https://host); tests append /portal and /embedded'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PLAYWRIGHT_SERVER_URL: ${{ inputs.server_url }}
+
+    steps:
+      - name: Check out selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Validate server URL
+        run: |
+          node -e "const url = new URL(process.env.PLAYWRIGHT_SERVER_URL); if (!['http:', 'https:'].includes(url.protocol) || url.pathname !== '/' || url.search || url.hash || url.username || url.password) throw new Error('Provide an HTTP(S) origin without a path, query, fragment, or credentials')"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run MediaCo portal and embedded tests
+        run: npm test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: tests/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
