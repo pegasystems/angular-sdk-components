@@ -39,7 +39,7 @@ const config = {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    ignoreHTTPSErrors: true,
+    ignoreHTTPSErrors: !process.env.PLAYWRIGHT_SERVER_URL,
     launchOptions: {
       slowMo: 200
     }
