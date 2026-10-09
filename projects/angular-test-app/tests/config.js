@@ -1,6 +1,8 @@
+const serverUrl = process.env.PLAYWRIGHT_SERVER_URL?.replace(/\/+$/, '');
+
 const config = {
-  baseUrl: 'http://localhost:3500/portal',
-  baseEmbedUrl: 'http://localhost:3500/embedded',
+  baseUrl: serverUrl ? `${serverUrl}/portal` : 'http://localhost:3500/portal',
+  baseEmbedUrl: serverUrl ? `${serverUrl}/embedded` : 'http://localhost:3500/embedded',
   apps: {
     mediaCo: {
       rep: {
