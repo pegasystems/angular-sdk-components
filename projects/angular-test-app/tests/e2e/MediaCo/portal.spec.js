@@ -3,6 +3,9 @@ const { test, expect } = require('@playwright/test');
 const config = require('../../config');
 const common = require('../../common');
 
+// Distinct emails keep repeated and retried runs from colliding in a shared deployment.
+const testEmail = `john-${Date.now()}-${process.pid}@example.com`;
+
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto(config.config.baseUrl, { waitUntil: 'networkidle' });
@@ -35,7 +38,7 @@ test.describe('E2E test', () => {
 
     const emailInput = page.locator('input[data-test-id="CE8AE9DA5B7CD6C3DF2929543A9AF92D"]');
     await emailInput.click();
-    await emailInput.fill('john@doe.com');
+    await emailInput.fill(testEmail);
 
     const serviceDateInput = page.locator('input[data-test-id="E0BA356AE552ACD4326D51E61F4279AC"]');
     await serviceDateInput.click();
