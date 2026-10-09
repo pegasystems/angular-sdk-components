@@ -99,7 +99,7 @@
     "@angular-eslint/eslint-plugin": "^21.3.1",
     "@angular-eslint/eslint-plugin-template": "^21.3.1",
     "@angular-eslint/template-parser": "^21.3.1",
-    "@angular/cli": "^21.2.3",
+    "@angular/cli": "^21.2.26",
     "@angular/compiler-cli": "^21.2.4",
     "@angular/language-service": "^21.2.4",
     "@commitlint/cli": "^21.2.3",
