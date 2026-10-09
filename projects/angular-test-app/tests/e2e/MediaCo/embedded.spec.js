@@ -2,6 +2,9 @@ const { test, expect } = require('@playwright/test');
 const common = require('../../common');
 const config = require('../../config');
 
+// Orders can persist in the shared deployment, so use a fresh email per worker run.
+const testEmail = `john-${Date.now()}-${process.pid}@example.com`;
+
 test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1920, height: 1080 });
   await page.goto(config.config.baseEmbedUrl, { waitUntil: 'networkidle' });
@@ -37,7 +40,7 @@ test.describe('E2E test', () => {
 
     await common.selectDateFromPicker(page, '6', 'June', '2000');
 
-    await common.fillTextInput(page, '643a860f992333b8600ea264aca7c4fc', 'Johndoe@gmail.com');
+    await common.fillTextInput(page, '643a860f992333b8600ea264aca7c4fc', testEmail);
 
     const phoneControl = page.locator('mat-tel-input[data-test-id="1e4dbc7eaa78468a3bc1448a3d68d906"]');
     const countrySelector = phoneControl.locator('button');
@@ -73,7 +76,7 @@ test.describe('E2E test', () => {
     const paragraphElement = page.locator('.resolution-card p');
     await expect(paragraphElement).toBeVisible();
     await expect(paragraphElement).toHaveText(
-      ' We have received your order of a Oceonix 25. It will ship out within 1 business day to Apt 4. Your tracking information will be sent to Johndoe@gmail.com.  Thank you for your business! '
+      ` We have received your order of a Oceonix 25. It will ship out within 1 business day to Apt 4. Your tracking information will be sent to ${testEmail}.  Thank you for your business! `
     );
   }, 10000);
 });
