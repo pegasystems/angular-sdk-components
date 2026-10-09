@@ -1,0 +1,92 @@
+name: Playwright against deployed branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_url:
+        description: 'Canonical approved HTTPS origin without a trailing slash; tests append /portal and /embedded'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  # The portal tests create and hand off one case, so runs against the same deployment must not overlap.
+  group: deployed-playwright-${{ inputs.server_url }}
+  cancel-in-progress: false
+
+jobs:
+  playwright:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Configure required reviewers on this environment to gate access to deployed systems.
+    environment:
+      name: playwright-test
+      url: ${{ inputs.server_url }}
+    env:
+      PLAYWRIGHT_SERVER_URL: ${{ inputs.server_url }}
+      PLAYWRIGHT_ALLOWED_ORIGINS: ${{ vars.PLAYWRIGHT_ALLOWED_ORIGINS }}
+
+    steps:
+      - name: Check out selected branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Validate server URL
+        run: |
+          # This suite submits credentials and creates records, so dispatch targets must be approved QA origins.
+          node <<'NODE'
+          const url = new URL(process.env.PLAYWRIGHT_SERVER_URL);
+          const allowedOrigins = new Set(
+            (process.env.PLAYWRIGHT_ALLOWED_ORIGINS || '')
+              .split(',')
+              .map(origin => origin.trim())
+              .filter(Boolean)
+              .map(origin => new URL(origin).origin)
+          );
+
+          if (
+            url.protocol !== 'https:' ||
+            process.env.PLAYWRIGHT_SERVER_URL !== url.origin ||
+            url.pathname !== '/' ||
+            url.search ||
+            url.hash ||
+            url.username ||
+            url.password ||
+            !allowedOrigins.has(url.origin)
+          ) {
+            throw new Error('Provide an approved HTTPS origin listed in the playwright-test environment variable PLAYWRIGHT_ALLOWED_ORIGINS');
+          }
+          NODE
+
+      - name: Check deployed app availability
+        run: >-
+          curl --fail --silent --show-error --max-time 30 --retry 5
+          --retry-delay 5 --retry-all-errors --output /dev/null
+          "$PLAYWRIGHT_SERVER_URL/portal"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run MediaCo portal and embedded tests
+        run: npm test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: tests/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
