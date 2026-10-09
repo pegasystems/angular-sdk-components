@@ -346,7 +346,6 @@ export class ListViewComponent implements OnInit, OnDestroy {
   }
 
   getFieldsMetadata(refList) {
-    // @ts-ignore - 3rd parameter "associationFilter" should be optional for getDataViewMetadata method
     return PCore.getAnalyticsUtils().getDataViewMetadata(refList, this.showDynamicFields);
   }
 

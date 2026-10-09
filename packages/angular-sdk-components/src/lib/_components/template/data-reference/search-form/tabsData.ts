@@ -127,7 +127,6 @@ export function getData(deferLoadedTabs, tabCountSources, currentTabId, data) {
       });
   } else if (calculatedFieldsWithoutValue.length) {
     PCore.getViewRuleApi()
-      // @ts-ignore
       .getCalculatedFields(
         pConn.getCaseInfo().getKey(),
         pConn.getCurrentView(),

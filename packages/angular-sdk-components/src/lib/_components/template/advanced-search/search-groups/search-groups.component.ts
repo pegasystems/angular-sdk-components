@@ -210,8 +210,7 @@ export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
       isValidInput(formValues)
     ) {
       if (this.isValidatorField) {
-        // @ts-ignore
-        PCore.getMessageManager().clearContextMessages({ context: transientItemID });
+        PCore.getMessageManager().clearContextMessages({ context: this.transientItemID });
       }
 
       this.previousFormValues = formValues;
@@ -220,13 +219,13 @@ export class SearchGroupsComponent implements OnInit, OnDestroy, OnChanges {
       PCore.getPubSubUtils().publish(PCore.getEvents().getTransientEvent().UPDATE_PROMOTED_FILTERS, {
         payload: formValues,
         showRecords: true,
-        viewName: this.getPConnect.getCurrentView()
+        viewName: this.getPConnect().getCurrentView()
       });
     }
 
     this.state.activeGroupId = this.activeGroupId;
     this.state.searchFields = changes;
-    this.state.selectedCategory = this.getPConnect.getCurrentView();
+    this.state.selectedCategory = this.getPConnect().getCurrentView();
     const options = componentCachePersistUtils.getComponentStateOptions(this.getPConnect);
     componentCachePersistUtils.setComponentCache({
       cacheKey: this.searchSelectCacheKey,

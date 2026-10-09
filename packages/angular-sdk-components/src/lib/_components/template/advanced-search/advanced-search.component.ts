@@ -71,7 +71,6 @@ export class AdvancedSearchComponent implements OnInit, OnChanges {
     const [firstChildMeta] = rawViewMetadata.children;
 
     const localizedVal = PCore.getLocaleUtils().getLocaleValue;
-    // @ts-ignore
     const cache = PCore.getNavigationUtils().getComponentCache(searchSelectCacheKey) ?? {};
 
     this.editableFieldComp = firstChildPConnect().createComponent({

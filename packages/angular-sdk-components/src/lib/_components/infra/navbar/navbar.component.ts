@@ -110,7 +110,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     // making a copy, so can add info
     this.navPages$ = JSON.parse(JSON.stringify(this.pages$));
-    // @ts-ignore
     const localeReference = PCore.getLocaleUtils().getPortalLocaleReference() || this.pConn$.getValue('.pyLocaleReference');
     this.navPages$.forEach(page => {
       const destinationObject: any = {};

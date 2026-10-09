@@ -88,8 +88,7 @@ export class ReferenceComponent implements OnInit, OnDestroy, OnChanges {
       }
     };
 
-    // @ts-expect-error - createComponent expects string but null is passed for unused parameters (matches React SDK pattern)
-    const viewComponent: any = pConnect.createComponent(viewObject, null, null, {
+    const viewComponent: any = pConnect.createComponent(viewObject, '', 0, {
       pageReference: context && context.startsWith('@CLASS') ? '' : context
     });
 
