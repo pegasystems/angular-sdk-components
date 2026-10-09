@@ -45,6 +45,16 @@ const config = {
     }
   },
   testIgnore: ['e2e/DigV2/ComplexFields/ManyToMany.spec.js', 'e2e/DigV2/Localization/Localization.spec.js'],
+  ...(process.env.PLAYWRIGHT_START_SERVER === 'true'
+    ? {
+        webServer: {
+          command: 'npm run start-dev -- --host 127.0.0.1',
+          url: 'http://127.0.0.1:3500/',
+          timeout: 120000,
+          reuseExistingServer: !process.env.CI
+        }
+      }
+    : {}),
   /* Configure projects for major browsers */
   projects: [
     {
@@ -99,12 +109,6 @@ const config = {
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
-
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   port: 3000,
-  // },
 };
 
 module.exports = config;
