@@ -1,0 +1,17 @@
+<main class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">Customer support</p>
+      <h1>Customer Support</h1>
+    </div>
+  </header>
+
+  <section class="case-types" aria-label="Available case types">
+    @for (caseType of caseTypes; track caseType.pyWorkTypeImplementationClassName) {
+      <button class="case-type" type="button" [disabled]="isCreatingCase" (click)="openCase(caseType)">
+        <span class="case-type-name">{{ caseType.pyWorkTypeName }}</span>
+        <span class="case-type-action">Open case <span aria-hidden="true">&#8594;</span></span>
+      </button>
+    }
+  </section>
+</main>

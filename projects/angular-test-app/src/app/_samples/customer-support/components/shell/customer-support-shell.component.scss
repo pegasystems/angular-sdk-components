@@ -1,0 +1,23 @@
+.cases-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+
+.case-btn {
+  cursor: pointer;
+  padding: 8px;
+  margin: 4px 0;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  min-width: 200px;
+  text-align: center;
+}
+
+.case-btn:hover {
+  background-color: #e0e0e0;
+}

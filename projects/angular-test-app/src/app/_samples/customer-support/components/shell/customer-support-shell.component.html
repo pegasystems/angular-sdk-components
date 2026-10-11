@@ -1,0 +1,7 @@
+@if (!isLoggedIn) {
+  <div>Loading...</div>
+} @else {
+  @if (bHasPConnect$) {
+    <router-outlet></router-outlet>
+  }
+}
