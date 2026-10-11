@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { CustomerSupportCaseService } from '../../services/customer-support-case.service';
 
 @Component({
@@ -41,5 +42,9 @@ export class CustomerSupportDashboardComponent {
       this.isCreatingCase = false;
       this.cdRef.markForCheck();
     }
+  }
+
+  logOut() {
+    logout().then(() => window.location.reload());
   }
 }
