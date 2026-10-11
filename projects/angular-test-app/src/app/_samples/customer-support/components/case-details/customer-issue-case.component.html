@@ -1,0 +1,12 @@
+<main class="case-page">
+  <a class="back-link" routerLink="/customer-support/dashboard">&#8592; Dashboard</a>
+  <h1>Customer issue</h1>
+  <p class="case-id">{{ caseId }}</p>
+  <section class="case-workarea" aria-label="Case work area">
+    @if (isCaseLoaded()) {
+      <component-mapper name="RootContainer" [props]="{ pConn$: pConn$, displayOnlyFA$: true }"></component-mapper>
+    } @else {
+      <p class="case-loading">Loading case&hellip;</p>
+    }
+  </section>
+</main>

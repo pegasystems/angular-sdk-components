@@ -1,0 +1,92 @@
+.case-page {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #172b2a;
+}
+
+.back-link {
+  color: #075e57;
+  text-decoration: none;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  text-decoration: underline;
+}
+
+h1 {
+  margin: 2rem 0 0.5rem;
+}
+
+.case-id {
+  overflow-wrap: anywhere;
+  color: #485452;
+}
+
+.case-workarea {
+  // Material components inside the Pega form read these system tokens
+  --mat-sys-primary: #08766a;
+  --mat-sys-on-primary: #fff;
+  --mat-sys-surface-container: #fff;
+
+  margin-top: 1.5rem;
+  border: 1px solid #cbd7d3;
+  border-left: 4px solid #08766a;
+  background: #fff;
+}
+
+.case-loading {
+  margin: 0;
+  padding: 1.5rem;
+  color: #485452;
+}
+
+// Pega SDK components are rendered outside this component's style encapsulation
+:host ::ng-deep .case-workarea {
+  .psdk-flow-container-top {
+    padding: 1.5rem;
+    border-radius: 0;
+  }
+
+  .psdk-flow-container-top h2 {
+    margin: 0 0 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #cbd7d3;
+    color: #172b2a;
+    font-size: 1.25rem;
+    font-weight: 650;
+  }
+
+  .psdk-flow-container {
+    padding-left: 0;
+  }
+
+  .psdk-case-view-divider {
+    border-top: 1px solid #cbd7d3;
+  }
+
+  .button-bar {
+    padding: 1rem 0 0;
+  }
+
+  .secondary-button {
+    border-color: #08766a;
+    background: #fff;
+    color: #075e57;
+  }
+
+  .button-bar button {
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 40rem) {
+  .case-page {
+    padding: 1rem;
+  }
+
+  :host ::ng-deep .case-workarea .psdk-flow-container-top {
+    padding: 1rem;
+  }
+}
