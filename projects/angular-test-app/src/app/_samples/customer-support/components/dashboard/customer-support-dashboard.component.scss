@@ -26,6 +26,20 @@ h1 {
   font-size: 2rem;
 }
 
+.logout-button {
+  padding: 0.625rem 1rem;
+  border: 1px solid #08766a;
+  background: transparent;
+  color: #075e57;
+  cursor: pointer;
+  font: inherit;
+}
+
+.logout-button:hover,
+.logout-button:focus-visible {
+  background: #f0f7f4;
+}
+
 .case-types {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
