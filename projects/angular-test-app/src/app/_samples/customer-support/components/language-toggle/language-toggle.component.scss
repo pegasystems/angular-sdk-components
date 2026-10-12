@@ -1,0 +1,18 @@
+:host {
+  --mat-sys-primary: #08766a;
+  --mat-sys-on-surface: #172b2a;
+  --mat-sys-surface-container: #fff;
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+.language-toggle {
+  width: 10rem;
+  // Global styles.scss adds vertical margin to every form field
+  margin: 0;
+}
+
+// Global styles.scss zeroes .mdc-text-field padding for SDK fields
+:host ::ng-deep .language-toggle .mdc-text-field {
+  padding: 0 0.75rem 0 1rem !important;
+}

@@ -1,10 +1,19 @@
 <main class="case-page">
-  <a class="back-link" routerLink="/customer-support/dashboard">&#8592; Dashboard</a>
+  <div class="case-toolbar">
+    <a class="back-link" routerLink="/customer-support/dashboard">&#8592; Dashboard</a>
+    <div class="case-actions">
+      <app-language-toggle></app-language-toggle>
+      <button class="logout-button" type="button" (click)="logOut()">Log out</button>
+    </div>
+  </div>
   <h1>Customer issue</h1>
   <p class="case-id">{{ caseId }}</p>
   <section class="case-workarea" aria-label="Case work area">
     @if (isCaseLoaded()) {
-      <component-mapper name="RootContainer" [props]="{ pConn$: pConn$, displayOnlyFA$: true }"></component-mapper>
+      <!-- SDK components bind locale lookups at construction, so remount on language change -->
+      @for (locale of [language()]; track locale) {
+        <component-mapper name="RootContainer" [props]="{ pConn$: pConn$, displayOnlyFA$: true }"></component-mapper>
+      }
     } @else {
       <p class="case-loading">Loading case&hellip;</p>
     }

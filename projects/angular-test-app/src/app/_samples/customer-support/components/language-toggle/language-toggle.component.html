@@ -1,0 +1,8 @@
+<mat-form-field class="language-toggle" appearance="outline" subscriptSizing="dynamic">
+  <mat-label>Language</mat-label>
+  <mat-select [value]="languageService.language()" (selectionChange)="changeLanguage($event)">
+    @for (lang of languageService.languages; track lang.value) {
+      <mat-option [value]="lang.value">{{ lang.label }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
