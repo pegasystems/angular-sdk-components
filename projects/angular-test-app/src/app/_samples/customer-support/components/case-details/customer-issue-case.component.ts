@@ -1,14 +1,17 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/lib/_bridge/component-mapper/component-mapper.component';
 import { CustomerSupportShellComponent } from '../shell/customer-support-shell.component';
 import { CustomerSupportCaseService } from '../../services/customer-support-case.service';
+import { CustomerSupportLanguageService } from '../../services/customer-support-language.service';
+import { LanguageToggleComponent } from '../language-toggle/language-toggle.component';
 
 @Component({
   selector: 'app-customer-issue-case',
   templateUrl: './customer-issue-case.component.html',
   styleUrls: ['./customer-issue-case.component.scss'],
-  imports: [RouterLink, ComponentMapperComponent]
+  imports: [RouterLink, ComponentMapperComponent, LanguageToggleComponent]
 })
 export class CustomerIssueCaseComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -17,6 +20,7 @@ export class CustomerIssueCaseComponent implements OnInit {
 
   caseId = '';
   pConn$ = this.shell.pConn$;
+  language = inject(CustomerSupportLanguageService).language;
   isCaseLoaded = signal(false);
 
   ngOnInit(): void {
@@ -28,5 +32,9 @@ export class CustomerIssueCaseComponent implements OnInit {
       .openCase(this.caseId)
       .then(() => this.isCaseLoaded.set(true))
       .catch(error => console.error('Unable to open customer issue case:', error));
+  }
+
+  logOut() {
+    logout().then(() => window.location.reload());
   }
 }

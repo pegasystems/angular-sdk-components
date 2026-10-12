@@ -6,6 +6,7 @@ import { loginIfNecessary, getSdkConfig } from '@pega/auth/lib/sdk-auth-manager'
 import { initializeAuthentication } from '../../../embedded/utils';
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
+import { CustomerSupportLanguageService } from '../../services/customer-support-language.service';
 
 @Component({
   selector: 'app-customer-support-shell',
@@ -15,6 +16,7 @@ import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-
 })
 export class CustomerSupportShellComponent {
   cdRef: ChangeDetectorRef = inject(ChangeDetectorRef);
+  private languageService = inject(CustomerSupportLanguageService);
 
   isLoggedIn = false;
   pConn$: any;
@@ -51,6 +53,8 @@ export class CustomerSupportShellComponent {
   startMashup() {
     PCore.onPCoreReady(async renderObj => {
       console.log('PCore ready!');
+
+      await this.languageService.loadResources();
 
       // Initialize the SdkComponentMap (local and pega-provided)
       await getSdkComponentMap(localSdkComponentMap);
