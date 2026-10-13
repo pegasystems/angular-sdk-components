@@ -8,17 +8,27 @@ import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 import { FieldBase } from '../field.base';
 import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { handleEvent } from '../../../_helpers/event-util';
-import { getCurrencyCharacters, getCurrencyOptions } from '../../../_helpers/currency-utils';
-import { format } from '../../../_helpers/formatters';
+import {
+  formatNumberFieldForDisplay,
+  getNumberInputFormat,
+  NumberInputFormat,
+  parseDecimalPrecision,
+  parseFormattedNumber,
+  saveNumberOnBlur
+} from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
-interface DecimalProps extends PConnFieldProps {
+interface DecimalProps extends Omit<PConnFieldProps, 'value'> {
   // If any, enter additional props that only exist on Decimal here
+  value?: number | string;
   currencyISOCode?: string;
-  decimalPrecision?: number;
-  showGroupSeparators?: string;
+  decimalPrecision?: number | string;
+  showGroupSeparators?: boolean | string;
   formatter?: string;
+  currencyDisplay?: 'symbol' | 'code' | 'name';
+  negative?: 'minus-sign' | 'parentheses';
+  notation?: 'standard' | 'compact';
+  currencyDecimalPrecision?: string;
 }
 
 @Component({
@@ -42,12 +52,10 @@ export class DecimalComponent extends FieldBase {
 
   decimalSeparator: string;
   thousandSeparator: string;
-  currencySymbol = '';
   decimalPrecision: number | undefined;
-  formatter;
   formattedValue: any;
   inputMode: any = NgxCurrencyInputMode.Natural;
-  suffix = '';
+  private inputFormat: NumberInputFormat;
 
   /**
    * Updates the component when there are changes in the state.
@@ -61,66 +69,34 @@ export class DecimalComponent extends FieldBase {
 
     // Extract and normalize the value property
     const { value } = this.configProps$;
-    if (value) {
-      this.value$ = typeof value === 'string' ? parseFloat(value) : value;
-      this.fieldControl.setValue(this.value$);
-    }
+    this.value$ = value === undefined || value === null || value === '' ? '' : Number(value);
+    this.fieldControl.setValue(this.value$ === '' ? null : this.value$);
 
     // updates decimal properties
     this.updateDecimalProperties(this.configProps$);
   }
 
   /**
-   * Updates decimal properties based on the provided configuration.
-   *
-   * @param {Object} configProps - Configuration properties.
-   * @param {string} configProps.currencyISOCode - ISO code of the currency.
-   * @param {string} configProps.formatter - Formatter type (e.g., 'decimal', 'currency').
-   * @param {boolean} configProps.showGroupSeparators - Whether to show group separators.
+   * Updates the input mask and read-only value, matching the Constellation DX Decimal component.
    */
-  protected updateDecimalProperties(configProps): void {
-    const { currencyISOCode = '', formatter, showGroupSeparators } = configProps;
+  protected updateDecimalProperties(configProps: DecimalProps): void {
+    const { decimalPrecision, showGroupSeparators = true } = configProps;
+    const numberOfDecimals = parseDecimalPrecision(decimalPrecision, 2);
+    const groupSeparators = this.utils.getBooleanValue(showGroupSeparators);
 
-    // Extract currency symbols and options
-    const theSymbols = getCurrencyCharacters(currencyISOCode);
-    this.decimalSeparator = theSymbols.theDecimalIndicator;
-    this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
+    this.inputFormat = getNumberInputFormat();
+    this.decimalSeparator = this.inputFormat.decimalSeparator;
+    this.thousandSeparator = groupSeparators ? this.inputFormat.thousandSeparator : '';
+    // ngx-currency needs a fixed precision; Constellation allows any number of decimals when none is configured
+    this.decimalPrecision = numberOfDecimals ?? 2;
 
-    const theCurrencyOptions = getCurrencyOptions(currencyISOCode);
-    const formatterLower = formatter?.toLowerCase() || 'decimal';
-    this.formattedValue = format(this.value$, formatterLower, theCurrencyOptions);
-
-    if (this.bReadonly$ && formatter === 'Currency') {
-      this.currencySymbol = theSymbols.theCurrencySymbol;
+    if (['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(this.displayMode$)) {
+      this.formattedValue = formatNumberFieldForDisplay('Decimal', this.value$, configProps);
     }
-
-    if (this.bReadonly$ && formatter === 'Percentage') {
-      this.suffix = '%';
-    }
-
-    this.decimalPrecision = this.configProps$?.decimalPrecision ?? 2;
   }
 
   fieldOnBlur(event: any) {
-    const oldVal = this.value$ ?? '';
-    const isValueChanged = event.target.value.toString() !== oldVal.toString();
-
-    if (isValueChanged) {
-      const actionsApi = this.pConn$?.getActionsApi();
-      const propName = this.pConn$?.getStateProps().value;
-      let value = event?.target?.value;
-      // replacing thousand separator with empty string as not required in api call
-      if (this.configProps$.showGroupSeparators) {
-        const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
-        const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
-        value = value?.replace(regExp, '');
-      }
-      // replacing decimal separator with '.'
-      if (this.decimalSeparator !== '.') {
-        const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
-        value = value.replace(regExp, '.');
-      }
-      handleEvent(actionsApi, 'changeNblur', propName, value);
-    }
+    const parsed = parseFormattedNumber(event?.target?.value, this.inputFormat);
+    saveNumberOnBlur(this.pConn$, parsed !== '' ? Number(parsed) : '', this.configProps$?.value);
   }
 }
