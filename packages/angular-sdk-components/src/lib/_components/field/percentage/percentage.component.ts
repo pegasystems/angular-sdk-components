@@ -7,16 +7,24 @@ import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
 
 import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { handleEvent } from '../../../_helpers/event-util';
-import { getCurrencyCharacters } from '../../../_helpers/currency-utils';
-import { format } from '../../../_helpers/formatters';
+import {
+  decimalsToPercentage,
+  formatNumberFieldForDisplay,
+  getNumberInputFormat,
+  NumberInputFormat,
+  parseDecimalPrecision,
+  parseFormattedNumber,
+  percentageToDecimals,
+  saveNumberOnBlur
+} from '../../../_helpers/currency-utils';
 import { PConnFieldProps } from '../../../_types/PConnProps.interface';
 
 interface PercentageProps extends Omit<PConnFieldProps, 'value'> {
-  value?: number;
-  showGroupSeparators?: string;
-  decimalPrecision?: number;
+  value?: number | string;
+  showGroupSeparators?: boolean | string;
+  decimalPrecision?: number | string;
   currencyISOCode?: string;
+  storePercentageAsDecimal?: boolean | string;
   // If any, enter additional props that only exist on Percentage here
 }
 
@@ -30,11 +38,16 @@ export class PercentageComponent extends FieldBase {
   configProps$: PercentageProps;
   override fieldControl = new FormControl<number | null>(null, null);
 
+  prefix: string;
+  suffix: string;
   decimalSeparator: string;
   thousandSeparator: string;
   inputMode: any = NgxCurrencyInputMode.Natural;
   decimalPrecision: number | undefined;
   formattedValue: string;
+  private inputFormat: NumberInputFormat;
+  private numberOfDecimals: number | undefined;
+  private storeAsDecimal = false;
 
   /**
    * Updates the component when there are changes in the state.
@@ -46,34 +59,39 @@ export class PercentageComponent extends FieldBase {
     // Update component common properties
     this.updateComponentCommonProperties(this.configProps$);
 
-    // Set component specific properties
-    const { value } = this.configProps$;
-    if (value) {
-      this.value$ = value;
-      this.fieldControl.setValue(value);
+    const { value, decimalPrecision, storePercentageAsDecimal } = this.configProps$;
+    this.numberOfDecimals = parseDecimalPrecision(decimalPrecision, 2);
+    this.storeAsDecimal = this.utils.getBooleanValue(storePercentageAsDecimal);
+
+    // The stored value may be a fraction (0.25); the field always shows/edits the percentage (25)
+    if (value === undefined || value === null || value === '') {
+      this.value$ = '';
+    } else {
+      this.value$ = this.storeAsDecimal && Number(value) ? decimalsToPercentage(Number(value), this.numberOfDecimals) : Number(value);
     }
+    this.fieldControl.setValue(this.value$ === '' ? null : this.value$);
 
     // update percentage properties
     this.updatePercentageProperties(this.configProps$);
   }
 
   /**
-   * Updates the percentage properties
-   *
-   * @param {Object} configProps - Configuration properties.
-   * @param {boolean} configProps.showGroupSeparators - Whether to show group separators.
-   * @param {number} configProps.decimalPrecision - The number of decimal places to display.
+   * Updates the input mask and read-only value, matching the Constellation DX Percentage component.
    */
-  updatePercentageProperties(configProps): void {
-    const { showGroupSeparators, decimalPrecision } = configProps;
+  updatePercentageProperties(configProps: PercentageProps): void {
+    const { showGroupSeparators = false } = configProps;
+    const groupSeparators = this.utils.getBooleanValue(showGroupSeparators);
 
-    const theSymbols = getCurrencyCharacters('');
-    this.decimalSeparator = theSymbols.theDecimalIndicator;
-    this.thousandSeparator = showGroupSeparators ? theSymbols.theDigitGroupSeparator : '';
-    this.decimalPrecision = decimalPrecision ?? 2;
+    this.inputFormat = getNumberInputFormat('percent');
+    this.prefix = this.inputFormat.prefix;
+    this.suffix = this.inputFormat.suffix;
+    this.decimalSeparator = this.inputFormat.decimalSeparator;
+    this.thousandSeparator = groupSeparators ? this.inputFormat.thousandSeparator : '';
+    // ngx-currency needs a fixed precision; Constellation allows any number of decimals when none is configured
+    this.decimalPrecision = this.numberOfDecimals ?? 2;
 
     if (['DISPLAY_ONLY', 'STACKED_LARGE_VAL'].includes(this.displayMode$)) {
-      this.formattedValue = this.value$ ? format(this.value$, 'percentage') : '';
+      this.formattedValue = formatNumberFieldForDisplay('Percentage', this.value$, configProps);
     }
   }
 
@@ -89,24 +107,11 @@ export class PercentageComponent extends FieldBase {
   }
 
   fieldOnBlur(event: any) {
-    const oldVal = this.value$ ?? '';
-    const isValueChanged = event.target.value.toString() !== oldVal.toString();
-
-    if (isValueChanged) {
-      let value = event?.target?.value;
-      value = value ? value.replace(/%/g, '') : '';
-      // replacing thousand separator with empty string as not required in api call
-      if (this.configProps$.showGroupSeparators) {
-        const thousandSep = this.thousandSeparator === '.' ? '\\.' : this.thousandSeparator;
-        const regExp = new RegExp(String.raw`${thousandSep}`, 'g');
-        value = value?.replace(regExp, '');
-      }
-      // replacing decimal separator with '.'
-      if (this.decimalSeparator !== '.') {
-        const regExp = new RegExp(String.raw`${this.decimalSeparator}`, 'g');
-        value = value.replace(regExp, '.');
-      }
-      handleEvent(this.actionsApi, 'changeNblur', this.propName, value);
+    const parsed = parseFormattedNumber(event?.target?.value, this.inputFormat);
+    let newValue: number | '' = parsed !== '' ? Number(parsed) : '';
+    if (this.storeAsDecimal && newValue !== '') {
+      newValue = percentageToDecimals(newValue, this.numberOfDecimals);
     }
+    saveNumberOnBlur(this.pConn$, newValue, this.configProps$?.value);
   }
 }

@@ -1,8 +1,22 @@
 import { getLocale } from '../common';
-import { currencyMap } from './currency-map';
+import get from 'lodash.get';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function NumberFormatter(value, { locale = 'en-US', decPlaces = 2, style = '', currency = 'USD' } = {}) {
+interface CurrencyFormatOptions {
+  locale?: string;
+  options?: Intl.NumberFormatOptions;
+}
+
+interface CurrencyFormatterOptions {
+  symbol?: boolean;
+  locale?: string;
+  decPlaces?: number;
+  currencyISOCode?: string;
+  isoCodeSelection?: string;
+  rowData?: unknown;
+  notation?: Intl.NumberFormatOptions['notation'];
+}
+
+function NumberFormatter(value, { locale = 'en-US', decPlaces = 2 } = {}) {
   const currentLocale = getLocale(locale);
   if (value !== null && value !== undefined) {
     return Number(value).toLocaleString(currentLocale, {
@@ -13,52 +27,62 @@ function NumberFormatter(value, { locale = 'en-US', decPlaces = 2, style = '', c
   return value;
 }
 
-function CurrencyFormatter(
-  value,
-  { symbol = true, position = 'before', locale = 'en-US', decPlaces = 2, style = 'currency', currency = 'USD' } = {}
-) {
-  const currentLocale = getLocale(locale);
-  let formattedValue = value;
-  if (value !== null && value !== undefined && value !== '') {
-    formattedValue = NumberFormatter(value, {
-      locale: currentLocale,
-      decPlaces,
-      style,
-      currency
-    });
-
-    // For currency other than EUR, we need to determine the country code from currency code
-    // If currency is EUR, we use the locale to determine the country code
-    let countryCode: string | undefined;
-    if (currency !== 'EUR') {
-      countryCode = currency.substring(0, 2);
-    } else {
-      countryCode = currentLocale?.split('-')[1].toUpperCase();
-    }
-
-    // If countryCode is still undefined, setting it as US
-    if (!countryCode) {
-      countryCode = 'US';
-    }
-
-    let code;
-    if (symbol) {
-      code = currencyMap[countryCode]?.symbolFormat;
-    } else {
-      code = currencyMap[countryCode]?.currencyCode;
-    }
-
-    // if position is provided, change placeholder accordingly.
-    if (position && code) {
-      if (position.toLowerCase() === 'before' && code.startsWith('{#}')) {
-        code = code.slice(3) + code.slice(0, 3);
-      } else if (position.toLowerCase() === 'after' && code.endsWith('{#}')) {
-        code = code.slice(-3) + code.slice(0, -3);
-      }
-    }
-    return code?.replace('{#}', formattedValue) || formattedValue;
+export const isValidCurrency = (currency: string) => {
+  try {
+    new Intl.NumberFormat(undefined, { style: 'currency', currency });
+    return true;
+  } catch {
+    return false;
   }
-  return formattedValue;
+};
+
+function getCodeForCurrencyCodeFormatter(currencyISOCode, rowData, isoCodeSelection = 'constant') {
+  let code;
+  currencyISOCode = currencyISOCode.replace('@P ', '');
+  currencyISOCode = currencyISOCode.replace('@L ', '');
+  if (isoCodeSelection === 'constant') {
+    code = isValidCurrency(currencyISOCode) ? currencyISOCode : undefined;
+  } else {
+    // For ISOCodeSelection === 'propertyRef'
+    currencyISOCode = currencyISOCode.indexOf('.') === 0 ? currencyISOCode.substring(1) : currencyISOCode;
+    const resolvedCurrencyCode = get(rowData, currencyISOCode);
+    code = typeof resolvedCurrencyCode === 'string' && isValidCurrency(resolvedCurrencyCode) ? resolvedCurrencyCode : undefined;
+  }
+  return code;
+}
+
+function formatCurrency(value: number | bigint, { locale, options }: CurrencyFormatOptions) {
+  const formatter = new Intl.NumberFormat(locale, options);
+
+  return formatter.format(value);
+}
+
+function CurrencyFormatter(
+  value: number | bigint | string | null | undefined,
+  { symbol = true, locale, decPlaces = 2, currencyISOCode, isoCodeSelection, rowData, notation }: CurrencyFormatterOptions = {}
+) {
+  // locale is used here only to format the values and not for deciding the symbol.
+  // Currency symbol should be decided always from the configured ISO Code.
+  // - If no code is configured, fallback to App-level setting or USD
+  const currentLocale = getLocale(locale);
+  if (value !== null && value !== undefined && value !== '') {
+    // For All formats of currency, Cosmos API "formatCurrency" required Currency ISO code
+    const code = currencyISOCode
+      ? getCodeForCurrencyCodeFormatter(currencyISOCode, rowData, isoCodeSelection)
+      : window.PCore?.getFieldDefaultUtils?.()?.fieldDefaults?.['Currency']?.['currencyISOCode'] || 'USD';
+
+    const options: Intl.NumberFormatOptions | undefined = code
+      ? {
+          style: 'currency',
+          currency: code,
+          currencyDisplay: symbol ? 'symbol' : 'code',
+          ...(notation === 'compact' ? { notation } : { minimumFractionDigits: decPlaces, maximumFractionDigits: decPlaces })
+        }
+      : undefined;
+
+    return formatCurrency(typeof value === 'string' ? Number(value) : value, { locale: currentLocale, options });
+  }
+  return value;
 }
 
 function SymbolFormatter(value, { symbol = '$', suffix = true, locale = 'en-US' } = {}) {

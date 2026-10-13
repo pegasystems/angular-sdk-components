@@ -1,5 +1,5 @@
 <div *ngIf="displayMode$; else noDisplayMode">
-  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$, displayMode$ }"></component-mapper>
+  <component-mapper *ngIf="bVisible$ !== false" name="FieldValueList" [props]="{ label$, value$: formattedValue, displayMode$ }"></component-mapper>
 </div>
 <ng-template #noDisplayMode>
   <div *ngIf="!bReadonly$ && bHasForm$; else noEdit">
@@ -8,10 +8,19 @@
         <mat-label>{{ label$ }}</mat-label>
         <input
           matInput
+          type="text"
+          currencyMask
+          [options]="{
+            prefix: '',
+            suffix: '',
+            thousands: thousandSeparator,
+            decimal: decimalSeparator,
+            align: 'left',
+            nullable: true,
+            precision: 0,
+            inputMode: inputMode
+          }"
           [placeholder]="placeholder"
-          type="number"
-          step="1"
-          [value]="value$"
           [required]="bRequired$"
           [formControl]="fieldControl"
           [attr.data-test-id]="testId"
