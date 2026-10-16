@@ -1,0 +1,50 @@
+:host {
+  --pega-refresh-overlay-backdrop: rgb(255 255 255 / 60%);
+  --pega-refresh-overlay-accent: #08766a;
+  --pega-refresh-overlay-text: #172b2a;
+}
+
+.refresh-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: progress;
+  // Blocks immediately, but only becomes visible if the refresh outlasts a short delay to avoid flicker
+  animation: fade-in 150ms ease-out 200ms both;
+  background: var(--pega-refresh-overlay-backdrop);
+}
+
+.refresh-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid var(--pega-refresh-overlay-accent);
+  background: #fff;
+  box-shadow: 0 0.5rem 1.5rem rgb(23 43 42 / 16%);
+  color: var(--pega-refresh-overlay-text);
+  --mat-sys-primary: var(--pega-refresh-overlay-accent);
+}
+
+.refresh-label {
+  font-weight: 600;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refresh-overlay {
+    animation: none;
+  }
+}

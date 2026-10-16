@@ -1,0 +1,8 @@
+@if (isRefreshing()) {
+  <div class="refresh-overlay" role="status" aria-live="polite">
+    <div class="refresh-panel">
+      <mat-progress-spinner mode="indeterminate" diameter="40" strokeWidth="4" aria-hidden="true"></mat-progress-spinner>
+      <span class="refresh-label">{{ label() }}</span>
+    </div>
+  </div>
+}
