@@ -7,12 +7,13 @@ import { initializeAuthentication } from '../../../embedded/utils';
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
 import { CustomerSupportLanguageService } from '../../services/customer-support-language.service';
+import { PegaRefreshOverlayComponent } from '../refresh-overlay/pega-refresh-overlay.component';
 
 @Component({
   selector: 'app-customer-support-shell',
   templateUrl: './customer-support-shell.component.html',
   styleUrls: ['./customer-support-shell.component.scss'],
-  imports: [CommonModule, RouterOutlet]
+  imports: [CommonModule, RouterOutlet, PegaRefreshOverlayComponent]
 })
 export class CustomerSupportShellComponent {
   cdRef: ChangeDetectorRef = inject(ChangeDetectorRef);
