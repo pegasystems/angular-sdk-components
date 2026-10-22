@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Settings</h2>
+
+<mat-dialog-content>
+  <div class="setting">
+    <div class="setting-text">
+      <span class="setting-name" id="setting-dynamic-localization">Dynamic localization</span>
+      <span class="setting-description">Load additional languages and show a language picker on the case page.</span>
+    </div>
+    <mat-slide-toggle
+      aria-labelledby="setting-dynamic-localization"
+      [checked]="draft().dynamicLocalization"
+      [disabled]="isSaving()"
+      (change)="update('dynamicLocalization', $event.checked)"
+    ></mat-slide-toggle>
+  </div>
+
+  <div class="setting">
+    <div class="setting-text">
+      <span class="setting-name" id="setting-refresh-indicator">Loading indicator on refresh</span>
+      <span class="setting-description">Show a spinner and block the page while the form is refreshing.</span>
+    </div>
+    <mat-slide-toggle
+      aria-labelledby="setting-refresh-indicator"
+      [checked]="draft().refreshIndicator"
+      [disabled]="isSaving()"
+      (change)="update('refreshIndicator', $event.checked)"
+    ></mat-slide-toggle>
+  </div>
+
+  @if (errorMessage()) {
+    <p class="setting-error" role="alert">{{ errorMessage() }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button class="secondary-button" type="button" mat-dialog-close [disabled]="isSaving()">Cancel</button>
+  <button class="primary-button" type="button" [disabled]="isSaving()" (click)="save()">
+    {{ isSaving() ? 'Saving…' : 'Save' }}
+  </button>
+</mat-dialog-actions>

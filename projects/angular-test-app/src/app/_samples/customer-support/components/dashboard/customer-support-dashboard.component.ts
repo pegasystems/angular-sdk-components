@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { logout } from '@pega/auth/lib/sdk-auth-manager';
 import { CustomerSupportCaseService } from '../../services/customer-support-case.service';
+import { openSettingsDialog } from '../settings-dialog/settings-dialog.component';
 
 @Component({
   selector: 'app-customer-support-dashboard',
@@ -12,6 +14,7 @@ import { CustomerSupportCaseService } from '../../services/customer-support-case
 })
 export class CustomerSupportDashboardComponent {
   private caseService = inject(CustomerSupportCaseService);
+  private dialog = inject(MatDialog);
 
   caseTypes: any[] = [];
   isCreatingCase = false;
@@ -42,6 +45,10 @@ export class CustomerSupportDashboardComponent {
       this.isCreatingCase = false;
       this.cdRef.markForCheck();
     }
+  }
+
+  openSettings() {
+    openSettingsDialog(this.dialog);
   }
 
   logOut() {

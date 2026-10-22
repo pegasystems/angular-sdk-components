@@ -7,6 +7,7 @@ import { initializeAuthentication } from '../../../embedded/utils';
 import { getSdkComponentMap } from 'packages/angular-sdk-components/src/lib/_bridge/helpers/sdk_component_map';
 import localSdkComponentMap from 'packages/angular-sdk-components/src/sdk-local-component-map';
 import { CustomerSupportLanguageService } from '../../services/customer-support-language.service';
+import { CustomerSupportSettingsService } from '../../services/customer-support-settings.service';
 import { PegaRefreshOverlayComponent } from '../refresh-overlay/pega-refresh-overlay.component';
 
 @Component({
@@ -18,6 +19,7 @@ import { PegaRefreshOverlayComponent } from '../refresh-overlay/pega-refresh-ove
 export class CustomerSupportShellComponent {
   cdRef: ChangeDetectorRef = inject(ChangeDetectorRef);
   private languageService = inject(CustomerSupportLanguageService);
+  readonly settings = inject(CustomerSupportSettingsService);
 
   isLoggedIn = false;
   pConn$: any;
@@ -55,7 +57,9 @@ export class CustomerSupportShellComponent {
     PCore.onPCoreReady(async renderObj => {
       console.log('PCore ready!');
 
-      await this.languageService.loadResources();
+      if (this.settings.dynamicLocalization()) {
+        await this.languageService.loadResources();
+      }
 
       // Initialize the SdkComponentMap (local and pega-provided)
       await getSdkComponentMap(localSdkComponentMap);

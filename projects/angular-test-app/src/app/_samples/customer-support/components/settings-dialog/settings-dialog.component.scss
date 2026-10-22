@@ -1,0 +1,89 @@
+// The dialog renders in the overlay container, outside this component; the panel also gets the
+// app's `light` theme class (see openSettingsDialog) since the shell may put the body in dark mode
+::ng-deep .customer-support-settings-dialog {
+  --mat-sys-primary: #08766a;
+  --mat-sys-on-primary: #fff;
+  --mat-sys-primary-container: #cdebe4;
+  --mat-sys-on-primary-container: #00201c;
+  --mat-dialog-container-color: #fff;
+  --mat-dialog-container-shape: 0;
+  --mat-dialog-subhead-color: #172b2a;
+  --mat-dialog-supporting-text-color: #172b2a;
+
+  .mat-mdc-dialog-surface {
+    border-left: 4px solid #08766a;
+  }
+}
+
+:host {
+  display: block;
+  color: #172b2a;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #cbd7d3;
+}
+
+.setting:last-of-type {
+  border-bottom: 0;
+}
+
+.setting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.setting-name {
+  font-weight: 650;
+}
+
+.setting-description {
+  color: #4b5f5c;
+  font-size: 0.875rem;
+}
+
+.setting-error {
+  margin: 0.5rem 0 0;
+  color: #b3261e;
+  font-size: 0.875rem;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 0.625rem 1rem;
+  border: 1px solid #08766a;
+  cursor: pointer;
+  font: inherit;
+}
+
+.primary-button {
+  background: #08766a;
+  color: #fff;
+}
+
+.primary-button:hover:not(:disabled),
+.primary-button:focus-visible {
+  background: #075e57;
+}
+
+.secondary-button {
+  background: transparent;
+  color: #075e57;
+}
+
+.secondary-button:hover:not(:disabled),
+.secondary-button:focus-visible {
+  background: #f0f7f4;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: progress;
+  opacity: 0.65;
+}

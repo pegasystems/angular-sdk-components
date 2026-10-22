@@ -2,7 +2,9 @@
   <div class="case-toolbar">
     <a class="back-link" routerLink="/customer-support/dashboard">&#8592; Dashboard</a>
     <div class="case-actions">
-      <app-language-toggle></app-language-toggle>
+      @if (dynamicLocalization()) {
+        <app-language-toggle></app-language-toggle>
+      }
       <button class="logout-button" type="button" (click)="logOut()">Log out</button>
     </div>
   </div>
