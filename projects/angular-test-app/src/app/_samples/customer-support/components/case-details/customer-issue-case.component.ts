@@ -5,6 +5,7 @@ import { ComponentMapperComponent } from 'packages/angular-sdk-components/src/li
 import { CustomerSupportShellComponent } from '../shell/customer-support-shell.component';
 import { CustomerSupportCaseService } from '../../services/customer-support-case.service';
 import { CustomerSupportLanguageService } from '../../services/customer-support-language.service';
+import { CustomerSupportSettingsService } from '../../services/customer-support-settings.service';
 import { LanguageToggleComponent } from '../language-toggle/language-toggle.component';
 
 @Component({
@@ -21,6 +22,7 @@ export class CustomerIssueCaseComponent implements OnInit {
   caseId = '';
   pConn$ = this.shell.pConn$;
   language = inject(CustomerSupportLanguageService).language;
+  dynamicLocalization = inject(CustomerSupportSettingsService).dynamicLocalization;
   isCaseLoaded = signal(false);
 
   ngOnInit(): void {

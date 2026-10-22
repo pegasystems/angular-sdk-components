@@ -26,6 +26,32 @@ h1 {
   font-size: 2rem;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.settings-button {
+  display: inline-flex;
+  width: 2.625rem;
+  height: 2.625rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #08766a;
+  background: transparent;
+  color: #075e57;
+  cursor: pointer;
+}
+
+.settings-button:hover,
+.settings-button:focus-visible,
+.logout-button:hover,
+.logout-button:focus-visible {
+  background: #f0f7f4;
+}
+
 .logout-button {
   padding: 0.625rem 1rem;
   border: 1px solid #08766a;
@@ -33,11 +59,6 @@ h1 {
   color: #075e57;
   cursor: pointer;
   font: inherit;
-}
-
-.logout-button:hover,
-.logout-button:focus-visible {
-  background: #f0f7f4;
 }
 
 .case-types {
