@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -9,6 +9,7 @@ import { getFirstChildConfig } from '../data-reference/utils';
   selector: 'app-advanced-search',
   templateUrl: './advanced-search.component.html',
   styleUrls: ['./advanced-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AdvancedSearchComponent implements OnInit, OnChanges {

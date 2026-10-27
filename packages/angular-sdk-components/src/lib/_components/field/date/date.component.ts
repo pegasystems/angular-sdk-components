@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -52,6 +52,7 @@ class MyFormat {
     MomentDateModule,
     forwardRef(() => ComponentMapperComponent)
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: MAT_DATE_FORMATS, useClass: MyFormat }]
 })
 export class DateComponent extends FieldBase implements OnInit, OnDestroy {

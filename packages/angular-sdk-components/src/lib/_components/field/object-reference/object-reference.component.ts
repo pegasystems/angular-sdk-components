@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, forwardRef, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ComponentMetadataConfig } from '@pega/pcore-pconnect-typedefs/interpreter/types';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -20,6 +20,7 @@ interface ObjectReferenceProps extends PConnFieldProps {
   selector: 'app-object-reference',
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)],
   templateUrl: './object-reference.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './object-reference.component.scss'
 })
 export class ObjectReferenceComponent implements OnInit, OnDestroy {

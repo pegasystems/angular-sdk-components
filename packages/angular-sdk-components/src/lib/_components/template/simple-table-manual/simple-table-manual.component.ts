@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -77,6 +77,7 @@ class Group {
     MatIcon,
     forwardRef(() => ComponentMapperComponent)
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatapageService]
 })
 export class SimpleTableManualComponent implements OnInit, OnDestroy {

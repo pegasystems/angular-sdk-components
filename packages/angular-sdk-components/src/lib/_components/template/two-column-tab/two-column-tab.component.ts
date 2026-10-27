@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -7,6 +7,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-two-column-tab',
   templateUrl: './two-column-tab.component.html',
   styleUrls: ['./two-column-tab.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnTabComponent implements OnInit, OnChanges {

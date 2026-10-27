@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, forwardRef, OnChanges, ChangeDetectorRef, signal } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, forwardRef, OnChanges, ChangeDetectorRef, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { componentCachePersistUtils } from '../search-group/persist-utils';
 import { MatRadioModule } from '@angular/material/radio';
@@ -75,6 +75,7 @@ export const initializeSearchFields = (searchFields, getPConnect, referenceListC
   selector: 'app-search-groups',
   templateUrl: './search-groups.component.html',
   styleUrls: ['./search-groups.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

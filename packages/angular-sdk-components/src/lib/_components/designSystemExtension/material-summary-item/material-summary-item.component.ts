@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,6 +8,7 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-material-summary-item',
   templateUrl: './material-summary-item.component.html',
   styleUrls: ['./material-summary-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule, MatMenuModule]
 })
 export class MaterialSummaryItemComponent implements OnInit {

@@ -15,7 +15,7 @@
   <div *ngIf="transientItemID">
     <component-mapper
       [name]="searchFieldsC11nEnv()?.getPConnect().getComponentName()"
-      [props]="{ pConn$: searchFieldsC11nEnv()?.getPConnect(), formGroup$ }"
+      [props]="{ pConn$: searchFieldsC11nEnv() == null ? null : searchFieldsC11nEnv().getPConnect(), formGroup$ }"
       errorMsg="View Missing (displayAll): {{ searchFieldsC11nEnv()?.getPConnect().getComponentName() }}"
     ></component-mapper>
   </div>

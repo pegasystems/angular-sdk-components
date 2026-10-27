@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
 import { getTransientTabs, getVisibleTabs, tabClick } from '../../../_helpers/tab-utils';
@@ -9,6 +9,7 @@ import { DetailsTemplateBase } from '../base/details-template-base';
   selector: 'app-details-sub-tabs',
   templateUrl: './details-sub-tabs.component.html',
   styleUrls: ['./details-sub-tabs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DetailsSubTabsComponent extends DetailsTemplateBase {

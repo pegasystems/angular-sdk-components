@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { interval, Subscription } from 'rxjs';
@@ -20,6 +20,7 @@ const options = { context: 'app' };
   selector: 'app-root-container',
   templateUrl: './root-container.component.html',
   styleUrls: ['./root-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     MatProgressSpinnerModule,

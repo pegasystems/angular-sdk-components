@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { buildFilterComponents } from '../../../_helpers/filter-utils';
@@ -15,6 +15,7 @@ interface InlineDashboardPageProps {
   selector: 'app-inline-dashboard-page',
   templateUrl: './inline-dashboard-page.component.html',
   styleUrls: ['./inline-dashboard-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class InlineDashboardPageComponent implements OnInit {

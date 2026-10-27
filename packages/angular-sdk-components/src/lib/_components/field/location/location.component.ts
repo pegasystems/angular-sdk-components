@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -37,6 +37,7 @@ interface LocationProps extends PConnFieldProps {
     ReactiveFormsModule
   ],
   templateUrl: './location.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './location.component.scss'
 })
 export class LocationComponent extends FieldBase {
