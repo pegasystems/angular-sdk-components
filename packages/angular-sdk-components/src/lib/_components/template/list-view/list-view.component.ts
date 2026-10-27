@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -63,6 +63,7 @@ export class Group {
   selector: 'app-list-view',
   templateUrl: './list-view.component.html',
   styleUrls: ['./list-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     MatFormFieldModule,

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -21,6 +21,7 @@ interface CaseViewProps {
   templateUrl: './case-view.component.html',
   styleUrls: ['./case-view.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseViewComponent implements OnInit, OnDestroy {

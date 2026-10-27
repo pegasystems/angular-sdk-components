@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, forwardRef, OnDestroy, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -66,6 +66,7 @@ interface DropdownProps extends PConnFieldProps {
   selector: 'app-dropdown',
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatOptionModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DropdownComponent extends FieldBase implements OnInit, OnDestroy {

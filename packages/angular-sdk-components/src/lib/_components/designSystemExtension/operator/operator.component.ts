@@ -1,4 +1,15 @@
-import { Component, ElementRef, OnInit, Input, Renderer2, ChangeDetectorRef, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  Input,
+  Renderer2,
+  ChangeDetectorRef,
+  OnChanges,
+  SimpleChanges,
+  OnDestroy,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Utils } from '../../../_helpers/utils';
@@ -7,6 +18,7 @@ import { Utils } from '../../../_helpers/utils';
   selector: 'app-operator',
   templateUrl: './operator.component.html',
   styleUrls: ['./operator.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule]
 })
 export class OperatorComponent implements OnInit, OnChanges, OnDestroy {

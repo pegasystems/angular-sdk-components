@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 // import { Button } from '@angular/material'
 
 @Component({
   selector: 'wss-quick-create',
   templateUrl: './wss-quick-create.component.html',
   styleUrls: ['./wss-quick-create.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule]
 })
 export class WssQuickCreateComponent {

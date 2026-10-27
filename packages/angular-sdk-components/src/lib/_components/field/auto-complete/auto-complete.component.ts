@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, forwardRef, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, forwardRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -43,6 +43,7 @@ interface AutoCompleteProps extends PConnFieldProps {
     MatOptionModule,
     forwardRef(() => ComponentMapperComponent)
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatapageService]
 })
 export class AutoCompleteComponent extends FieldBase implements OnInit {

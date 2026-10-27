@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -14,6 +14,7 @@ import { getFilterExpression, getFormattedDate, createFilter, combineFilters } f
   selector: 'app-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
   styleUrls: ['./dashboard-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     MatFormFieldModule,

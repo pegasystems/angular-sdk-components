@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -17,6 +17,7 @@ interface CaseSummaryProps {
   selector: 'app-case-summary',
   templateUrl: './case-summary.component.html',
   styleUrls: ['./case-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class CaseSummaryComponent implements OnInit, OnDestroy, OnChanges {

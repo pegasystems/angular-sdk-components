@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, forwardRef, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -23,6 +23,7 @@ interface DateTimeProps extends PConnFieldProps {
   selector: 'app-date-time',
   templateUrl: './date-time.component.html',
   styleUrls: ['./date-time.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -9,6 +9,7 @@ import { getDataRelationshipContextFromKey } from '../../../_helpers/objectRefer
   selector: 'app-single-reference-readonly',
   templateUrl: './single-reference-readonly.component.html',
   styleUrls: ['./single-reference-readonly.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SingleReferenceReadonlyComponent implements OnInit, OnDestroy {

@@ -74,7 +74,7 @@
     </div>
 
     <div *ngIf="tabData$">
-      <component-mapper name="DeferLoad" [props]="{ pConn$, name: tabData$?.config?.name }"></component-mapper>
+      <component-mapper name="DeferLoad" [props]="{ pConn$, name: tabData$.config == null ? null : tabData$.config.name }"></component-mapper>
     </div>
   </div>
   <div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -21,6 +21,7 @@ interface SemanticLinkProps extends PConnFieldProps {
   selector: 'app-semantic-link',
   templateUrl: './semantic-link.component.html',
   styleUrls: ['./semantic-link.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule]
 })
 export class SemanticLinkComponent implements OnInit, OnDestroy {
