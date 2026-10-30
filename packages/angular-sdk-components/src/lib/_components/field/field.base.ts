@@ -1,5 +1,5 @@
 import { Directive, inject, Input, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 
 import { AngularPConnectData, AngularPConnectService } from '../../_bridge/angular-pconnect';
 import { Utils } from '../../_helpers/utils';
@@ -144,13 +144,19 @@ export class FieldBase implements OnInit, OnDestroy {
    * Displays the validation message if it exists.
    */
   private displayValidationMessage(): void {
+    // A validator (rather than a one-off setErrors) is used so the error survives later
+    // updateValueAndValidity() calls, e.g. from setValue() or [formControl]/[required] directive setup.
+    if (!this.fieldControl.hasValidator(this.validateMessageValidator)) {
+      this.fieldControl.addValidators(this.validateMessageValidator);
+    }
+    this.fieldControl.updateValueAndValidity({ emitEvent: false });
+
     if (this.angularPConnectData.validateMessage) {
-      setTimeout(() => {
-        this.fieldControl.setErrors({ message: true });
-        this.fieldControl.markAsTouched();
-      }, 100);
+      this.fieldControl.markAsTouched();
     }
   }
+
+  private readonly validateMessageValidator: ValidatorFn = () => (this.angularPConnectData?.validateMessage ? { message: true } : null);
 
   private updateHelperText(): void {
     this.helperText = this.bFieldMessageVisible$ ? this.fieldMessage : this.defaultHelperText;
