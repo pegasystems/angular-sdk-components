@@ -36,6 +36,7 @@ export class UrlComponent extends FieldBase {
     // Extract and normalize the value property
     const { value } = this.configProps$;
     this.value$ = value;
+    this.fieldControl.setValue(this.value$ ?? '');
   }
 
   fieldOnChange(event: any) {
