@@ -1,3 +1,12 @@
+# [25.1.16](https://github.com/pegasystems/angular-sdk/tree/release/25.1.16) - Released: TBD
+
+## Non Breaking changes
+
+### **Bug fixes**
+*   **Fixed `TextInput`, `Email`, `URL`, and `TextArea` fields showing an empty value after being hidden and shown again by a visibility condition.**
+      * Github: [PR-655](https://github.com/pegasystems/angular-sdk-components/pull/655)
+---
+
 # [25.1.15](https://github.com/pegasystems/angular-sdk/tree/release/25.1.15) - Released: 30/10/2026
 
 ## Breaking changes
