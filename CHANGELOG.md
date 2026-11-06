@@ -4,6 +4,9 @@
 *   **Fixed Dropdown labels not displaying the selected value after a lookup data page call.**
     * Github: [PR-623](https://github.com/pegasystems/angular-sdk-components/pull/623)
 
+*   **Fixed `TextInput`, `Email`, `URL`, and `TextArea` fields showing an empty value after being hidden and shown again by a visibility condition.**
+      * Github: [PR-656](https://github.com/pegasystems/angular-sdk-components/pull/656)
+
 # [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10)
 
 ### **Features**
