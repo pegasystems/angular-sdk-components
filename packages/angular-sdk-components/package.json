@@ -2,7 +2,6 @@
   "name": "@pega/angular-sdk-components",
   "version": "25.1.15",
   "peerDependencies": {
-    "@angular/animations": "^21.2.4 || ^22.2.3",
     "@angular/cdk": "^21.2.2 || ^22.2.4",
     "@angular/common": "^21.2.4 || ^22.2.3",
     "@angular/core": "^21.2.4 || ^22.2.3",

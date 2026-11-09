@@ -11,6 +11,8 @@
 
 *   The **lodash.clonedeep**, **lodash.debounce**, and **lodash.get** packages have been replaced with **lodash-es**. The `lodash.*` entries have been removed from `allowedCommonJsDependencies` in `angular.json`. Applications that consume `@pega/angular-sdk-components` now need `lodash-es` as a peer dependency instead of the `lodash.*` packages.
     * Github: [PR-657](https://github.com/pegasystems/angular-sdk-components/pull/657)
+*   The deprecated **@angular/animations** and **@angular/platform-browser-dynamic** packages have been removed from the dependencies, and `@angular/animations` has been removed from the `@pega/angular-sdk-components` peer dependencies. The test application no longer calls `provideAnimations()`.
+    * Github: [PR-658](https://github.com/pegasystems/angular-sdk-components/pulls)
 *   The following table lists the packages that have been added:
 
 | Package | Added version |
@@ -71,7 +73,7 @@
 | **typescript** | 6.0.3 |
 | **typescript-eslint** | 8.72.0 |
 
-# [25.1.14](https://github.com/pegasystems/angular-sdk/tree/release/25.1.14) - Released: TBD
+# [25.1.14](https://github.com/pegasystems/angular-sdk/tree/release/25.1.14) - Released: 16/10/2026
 
 ## Breaking changes
 
