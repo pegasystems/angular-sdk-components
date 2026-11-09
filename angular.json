@@ -119,7 +119,7 @@
             ],
             "styles": ["projects/angular-test-app/src/styles.scss"],
             "scripts": ["./node_modules/tinymce/tinymce.min.js"],
-            "allowedCommonJsDependencies": ["lodash.clonedeep", "lodash.debounce", "downloadjs", "dayjs", "fast-deep-equal", "moment"],
+            "allowedCommonJsDependencies": ["downloadjs", "dayjs", "fast-deep-equal", "moment"],
             "browser": "projects/angular-test-app/src/main.ts"
           },
           "configurations": {
