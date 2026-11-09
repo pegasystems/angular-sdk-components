@@ -7,6 +7,17 @@
       * Github: [PR-655](https://github.com/pegasystems/angular-sdk-components/pull/655)
 ---
 
+### **Dependencies & Infrastructure**
+
+*   The **lodash.clonedeep**, **lodash.debounce**, and **lodash.get** packages have been replaced with **lodash-es**. The `lodash.*` entries have been removed from `allowedCommonJsDependencies` in `angular.json`. Applications that consume `@pega/angular-sdk-components` now need `lodash-es` as a peer dependency instead of the `lodash.*` packages.
+    * Github: [PR-657](https://github.com/pegasystems/angular-sdk-components/pull/657)
+*   The following table lists the packages that have been added:
+
+| Package | Added version |
+| :--- | :--- |
+| **lodash-es** | 4.18.1 |
+| **@types/lodash-es** | 4.17.12 |
+
 # [25.1.15](https://github.com/pegasystems/angular-sdk/tree/release/25.1.15) - Released: 30/10/2026
 
 ## Breaking changes

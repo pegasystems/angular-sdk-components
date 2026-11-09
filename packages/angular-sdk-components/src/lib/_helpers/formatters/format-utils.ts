@@ -1,5 +1,5 @@
 import { getLocale } from '../common';
-import get from 'lodash.get';
+import { get } from 'lodash-es';
 
 interface CurrencyFormatOptions {
   locale?: string;
