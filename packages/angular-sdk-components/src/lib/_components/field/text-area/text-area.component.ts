@@ -41,6 +41,7 @@ export class TextAreaComponent extends FieldBase {
 
     // Set component specific properties
     this.value$ = value;
+    this.fieldControl.setValue(this.value$ ?? '');
     this.nMaxLength$ = this.pConn$.getFieldMetadata(this.pConn$.getRawConfigProps()?.value)?.maxLength || 100;
   }
 

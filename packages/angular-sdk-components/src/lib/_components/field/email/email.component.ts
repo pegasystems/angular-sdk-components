@@ -35,6 +35,7 @@ export class EmailComponent extends FieldBase implements OnInit, OnDestroy {
     // Set component specific properties
     const { value } = this.configProps$;
     this.value$ = value;
+    this.fieldControl.setValue(this.value$ ?? '');
   }
 
   fieldOnChange(event: any) {
