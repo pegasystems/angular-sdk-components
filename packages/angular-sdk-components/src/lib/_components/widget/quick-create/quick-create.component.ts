@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -14,6 +14,7 @@ interface QuickCreateProps {
   selector: 'app-quick-create',
   templateUrl: './quick-create.component.html',
   styleUrls: ['./quick-create.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class QuickCreateComponent implements OnInit, OnChanges {

@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -6,6 +6,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-alert-banner',
   templateUrl: './alert-banner.component.html',
   styleUrls: ['./alert-banner.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class AlertBannerComponent {

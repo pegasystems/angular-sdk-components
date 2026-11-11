@@ -1,11 +1,61 @@
 # [26.1.11](https://github.com/pegasystems/angular-sdk/tree/release/26.1.11)
 
+## Breaking changes
+
+*   Upgraded the `Angular` version to 22, the `Angular Material` version to 22, and the `TypeScript` version to 6.
+    * Github: [PR-659](https://github.com/pegasystems/angular-sdk-components/pull/659)
+*   Upgraded `@pega/auth` to version 0.3.x.
+    * Github: [PR-659](https://github.com/pegasystems/angular-sdk-components/pull/659)
+
+## Non Breaking changes
+
 ### **Bug fixes**
 *   **Fixed Dropdown labels not displaying the selected value after a lookup data page call.**
     * Github: [PR-623](https://github.com/pegasystems/angular-sdk-components/pull/623)
 
 *   **Fixed `TextInput`, `Email`, `URL`, and `TextArea` fields showing an empty value after being hidden and shown again by a visibility condition.**
       * Github: [PR-656](https://github.com/pegasystems/angular-sdk-components/pull/656)
+---
+
+### **Dependencies & Infrastructure**
+
+*   The **@angular-builders/custom-webpack**, **@angular-devkit/build-angular**, **copy-webpack-plugin**, and **webpack** packages have been removed. The builds now use `@angular/build`.
+    * Github: [PR-659](https://github.com/pegasystems/angular-sdk-components/pull/659)
+*   The **@angular-eslint/eslint-plugin**, **@angular-eslint/eslint-plugin-template**, and **@angular-eslint/template-parser** packages have been replaced with **angular-eslint**.
+    * Github: [PR-659](https://github.com/pegasystems/angular-sdk-components/pull/659)
+*   The following table lists the packages that have been added:
+
+| Package | Added version |
+| :--- | :--- |
+| **@angular/build** | 22.2.6 |
+| **angular-eslint** | 22.6.0 |
+
+*   The following table lists the packages whose versions have been updated:
+
+| Package | Updated version |
+| :--- | :--- |
+| **@angular/animations** | 22.2.5 |
+| **@angular/cdk** | 22.2.6 |
+| **@angular/cli** | 22.2.6 |
+| **@angular/common** | 22.2.5 |
+| **@angular/compiler** | 22.2.5 |
+| **@angular/compiler-cli** | 22.2.5 |
+| **@angular/core** | 22.2.5 |
+| **@angular/forms** | 22.2.5 |
+| **@angular/google-maps** | 22.2.6 |
+| **@angular/language-service** | 22.2.5 |
+| **@angular/material** | 22.2.6 |
+| **@angular/material-experimental** | 22.2.6 |
+| **@angular/material-moment-adapter** | 22.2.6 |
+| **@angular/platform-browser** | 22.2.5 |
+| **@angular/platform-browser-dynamic** | 22.2.5 |
+| **@angular/router** | 22.2.5 |
+| **@angular-devkit/core** | 22.2.6 |
+| **@danielmoncada/angular-datetime-picker** | 22.0.0 |
+| **@pega/auth** | 0.3.3 |
+| **ng-packagr** | 22.2.6 |
+| **typescript** | 6.0.3 |
+| **typescript-eslint** | 8.72.2 |
 
 # [26.1.10](https://github.com/pegasystems/angular-sdk/tree/release/26.1.10)
 

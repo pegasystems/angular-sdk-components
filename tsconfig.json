@@ -3,11 +3,12 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "angular-sdk-components": ["dist/angular-sdk-components"]
+      "angular-sdk-components": ["./dist/angular-sdk-components"],
+      "packages/*": ["./packages/*"]
     },
     "typeRoots": ["node_modules/@types", "node_modules/@pega"],
     "types": ["pcore-pconnect-typedefs", "jasmine"],
-    "baseUrl": "./",
+    "esModuleInterop": true,
     "outDir": "./projects/angular-test-app/lib",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -18,11 +19,9 @@
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
-    "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
     "importHelpers": true,
-    "allowSyntheticDefaultImports": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,

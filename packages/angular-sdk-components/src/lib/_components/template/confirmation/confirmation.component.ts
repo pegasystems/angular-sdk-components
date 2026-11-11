@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
@@ -18,6 +18,7 @@ interface ConfirmationProps {
   selector: 'app-confirmation',
   templateUrl: './confirmation.component.html',
   styleUrls: ['./confirmation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ConfirmationComponent implements OnInit, OnDestroy {

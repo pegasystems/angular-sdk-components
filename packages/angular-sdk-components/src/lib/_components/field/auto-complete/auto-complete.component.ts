@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild, forwardRef, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild, forwardRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
@@ -69,6 +69,7 @@ interface AutoCompleteProps extends PConnFieldProps {
     FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatapageService]
 })
 export class AutoCompleteComponent extends FieldBase implements OnInit {

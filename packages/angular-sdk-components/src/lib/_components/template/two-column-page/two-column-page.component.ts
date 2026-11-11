@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -7,6 +7,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-two-column-page',
   templateUrl: './two-column-page.component.html',
   styleUrls: ['./two-column-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnPageComponent implements OnInit, OnDestroy {

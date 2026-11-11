@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { Utils } from '../../../_helpers/utils';
@@ -14,6 +14,7 @@ interface TextContentProps extends PConnFieldProps {
   selector: 'app-text-content',
   templateUrl: './text-content.component.html',
   styleUrls: ['./text-content.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule]
 })
 export class TextContentComponent implements OnInit, OnDestroy {

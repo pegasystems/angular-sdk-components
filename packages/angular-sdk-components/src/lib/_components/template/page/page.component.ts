@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -14,6 +14,7 @@ interface PageProps {
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class PageComponent implements OnInit, OnDestroy {

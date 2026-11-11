@@ -1,9 +1,7 @@
 import { globalIgnores } from 'eslint/config';
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import angular from '@angular-eslint/eslint-plugin';
-import angularTemplate from '@angular-eslint/eslint-plugin-template';
-import angularTemplateParser from '@angular-eslint/template-parser';
+import angular from 'angular-eslint';
 import sonarjs from 'eslint-plugin-sonarjs';
 import { defineConfig } from 'eslint/config';
 
@@ -37,8 +35,8 @@ export default defineConfig([
     },
 
     plugins: {
-      '@angular-eslint': angular,
-      '@angular-eslint/template': angularTemplate,
+      '@angular-eslint': angular.tsPlugin,
+      '@angular-eslint/template': angular.templatePlugin,
       sonarjs
     },
     rules: {
@@ -58,12 +56,13 @@ export default defineConfig([
   },
   {
     files: ['**/*.ts'],
-    extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic],
-    processor: angularTemplate.processors['extract-inline-html'],
+    extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic, angular.configs.tsRecommended],
+    processor: angular.processInlineTemplates,
     rules: {
-      ...angular.configs.recommended.rules,
       '@angular-eslint/prefer-inject': 'off',
       '@angular-eslint/prefer-standalone': 'off',
+      // Added to the recommended preset in angular-eslint 22; adopting OnPush is a behavioral change tracked separately
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
       '@angular-eslint/no-empty-lifecycle-method': 'off',
       '@angular-eslint/directive-selector': ['error', { type: 'attribute', style: 'camelCase', prefix: ['app'] }],
       '@angular-eslint/component-selector': ['error', { type: 'element', style: 'kebab-case', prefix: ['app', 'component', 'lib', 'wss'] }],
@@ -83,10 +82,8 @@ export default defineConfig([
   },
   {
     files: ['**/*.html'],
-    languageOptions: { parser: angularTemplateParser },
+    extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     rules: {
-      ...angularTemplate.configs.recommended.rules,
-      ...angularTemplate.configs.accessibility.rules,
       '@angular-eslint/template/alt-text': 'off',
       '@angular-eslint/template/label-has-associated-control': 'off',
       '@angular-eslint/template/click-events-have-key-events': 'off',

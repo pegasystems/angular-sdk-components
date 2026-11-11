@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -14,6 +14,7 @@ const SELECTION_MODE = { SINGLE: 'single', MULTI: 'multi' };
   selector: 'app-data-reference',
   templateUrl: './data-reference.component.html',
   styleUrls: ['./data-reference.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DataReferenceComponent implements OnInit, OnDestroy {
