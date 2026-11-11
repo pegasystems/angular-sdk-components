@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -15,6 +15,7 @@ interface RichTextProps extends PConnFieldProps {
   selector: 'app-rich-text',
   templateUrl: './rich-text.component.html',
   styleUrls: ['./rich-text.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, ReactiveFormsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class RichTextComponent extends FieldBase {

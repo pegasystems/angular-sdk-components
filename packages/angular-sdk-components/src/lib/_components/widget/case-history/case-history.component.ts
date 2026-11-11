@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { Utils } from '../../../_helpers/utils';
@@ -11,6 +11,7 @@ interface CaseHistoryProps {
   selector: 'app-case-history',
   templateUrl: './case-history.component.html',
   styleUrls: ['./case-history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatTableModule]
 })
 export class CaseHistoryComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -19,6 +19,7 @@ interface WssNavBarProps {
   templateUrl: './wss-nav-bar.component.html',
   styleUrls: ['./wss-nav-bar.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatListModule, MatMenuModule, MatIconModule, MatToolbarModule]
 })
 export class WssNavBarComponent implements OnInit, OnDestroy {

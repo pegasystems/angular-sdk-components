@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy, ViewChild, ElementRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -33,6 +33,7 @@ interface AttachmentProps extends Omit<PConnFieldProps, 'value'> {
   selector: 'app-attachment',
   templateUrl: './attachment.component.html',
   styleUrls: ['./attachment.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatProgressSpinnerModule, MatMenuModule, MatIconModule, MatButtonModule]
 })
 export class AttachmentComponent implements OnInit, OnDestroy {

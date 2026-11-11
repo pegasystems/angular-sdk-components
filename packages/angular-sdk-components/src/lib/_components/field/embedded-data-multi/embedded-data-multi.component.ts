@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, OnDestroy, forwardRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -25,6 +25,7 @@ interface EmbeddedDataMultiProps {
   selector: 'app-embedded-data-multi',
   templateUrl: './embedded-data-multi.component.html',
   styleUrls: ['./embedded-data-multi.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class EmbeddedDataMultiComponent implements OnInit, OnDestroy {

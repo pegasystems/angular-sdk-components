@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +21,7 @@ interface FileUtilityProps {
   selector: 'app-file-utility',
   templateUrl: './file-utility.component.html',
   styleUrls: ['./file-utility.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule, MatFormFieldModule, MatInputModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FileUtilityComponent implements OnInit, OnDestroy {

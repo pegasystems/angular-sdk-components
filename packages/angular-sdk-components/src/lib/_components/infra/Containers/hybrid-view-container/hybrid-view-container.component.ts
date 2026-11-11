@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 
@@ -13,6 +13,7 @@ import { FormGroup } from '@angular/forms';
   selector: 'app-hybrid-view-container',
   templateUrl: './hybrid-view-container.component.html',
   styleUrls: ['./hybrid-view-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule]
 })
 export class HybridViewContainerComponent {

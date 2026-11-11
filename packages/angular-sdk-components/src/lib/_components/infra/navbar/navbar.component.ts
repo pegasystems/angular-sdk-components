@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
@@ -17,6 +17,7 @@ interface NavBarProps {
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatListModule, MatMenuModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {

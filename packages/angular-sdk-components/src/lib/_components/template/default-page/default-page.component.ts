@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnChanges, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -16,6 +16,7 @@ interface DefaultPageProps {
   selector: 'app-default-page',
   templateUrl: './default-page.component.html',
   styleUrls: ['./default-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DefaultPageComponent implements OnInit, OnChanges {

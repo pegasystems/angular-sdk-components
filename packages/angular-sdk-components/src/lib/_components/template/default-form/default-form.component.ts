@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -27,6 +27,7 @@ interface DefaultFormProps {
   selector: 'app-default-form',
   templateUrl: './default-form.component.html',
   styleUrls: ['./default-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DefaultFormComponent extends FormTemplateBase implements OnInit, OnChanges {

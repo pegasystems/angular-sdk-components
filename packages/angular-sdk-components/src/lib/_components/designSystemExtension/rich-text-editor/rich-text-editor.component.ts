@@ -9,7 +9,8 @@ import {
   OnDestroy,
   Output,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,6 +30,7 @@ type BlockType = 'paragraph' | 'h1' | 'h2' | 'h3';
   selector: 'app-rich-text-editor',
   templateUrl: './rich-text-editor.component.html',
   styleUrls: ['./rich-text-editor.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatSelectModule]
 })
 export class RichTextEditorComponent implements OnChanges, AfterViewInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, Input, OnInit, EventEmitter, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatRadioModule } from '@angular/material/radio';
@@ -27,6 +27,7 @@ interface SelectableCardProps extends PConnFieldProps {
   selector: 'lib-selectable-card',
   imports: [MatCardModule, CommonModule, MatRadioModule, MatCheckboxModule],
   templateUrl: './selectable-card.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './selectable-card.component.scss'
 })
 export class SelectableCardComponent extends FieldBase implements OnInit {

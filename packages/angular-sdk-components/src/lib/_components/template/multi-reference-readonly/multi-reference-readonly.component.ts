@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -14,6 +14,7 @@ interface MultiReferenceReadOnlyProps {
   selector: 'app-multi-reference-readonly',
   templateUrl: './multi-reference-readonly.component.html',
   styleUrls: ['./multi-reference-readonly.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiReferenceReadonlyComponent implements OnInit, OnDestroy {

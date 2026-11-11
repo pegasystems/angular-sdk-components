@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-action-buttons',
   templateUrl: './action-buttons.component.html',
   styleUrls: ['./action-buttons.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule]
 })
 export class ActionButtonsComponent {

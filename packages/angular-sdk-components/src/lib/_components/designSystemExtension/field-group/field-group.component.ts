@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges, TemplateRef } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-field-group',
   templateUrl: './field-group.component.html',
   styleUrls: ['./field-group.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatGridListModule, MatIconModule]
 })
 export class FieldGroupComponent implements OnChanges {
