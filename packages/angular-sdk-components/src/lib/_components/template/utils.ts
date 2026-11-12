@@ -37,6 +37,18 @@ export const evaluateAllowRowAction = (allowRowDelete, rowData) => {
   return false;
 };
 
+/**
+ * Builds the payload for a new embedded list row. When the list has a uniqueField (e.g. '.EmbedListUUID__'),
+ * a UUID is seeded for it, matching Constellation behavior.
+ */
+export function getNewRowPayload(contextClass: string, uniqueField?: string): Record<string, string> {
+  const payload: Record<string, string> = { classID: contextClass };
+  if (uniqueField) {
+    payload[uniqueField.startsWith('.') ? uniqueField.substring(1) : uniqueField] = crypto.randomUUID();
+  }
+  return payload;
+}
+
 export function prepareCaseSummaryData(caseSummaryRegion, portalSpecificVisibilityChecker?) {
   const filterVisibleChildren = children => {
     return children

@@ -18,7 +18,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { DatapageService } from '../../../_services/datapage.service';
 import { getReferenceList } from '../../../_helpers/field-group-utils';
 import { buildFieldsForTable, filterDataByCommonFields, filterDataByDate, getContext } from './helpers';
-import { evaluateAllowRowAction } from '../utils';
+import { evaluateAllowRowAction, getNewRowPayload } from '../utils';
 import { Utils } from '../../../_helpers/utils';
 import { getSeconds } from '../../../_helpers/common';
 
@@ -47,6 +47,7 @@ interface SimpleTableManualProps {
   useSeparateViewForEdit: any;
   viewForEditModal: any;
   targetClassLabel: string;
+  uniqueField?: string;
 }
 
 class Group {
@@ -400,8 +401,8 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
           this.fieldDefs.filter(item => item.name).map(item => item.name)
         );
       } else {
-        // @ts-ignore - An argument for 'propertyNames' was not provided.
-        this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList());
+        // @ts-ignore - Argument of type 'undefined' is not assignable to parameter of type 'string[]'
+        this.pConn$.getListActions().initDefaultPageInstructions(this.pConn$.getReferenceList(), undefined, this.configProps$?.uniqueField);
       }
     }
   }
@@ -980,7 +981,7 @@ export class SimpleTableManualComponent implements OnInit, OnDestroy {
           this.defaultActionId
         );
     } else {
-      this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceList.length);
+      this.pConn$.getListActions().insert(getNewRowPayload(this.contextClass, this.configProps$?.uniqueField), this.referenceList.length);
     }
 
     this.pConn$.clearErrorMessages({

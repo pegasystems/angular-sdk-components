@@ -6,7 +6,7 @@ import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/an
 import { buildView, getReferenceList } from '../../../_helpers/field-group-utils';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
-import { evaluateAllowRowAction } from '../utils';
+import { evaluateAllowRowAction, getNewRowPayload } from '../utils';
 
 interface FieldGroupTemplateProps {
   // If any, enter additional props that only exist on this component
@@ -23,6 +23,7 @@ interface FieldGroupTemplateProps {
   fieldHeader?: string;
   allowTableEdit: boolean;
   targetClassLabel?: string;
+  uniqueField?: string;
 }
 
 @Component({
@@ -63,7 +64,7 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
       const allowEdit = this.allowEdit();
       const referenceList = this.configProps$?.referenceList;
       if (referenceList?.length === 0 && (allowAdd || allowEdit)) {
-        this.pConn$.getListActions().insert({ classID: this.contextClass }, referenceList.length);
+        this.pConn$.getListActions().insert(this.getNewRowPayload(), referenceList.length);
       }
     });
   }
@@ -133,8 +134,9 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
     }
 
     if (this.referenceListLength() != referenceList?.length) {
-      // @ts-ignore - Expected 3 arguments, but got 1
-      this.pConn$.getListActions().initDefaultPageInstructions(resolvedList);
+      // uniqueField (e.g. '.EmbedListUUID__') lets core seed a row UUID in the default page instructions, matching Constellation
+      // @ts-ignore - Argument of type 'undefined' is not assignable to parameter of type 'string[]'
+      this.pConn$.getListActions().initDefaultPageInstructions(resolvedList, undefined, this.configProps$.uniqueField);
 
       this.children = referenceList?.map((item, index) => {
         return {
@@ -173,7 +175,11 @@ export class FieldGroupTemplateComponent implements OnInit, OnDestroy, OnChanges
   };
 
   addFieldGroupItem() {
-    this.pConn$.getListActions().insert({ classID: this.contextClass }, this.referenceListLength() as number);
+    this.pConn$.getListActions().insert(this.getNewRowPayload(), this.referenceListLength() as number);
+  }
+
+  getNewRowPayload() {
+    return getNewRowPayload(this.contextClass, this.configProps$?.uniqueField);
   }
 
   deleteFieldGroupItem(index) {
