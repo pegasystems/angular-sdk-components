@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { Utils } from '../../../_helpers/utils';
@@ -11,6 +11,7 @@ type StepIndicator = 'horizontal' | 'vertical' | 'vertical-start';
   templateUrl: './multi-step.component.html',
   styleUrls: ['./multi-step.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class MultiStepComponent implements OnInit {

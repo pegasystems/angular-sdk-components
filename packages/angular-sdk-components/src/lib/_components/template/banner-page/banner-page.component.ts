@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -15,6 +15,7 @@ interface BannerPageProps {
   selector: 'app-banner-page',
   templateUrl: './banner-page.component.html',
   styleUrls: ['./banner-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class BannerPageComponent implements OnInit, OnChanges {

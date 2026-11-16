@@ -1,4 +1,15 @@
-import { Component, ComponentRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ComponentRef,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+  ViewContainerRef,
+  ChangeDetectionStrategy
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { getComponentFromMap } from '../helpers/sdk_component_map';
 import { ErrorBoundaryComponent } from '../../_components/infra/error-boundary/error-boundary.component';
@@ -9,6 +20,7 @@ const componentsRequireDisplayOnlyFAProp: string[] = ['HybridViewContainer', 'Mo
   selector: 'component-mapper',
   templateUrl: './component-mapper.component.html',
   styleUrls: ['./component-mapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule]
 })
 export class ComponentMapperComponent implements OnInit, OnDestroy, OnChanges {

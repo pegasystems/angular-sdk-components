@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -13,6 +13,7 @@ interface UtilityProps {
   selector: 'app-utility',
   templateUrl: './utility.component.html',
   styleUrls: ['./utility.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [forwardRef(() => ComponentMapperComponent)]
 })
 export class UtilityComponent implements OnInit, OnChanges {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Utils } from '../../../_helpers/utils';
 
 @Component({
@@ -6,6 +6,7 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './material-utility.component.html',
   styleUrls: ['./material-utility.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class MaterialUtilityComponent implements OnInit {

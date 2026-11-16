@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { DatapageService } from '../../../../../../../packages/angular-sdk-compo
   templateUrl: './side-bar.component.html',
   styleUrls: ['./side-bar.component.scss'],
   imports: [CommonModule, MatButtonModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [DatapageService]
 })
 export class SideBarComponent implements OnInit, OnDestroy {

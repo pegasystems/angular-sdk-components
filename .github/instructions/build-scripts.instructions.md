@@ -16,7 +16,6 @@ Node.js automation scripts for building and packaging the Angular SDK.
 | `copy-npm-assets-to-components.js` | `build-angular-sdk-components` | Copies SECURITY.md, LICENSE, doc/ to `dist/angular-sdk-components/` |
 | `copy-npm-assets-to-overrides.js` | `postbuild-overrides` | Copies SECURITY.md, LICENSE to `packages/angular-sdk-overrides/` |
 | `copy-file.js` | — | Generic file copy utility used by other scripts |
-| `extra-webpack.config.js` | Angular CLI build (via `@angular-builders/custom-webpack`) | Copies OAuth `auth.html` and `authDone.js` from `@pega/auth` into `dist/` |
 | `update-dependencies.js` | `create_and_install_sdk_packages` | Builds both packages, creates `.tgz` files, and installs them into the `angular-sdk` consumer repo |
 | `playwright-message.js` | `pretest` (before E2E) | Prints "Running in headless mode" info message |
 
@@ -120,20 +119,20 @@ The component library uses **ng-packagr** (not Webpack) for building:
 - Config: `packages/angular-sdk-components/ng-package.json`
 - Entry point: `src/public-api.ts` — all public exports must be listed here
 - Output: `dist/angular-sdk-components/` (FESM bundles + typings)
-- Builder: `@angular-devkit/build-angular:ng-packagr` (configured in `angular.json`)
+- Builder: `@angular/build:ng-packagr` (configured in `angular.json`)
 
 ### Angular CLI (App builds)
-The test app uses Angular CLI with `@angular-builders/custom-webpack`:
-- Extends standard Angular build with `extra-webpack.config.js`
-- The custom webpack config only adds `CopyWebpackPlugin` for OAuth auth files
-- Dev server: `ng serve --port 3500`
+The test app uses the Angular CLI esbuild-based `@angular/build:application` builder (no custom webpack):
+- Output goes directly to `dist/` (`outputPath.browser` is `""`)
+- OAuth `auth.html` and `authDone.js` are copied from `node_modules/@pega/auth/lib/oauth-client/` via the `assets` array in `angular.json`
+- Dev server: `@angular/build:dev-server` (`ng serve --port 3500`)
 - Two Angular projects in workspace: `angular-sdk-components` (library) and `angular-test-app` (application)
 
 ### Key differences from the React build
 | Concern | React | Angular |
 |---------|-------|---------|
 | Library bundler | TypeScript compiler (`tsc`) | ng-packagr (FESM bundles) |
-| App bundler | Webpack | Angular CLI (esbuild/webpack) |
+| App bundler | Webpack | Angular CLI (esbuild) |
 | Export generation | `build-exports.js` auto-generates | Manual — `public-api.ts` must be edited |
 | Component map transform | `edit-pega-components-map-in-lib.js` | Not needed (ng-packagr handles re-exports) |
 

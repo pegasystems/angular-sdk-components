@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, Injector } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, forwardRef, OnDestroy, Injector, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -27,6 +27,7 @@ interface FlowContainerProps {
   templateUrl: './flow-container.component.html',
   styleUrls: ['./flow-container.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatCardModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class FlowContainerComponent extends FlowContainerBaseComponent implements OnInit, OnDestroy {

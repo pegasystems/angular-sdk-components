@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -8,6 +8,7 @@ import { FormTemplateBase } from '../base/form-template-base';
   selector: 'app-two-column',
   templateUrl: './two-column.component.html',
   styleUrls: ['./two-column.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class TwoColumnComponent extends FormTemplateBase implements OnInit, OnChanges {

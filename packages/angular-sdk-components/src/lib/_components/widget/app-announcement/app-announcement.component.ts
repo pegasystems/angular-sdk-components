@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -15,6 +15,7 @@ interface AppAnnouncementProps {
   selector: 'app-app-announcement',
   templateUrl: './app-announcement.component.html',
   styleUrls: ['./app-announcement.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule]
 })
 export class AppAnnouncementComponent implements OnInit {

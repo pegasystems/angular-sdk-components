@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
 
@@ -6,6 +6,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'lib-object-page',
   imports: [forwardRef(() => ComponentMapperComponent)],
   templateUrl: './object-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './object-page.component.scss'
 })
 export class ObjectPageComponent {

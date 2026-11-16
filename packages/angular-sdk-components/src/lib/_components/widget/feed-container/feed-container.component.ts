@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -14,6 +14,7 @@ import { Utils } from '../../../_helpers/utils';
   templateUrl: './feed-container.component.html',
   styleUrls: ['./feed-container.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatFormFieldModule, MatInputModule, MatGridListModule, MatButtonModule]
 })
 export class FeedContainerComponent implements OnInit, OnDestroy {

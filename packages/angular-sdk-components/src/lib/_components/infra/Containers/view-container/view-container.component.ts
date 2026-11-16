@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup } from '@angular/forms';
 import { AngularPConnectData, AngularPConnectService } from '../../../../_bridge/angular-pconnect';
@@ -26,6 +26,7 @@ interface ViewContainerProps {
   selector: 'app-view-container',
   templateUrl: './view-container.component.html',
   styleUrls: ['./view-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class ViewContainerComponent implements OnInit, OnDestroy {

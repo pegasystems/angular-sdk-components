@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { publicConstants } from '@pega/pcore-pconnect-typedefs/constants';
@@ -64,6 +64,7 @@ interface ToDoProps {
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.scss'],
   providers: [Utils],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatButtonModule]
 })
 export class TodoComponent implements OnInit, OnDestroy {

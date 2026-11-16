@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnChanges, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, forwardRef, Input, OnChanges, OnInit, TemplateRef, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { getFirstVisibleTabId, getActiveTabId, searchtabsClick } from '../../../../_helpers/tab-utils';
 import { MatRadioModule } from '@angular/material/radio';
@@ -17,6 +17,7 @@ import { getFieldMeta } from '../utils';
   selector: 'app-search-form',
   templateUrl: './search-form.component.html',
   styleUrls: ['./search-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     CommonModule,
     ReactiveFormsModule,

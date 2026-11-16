@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 
 /**
  * WARNING: This file is part of the infrastructure component responsible for working with Redux and managing the creation and update of Redux containers and PConnect.
@@ -11,6 +11,7 @@ import { Component, OnInit, Input } from '@angular/core';
   selector: 'app-preview-view-container',
   templateUrl: './preview-view-container.component.html',
   styleUrls: ['./preview-view-container.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: true
 })
 export class PreviewViewContainerComponent implements OnInit {

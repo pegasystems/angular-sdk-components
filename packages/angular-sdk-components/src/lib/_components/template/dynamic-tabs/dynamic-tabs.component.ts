@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, forwardRef } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
@@ -17,6 +17,7 @@ interface DynamicTabsProps {
   selector: 'app-dynamic-tabs',
   templateUrl: './dynamic-tabs.component.html',
   styleUrls: ['./dynamic-tabs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatTabsModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class DynamicTabsComponent implements OnInit, OnDestroy {

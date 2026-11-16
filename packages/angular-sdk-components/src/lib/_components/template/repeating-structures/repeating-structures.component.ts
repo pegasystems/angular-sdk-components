@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,6 +18,7 @@ interface RepeatingStructuresProps {
   selector: 'app-repeating-structures',
   templateUrl: './repeating-structures.component.html',
   styleUrls: ['./repeating-structures.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [CommonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule]
 })
 export class RepeatingStructuresComponent implements OnInit, AfterViewInit {

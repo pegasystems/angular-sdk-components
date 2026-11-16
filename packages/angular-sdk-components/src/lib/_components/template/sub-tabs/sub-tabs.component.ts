@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { AngularPConnectData, AngularPConnectService } from '../../../_bridge/angular-pconnect';
@@ -10,6 +10,7 @@ import { ComponentMapperComponent } from '../../../_bridge/component-mapper/comp
   selector: 'app-sub-tabs',
   templateUrl: './sub-tabs.component.html',
   styleUrls: ['./sub-tabs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatTabsModule, CommonModule, forwardRef(() => ComponentMapperComponent)]
 })
 export class SubTabsComponent implements OnInit, OnDestroy {
