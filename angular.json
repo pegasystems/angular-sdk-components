@@ -114,7 +114,7 @@
             ],
             "styles": ["projects/angular-test-app/src/styles.scss"],
             "scripts": [],
-            "allowedCommonJsDependencies": ["lodash.clonedeep", "lodash.debounce", "downloadjs", "dayjs", "fast-deep-equal", "moment"],
+            "allowedCommonJsDependencies": ["downloadjs", "dayjs", "fast-deep-equal", "moment"],
             "browser": "projects/angular-test-app/src/main.ts"
           },
           "configurations": {
