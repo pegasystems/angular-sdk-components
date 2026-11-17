@@ -61,7 +61,6 @@
     "test-report": "playwright show-report"
   },
   "dependencies": {
-    "@angular/animations": "^22.2.5",
     "@angular/cdk": "^22.2.6",
     "@angular/common": "^22.2.5",
     "@angular/compiler": "^22.2.5",
@@ -72,7 +71,6 @@
     "@angular/material-experimental": "^22.2.6",
     "@angular/material-moment-adapter": "^22.2.6",
     "@angular/platform-browser": "^22.2.5",
-    "@angular/platform-browser-dynamic": "^22.2.5",
     "@angular/router": "^22.2.5",
     "@danielmoncada/angular-datetime-picker": "^22.0.0",
     "@pega/auth": "~0.3.3",
@@ -146,7 +144,7 @@
       "@angular/forms": "$@angular/forms",
       "@angular/material": "$@angular/material",
       "@angular/platform-browser": "$@angular/platform-browser",
-      "@angular/platform-browser-dynamic": "$@angular/platform-browser-dynamic"
+      "@angular/platform-browser-dynamic": "$@angular/platform-browser"
     }
   }
 }
