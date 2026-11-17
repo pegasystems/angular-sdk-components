@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { FieldBase } from '../field.base';
 import { doSearch, getDisplayFieldsMetaData, getGroupDataForItemsTree, preProcessColumns } from './utils';
-import { deleteInstruction, insertInstruction } from '../../../_helpers/instructions-utils';
+import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
 
 @Component({
@@ -49,6 +49,15 @@ export class MultiselectComponent extends FieldBase {
   dataApiObj: any;
   itemsTree: any[] = [];
   trigger: any;
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+
+    // Seed default page instructions for already-selected rows (keyed by the list's self-referenced datasource params, e.g. pyID), matching Constellation
+    if (this.referenceList?.length > 0 && !this.bReadonly$) {
+      updateNewInstructions(this.pConn$, this.selectionList);
+    }
+  }
 
   /**
    * Updates the component when there are changes in the state.

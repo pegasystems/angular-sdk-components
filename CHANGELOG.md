@@ -15,6 +15,12 @@
 
 *   **Fixed `TextInput`, `Email`, `URL`, and `TextArea` fields showing an empty value after being hidden and shown again by a visibility condition.**
       * Github: [PR-656](https://github.com/pegasystems/angular-sdk-components/pull/656)
+
+*   **Fixed `Multiselect` not sending page instructions for values that were already selected, which caused the save request to differ from Constellation.**
+      * Github: [PR-664](https://github.com/pegasystems/angular-sdk-components/pull/664)
+
+*   **Fixed field groups ignoring the list's `uniqueField` (for example, `.EmbedListUUID__`). New rows now get a unique ID, and the page instructions match Constellation.**
+      * Github: [PR-664](https://github.com/pegasystems/angular-sdk-components/pull/664)
 ---
 
 ### **Dependencies & Infrastructure**
