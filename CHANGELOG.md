@@ -23,12 +23,16 @@
     * Github: [PR-659](https://github.com/pegasystems/angular-sdk-components/pull/659)
 *   The **@angular-eslint/eslint-plugin**, **@angular-eslint/eslint-plugin-template**, and **@angular-eslint/template-parser** packages have been replaced with **angular-eslint**.
     * Github: [PR-659](https://github.com/pegasystems/angular-sdk-components/pull/659)
+*   The **lodash.clonedeep**, **lodash.debounce**, and **lodash.get** packages have been replaced with **lodash-es**. The `lodash.*` entries have been removed from `allowedCommonJsDependencies` in `angular.json`. Applications that consume `@pega/angular-sdk-components` now need `lodash-es` as a peer dependency instead of the `lodash.*` packages.
+    * Github: [PR-662](https://github.com/pegasystems/angular-sdk-components/pull/662)
 *   The following table lists the packages that have been added:
 
 | Package | Added version |
 | :--- | :--- |
 | **@angular/build** | 22.2.6 |
 | **angular-eslint** | 22.6.0 |
+| **lodash-es** | 4.18.1 |
+| **@types/lodash-es** | 4.17.12 |
 
 *   The following table lists the packages whose versions have been updated:
 
