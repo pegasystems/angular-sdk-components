@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup$">
+<div [formGroup]="formGroup$" *ngIf="bVisible$">
   <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
     <mat-label>{{ label$ }}</mat-label>
     <mat-chip-grid #chipGrid [required]="bRequired$">
