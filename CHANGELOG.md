@@ -17,12 +17,20 @@
     * Github: [PR-657](https://github.com/pegasystems/angular-sdk-components/pull/657)
 *   The deprecated **@angular/animations** and **@angular/platform-browser-dynamic** packages have been removed from the dependencies, and `@angular/animations` has been removed from the `@pega/angular-sdk-components` peer dependencies. The test application no longer calls `provideAnimations()`.
     * Github: [PR-658](https://github.com/pegasystems/angular-sdk-components/pulls)
+*   **mat-tel-input** has been updated to 22.0.0, which supports Angular 22. The `mat-tel-input` entry has been removed from `overrides` in `package.json`, and the `@pega/angular-sdk-components` peer dependency now accepts `^21.1.0 || ^22.0.0`.
+    * Github: [PR-665](https://github.com/pegasystems/angular-sdk-components/pull/665)
 *   The following table lists the packages that have been added:
 
 | Package | Added version |
 | :--- | :--- |
 | **lodash-es** | 4.18.1 |
 | **@types/lodash-es** | 4.17.12 |
+
+*   The following table lists the packages that have been updated:
+
+| Package | Previous version | Updated version |
+| :--- | :--- | :--- |
+| **mat-tel-input** | 21.1.1 | 22.0.0 |
 
 # [25.1.15](https://github.com/pegasystems/angular-sdk/tree/release/25.1.15) - Released: 30/10/2026
 
