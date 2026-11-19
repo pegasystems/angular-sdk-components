@@ -3,8 +3,12 @@ name: Playwright against deployed branch
 on:
   workflow_dispatch:
     inputs:
-      server_url:
-        description: 'Base URL of the deployed app; tests append /portal and /embedded'
+      infinity_rest_server_url:
+        description: 'Full Infinity REST URL, including /prweb'
+        required: true
+        type: string
+      app_alias:
+        description: 'SDK appAlias for the target application'
         required: true
         type: string
 
@@ -12,8 +16,8 @@ permissions:
   contents: read
 
 concurrency:
-  # The portal tests create and hand off one case, so runs against the same deployment must not overlap.
-  group: deployed-playwright-${{ inputs.server_url }}
+  # These tests create and hand off cases against the shared Infinity instance.
+  group: deployed-playwright-${{ inputs.infinity_rest_server_url }}
   cancel-in-progress: false
 
 jobs:
@@ -21,7 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      PLAYWRIGHT_SERVER_URL: ${{ inputs.server_url }}
+      PLAYWRIGHT_SERVER_URL: http://127.0.0.1:3500
+      INFINITY_REST_SERVER_URL: ${{ inputs.infinity_rest_server_url }}
+      SDK_APP_ALIAS: ${{ inputs.app_alias }}
 
     steps:
       - name: Check out selected branch
@@ -35,27 +41,38 @@ jobs:
           node-version: 24.x
           cache: npm
 
-      - name: Validate server URL
+      - name: Configure Infinity for MediaCo tests
         run: |
+          # Read dispatch values from the environment so user input is never interpolated into executable shell code.
           node <<'NODE'
-          const url = new URL(process.env.PLAYWRIGHT_SERVER_URL);
+          const fs = require('node:fs');
+          const configPath = 'sdk-config.json';
+          const sdkConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+          const infinityUrl = new URL(process.env.INFINITY_REST_SERVER_URL);
+          const appAlias = process.env.SDK_APP_ALIAS.trim();
 
           if (
-            !['http:', 'https:'].includes(url.protocol) ||
-            url.username ||
-            url.password ||
-            url.search ||
-            url.hash
+            !['http:', 'https:'].includes(infinityUrl.protocol) ||
+            infinityUrl.username ||
+            infinityUrl.password ||
+            infinityUrl.search ||
+            infinityUrl.hash ||
+            !appAlias
           ) {
-            throw new Error('Provide a valid HTTP(S) base URL without credentials, query, or fragment');
+            throw new Error('Provide a valid HTTP(S) Infinity REST URL and app alias');
           }
+
+          sdkConfig.serverConfig.infinityRestServerUrl = infinityUrl.href.replace(/\/$/, '');
+          sdkConfig.serverConfig.appAlias = appAlias;
+          fs.writeFileSync(configPath, `${JSON.stringify(sdkConfig, null, 2)}\n`);
           NODE
 
-      - name: Check deployed app availability
-        run: >-
-          curl --fail --silent --show-error --max-time 30 --retry 5
-          --retry-delay 5 --retry-all-errors --output /dev/null
-          "${PLAYWRIGHT_SERVER_URL%/}/portal"
+      - name: Check Infinity network reachability
+        run: |
+          curl --silent --show-error --location --connect-timeout 10 --max-time 30 \
+            --output /dev/null \
+            --write-out 'Infinity HTTP %{http_code} from %{remote_ip}\n' \
+            "$INFINITY_REST_SERVER_URL"
 
       - name: Install dependencies
         run: npm ci
@@ -63,14 +80,40 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Run MediaCo portal and embedded tests
-        run: npm test
+      - name: Start app and run headed MediaCo tests
+        run: |
+          echo 'Starting Angular test app on 127.0.0.1:3500'
+          npm run start-dev -- --host 127.0.0.1 > /tmp/angular-test-app.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+
+          # Probe the root document; /portal and /embedded are app routes used by browser navigation.
+          if ! timeout 120s bash -c '
+            for attempt in $(seq 1 60); do
+              if curl --fail --silent --show-error --connect-timeout 2 --max-time 2 --output /dev/null "$PLAYWRIGHT_SERVER_URL/"; then
+                echo "Angular server responded on attempt $attempt"
+                exit 0
+              fi
+              echo "Angular server not ready (attempt $attempt/60)"
+              sleep 2
+            done
+            exit 1
+          '; then
+            echo 'Angular server failed readiness within 120 seconds'
+            cat /tmp/angular-test-app.log
+            exit 1
+          fi
+
+          echo 'Angular test app is ready; starting headed Playwright tests'
+          timeout --signal=TERM --kill-after=15s 10m xvfb-run --auto-servernum npm run test:headed -- --reporter=list,html --retries=0 --timeout=60000 --max-failures=1 --trace=on
 
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report
-          path: tests/playwright-report/
-          if-no-files-found: ignore
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
           retention-days: 1
