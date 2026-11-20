@@ -33,6 +33,8 @@
     * Github: [PR-662](https://github.com/pegasystems/angular-sdk-components/pull/662)
 *   The deprecated **@angular/animations** and **@angular/platform-browser-dynamic** packages have been removed from the dependencies, and `@angular/animations` has been removed from the `@pega/angular-sdk-components` peer dependencies. The test application no longer calls `provideAnimations()`.
     * Github: [PR-663](https://github.com/pegasystems/angular-sdk-components/pull/663)
+*   **mat-tel-input** has been updated to 22.0.0, which supports Angular 22. The `mat-tel-input` entry has been removed from `overrides` in `package.json`, and the `@pega/angular-sdk-components` peer dependency now accepts `^21.1.3 || ^22.0.0`.
+    * Github: [PR-XXX](https://github.com/pegasystems/angular-sdk-components/pull/XXX)
 *   The following table lists the packages that have been added:
 
 | Package | Added version |
@@ -65,6 +67,7 @@
 | **@angular-devkit/core** | 22.2.6 |
 | **@danielmoncada/angular-datetime-picker** | 22.0.0 |
 | **@pega/auth** | 0.3.3 |
+| **mat-tel-input** | 22.0.0 |
 | **ng-packagr** | 22.2.6 |
 | **typescript** | 6.0.3 |
 | **typescript-eslint** | 8.72.2 |
