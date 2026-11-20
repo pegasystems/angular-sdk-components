@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
+import { NgxCurrency, NgxCurrencyInputMode } from '@dintecom/ngx-currency';
 
 import { FieldBase } from '../field.base';
 import { FieldWarningDirective } from '../../../_directives/field-warning.directive';
@@ -39,7 +39,7 @@ interface PercentageProps extends Omit<PConnFieldProps, 'value'> {
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    NgxCurrencyDirective,
+    NgxCurrency,
     FieldWarningDirective,
     forwardRef(() => ComponentMapperComponent)
   ]
