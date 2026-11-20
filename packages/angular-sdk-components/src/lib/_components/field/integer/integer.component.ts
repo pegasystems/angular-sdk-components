@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
+import { NgxCurrency, NgxCurrencyInputMode } from '@dintecom/ngx-currency';
 
 import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -34,7 +34,7 @@ interface IntegerProps extends Omit<PConnFieldProps, 'value'> {
   templateUrl: './integer.component.html',
   styleUrls: ['./integer.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrency, forwardRef(() => ComponentMapperComponent)]
 })
 export class IntegerComponent extends FieldBase {
   configProps$: IntegerProps;

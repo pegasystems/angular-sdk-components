@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
+import { NgxCurrency, NgxCurrencyInputMode } from '@dintecom/ngx-currency';
 
 import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -33,7 +33,7 @@ interface PercentageProps extends Omit<PConnFieldProps, 'value'> {
   templateUrl: './percentage.component.html',
   styleUrls: ['./percentage.component.scss'],
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrencyDirective, forwardRef(() => ComponentMapperComponent)]
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxCurrency, forwardRef(() => ComponentMapperComponent)]
 })
 export class PercentageComponent extends FieldBase {
   configProps$: PercentageProps;
