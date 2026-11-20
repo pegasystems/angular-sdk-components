@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgxCurrencyDirective, NgxCurrencyInputMode } from 'ngx-currency';
+import { NgxCurrency, NgxCurrencyInputMode } from '@dintecom/ngx-currency';
 
 import { FieldBase } from '../field.base';
 import { ComponentMapperComponent } from '../../../_bridge/component-mapper/component-mapper.component';
@@ -41,7 +41,7 @@ interface DecimalProps extends Omit<PConnFieldProps, 'value'> {
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    NgxCurrencyDirective,
+    NgxCurrency,
     forwardRef(() => ComponentMapperComponent)
   ]
 })
