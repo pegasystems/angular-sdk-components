@@ -35,6 +35,8 @@
     * Github: [PR-663](https://github.com/pegasystems/angular-sdk-components/pull/663)
 *   **mat-tel-input** has been updated to 22.0.0, which supports Angular 22. The `mat-tel-input` entry has been removed from `overrides` in `package.json`, and the `@pega/angular-sdk-components` peer dependency now accepts `^21.1.3 || ^22.0.0`.
     * Github: [PR-667](https://github.com/pegasystems/angular-sdk-components/pull/667)
+*   **ngx-currency**, which only supports Angular 19, has been replaced with **@dintecom/ngx-currency**, a maintained fork that supports Angular 21 and 22. The `ngx-currency` entry has been removed from `overrides` in `package.json`. The `Currency`, `Decimal`, `Integer`, and `Percentage` components now import `NgxCurrency` (previously `NgxCurrencyDirective`) from `@dintecom/ngx-currency` and pass mask options through `[currencyMask]` instead of `[options]`. Applications that consume `@pega/angular-sdk-components` now need `@dintecom/ngx-currency` as a peer dependency instead of `ngx-currency`. Local overrides of these components must make the same changes.
+    * Github: [PR-668](https://github.com/pegasystems/angular-sdk-components/pull/668)
 *   The following table lists the packages that have been added:
 
 | Package | Added version |
@@ -43,6 +45,13 @@
 | **angular-eslint** | 22.6.0 |
 | **lodash-es** | 4.18.1 |
 | **@types/lodash-es** | 4.17.12 |
+| **@dintecom/ngx-currency** | 22.0.0 |
+
+*   The following table lists the packages that have been removed:
+
+| Package | Removed version |
+| :--- | :--- |
+| **ngx-currency** | 19.0.0 |
 
 *   The following table lists the packages whose versions have been updated:
 
