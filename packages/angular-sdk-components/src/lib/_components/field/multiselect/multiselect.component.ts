@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 
 import { FieldBase } from '../field.base';
-import { doSearch, getDisplayFieldsMetaData, getGroupDataForItemsTree, preProcessColumns } from './utils';
+import { doSearch, getDisplayFieldsMetaData, getGroupDataForItemsTree, preProcessColumns, setValuesToPropertyList } from './utils';
 import { deleteInstruction, insertInstruction, updateNewInstructions } from '../../../_helpers/instructions-utils';
 import { handleEvent } from '../../../_helpers/event-util';
 
@@ -49,6 +49,7 @@ export class MultiselectComponent extends FieldBase {
   dataApiObj: any;
   itemsTree: any[] = [];
   trigger: any;
+  dataConfigColumns: any[] = [];
 
   override ngOnInit(): void {
     super.ngOnInit();
@@ -57,6 +58,18 @@ export class MultiselectComponent extends FieldBase {
     if (this.referenceList?.length > 0 && !this.bReadonly$) {
       updateNewInstructions(this.pConn$, this.selectionList);
     }
+
+    // FieldBase seeds the control with value$ (the search text); the chip grid's control must reflect the selection instead
+    this.syncFieldControlValue();
+  }
+
+  // fieldControl is bound to mat-chip-grid, so keep its value in sync with the selected chips; otherwise the
+  // required validator evaluates the (usually empty) search text and reports an error even when items are selected
+  syncFieldControlValue() {
+    this.fieldControl.setValue(
+      this.selectedItems.map(item => item.id),
+      { emitEvent: false }
+    );
   }
 
   /**
@@ -141,6 +154,8 @@ export class MultiselectComponent extends FieldBase {
       ignoreCase: undefined
     };
 
+    this.dataConfigColumns = dataConfig.columns;
+
     const groupsDisplayFieldMeta = this.listType !== 'associated' ? getDisplayFieldsMetaData(dataConfig.groupColumnsConfig) : null;
 
     this.itemsTreeBaseData = getGroupDataForItemsTree(groupDataSource, groupsDisplayFieldMeta, this.showSecondaryInSearchOnly) || [];
@@ -186,6 +201,7 @@ export class MultiselectComponent extends FieldBase {
               })
             : [];
         this.selectedItems = selectedRows;
+        this.syncFieldControlValue();
 
         const initalItemsTree = isTriggeredFromSearch || !currentItemsTree ? [...this.itemsTreeBaseData] : [...currentItemsTree];
 
@@ -239,10 +255,14 @@ export class MultiselectComponent extends FieldBase {
       const index = this.selectedItems.findIndex(value => value.id === data.id);
       this.selectedItems.splice(index, 1);
     }
+    this.syncFieldControlValue();
 
+    const searchText = this.value$;
     this.value$ = '';
     // if this is a referenceList case
     if (this.referenceList) this.setSelectedItemsForReferenceList(data);
+
+    this.updateReduxAndValidate(this.selectedItems, searchText);
 
     this.getCaseListBasedOnParams(this.value$, '', [...this.selectedItems], [...this.itemsTree], true);
   };
@@ -260,9 +280,7 @@ export class MultiselectComponent extends FieldBase {
     // Clear error messages if any
     const propName = this.pConn$.getStateProps().selectionList;
     this.pConn$.clearErrorMessages({
-      property: propName,
-      category: '',
-      context: ''
+      property: propName
     });
     const { selected } = data;
     if (selected) {
@@ -270,5 +288,26 @@ export class MultiselectComponent extends FieldBase {
     } else {
       deleteInstruction(this.pConn$, this.selectionList, this.selectionKey, data);
     }
+  }
+
+  // function to add items to redux every time the selected list changes
+  updateReduxAndValidate(updatedItems: any[], searchText: string) {
+    const actions: any = this.actionsApi;
+    let assocProp = this.pConn$.getStateProps().value;
+    if (this.referenceList) {
+      assocProp = this.pConn$.getStateProps().selectionList;
+    }
+    let propValue: any = '';
+    propValue = setValuesToPropertyList(
+      searchText,
+      assocProp,
+      updatedItems,
+      this.dataConfigColumns,
+      actions,
+      !this.referenceList // Skipped adding properties to redux when display is combobox
+    );
+
+    // Trigger field change so that validation will be triggered
+    actions.triggerFieldChange(assocProp, propValue);
   }
 }

@@ -1,9 +1,9 @@
 <div [formGroup]="formGroup$" *ngIf="bVisible$">
   <mat-form-field class="psdk-full-width" subscriptSizing="dynamic">
     <mat-label>{{ label$ }}</mat-label>
-    <mat-chip-grid #chipGrid [required]="bRequired$">
+    <mat-chip-grid #chipGrid [required]="bRequired$" [formControl]="fieldControl">
       <ng-container *ngFor="let select of selectedItems">
-        <mat-chip-row (removed)="removeChip(select)">
+        <mat-chip-row [value]="select.id" (removed)="removeChip(select)">
           {{ select.primary }}
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
@@ -14,9 +14,7 @@
     <input
       matInput
       [placeholder]="placeholder"
-      [formControl]="fieldControl"
       [value]="value$"
-      [required]="bRequired$"
       [matAutocomplete]="auto"
       (input)="fieldOnChange($event)"
       [matChipInputFor]="chipGrid"

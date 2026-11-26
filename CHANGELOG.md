@@ -9,6 +9,8 @@
       * Github: [PR-660](https://github.com/pegasystems/angular-sdk-components/pull/660)
 *   **Fixed field groups and inline-edit tables ignoring the list's `uniqueField` (for example, `.EmbedListUUID__`). New rows now get a unique ID, and the page instructions match Constellation.**
       * Github: [PR-660](https://github.com/pegasystems/angular-sdk-components/pull/660)
+*   **Fixed a required `Multiselect` not showing the "Cannot be blank" validation message when the last selected item was removed. The field now runs Pega validation after each selection change, as in Constellation, and shows the error message under the field.**
+      * Github: [PR-669](https://github.com/pegasystems/angular-sdk-components/pull/669)
 ---
 
 ### **Dependencies & Infrastructure**
