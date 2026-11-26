@@ -288,6 +288,7 @@ export class AngularPConnectService {
     this.componentPropsArr[theCompID] = {};
 
     this.addFormField(inComp);
+    this.registerSelectionListStateProp(inComp);
 
     // return object with compID and unsubscribe...
     return returnObject;
@@ -295,6 +296,15 @@ export class AngularPConnectService {
 
   addFormField(inComp) {
     inComp.pConn$?.addFormField();
+  }
+
+  // Multiselect's selectionList is not @P annotated in the metadata, so it isn't part of stateProps by default.
+  // Register it (as Constellation does) so validation and field-level messages resolve the selectionList property.
+  registerSelectionListStateProp(inComp) {
+    const pConn = inComp.pConn$;
+    if (pConn?.meta?.type === 'Multiselect' && pConn.meta?.config?.selectionList) {
+      pConn.setStateProps({ selectionList: pConn.meta.config.selectionList });
+    }
   }
 
   removeFormField(inComp) {
